@@ -1,0 +1,917 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    
+    <title>Index &#8212; numba-dpex  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">numba-dpex  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="programming_model.html">
+                        Programming Model
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="useful_links.html">
+                        Useful links
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="license.html">
+                        License
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="release-notes.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="programming_model.html">
+                        Programming Model
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
+                    More
+                </button>
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="useful_links.html">
+                        Useful links
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="license.html">
+                        License
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="release-notes.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.ACQ_REL">ACQ_REL (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.ACQ_REL">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.ACQUIRE">ACQUIRE (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.ACQUIRE">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace">AddressSpace (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace">(class in numba_dpex.kernel_api.memory_enums)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef">AtomicRef (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef">(class in numba_dpex.kernel_api.atomic_ref)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum.basetype">basetype() (FlagEnum class method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.call_kernel">call_kernel() (in module numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/launcher/index.html#numba_dpex.kernel_api.launcher.call_kernel">(in module numba_dpex.kernel_api.launcher)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.compare_exchange">compare_exchange() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.compare_exchange">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace.CONSTANT">CONSTANT (AddressSpace attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace.CONSTANT">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED">CONSUME_UNSUPPORTED (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.CONSUME_UNSUPPORTED">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope.DEVICE">DEVICE (MemoryScope attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope.DEVICE">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    environment variable
+
+      <ul>
+        <li><a href="user_guide/debugging/index.html#index-0">NUMBA_DPEX_DEBUGINFO</a>
+</li>
+        <li><a href="user_guide/debugging/common_issues.html#index-0">NUMBA_OPT</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.exchange">exchange() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.exchange">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_add">fetch_add() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_add">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_and">fetch_and() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_and">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_max">fetch_max() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_max">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_min">fetch_min() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_min">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_or">fetch_or() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_or">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_sub">fetch_sub() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_sub">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_xor">fetch_xor() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.fetch_xor">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum">FlagEnum (class in numba_dpex.kernel_api.flag_enum)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace.GENERIC">GENERIC (AddressSpace attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace.GENERIC">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range.get">get() (Range method)</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range.get">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_global_id">get_global_id() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_global_linear_id">get_global_linear_id() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_global_range">get_global_range() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_range">[1]</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange.get_global_range">(NdRange method)</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.NdRange.get_global_range">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_group">get_group() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_group">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_group_id">get_group_id() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_group_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_group_linear_id">get_group_linear_id() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_group_linear_range">get_group_linear_range() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_group_range">get_group_range() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_group_range">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item.get_id">get_id() (Item method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Item.get_id">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item.get_linear_id">get_linear_id() (Item method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Item.get_linear_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_local_id">get_local_id() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_local_linear_id">get_local_linear_id() (NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_id">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_local_linear_range">get_local_linear_range() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group.get_local_range">get_local_range() (Group method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group.get_local_range">[1]</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_local_range">(NdItem method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_range">[1]</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange.get_local_range">(NdRange method)</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.NdRange.get_local_range">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item.get_range">get_range() (Item method)</a>, <a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Item.get_range">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace.GLOBAL">GLOBAL (AddressSpace attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace.GLOBAL">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group">Group (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group">(class in numba_dpex.kernel_api.index_space_ids)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.group_barrier">group_barrier() (in module numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/barrier/index.html#numba_dpex.kernel_api.barrier.group_barrier">(in module numba_dpex.kernel_api.barrier)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item">Item (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Item">(class in numba_dpex.kernel_api.index_space_ids)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.load">load() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.load">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace.LOCAL">LOCAL (AddressSpace attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace.LOCAL">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder">MemoryOrder (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder">(class in numba_dpex.kernel_api.memory_enums)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope">MemoryScope (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope">(class in numba_dpex.kernel_api.memory_enums)</a>
+</li>
+      </ul></li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="index.html#module-numba_dpex">numba_dpex</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/index.html#module-numba_dpex.kernel_api">numba_dpex.kernel_api</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#module-numba_dpex.kernel_api.atomic_ref">numba_dpex.kernel_api.atomic_ref</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/barrier/index.html#module-numba_dpex.kernel_api.barrier">numba_dpex.kernel_api.barrier</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/flag_enum/index.html#module-numba_dpex.kernel_api.flag_enum">numba_dpex.kernel_api.flag_enum</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#module-numba_dpex.kernel_api.index_space_ids">numba_dpex.kernel_api.index_space_ids</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/launcher/index.html#module-numba_dpex.kernel_api.launcher">numba_dpex.kernel_api.launcher</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#module-numba_dpex.kernel_api.memory_enums">numba_dpex.kernel_api.memory_enums</a>
+</li>
+        <li><a href="autoapi/numba_dpex/kernel_api/ranges/index.html#module-numba_dpex.kernel_api.ranges">numba_dpex.kernel_api.ranges</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem">NdItem (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.NdItem">(class in numba_dpex.kernel_api.index_space_ids)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange">NdRange (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.NdRange">(class in numba_dpex.kernel_api.ranges)</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex
+
+      <ul>
+        <li><a href="index.html#module-numba_dpex">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index.html#module-numba_dpex.kernel_api">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.atomic_ref
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#module-numba_dpex.kernel_api.atomic_ref">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.barrier
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/barrier/index.html#module-numba_dpex.kernel_api.barrier">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    numba_dpex.kernel_api.flag_enum
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/flag_enum/index.html#module-numba_dpex.kernel_api.flag_enum">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.index_space_ids
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/index_space_ids/index.html#module-numba_dpex.kernel_api.index_space_ids">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.launcher
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/launcher/index.html#module-numba_dpex.kernel_api.launcher">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.memory_enums
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#module-numba_dpex.kernel_api.memory_enums">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.kernel_api.ranges
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/ranges/index.html#module-numba_dpex.kernel_api.ranges">module</a>
+</li>
+      </ul></li>
+      <li><a href="user_guide/debugging/index.html#index-0">NUMBA_DPEX_DEBUGINFO</a>
+</li>
+      <li><a href="user_guide/debugging/common_issues.html#index-0">NUMBA_OPT</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AddressSpace.PRIVATE">PRIVATE (AddressSpace attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.AddressSpace.PRIVATE">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range">Range (class in numba_dpex.kernel_api)</a>
+
+      <ul>
+        <li><a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range">(class in numba_dpex.kernel_api.ranges)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.RELAXED">RELAXED (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.RELAXED">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.RELEASE">RELEASE (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.RELEASE">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.SEQ_CST">SEQ_CST (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.SEQ_CST">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range.size">size() (Range method)</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range.size">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.store">store() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.store">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope.SUB_GROUP">SUB_GROUP (MemoryScope attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope.SUB_GROUP">[1]</a>
+</li>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope.SYSTEM">SYSTEM (MemoryScope attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope.SYSTEM">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range.UNDEFINED_DIMENSION">UNDEFINED_DIMENSION (Range attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope.WORK_GROUP">WORK_GROUP (MemoryScope attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope.WORK_GROUP">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryScope.WORK_ITEM">WORK_ITEM (MemoryScope attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope.WORK_ITEM">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020-2024, Intel Corporation.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
