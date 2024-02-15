@@ -19,10 +19,6 @@ from numba.core.types.functions import Dispatcher
 from numba.extending import intrinsic
 
 from numba_dpex import dpjit
-from numba_dpex._kernel_api_impl.spirv.dispatcher import (
-    SPVKernelDispatcher,
-    _SPVKernelCompileResult,
-)
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpctlSyclEvent, NdRangeType, RangeType
@@ -32,6 +28,10 @@ from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 from numba_dpex.experimental.core.types.kernel_api.items import (
     ItemType,
     NdItemType,
+)
+from numba_dpex.experimental.kernel_dispatcher import (
+    KernelDispatcher,
+    _KernelCompileResult,
 )
 
 
@@ -156,8 +156,8 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     # ty_kernel_fn is type specific to exact function, so we can get function
     # directly from type and compile it. Thats why we don't need to get it in
     # codegen
-    kernel_dispatcher: SPVKernelDispatcher = ty_kernel_fn.dispatcher
-    kcres: _SPVKernelCompileResult = kernel_dispatcher.get_compile_result(
+    kernel_dispatcher: KernelDispatcher = ty_kernel_fn.dispatcher
+    kcres: _KernelCompileResult = kernel_dispatcher.get_compile_result(
         types.void(*ty_kernel_args_tuple)  # kernel signature
     )
     kernel_module: kl.SPIRVKernelModule = kcres.kernel_device_ir_module
