@@ -1,5 +1,5 @@
 .. _programming_model:
-.. include:: ./../ext_links.txt
+.. include:: ./ext_links.txt
 
 Programming Model
 =================
