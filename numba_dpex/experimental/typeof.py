@@ -9,14 +9,14 @@ types.
 
 from numba.extending import typeof_impl
 
-from numba_dpex.core.types.kernel_api.index_space_ids import (
+from numba_dpex.experimental.core.types.kernel_api.items import (
     GroupType,
     ItemType,
     NdItemType,
 )
 from numba_dpex.kernel_api import AtomicRef, Group, Item, NdItem
 
-from ..core.types.kernel_api.atomic_ref import AtomicRefType
+from .dpcpp_types import AtomicRefType
 
 
 @typeof_impl.register(AtomicRef)

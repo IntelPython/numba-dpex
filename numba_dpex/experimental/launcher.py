@@ -21,7 +21,10 @@ from numba.extending import intrinsic
 from numba_dpex import dpjit
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.core.types import DpctlSyclEvent, NdRangeType, RangeType
-from numba_dpex.core.types.kernel_api.index_space_ids import (
+from numba_dpex.core.utils import kernel_launcher as kl
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
+from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
+from numba_dpex.experimental.core.types.kernel_api.items import (
     ItemType,
     NdItemType,
 )
@@ -30,9 +33,6 @@ from numba_dpex.kernel_api_impl.spirv.dispatcher import (
     _SPIRVKernelCompileResult,
 )
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
-from numba_dpex.core.utils import kernel_launcher as kl
-from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
-from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 
 
 class LLRange(NamedTuple):
