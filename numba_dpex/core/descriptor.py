@@ -8,13 +8,13 @@ from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
-from numba_dpex.core import config
-from numba_dpex.kernel_api_impl.spirv.target import (
+from numba_dpex._kernel_api_impl.spirv.target import (
     SPIRV_TARGET_NAME,
     CompilationMode,
     SPIRVTargetContext,
     SPIRVTypingContext,
 )
+from numba_dpex.core import config
 
 from .targets.dpjit_target import (
     DPEX_TARGET_NAME,

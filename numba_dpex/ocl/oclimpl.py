@@ -13,9 +13,9 @@ from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
 
 from numba_dpex import spirv_kernel_target
+from numba_dpex._kernel_api_impl.spirv.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core import config
 from numba_dpex.core.types import Array
-from numba_dpex.kernel_api_impl.spirv.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
 

@@ -10,8 +10,8 @@ functions and their use inside an LLVM module.
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
+from numba_dpex._kernel_api_impl.spirv.target import CC_SPIR_FUNC
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.kernel_api_impl.spirv.target import CC_SPIR_FUNC
 
 
 def get_or_insert_atomic_load_fn(context, module, atomic_ref_ty):

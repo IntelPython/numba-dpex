@@ -2,9 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Code generator for a LLVM module for SPIR-V kernels.
-"""
-
 import warnings
 
 from llvmlite import binding as ll
@@ -29,10 +26,6 @@ SPIR_DATA_LAYOUT = {
 
 
 class SPIRVCodeLibrary(CPUCodeLibrary):
-    """A Numba code library that stores a spir_kernel function and all the
-    internally defined spir_func functions called from the spir_kernel function.
-    """
-
     def _optimize_functions(self, ll_module):
         pass
 
@@ -43,8 +36,8 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         """
         if hasattr(self, "_inline_threshold"):
             return self._inline_threshold
-
-        return 0
+        else:
+            return 0
 
     @inline_threshold.setter
     def inline_threshold(self, value: int):
@@ -112,7 +105,6 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
 
     @property
     def final_module(self):
-        """Return the final SPIR-V module after it has been finalized."""
         return self._final_module
 
 
@@ -124,7 +116,7 @@ class JITSPIRVCodegen(CPUCodegen):
     _library_class = SPIRVCodeLibrary
 
     def _init(self, llvm_module):
-        assert not list(llvm_module.global_variables), "Module isn't empty"
+        assert list(llvm_module.global_variables) == [], "Module isn't empty"
         self._data_layout = SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         self._target_data = ll.create_target_data(self._data_layout)
         self._tm_features = (
@@ -138,15 +130,10 @@ class JITSPIRVCodegen(CPUCodegen):
             ir_module.data_layout = self._data_layout
         return ir_module
 
-    def create_empty_spirv_module(self, name):
-        """Public method to create an empty LLVM Module with SPIR-V layout."""
-
-        return self._create_empty_module(name)
-
-    def _module_pass_manager(self, **kwargs):
+    def _module_pass_manager(self):
         raise NotImplementedError
 
-    def _function_pass_manager(self, llvm_module, **kwargs):
+    def _function_pass_manager(self, llvm_module):
         raise NotImplementedError
 
     def _add_module(self, module):

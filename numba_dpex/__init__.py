@@ -18,7 +18,7 @@ from numba import __version__ as numba_version
 
 from numba_dpex.core.kernel_interface.launcher import call_kernel
 
-from .kernel_api_impl.spirv import target as spirv_kernel_target
+from ._kernel_api_impl.spirv import target as spirv_kernel_target
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
 
 

@@ -15,8 +15,8 @@ from numba.core.target_extension import (
     target_registry,
 )
 
-from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
-from numba_dpex.kernel_api_impl.spirv.target import CompilationMode
+from numba_dpex._kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
+from numba_dpex._kernel_api_impl.spirv.target import CompilationMode
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME
 

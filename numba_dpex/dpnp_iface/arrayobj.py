@@ -16,11 +16,11 @@ from numba.np.arrayobj import _getitem_array_generic as np_getitem_array_generic
 from numba.np.arrayobj import make_array
 from numba.np.numpy_support import is_nonelike
 
+from numba_dpex._kernel_api_impl.spirv.target import SPIRVTargetContext
 from numba_dpex.core.kernel_interface.arrayobj import (
     _getitem_array_generic as kernel_getitem_array_generic,
 )
 from numba_dpex.core.types import DpnpNdArray
-from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ._intrinsic import (
     impl_dpnp_empty,
