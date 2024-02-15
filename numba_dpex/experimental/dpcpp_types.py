@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Collection of numba-dpex typing classes for kernel_api Python classes.
+"""Collection of numba-dpex typing classes for kernel_iface Python classes.
 """
 
 from numba.core.types import Type
@@ -10,7 +10,7 @@ from numba.core.types import Type
 
 class AtomicRefType(Type):
     """numba-dpex internal type to represent a Python object of
-    :class:`numba_dpex.kernel_api.AtomicRef`.
+    :class:`numba_dpex.experimental.kernel_iface.AtomicRef`.
     """
 
     def __init__(
@@ -38,21 +38,21 @@ class AtomicRefType(Type):
     @property
     def memory_order(self) -> int:
         """Returns the integer value for a memory order that corresponds to
-        kernel_api.MemoryOrder.
+        kernel_iface.MemoryOrder.
         """
         return self._memory_order
 
     @property
     def memory_scope(self) -> int:
         """Returns the integer value for a memory order that corresponds to
-        kernel_api.MemoryScope.
+        kernel_iface.MemoryScope.
         """
         return self._memory_scope
 
     @property
     def address_space(self) -> int:
         """Returns the integer value for a memory order that corresponds to
-        kernel_api.AddressSpace.
+        kernel_iface.AddressSpace.
         """
         return self._address_space
 

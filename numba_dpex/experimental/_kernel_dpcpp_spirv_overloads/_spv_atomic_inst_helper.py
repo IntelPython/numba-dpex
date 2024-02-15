@@ -8,7 +8,7 @@ from enum import IntEnum
 
 from numba.core import types
 
-from numba_dpex.kernel_api import MemoryOrder, MemoryScope
+from numba_dpex.kernel_iface import MemoryOrder, MemoryScope
 
 
 class _SpvScope(IntEnum):

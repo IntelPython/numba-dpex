@@ -9,7 +9,7 @@ from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import AtomicRef
+from numba_dpex.kernel_iface import AtomicRef
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_supported_dtypes = get_all_dtypes(
