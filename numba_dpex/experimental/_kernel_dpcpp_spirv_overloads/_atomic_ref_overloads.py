@@ -34,7 +34,6 @@ from ._spv_atomic_inst_helper import (
 )
 from .spv_fn_generator import (
     get_or_insert_atomic_load_fn,
-    get_or_insert_spv_atomic_compare_exchange_fn,
     get_or_insert_spv_atomic_exchange_fn,
     get_or_insert_spv_atomic_store_fn,
 )
@@ -322,108 +321,6 @@ def _intrinsic_exchange(
         return builder.call(atomic_exchange_fn, atomic_exchange_fn_args)
 
     return sig, _intrinsic_exchange_gen
-
-
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
-def _intrinsic_compare_exchange(
-    ty_context,  # pylint: disable=unused-argument
-    ty_atomic_ref,
-    ty_expected_ref,
-    ty_desired,
-    ty_expected_idx,
-):
-    sig = types.boolean(
-        ty_atomic_ref, ty_expected_ref, ty_desired, ty_expected_idx
-    )
-
-    def _intrinsic_compare_exchange_gen(context, builder, sig, args):
-        # get pointer to expected[expected_idx]
-        data_attr = builder.extract_value(
-            args[1],
-            context.data_model_manager.lookup(sig.args[1]).get_field_position(
-                "data"
-            ),
-        )
-        with builder.goto_entry_block():
-            ptr_to_data_attr = builder.alloca(data_attr.type)
-        builder.store(data_attr, ptr_to_data_attr)
-        expected_ref_ptr = builder.gep(
-            builder.load(ptr_to_data_attr), [args[3]]
-        )
-
-        expected_arg = builder.load(expected_ref_ptr)
-        desired_arg = args[2]
-        atomic_ref_ptr = builder.extract_value(
-            args[0],
-            context.data_model_manager.lookup(sig.args[0]).get_field_position(
-                "ref"
-            ),
-        )
-        # add conditional bitcast for atomic_ref pointer,
-        # expected[expected_idx], and desired
-        if sig.args[0].dtype == types.float32:
-            atomic_ref_ptr = builder.bitcast(
-                atomic_ref_ptr,
-                llvmir.PointerType(
-                    llvmir.IntType(32), addrspace=sig.args[0].address_space
-                ),
-            )
-            expected_arg = builder.bitcast(expected_arg, llvmir.IntType(32))
-            desired_arg = builder.bitcast(desired_arg, llvmir.IntType(32))
-        elif sig.args[0].dtype == types.float64:
-            atomic_ref_ptr = builder.bitcast(
-                atomic_ref_ptr,
-                llvmir.PointerType(
-                    llvmir.IntType(64), addrspace=sig.args[0].address_space
-                ),
-            )
-            expected_arg = builder.bitcast(expected_arg, llvmir.IntType(64))
-            desired_arg = builder.bitcast(desired_arg, llvmir.IntType(64))
-
-        atomic_cmpexchg_fn_args = [
-            atomic_ref_ptr,
-            context.get_constant(
-                types.int32, get_scope(sig.args[0].memory_scope)
-            ),
-            context.get_constant(
-                types.int32,
-                get_memory_semantics_mask(sig.args[0].memory_order),
-            ),
-            context.get_constant(
-                types.int32,
-                get_memory_semantics_mask(sig.args[0].memory_order),
-            ),
-            desired_arg,
-            expected_arg,
-        ]
-
-        ret_val = builder.call(
-            get_or_insert_spv_atomic_compare_exchange_fn(
-                context, builder.module, sig.args[0]
-            ),
-            atomic_cmpexchg_fn_args,
-        )
-
-        # compare_exchange returns the old value stored in AtomicRef object.
-        # If the return value is same as expected, then compare_exchange
-        # succeeded in replacing AtomicRef object with desired.
-        # If the return value is not same as expected, then store return
-        # value in expected.
-        # In either case, return result of cmp instruction.
-        is_cmp_exchg_success = builder.icmp_signed("==", ret_val, expected_arg)
-
-        with builder.if_else(is_cmp_exchg_success) as (then, otherwise):
-            with then:
-                pass
-            with otherwise:
-                if sig.args[0].dtype == types.float32:
-                    ret_val = builder.bitcast(ret_val, llvmir.FloatType())
-                elif sig.args[0].dtype == types.float64:
-                    ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
-                builder.store(ret_val, expected_ref_ptr)
-        return is_cmp_exchg_success
-
-    return sig, _intrinsic_compare_exchange_gen
 
 
 def _check_if_supported_ref(ref):
@@ -792,50 +689,3 @@ def ol_exchange(atomic_ref, val):
         return _intrinsic_exchange(atomic_ref, val)
 
     return ol_exchange_impl
-
-
-@overload_method(
-    AtomicRefType,
-    "compare_exchange",
-    target=DPEX_KERNEL_EXP_TARGET_NAME,
-)
-def ol_compare_exchange(
-    atomic_ref,
-    expected_ref,
-    desired,
-    expected_idx=0,  # pylint: disable=unused-argument
-):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.compare_exchange`.
-
-    Generates the same LLVM IR instruction as dpcpp for the
-    `atomic_ref::compare_exchange_strong` function.
-
-    Raises:
-        TypingError: When the dtype of the value passed to `compare_exchange`
-        does not match the dtype of the AtomicRef type.
-    """
-
-    _check_if_supported_ref(expected_ref)
-
-    if atomic_ref.dtype != expected_ref.dtype:
-        raise errors.TypingError(
-            f"Type of value to compare_exchange: {expected_ref} does not match the "
-            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
-        )
-
-    if atomic_ref.dtype != desired:
-        raise errors.TypingError(
-            f"Type of value to compare_exchange: {desired} does not match the "
-            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
-        )
-
-    def ol_compare_exchange_impl(
-        atomic_ref, expected_ref, desired, expected_idx=0
-    ):
-        # pylint: disable=no-value-for-parameter
-        return _intrinsic_compare_exchange(
-            atomic_ref, expected_ref, desired, expected_idx
-        )
-
-    return ol_compare_exchange_impl

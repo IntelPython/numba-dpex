@@ -200,29 +200,3 @@ class AtomicRef:
         old = self._ref[self._index]
         self._ref[self._index] = val
         return old
-
-    def compare_exchange(self, expected, desired, expected_idx=0):
-        """Compares the value of the object referenced by the AtomicRef
-        against the value of ``expected[expected_idx]``.
-        If the values are equal, replaces the value of the
-        referenced object with the value of ``desired``.
-        Otherwise assigns the original value of the
-        referenced object to ``expected[expected_idx]``.
-
-        Args:
-            expected : Array containing the expected value of the
-            object referenced by the AtomicRef.
-            desired : Value that replaces the value of the object
-            referenced by the AtomicRef.
-            expected_idx: Offset in `expected` array where the expected
-            value of the object referenced by the AtomicRef is present.
-
-        Returns: Returns ``True`` if the comparison operation and
-        replacement operation were successful.
-
-        """
-        if self._ref[self._index] == expected[expected_idx]:
-            self._ref[self._index] = desired
-            return True
-        expected[expected_idx] = self._ref[self._index]
-        return False
