@@ -25,8 +25,7 @@ from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
-from numba_dpex import config, numba_sem_version
-from numba_dpex._kernel_api_impl.spirv import spirv_generator
+from numba_dpex import config, numba_sem_version, spirv_generator
 from numba_dpex._kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
 from numba_dpex._kernel_api_impl.spirv.target import (
     CompilationMode,
