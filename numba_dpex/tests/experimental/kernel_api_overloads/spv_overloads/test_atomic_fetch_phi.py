@@ -72,36 +72,6 @@ def test_fetch_phi_fn(input_arrays, ref_index, fetch_phi_fn):
         assert b[ref_index] == b[ref_index + 1]
 
 
-def test_fetch_phi_retval(fetch_phi_fn):
-    """A test for all fetch_phi atomic functions."""
-
-    @dpex_exp.kernel
-    def _kernel(a, b, c):
-        i = dpex.get_global_id(0)
-        v = AtomicRef(b, index=i)
-        c[i] = getattr(v, fetch_phi_fn)(a[i])
-
-    N = 10
-    a = dpnp.arange(N, dtype=dpnp.int32)
-    b = dpnp.ones(N, dtype=dpnp.int32)
-    c = dpnp.zeros(N, dtype=dpnp.int32)
-    a_copy = dpnp.copy(a)
-    b_copy = dpnp.copy(b)
-    c_copy = dpnp.copy(c)
-
-    dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b, c)
-
-    # Verify if the value returned by fetch_phi kernel
-    # stored into `c` is same as the value returned
-    # by fetch_phi python stored into `c_copy`
-    for i in range(a.size):
-        v = AtomicRef(b_copy, index=i)
-        c_copy[i] = getattr(v, fetch_phi_fn)(a_copy[i])
-
-    for i in range(a.size):
-        assert c[i] == c_copy[i]
-
-
 def test_fetch_phi_diff_types(fetch_phi_fn):
     """A negative test that verifies that a TypingError is raised if
     AtomicRef type and value to be added are of different types.

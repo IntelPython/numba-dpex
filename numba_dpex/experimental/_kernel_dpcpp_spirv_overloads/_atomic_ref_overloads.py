@@ -67,7 +67,7 @@ def _parse_enum_or_int_literal_(literal_int) -> int:
 def _intrinsic_helper(
     ty_context, ty_atomic_ref, ty_val, op_str  # pylint: disable=unused-argument
 ):
-    sig = ty_atomic_ref.dtype(ty_atomic_ref, ty_val)
+    sig = types.void(ty_atomic_ref, ty_val)
 
     def gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
@@ -126,7 +126,7 @@ def _intrinsic_helper(
             args[1],
         ]
 
-        return builder.call(func, fn_args)
+        builder.call(func, fn_args)
 
     return sig, gen
 
@@ -145,7 +145,7 @@ def _atomic_sub_float_wrapper(gen_fn):
         args_lst[1] = builder.fneg(args[1])
         args = tuple(args_lst)
 
-        return gen_fn(context, builder, sig, args)
+        gen_fn(context, builder, sig, args)
 
     return gen
 
