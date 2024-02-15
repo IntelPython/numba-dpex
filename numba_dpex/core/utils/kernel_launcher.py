@@ -21,7 +21,10 @@ from numba_dpex.core import config
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
+from numba_dpex.core.types.kernel_api_types.range_types import (
+    NdRangeType,
+    RangeType,
+)
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 from numba_dpex.utils import create_null_ptr

@@ -5,7 +5,7 @@
 from .array_type import Array
 from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
-from .kernel_api.ranges import NdRangeType, RangeType
+from .kernel_api_types.range_types import NdRangeType, RangeType
 from .numba_types_short_names import (
     b1,
     bool_,
