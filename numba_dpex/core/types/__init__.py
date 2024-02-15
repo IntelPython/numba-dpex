@@ -5,7 +5,6 @@
 from .array_type import Array
 from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
-from .kernel_api.literal_intenum import IntEnumLiteral
 from .kernel_api.ranges import NdRangeType, RangeType
 from .numba_types_short_names import (
     b1,
@@ -37,9 +36,8 @@ __all__ = [
     "DpctlSyclQueue",
     "DpctlSyclEvent",
     "DpnpNdArray",
-    "IntEnumLiteral",
-    "NdRangeType",
     "RangeType",
+    "NdRangeType",
     "USMNdArray",
     "none",
     "boolean",
@@ -59,6 +57,6 @@ __all__ = [
     "f8",
     "float_",
     "double",
-    "usm_ndarray",
     "void",
+    "usm_ndarray",
 ]

@@ -15,14 +15,12 @@ from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types import Array as NpArrayType
-from numba.core.types.scalars import IntEnumClass
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
-from numba_dpex.core.types import IntEnumLiteral, USMNdArray
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
-from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.utils import address_space, calling_conv
 
 from . import codegen
@@ -65,37 +63,6 @@ class SPIRVTypingContext(typing.BaseContext):
     functions to the typing context.
 
     """
-
-    def resolve_value_type(self, val):
-        """
-        Return the numba type of a Python value that is being used
-        as a runtime constant.
-        ValueError is raised for unsupported types.
-        """
-
-        typ = super().resolve_value_type(val)
-
-        if isinstance(typ, IntEnumClass) and issubclass(val, FlagEnum):
-            typ = IntEnumLiteral(val)
-
-        return typ
-
-    def resolve_getattr(self, typ, attr):
-        """
-        Resolve getting the attribute *attr* (a string) on the Numba type.
-        The attribute's type is returned, or None if resolution failed.
-        """
-        retty = None
-
-        if isinstance(typ, IntEnumLiteral):
-            try:
-                attrval = getattr(typ.literal_value, attr).value
-                retty = types.IntegerLiteral(attrval)
-            except ValueError:
-                pass
-        else:
-            retty = super().resolve_getattr(typ, attr)
-        return retty
 
     def resolve_argument_type(self, val):
         """Return the Numba type of a Python value used as a function argument.
@@ -301,22 +268,6 @@ class SPIRVTargetContext(BaseContext):
         from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
 
         self.ufunc_db = _dpnp_ufunc_db
-
-    def get_getattr(self, typ, attr):
-        """
-        Overrides the get_getattr function to provide an implementation for
-        getattr call on an IntegerEnumLiteral type.
-        """
-
-        if isinstance(typ, IntEnumLiteral):
-            #  pylint: disable=W0613
-            def enum_literal_getattr_imp(context, builder, typ, val, attr):
-                enum_attr_value = getattr(typ.literal_value, attr).value
-                return llvmir.Constant(llvmir.IntType(64), enum_attr_value)
-
-            return enum_literal_getattr_imp
-
-        return super().get_getattr(typ, attr)
 
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
