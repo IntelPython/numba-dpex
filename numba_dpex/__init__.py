@@ -67,9 +67,9 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
 
 
 numba_sem_version = parse_sem_version(numba_version)
-if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
+if numba_sem_version < (0, 57, 0) or numba_sem_version >= (0, 59, 0):
     logging.warning(
-        "numba_dpex needs at least numba 0.58.0 but no more than 0.59.0, using "
+        "numba_dpex needs at least numba 0.57.0 but no more than 0.59.0, using "
         f"numba={numba_version} may cause unexpected behavior"
     )
 

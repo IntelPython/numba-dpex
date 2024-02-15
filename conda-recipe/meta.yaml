@@ -28,7 +28,7 @@ requirements:
         - scikit-build >=0.15*
         - ninja # [not win]
         - cmake >=3.26*
-        - numba >=0.58*
+        - numba >=0.57*
         - dpctl >=0.14*
         - dpnp >=0.11*
         - dpcpp-llvm-spirv
@@ -36,7 +36,7 @@ requirements:
     run:
         - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
         - python
-        - numba >=0.58*
+        - numba >=0.57*
         - dpctl >=0.14*
         - dpcpp-llvm-spirv
         - dpnp >=0.11*
