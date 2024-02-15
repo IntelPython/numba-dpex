@@ -7,7 +7,6 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = ./source
 BUILDDIR      = _build
-AUTOAPIDIR    = source/autoapi
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -21,4 +20,4 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 clean:
-	rm -rf "$(BUILDDIR)" "$(AUTOAPIDIR)"
+	rm -rf "$(BUILDDIR)"

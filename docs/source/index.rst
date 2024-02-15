@@ -46,7 +46,7 @@ Data Parallel Extension for Numba*
    overview
    getting_started
    user_guide/index
-   autoapi/index
+   api_reference/index
 
 .. toctree::
    :maxdepth: 2
