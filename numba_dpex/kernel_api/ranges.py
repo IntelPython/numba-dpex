@@ -8,11 +8,6 @@ designed along the lines of classes defined in the SYCL 2020 spec section 4.9.
 
 from collections.abc import Iterable
 
-from numba_dpex.core.exceptions import (
-    UnmatchedNumberOfRangeDimsError,
-    UnsupportedGroupWorkItemSizeError,
-)
-
 
 class Range(tuple):
     """A data structure to encapsulate a single kernel launch parameter.
@@ -172,22 +167,6 @@ class NdRange:
                 "Unknown argument type for NdRange local_size, "
                 + "must be of either type Range or Iterable of int's."
             )
-
-        if len(self._local_range) != len(self._global_range):
-            raise UnmatchedNumberOfRangeDimsError(
-                kernel_name="",
-                global_ndims=len(self._global_range),
-                local_ndims=len(self._local_range),
-            )
-
-        for i, _ in enumerate(self._global_range):
-            if self._global_range[i] % self._local_range[i] != 0:
-                raise UnsupportedGroupWorkItemSizeError(
-                    kernel_name="",
-                    dim=i,
-                    work_groups=self._global_range[i],
-                    work_items=self._local_range[i],
-                )
 
     @property
     def global_range(self):
