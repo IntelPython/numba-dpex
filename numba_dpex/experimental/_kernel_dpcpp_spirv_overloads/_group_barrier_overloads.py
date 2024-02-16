@@ -120,6 +120,11 @@ def ol_group_barrier(group, fence_scope=MemoryScope.WORK_GROUP):
         )
 
     mem_scope = _get_memory_scope(fence_scope)
+    # TODO: exec_scope needs to be determined based on
+    # group argument. If group refers to a work_group then,
+    # exec_scope is MemoryScope.WORK_GROUP.
+    # If group is sub_group then, exec_scope needs to be
+    # MemoryScope.SUB_GROUP
     exec_scope = get_scope(MemoryScope.WORK_GROUP.value)
     spirv_memory_semantics_mask = get_memory_semantics_mask(
         MemoryOrder.SEQ_CST.value
