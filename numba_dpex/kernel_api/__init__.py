@@ -9,6 +9,7 @@ prototyping SYCL-like kernels in pure Python before compiling them using
 numba_dpex.
 """
 
+from .atomic_fence import atomic_fence
 from .atomic_ref import AtomicRef
 from .barrier import group_barrier
 from .index_space_ids import Group, Item, NdItem
@@ -18,6 +19,7 @@ from .ranges import NdRange, Range
 
 __all__ = [
     "AddressSpace",
+    "atomic_fence",
     "AtomicRef",
     "MemoryOrder",
     "MemoryScope",
