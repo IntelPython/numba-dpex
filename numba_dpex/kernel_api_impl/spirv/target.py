@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Implements a SPIR-V code generation target for numba-dpex.
+"""Implements a SPIR-V code generation-specific target and typing context.
 """
 
 from enum import IntEnum
