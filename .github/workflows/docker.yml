@@ -26,6 +26,7 @@ on:
       buildkit_version:
         default: '0.11.6'
 
+permissions: read-all
 
 jobs:
   env:

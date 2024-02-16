@@ -9,6 +9,8 @@ on:
       - environment/coverage.yml
       - pyproject.toml
 
+permissions: read-all
+
 jobs:
   main:
     name: Generate coverage and push to Coveralls.io

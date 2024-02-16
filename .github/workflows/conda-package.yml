@@ -10,6 +10,8 @@ on:
       - main
       - release*
 
+permissions: read-all
+
 env:
   PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex

@@ -13,6 +13,8 @@ on:
       - environment/docs.yml
       - .github/workflows/gh-pages.yml
 
+permissions: read-all
+
 jobs:
   main:
     if: ${{ !(github.event.pull_request && github.event.action == 'closed') }}
