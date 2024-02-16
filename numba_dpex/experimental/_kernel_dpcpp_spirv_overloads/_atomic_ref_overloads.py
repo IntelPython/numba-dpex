@@ -33,6 +33,7 @@ from ._spv_atomic_inst_helper import (
     get_scope,
 )
 from .spv_atomic_fn_declarations import (
+    _SUPPORT_CONVERGENT,
     get_or_insert_atomic_load_fn,
     get_or_insert_spv_atomic_compare_exchange_fn,
     get_or_insert_spv_atomic_exchange_fn,
@@ -114,19 +115,29 @@ def _intrinsic_helper(
             mangled_fn_name,
         )
         func.calling_convention = CC_SPIR_FUNC
-        spirv_memory_semantics_mask = get_memory_semantics_mask(
-            atomic_ref_ty.memory_order
-        )
-        spirv_scope = get_scope(atomic_ref_ty.memory_scope)
+        if _SUPPORT_CONVERGENT:
+            func.attributes.add("convergent")
+        func.attributes.add("nounwind")
 
         fn_args = [
             builder.extract_value(args[0], data_attr_pos),
-            context.get_constant(types.int32, spirv_scope),
-            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
             args[1],
         ]
 
-        return builder.call(func, fn_args)
+        callinst = builder.call(func, fn_args)
+
+        if _SUPPORT_CONVERGENT:
+            callinst.attributes.add("convergent")
+        callinst.attributes.add("nounwind")
+
+        return callinst
 
     return sig, gen
 
@@ -271,6 +282,10 @@ def _intrinsic_load(
             fn_args,
         )
 
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
+
         if sig.args[0].dtype == types.float32:
             ret_val = builder.bitcast(ret_val, llvmir.FloatType())
         elif sig.args[0].dtype == types.float64:
@@ -326,12 +341,16 @@ def _intrinsic_store(
             store_arg,
         ]
 
-        builder.call(
+        callinst = builder.call(
             get_or_insert_spv_atomic_store_fn(
                 context, builder.module, atomic_ref_ty
             ),
             atomic_store_fn_args,
         )
+
+        if _SUPPORT_CONVERGENT:
+            callinst.attributes.add("convergent")
+        callinst.attributes.add("nounwind")
 
     return sig, _intrinsic_store_gen
 
@@ -387,6 +406,10 @@ def _intrinsic_exchange(
             ),
             atomic_exchange_fn_args,
         )
+
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
 
         if sig.args[0].dtype == types.float32:
             ret_val = builder.bitcast(ret_val, llvmir.FloatType())
@@ -477,6 +500,10 @@ def _intrinsic_compare_exchange(
             ),
             atomic_cmpexchg_fn_args,
         )
+
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
 
         # compare_exchange returns the old value stored in AtomicRef object.
         # If the return value is same as expected, then compare_exchange
