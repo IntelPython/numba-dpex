@@ -1245,11 +1245,7 @@ the range of the individual dimensions.</p>
 <p>The function is modeled after the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
 synchronizes work within a group of work items. All the work-items
 of the group must execute the barrier construct before any work-item
-continues execution beyond the barrier. However, unlike
-<code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> the numba_dpex function implicitly synchronizes at
-the level of a work group and does not allow specifying the group as an
-argument. The <code class="xref py py-func docutils literal notranslate"><span class="pre">sub_group_barrier()</span></code> function should be used if
-synchronization has to be performed only across a sub-group.</p>
+continues execution beyond the barrier.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">group_barrier</span></code> performs mem-fence operations ensuring that memory
 accesses issued before the barrier are not re-ordered with those issued
 after the barrier: all work-items in group g execute a release fence prior

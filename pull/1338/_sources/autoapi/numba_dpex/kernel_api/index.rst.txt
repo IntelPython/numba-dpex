@@ -799,11 +799,7 @@ Functions
    The function is modeled after the ``sycl::group_barrier`` function. It
    synchronizes work within a group of work items. All the work-items
    of the group must execute the barrier construct before any work-item
-   continues execution beyond the barrier. However, unlike
-   ``sycl::group_barrier`` the numba_dpex function implicitly synchronizes at
-   the level of a work group and does not allow specifying the group as an
-   argument. The :func:`sub_group_barrier` function should be used if
-   synchronization has to be performed only across a sub-group.
+   continues execution beyond the barrier.
 
    The ``group_barrier`` performs mem-fence operations ensuring that memory
    accesses issued before the barrier are not re-ordered with those issued
