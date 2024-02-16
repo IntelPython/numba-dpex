@@ -27,7 +27,6 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
-    "sphinx.ext.autosectionlabel",
     "sphinxcontrib.programoutput",
     "sphinxcontrib.googleanalytics",
     "myst_parser",
