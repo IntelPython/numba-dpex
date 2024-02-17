@@ -19,6 +19,7 @@ Submodules
    :titlesonly:
    :maxdepth: 1
 
+   atomic_fence/index.rst
    atomic_ref/index.rst
    barrier/index.rst
    flag_enum/index.rst
@@ -61,6 +62,8 @@ Overview
    :widths: auto
    :class: summarytable
 
+   * - :py:obj:`atomic_fence <numba_dpex.kernel_api.atomic_fence>`\ (memory_order, memory_scope)
+     - The function for performing memory fence across all work-items.
    * - :py:obj:`group_barrier <numba_dpex.kernel_api.group_barrier>`\ (group, fence_scope)
      - Performs a barrier operation across all work-items in a work group.
    * - :py:obj:`call_kernel <numba_dpex.kernel_api.call_kernel>`\ (kernel_fn, index_range, \*kernel_args)
@@ -792,6 +795,23 @@ Classes
 
 Functions
 ---------
+.. py:function:: atomic_fence(memory_order, memory_scope)
+
+   The function for performing memory fence across all work-items.
+   Modeled after ``sycl::atomic_fence`` function.
+   It provides control over re-ordering of memory load
+   and store operations. The ``atomic_fence`` function acts as a
+   fence across all work-items and devices specified by a
+   memory_scope argument.
+
+   Args:
+   memory_order: The memory synchronization order.
+
+   memory_scope: The set of work-items and devices to which
+   the memory ordering constraints apply.
+
+
+
 .. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
 
    Performs a barrier operation across all work-items in a work group.

@@ -12,10 +12,10 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="numba_dpex.kernel_api.memory_enums" href="../memory_enums/index.html" /><link rel="prev" title="numba_dpex.kernel_api.index_space_ids" href="../index_space_ids/index.html" />
+    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="numba_dpex.kernel_api.atomic_ref" href="../atomic_ref/index.html" /><link rel="prev" title="numba_dpex.kernel_api" href="../index.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.kernel_api.launcher - numba-dpex documentation</title>
+        <title>numba_dpex.kernel_api.atomic_fence - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -206,12 +206,12 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../atomic_fence/index.html">numba_dpex.kernel_api.atomic_fence</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">numba_dpex.kernel_api.atomic_fence</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../barrier/index.html">numba_dpex.kernel_api.barrier</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html">numba_dpex.kernel_api.index_space_ids</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">numba_dpex.kernel_api.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html">numba_dpex.kernel_api.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html">numba_dpex.kernel_api.memory_enums</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ranges/index.html">numba_dpex.kernel_api.ranges</a></li>
 </ul>
@@ -264,17 +264,17 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.kernel_api.launcher">
-<span id="numba-dpex-kernel-api-launcher"></span><h1>numba_dpex.kernel_api.launcher<a class="headerlink" href="#module-numba_dpex.kernel_api.launcher" title="Link to this heading">#</a></h1>
-<p>Implementation of mock kernel launcher functions</p>
+          <section id="module-numba_dpex.kernel_api.atomic_fence">
+<span id="numba-dpex-kernel-api-atomic-fence"></span><h1>numba_dpex.kernel_api.atomic_fence<a class="headerlink" href="#module-numba_dpex.kernel_api.atomic_fence" title="Link to this heading">#</a></h1>
+<p>Python functions that simulate SYCL’s atomic_fence primitives.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.launcher.call_kernel" title="numba_dpex.kernel_api.launcher.call_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call_kernel</span></code></a>(kernel_fn, index_range, *kernel_args)</p></td>
-<td><p>Mocks the launching of a kernel function over either a Range or NdRange.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.atomic_fence.atomic_fence" title="numba_dpex.kernel_api.atomic_fence.atomic_fence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_fence</span></code></a>(memory_order, memory_scope)</p></td>
+<td><p>The function for performing memory fence across all work-items.</p></td>
 </tr>
 </tbody>
 </table>
@@ -283,24 +283,18 @@
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.launcher.call_kernel">
-<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.launcher.call_kernel" title="Link to this definition">#</a></dt>
-<dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel_fn</strong> – A callable function object</p></li>
-<li><p><strong>index_range</strong> (<em>numba_dpex.Range</em>) – An instance of a Range object</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – If the first positional argument is not callable</p></li>
-<li><p><strong>ValueError</strong> – If the second positional argument is not a Range or an</p></li>
-<li><p><strong>Ndrange object</strong> – </p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.atomic_fence.atomic_fence">
+<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence.atomic_fence" title="Link to this definition">#</a></dt>
+<dd><p>The function for performing memory fence across all work-items.
+Modeled after <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function.
+It provides control over re-ordering of memory load
+and store operations. The <code class="docutils literal notranslate"><span class="pre">atomic_fence</span></code> function acts as a
+fence across all work-items and devices specified by a
+memory_scope argument.</p>
+<p>Args:
+memory_order: The memory synchronization order.</p>
+<p>memory_scope: The set of work-items and devices to which
+the memory ordering constraints apply.</p>
 </dd></dl>
 
 </section>
@@ -311,23 +305,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../memory_enums/index.html">
+          <a class="next-page" href="../atomic_ref/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">numba_dpex.kernel_api.memory_enums</div>
+                <div class="title">numba_dpex.kernel_api.atomic_ref</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../index_space_ids/index.html">
+          <a class="prev-page" href="../index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">numba_dpex.kernel_api.index_space_ids</div>
+                <div class="title">numba_dpex.kernel_api</div>
                 
               </div>
             </a>
@@ -364,10 +358,10 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.kernel_api.launcher</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.kernel_api.atomic_fence</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.launcher.call_kernel"><code class="docutils literal notranslate"><span class="pre">call_kernel()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.atomic_fence.atomic_fence"><code class="docutils literal notranslate"><span class="pre">atomic_fence()</span></code></a></li>
 </ul>
 </li>
 </ul>
