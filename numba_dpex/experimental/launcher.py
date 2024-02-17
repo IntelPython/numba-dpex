@@ -6,6 +6,8 @@
 from either CPython or a numba_dpex.dpjit decorated function.
 """
 
+import warnings
+from inspect import signature
 from typing import NamedTuple, Union
 
 import dpctl
@@ -18,15 +20,19 @@ from numba.extending import intrinsic
 
 from numba_dpex import dpjit
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
-from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpctlSyclEvent, NdRangeType, RangeType
+from numba_dpex.core.types.kernel_api.index_space_ids import (
+    ItemType,
+    NdItemType,
+)
 from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
-from numba_dpex.experimental.kernel_dispatcher import (
-    KernelDispatcher,
-    _KernelCompileResult,
+from numba_dpex.kernel_api_impl.spirv.dispatcher import (
+    SPIRVKernelDispatcher,
+    _SPIRVKernelCompileResult,
 )
+from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 
 class LLRange(NamedTuple):
@@ -129,16 +135,33 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     else:
         sig = ty_return(ty_kernel_fn, ty_index_space, ty_kernel_args_tuple)
 
-    kernel_sig = types.void(*ty_kernel_args_tuple)
+    # Add Item/NdItem as a first argument to kernel arguments list. It is
+    # an empty struct so any other modifications at kernel submission are not
+    # needed.
+    if len(signature(ty_kernel_fn.dispatcher.py_func).parameters) > len(
+        ty_kernel_args_tuple
+    ):
+        if isinstance(ty_index_space, RangeType):
+            ty_item = ItemType(ty_index_space.ndim)
+        else:
+            ty_item = NdItemType(ty_index_space.ndim)
+
+        ty_kernel_args_tuple = (ty_item, *ty_kernel_args_tuple)
+    else:
+        warnings.warn(
+            "Kernels without item/nd_item will be not supported in the future",
+            DeprecationWarning,
+        )
+
     # ty_kernel_fn is type specific to exact function, so we can get function
     # directly from type and compile it. Thats why we don't need to get it in
     # codegen
-    kernel_dispatcher: KernelDispatcher = ty_kernel_fn.dispatcher
-    kcres: _KernelCompileResult = kernel_dispatcher.get_compile_result(
-        kernel_sig
+    kernel_dispatcher: SPIRVKernelDispatcher = ty_kernel_fn.dispatcher
+    kcres: _SPIRVKernelCompileResult = kernel_dispatcher.get_compile_result(
+        types.void(*ty_kernel_args_tuple)  # kernel signature
     )
     kernel_module: kl.SPIRVKernelModule = kcres.kernel_device_ir_module
-    kernel_targetctx: DpexKernelTargetContext = kernel_dispatcher.targetctx
+    kernel_targetctx: SPIRVTargetContext = kernel_dispatcher.targetctx
 
     def codegen(
         cgctx: CPUContext, builder: llvmir.IRBuilder, sig, llargs: list

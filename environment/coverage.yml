@@ -8,7 +8,7 @@ channels:
 dependencies:
   - libffi
   - gxx_linux-64
-  - dpcpp_linux-64>=2023.2,!=2024.0.1,!=2024.0.2
+  - dpcpp_linux-64>=2024.0,!=2024.0.1,!=2024.0.2
   - numba==0.58*
   - dpctl
   - dpnp

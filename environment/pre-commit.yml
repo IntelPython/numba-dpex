@@ -7,9 +7,9 @@ channels:
   - nodefaults
 dependencies:
   - libffi
-  - numba==0.58*
-  - dpctl
-  - dpnp
+  - numba==0.59*
+  - dpctl>=0.16*
+  - dpnp>=0.14*
   - dpcpp-llvm-spirv
   - opencl_rt
   - coverage

@@ -89,7 +89,7 @@ jobs:
           path: ${{ env.WHEELS_OUTPUT_FOLDER }}${{ env.WHEELS_NAME }}-*.whl
 
   test:
-    name: Test ['${{ matrix.os }}', python='${{ matrix.python }}']
+    name: Test ['${{ matrix.os }}', '${{ matrix.scope }}', python='${{ matrix.python }}']
 
     needs: build
 
@@ -106,10 +106,10 @@ jobs:
         os: [ubuntu-20.04, ubuntu-latest, windows-latest]
         experimental: [false]
         use_mlir: [false]
-        run_gdb: [true, false]
+        scope: ['tests', 'examples', 'gdb']
         exclude:
           - os: windows-latest
-            run_gdb: true
+            scope: 'gdb'
 
     continue-on-error: ${{ matrix.experimental || matrix.use_mlir }}
 
@@ -214,25 +214,25 @@ jobs:
         run: python -c "import numba_dpex"
 
       - name: Run tests
-        if: ${{!matrix.run_gdb}}
+        if: ${{ matrix.scope == 'tests' }}
         env:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 
       - name: Run examples
-        if: ${{!matrix.run_gdb}}
+        if: ${{ matrix.scope == 'examples' }}
         shell: bash -l {0}
         run: |
           cd ${{ env.EXAMPLES_PATH }}
-          for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
           done
 
       - name: Run gdb tests
-        if: ${{matrix.run_gdb}}
+        if: ${{ matrix.scope == 'gdb' }}
         env:
           GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/fcea1bcd-6a63-4849-b304-906ff71dc2c0/l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
           GDB_INSTALLER: l_dpcpp_dbg_p_2023.2.0.49333_offline.sh

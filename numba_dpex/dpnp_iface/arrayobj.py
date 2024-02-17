@@ -19,8 +19,8 @@ from numba.np.numpy_support import is_nonelike
 from numba_dpex.core.kernel_interface.arrayobj import (
     _getitem_array_generic as kernel_getitem_array_generic,
 )
-from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ._intrinsic import (
     impl_dpnp_empty,
@@ -1082,7 +1082,7 @@ def getitem_arraynd_intp(context, builder, sig, args):
     that when returning a view of a dpnp.ndarray the sycl::queue pointer
     member in the LLVM IR struct gets properly updated.
     """
-    getitem_call_in_kernel = isinstance(context, DpexKernelTargetContext)
+    getitem_call_in_kernel = isinstance(context, SPIRVTargetContext)
     _getitem_array_generic = np_getitem_array_generic
 
     if getitem_call_in_kernel:

@@ -1,28 +1,6 @@
-# *****************************************************************************
-# Copyright (c) 2022, Intel Corporation All rights reserved.
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-#     Redistributions of source code must retain the above copyright notice,
-#     this list of conditions and the following disclaimer.
-#
-#     Redistributions in binary form must reproduce the above copyright notice,
-#     this list of conditions and the following disclaimer in the documentation
-#     and/or other materials provided with the distribution.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# *****************************************************************************
+# SPDX-License-Identifier: Apache-2.0
 
 # coding: utf-8
 # Configuration file for the Sphinx documentation builder.
@@ -32,7 +10,7 @@ import numba_dpex
 # -- Project information -----------------------------------------------------
 
 project = "numba-dpex"
-copyright = "2020-2023, Intel Corporation"
+copyright = "2020-2024, Intel Corporation"
 author = "Intel Corporation"
 
 # The full version, including alpha/beta/rc tags
@@ -53,6 +31,7 @@ extensions = [
     "sphinxcontrib.programoutput",
     "sphinxcontrib.googleanalytics",
     "myst_parser",
+    "autoapi.extension",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -70,22 +49,17 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "pydata_sphinx_theme"
+# html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
 
 html_theme_options = {
-    "icon_links": [
+    "footer_icons": [
         {
             "name": "GitHub",
             "url": "https://github.com/IntelPython/numba-dpex",
             "icon": "fab fa-github-square",
         },
-        {
-            "name": "Gitter",
-            "url": "https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im",
-            "icon": "fab fa-brands fa-gitter",
-        },
     ],
-    # "logo_only": True,
 }
 
 googleanalytics_id = "G-LGGL0NJK6P"
@@ -137,3 +111,52 @@ intersphinx_mapping = {}
 
 # -- Prepend module name to an object name or not -----------------------------------
 add_module_names = False
+
+# -- Auto API configurations ---------------------------------------------------
+
+
+# def skip_util_classes(app, what, name, obj, skip, options):
+#     if what == "module" and "experimental" in name:
+#         if what == "module" and "decorators" not in name:
+#             skip = True
+#     return skip
+
+
+# def setup(sphinx):
+#     sphinx.connect("autoapi-skip-member", skip_util_classes)
+
+
+autoapi_dirs = ["../../numba_dpex/kernel_api"]
+autoapi_type = "python"
+
+autoapi_template_dir = "_templates/autoapi"
+
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "imported-members",
+]
+
+autoapi_keep_files = True
+autodoc_typehints = "signature"
+
+rst_prolog = """
+.. role:: summarylabel
+"""
+
+html_css_files = [
+    "css/custom.css",
+]
+
+
+def contains(seq, item):
+    return item in seq
+
+
+def prepare_jinja_env(jinja_env) -> None:
+    jinja_env.tests["contains"] = contains
+
+
+autoapi_prepare_jinja_env = prepare_jinja_env

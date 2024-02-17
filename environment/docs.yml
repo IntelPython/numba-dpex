@@ -8,17 +8,18 @@ channels:
 dependencies:
   - libffi
   - gxx_linux-64
-  - dpcpp_linux-64>=2023.2,!=2024.0.1,!=2024.0.2
-  - numba==0.58*
+  - dpcpp_linux-64>=2024.0,!=2024.0.1,!=2024.0.2
+  - numba==0.59*
   - scikit-build>=0.15*
   - cmake>=3.26*
-  - dpctl
-  - dpnp
+  - dpctl>=0.16*
+  - dpnp>=0.14*
   - dpcpp-llvm-spirv
   - opencl_rt
   - pip
   - pip:
     - sphinx
+    - sphinx-autoapi
     - autodoc # there is no conda package
     - recommonmark
     - sphinx-rtd-theme
@@ -27,3 +28,4 @@ dependencies:
     - sphinxcontrib.programoutput
     - pydata-sphinx-theme
     - myst-parser
+    - furo

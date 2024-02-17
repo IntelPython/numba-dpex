@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import contextlib
+import inspect
 import shutil
 from functools import cache
 
@@ -12,8 +13,7 @@ import dpctl
 import dpnp
 import pytest
 
-from numba_dpex import dpjit, numba_sem_version
-from numba_dpex.core import config
+from numba_dpex import config, dpjit, numba_sem_version
 
 
 @cache
@@ -179,6 +179,14 @@ def get_complex_dtypes(device=None):
     return dtypes
 
 
+def get_int_dtypes(device=None):
+    """
+    Build a list of integer types supported by DPNP based on device capabilities.
+    """
+
+    return [dpnp.int32, dpnp.int64]
+
+
 def get_float_dtypes(no_float16=True, device=None):
     """
     Build a list of floating types supported by DPNP based on device capabilities.
@@ -227,7 +235,7 @@ def get_all_dtypes(
 
     # add integer types
     if not no_int:
-        dtypes.extend([dpnp.int32, dpnp.int64])
+        dtypes.extend(get_int_dtypes(device=dev))
 
     # add floating types
     if not no_float:
@@ -276,3 +284,20 @@ def skip_if_dtype_not_supported(dt, q_or_dev):
         pytest.skip(
             f"{dev.name} does not support half precision floating point type"
         )
+
+
+def num_required_arguments(func):
+    """Returns number of required arguments of the functions. Does not work
+    with kwargs arguments."""
+    if func == dpnp.true_divide:
+        func = dpnp.divide
+
+    sig = inspect.signature(func)
+    params = sig.parameters
+    required_args = [
+        p
+        for p in params
+        if params[p].default == inspect._empty and p != "kwargs"
+    ]
+
+    return len(required_args)

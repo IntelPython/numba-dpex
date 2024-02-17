@@ -1,4 +1,4 @@
-{% set required_compiler_version = "2023.2" %}
+{% set required_compiler_version = "2024.0" %}
 {% set excluded_compiler_version1 = "2024.0.1" %}
 {% set excluded_compiler_version2 = "2024.0.2" %}
 
@@ -28,18 +28,18 @@ requirements:
         - scikit-build >=0.15*
         - ninja # [not win]
         - cmake >=3.26*
-        - numba >=0.57*
-        - dpctl >=0.14*
-        - dpnp >=0.11*
+        - numba >=0.59*
+        - dpctl >=0.16*
+        - dpnp >=0.14*
         - dpcpp-llvm-spirv
         - wheel
     run:
         - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
         - python
-        - numba >=0.57*
-        - dpctl >=0.14*
+        - numba >=0.59*
+        - dpctl >=0.16*
         - dpcpp-llvm-spirv
-        - dpnp >=0.11*
+        - dpnp >=0.14*
         - packaging
 
 test:

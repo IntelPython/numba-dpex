@@ -1,5 +1,1 @@
-*.yml  @diptorupd
-conda-recipe/*  @diptorupd
-numba_dpex/dpnp_iface @diptorupd @chudur-budur
-numba_dpex/core @diptorupd
-numba_dpex/core/passes/parfor_lowering_pass.py @diptorupd
+conda-recipe/*  @oleksandr-pavlyk

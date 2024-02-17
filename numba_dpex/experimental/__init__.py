@@ -8,11 +8,17 @@ yet production ready.
 
 from numba.core.imputils import Registry
 
-from ._kernel_dpcpp_spirv_overloads import _atomic_ref_overloads
+# Temporary so that Range and NdRange work in experimental call_kernel
+from numba_dpex.core.boxing import *
+from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
+
+from ._kernel_dpcpp_spirv_overloads import (
+    _atomic_ref_overloads,
+    _group_barrier_overloads,
+    _index_space_id_overloads,
+)
 from .decorators import device_func, kernel
-from .kernel_dispatcher import KernelDispatcher
 from .launcher import call_kernel, call_kernel_async
-from .literal_intenum_type import IntEnumLiteral
 from .models import *
 from .types import KernelDispatcherType
 
@@ -33,6 +39,5 @@ __all__ = [
     "kernel",
     "call_kernel",
     "call_kernel_async",
-    "IntEnumLiteral",
-    "KernelDispatcher",
+    "SPIRVKernelDispatcher",
 ]

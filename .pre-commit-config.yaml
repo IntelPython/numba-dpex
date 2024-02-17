@@ -13,7 +13,7 @@ repos:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.1.1
     hooks:
     -   id: black
         exclude: "versioneer.py|numba_dpex/_version.py"
@@ -52,7 +52,7 @@ repos:
     - id: pylint
       name: pylint
       entry: pylint
-      files: ^numba_dpex/experimental|^numba_dpex/core/utils/kernel_launcher.py
+      files: ^numba_dpex/kernel_api|^numba_dpex/experimental|^numba_dpex/core/utils/kernel_launcher.py
       language: system
       types: [python]
       require_serial: true

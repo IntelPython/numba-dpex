@@ -8,12 +8,12 @@ from dpnp import ndarray
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
+from numba_dpex.kernel_api.ranges import NdRange, Range
 from numba_dpex.utils.constants import address_space
 
-from ..kernel_interface.indexers import NdRange, Range
 from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..types.range_types import NdRangeType, RangeType
+from ..types.kernel_api.ranges import NdRangeType, RangeType
 from ..types.usm_ndarray_type import USMNdArray
 
 

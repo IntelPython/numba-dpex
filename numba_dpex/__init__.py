@@ -15,11 +15,10 @@ from typing import Tuple
 import dpctl
 import llvmlite.binding as ll
 from numba import __version__ as numba_version
-from numba.np.ufunc.decorators import Vectorize
 
 from numba_dpex.core.kernel_interface.launcher import call_kernel
-from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
+from .kernel_api_impl.spirv import target as spirv_kernel_target
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
 
 
@@ -69,18 +68,14 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
 
 
 numba_sem_version = parse_sem_version(numba_version)
-if numba_sem_version < (0, 57, 0) or numba_sem_version >= (0, 59, 0):
+if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
     logging.warning(
-        "numba_dpex needs at least numba 0.57.0 but no more than 0.59.0, using "
+        "numba_dpex needs at least numba 0.58.0 but no more than 0.59.0, using "
         f"numba={numba_version} may cause unexpected behavior"
     )
 
 # Monkey patches
 patch_is_ufunc.patch()
-if numba_sem_version < (0, 58, 0):
-    from .numba_patches import patch_mk_alloc
-
-    patch_mk_alloc.patch()
 patch_arrayexpr_tree_to_ir.patch()
 
 dpctl_sem_version = parse_sem_version(dpctl.__version__)
@@ -100,18 +95,20 @@ import numba_dpex.core.targets.dpjit_target  # noqa E402
 
 # Re-export types itself
 import numba_dpex.core.types as types  # noqa E402
+from numba_dpex.core import boxing  # noqa E402
 from numba_dpex.core import config  # noqa E402
-from numba_dpex.core.kernel_interface.indexers import (  # noqa E402
-    NdRange,
-    Range,
-)
+from numba_dpex.core.kernel_interface import ranges_overloads  # noqa E402
 
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402
 from numba_dpex.dpctl_iface import _intrinsic  # noqa E402
 from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 
-from .core.targets import dpjit_target, kernel_target  # noqa E402
+# Importing NdRange and Range into numba_dpex for
+# backward compatibility
+from numba_dpex.kernel_api import NdRange, Range  # noqa E402
+
+from .core.targets import dpjit_target  # noqa E402
 from .decorators import dpjit, func, kernel  # noqa E402
 from .ocl.stubs import (  # noqa E402
     GLOBAL_MEM_FENCE,
@@ -134,8 +131,6 @@ from .ocl.stubs import (  # noqa E402
 load_dpctl_sycl_interface()
 del load_dpctl_sycl_interface
 
-
-Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
 
 from numba_dpex._version import get_versions  # noqa E402
 

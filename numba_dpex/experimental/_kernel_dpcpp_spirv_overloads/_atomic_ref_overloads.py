@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Implements the SPIR-V overloads for the kernel_api.atomic_ref class methods.
+Implements the SPIR-V overloads for the kernel_api.AtomicRef class methods.
 """
 
 from llvmlite import ir as llvmir
@@ -12,17 +12,32 @@ from numba.core import cgutils, types
 from numba.extending import intrinsic, overload, overload_method
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.core.targets.kernel_target import CC_SPIR_FUNC, LLVM_SPIRV_ARGS
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_api import (
+    AddressSpace,
+    AtomicRef,
+    MemoryOrder,
+    MemoryScope,
+)
+from numba_dpex.kernel_api.flag_enum import FlagEnum
+from numba_dpex.kernel_api_impl.spirv.target import (
+    CC_SPIR_FUNC,
+    LLVM_SPIRV_ARGS,
+)
 
-from ..dpcpp_types import AtomicRefType
-from ..kernel_iface import AddressSpace, AtomicRef, MemoryOrder, MemoryScope
+from ...core.types.kernel_api.atomic_ref import AtomicRefType
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
 from ._spv_atomic_inst_helper import (
     get_atomic_inst_name,
     get_memory_semantics_mask,
     get_scope,
+)
+from .spv_atomic_fn_declarations import (
+    _SUPPORT_CONVERGENT,
+    get_or_insert_atomic_load_fn,
+    get_or_insert_spv_atomic_compare_exchange_fn,
+    get_or_insert_spv_atomic_exchange_fn,
+    get_or_insert_spv_atomic_store_fn,
 )
 
 
@@ -53,7 +68,7 @@ def _parse_enum_or_int_literal_(literal_int) -> int:
 def _intrinsic_helper(
     ty_context, ty_atomic_ref, ty_val, op_str  # pylint: disable=unused-argument
 ):
-    sig = types.void(ty_atomic_ref, ty_val)
+    sig = ty_atomic_ref.dtype(ty_atomic_ref, ty_val)
 
     def gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
@@ -100,19 +115,29 @@ def _intrinsic_helper(
             mangled_fn_name,
         )
         func.calling_convention = CC_SPIR_FUNC
-        spirv_memory_semantics_mask = get_memory_semantics_mask(
-            atomic_ref_ty.memory_order
-        )
-        spirv_scope = get_scope(atomic_ref_ty.memory_scope)
+        if _SUPPORT_CONVERGENT:
+            func.attributes.add("convergent")
+        func.attributes.add("nounwind")
 
         fn_args = [
             builder.extract_value(args[0], data_attr_pos),
-            context.get_constant(types.int32, spirv_scope),
-            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
             args[1],
         ]
 
-        builder.call(func, fn_args)
+        callinst = builder.call(func, fn_args)
+
+        if _SUPPORT_CONVERGENT:
+            callinst.attributes.add("convergent")
+        callinst.attributes.add("nounwind")
+
+        return callinst
 
     return sig, gen
 
@@ -131,7 +156,7 @@ def _atomic_sub_float_wrapper(gen_fn):
         args_lst[1] = builder.fneg(args[1])
         args = tuple(args_lst)
 
-        gen_fn(context, builder, sig, args)
+        return gen_fn(context, builder, sig, args)
 
     return gen
 
@@ -209,6 +234,299 @@ def _intrinsic_atomic_ref_ctor(
     )
 
 
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_load(
+    ty_context, ty_atomic_ref  # pylint: disable=unused-argument
+):
+    sig = ty_atomic_ref.dtype(ty_atomic_ref)
+
+    def _intrinsic_load_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
+        )
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+
+        fn_args = [
+            atomic_ref_ptr,
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+        ]
+
+        ret_val = builder.call(
+            get_or_insert_atomic_load_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            fn_args,
+        )
+
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
+
+        if sig.args[0].dtype == types.float32:
+            ret_val = builder.bitcast(ret_val, llvmir.FloatType())
+        elif sig.args[0].dtype == types.float64:
+            ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
+
+        return ret_val
+
+    return sig, _intrinsic_load_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_store(
+    ty_context, ty_atomic_ref, ty_val
+):  # pylint: disable=unused-argument
+    sig = types.void(ty_atomic_ref, ty_val)
+
+    def _intrinsic_store_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+
+        store_arg = args[1]
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
+        )
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+            store_arg = builder.bitcast(store_arg, llvmir.IntType(32))
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+            store_arg = builder.bitcast(store_arg, llvmir.IntType(64))
+
+        atomic_store_fn_args = [
+            atomic_ref_ptr,
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            store_arg,
+        ]
+
+        callinst = builder.call(
+            get_or_insert_spv_atomic_store_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            atomic_store_fn_args,
+        )
+
+        if _SUPPORT_CONVERGENT:
+            callinst.attributes.add("convergent")
+        callinst.attributes.add("nounwind")
+
+    return sig, _intrinsic_store_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_exchange(
+    ty_context, ty_atomic_ref, ty_val  # pylint: disable=unused-argument
+):
+    sig = ty_atomic_ref.dtype(ty_atomic_ref, ty_val)
+
+    def _intrinsic_exchange_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+
+        exchange_arg = args[1]
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
+        )
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+            exchange_arg = builder.bitcast(exchange_arg, llvmir.IntType(32))
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+            exchange_arg = builder.bitcast(exchange_arg, llvmir.IntType(64))
+
+        atomic_exchange_fn_args = [
+            atomic_ref_ptr,
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            exchange_arg,
+        ]
+
+        ret_val = builder.call(
+            get_or_insert_spv_atomic_exchange_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            atomic_exchange_fn_args,
+        )
+
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
+
+        if sig.args[0].dtype == types.float32:
+            ret_val = builder.bitcast(ret_val, llvmir.FloatType())
+        elif sig.args[0].dtype == types.float64:
+            ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
+
+        return ret_val
+
+    return sig, _intrinsic_exchange_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_compare_exchange(
+    ty_context,  # pylint: disable=unused-argument
+    ty_atomic_ref,
+    ty_expected_ref,
+    ty_desired,
+    ty_expected_idx,
+):
+    sig = types.boolean(
+        ty_atomic_ref, ty_expected_ref, ty_desired, ty_expected_idx
+    )
+
+    def _intrinsic_compare_exchange_gen(context, builder, sig, args):
+        # get pointer to expected[expected_idx]
+        data_attr = builder.extract_value(
+            args[1],
+            context.data_model_manager.lookup(sig.args[1]).get_field_position(
+                "data"
+            ),
+        )
+        with builder.goto_entry_block():
+            ptr_to_data_attr = builder.alloca(data_attr.type)
+        builder.store(data_attr, ptr_to_data_attr)
+        expected_ref_ptr = builder.gep(
+            builder.load(ptr_to_data_attr), [args[3]]
+        )
+
+        expected_arg = builder.load(expected_ref_ptr)
+        desired_arg = args[2]
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(sig.args[0]).get_field_position(
+                "ref"
+            ),
+        )
+        # add conditional bitcast for atomic_ref pointer,
+        # expected[expected_idx], and desired
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+            expected_arg = builder.bitcast(expected_arg, llvmir.IntType(32))
+            desired_arg = builder.bitcast(desired_arg, llvmir.IntType(32))
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+            expected_arg = builder.bitcast(expected_arg, llvmir.IntType(64))
+            desired_arg = builder.bitcast(desired_arg, llvmir.IntType(64))
+
+        atomic_cmpexchg_fn_args = [
+            atomic_ref_ptr,
+            context.get_constant(
+                types.int32, get_scope(sig.args[0].memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(sig.args[0].memory_order),
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(sig.args[0].memory_order),
+            ),
+            desired_arg,
+            expected_arg,
+        ]
+
+        ret_val = builder.call(
+            get_or_insert_spv_atomic_compare_exchange_fn(
+                context, builder.module, sig.args[0]
+            ),
+            atomic_cmpexchg_fn_args,
+        )
+
+        if _SUPPORT_CONVERGENT:
+            ret_val.attributes.add("convergent")
+        ret_val.attributes.add("nounwind")
+
+        # compare_exchange returns the old value stored in AtomicRef object.
+        # If the return value is same as expected, then compare_exchange
+        # succeeded in replacing AtomicRef object with desired.
+        # If the return value is not same as expected, then store return
+        # value in expected.
+        # In either case, return result of cmp instruction.
+        is_cmp_exchg_success = builder.icmp_signed("==", ret_val, expected_arg)
+
+        with builder.if_else(is_cmp_exchg_success) as (then, otherwise):
+            with then:
+                pass
+            with otherwise:
+                if sig.args[0].dtype == types.float32:
+                    ret_val = builder.bitcast(ret_val, llvmir.FloatType())
+                elif sig.args[0].dtype == types.float64:
+                    ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
+                builder.store(ret_val, expected_ref_ptr)
+        return is_cmp_exchg_success
+
+    return sig, _intrinsic_compare_exchange_gen
+
+
 def _check_if_supported_ref(ref):
     supported = True
 
@@ -252,7 +570,7 @@ def ol_atomic_ref(
     address_space=AddressSpace.GLOBAL,
 ):
     """Overload of the constructor for the class
-    class:`numba_dpex.experimental.kernel_iface.AtomicRef`.
+    class:`numba_dpex.kernel_api.AtomicRef`.
 
     Raises:
         errors.TypingError: If the `ref` argument is not a UsmNdArray type.
@@ -330,8 +648,7 @@ def ol_atomic_ref(
 
 @overload_method(AtomicRefType, "fetch_add", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_add(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_add`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_add`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_add` function.
@@ -355,8 +672,7 @@ def ol_fetch_add(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_sub", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_sub(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_sub`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_sub`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_sub` function.
@@ -380,8 +696,7 @@ def ol_fetch_sub(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_min", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_min(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_min`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_min`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_min` function.
@@ -405,8 +720,7 @@ def ol_fetch_min(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_max", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_max(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_max`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_max`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_max` function.
@@ -430,8 +744,7 @@ def ol_fetch_max(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_and", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_and(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_and`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_and`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_and` function.
@@ -460,8 +773,7 @@ def ol_fetch_and(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_or", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_or(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_or`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_or`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_or` function.
@@ -490,8 +802,7 @@ def ol_fetch_or(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_xor", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_xor(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_xor`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_xor`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_xor` function.
@@ -516,3 +827,116 @@ def ol_fetch_xor(atomic_ref, val):
         return _intrinsic_fetch_xor(atomic_ref, val)
 
     return ol_fetch_xor_impl
+
+
+@overload_method(AtomicRefType, "load", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_load(atomic_ref):  # pylint: disable=unused-argument
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.load`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::load` function.
+
+    """
+
+    def ol_load_impl(atomic_ref):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_load(atomic_ref)
+
+    return ol_load_impl
+
+
+@overload_method(AtomicRefType, "store", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_store(atomic_ref, val):
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.store`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::store` function.
+
+    Raises:
+        TypingError: When the dtype of the value stored does not match the
+        dtype of the AtomicRef type.
+    """
+
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to store: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_store_impl(atomic_ref, val):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_store(atomic_ref, val)
+
+    return ol_store_impl
+
+
+@overload_method(AtomicRefType, "exchange", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_exchange(atomic_ref, val):
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.exchange`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::exchange` function.
+
+    Raises:
+        TypingError: When the dtype of the value passed to `exchange`
+        does not match the dtype of the AtomicRef type.
+    """
+
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to exchange: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_exchange_impl(atomic_ref, val):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_exchange(atomic_ref, val)
+
+    return ol_exchange_impl
+
+
+@overload_method(
+    AtomicRefType,
+    "compare_exchange",
+    target=DPEX_KERNEL_EXP_TARGET_NAME,
+)
+def ol_compare_exchange(
+    atomic_ref,
+    expected_ref,
+    desired,
+    expected_idx=0,  # pylint: disable=unused-argument
+):
+    """SPIR-V overload for
+    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.compare_exchange`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::compare_exchange_strong` function.
+
+    Raises:
+        TypingError: When the dtype of the value passed to `compare_exchange`
+        does not match the dtype of the AtomicRef type.
+    """
+
+    _check_if_supported_ref(expected_ref)
+
+    if atomic_ref.dtype != expected_ref.dtype:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange: {expected_ref} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != desired:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange: {desired} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_compare_exchange_impl(
+        atomic_ref, expected_ref, desired, expected_idx=0
+    ):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_compare_exchange(
+            atomic_ref, expected_ref, desired, expected_idx
+        )
+
+    return ol_compare_exchange_impl
