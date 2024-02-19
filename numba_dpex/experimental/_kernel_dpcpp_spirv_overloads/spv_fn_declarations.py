@@ -226,3 +226,56 @@ def get_or_insert_spv_atomic_compare_exchange_fn(
     fn.attributes.add("nounwind")
 
     return fn
+
+
+def get_or_insert_spv_group_barrier_fn(module):
+    """
+    Gets or inserts a declaration for a __spirv_ControlBarrier call into the
+    specified LLVM IR module.
+    """
+    mangled_fn_name = ext_itanium_mangler.mangle_ext(
+        "__spirv_ControlBarrier", [types.uint32, types.uint32, types.uint32]
+    )
+
+    spirv_fn_arg_types = [
+        llvmir.IntType(32),
+        llvmir.IntType(32),
+        llvmir.IntType(32),
+    ]
+
+    fn = cgutils.get_or_insert_function(
+        module,
+        llvmir.FunctionType(llvmir.VoidType(), spirv_fn_arg_types),
+        mangled_fn_name,
+    )
+    fn.calling_convention = CC_SPIR_FUNC
+
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
+
+    return fn
+
+
+def get_or_insert_spv_atomic_fence_fn(module):
+    """
+    Gets or inserts a declaration for a __spirv_MemoryBarrier call into the
+    specified LLVM IR module.
+    """
+    mangled_fn_name = ext_itanium_mangler.mangle_ext(
+        "__spirv_MemoryBarrier", [types.uint32, types.uint32]
+    )
+
+    fn = cgutils.get_or_insert_function(
+        module,
+        llvmir.FunctionType(
+            llvmir.VoidType(), [llvmir.IntType(32), llvmir.IntType(32)]
+        ),
+        mangled_fn_name,
+    )
+    fn.calling_convention = CC_SPIR_FUNC
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
+
+    return fn

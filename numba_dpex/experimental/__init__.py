@@ -13,6 +13,7 @@ from numba_dpex.core.boxing import *
 from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
 
 from ._kernel_dpcpp_spirv_overloads import (
+    _atomic_fence_overloads,
     _atomic_ref_overloads,
     _group_barrier_overloads,
     _index_space_id_overloads,
