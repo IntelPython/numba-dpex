@@ -13,6 +13,7 @@ from numba_dpex import dpjit
 from numba_dpex.tests._helper import (
     get_float_dtypes,
     get_int_dtypes,
+    has_level_zero,
     has_opencl_gpu,
     is_windows,
     num_required_arguments,
@@ -317,7 +318,7 @@ unsupported_funcs = {
 }
 
 
-if has_opencl_gpu() or is_windows():
+if has_opencl_gpu() or is_windows() or has_level_zero():
     unsupported_funcs |= {parfor_ipow}
 
 
