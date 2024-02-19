@@ -19,7 +19,7 @@ to get the latest production releases.
 .. code-block:: bash
 
     conda create -n numba-dpex-env                                             \
-        numba-dpex dpnp dpctl dpcpp-llvm-spirv                     \
+        numba-dpex dpnp dpctl dpcpp-llvm-spirv                                 \
         -c intel -c conda-forge
 
 To try out the bleeding edge, the latest packages built from tip of the main
@@ -28,7 +28,7 @@ source trunk can be installed from the ``dppy/label/dev`` conda channel.
 .. code-block:: bash
 
     conda create -n numba-dpex-env                                             \
-        numba-dpex dpnp dpctl dpcpp-llvm-spirv                     \
+        numba-dpex dpnp dpctl dpcpp-llvm-spirv                                 \
         -c dppy/label/dev -c intel -c conda-forge
 
 
