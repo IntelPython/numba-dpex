@@ -4,6 +4,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0] - 2024-02-19
+
+### Fixed
+* Bug in boxing a DpnpNdArray from parent (#1155)
+* Strided layouts and F-contiguous layouts supported in experimental kernel (#1178)
+* Barrier call code-generation on OpenCL CPU devices (#1280, #1310)
+* Importing numba-dpex can break numba execution (#1267)
+* Overhead on launching numba_dpex.kernel functions (#1236)
+
+### Added
+* Support for dpctl.SyclEvent data type inside dpjit (#1134)
+* Support for kernel_api.Range and kernel_api.NdRange inside dpjit (#1148)
+* DPEX_OPT: a numba-dpex-specific optimization level config option (#1158)
+* Uploading wheels packages to anaconda (#1160)
+* flake8 eradicate linter option (#1177)
+* Support dpctl.SyclEvent.wait call inside dpjit (#1179)
+* Creation of sycl event and queue inside dpjit (#1193, #1190, #1218)
+* Experimental kernel dispatcher for kernel compilation (#1178, #1205)
+* Added experimental target context for SPIRV codegen (#1213, #1225)
+* GDB test cases in public CI (#1209)
+* Async kernel submission option (#1219, #1249)
+* A new literal type to store IntEnum as Literal types (#1227)
+* SYCL-like memory enum classes to the experimental module (#1239)
+* call_kernel function to launch kernels (#1260)
+* Experimental overloads for an AtomicRef class and fetch_* methods (#1257, #1261)
+* New device-specific USMNdArrayModel for USMNdArray and DpnpNdArray types (#1293)
+* Experimental atomic load, store and exchange operations (#1297)
+* Kernel_api module to simulate kernel functions in pure Python (#1304, #1326)
+* Experimental implementation of group barrier operation (#1280)
+* Experimental atomic compare_exchange implementation (#1312)
+* Experimental group index class (#1310)
+* OpenSSF scorecard (#1320)
+* Experimental feature index overload methods (#1323)
+* Experimental feature group index overload methods (#1330)
+* API Documentation for kernel API (#1332)
+
+### Changed
+* Switch to dpc++ compiler for building numba-dpex (#1210)
+* Versioneer and pytest configs into pyproject.toml (#1212)
+* numba-dpex can be imported even if no SYCL device is detected by dpctl (#1272)
+
+### Removed
+* Kernel launch params as lists/tuple. Only Range/NdRange supported (#1251)
+* DEFAULT_LOCAL_SIZE global constant (#1291)
+* Functions to invoke spirv-tools utilities from spirv_generator (#1292)
+* Incomplete vectorize decorator from numba-dpex (#1298)
+* Support for Numba 0.57 (#1307)
+
+### Deprecated
+* OpenCL-like kernel API fucntions in numba_dpex.ocldecl module
+
 ## [0.21.4] - 2023-10-12
 
 ### Fixed
