@@ -45,7 +45,7 @@ def _range_kernel_launcher(kernel_fn, index_range, *kernel_args):
         kernel_fn(it, *kernel_args)
 
 
-def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
+def _ndrange_kernel_launcher(kernel_fn, index_range:NdRange, *kernel_args):
     """Executes a function that mocks a range kernel.
 
     Args:
@@ -89,6 +89,8 @@ def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
                     gidx,
                 ),
             )
+
+            print(f"kapi index {gidx}, {lidx}, {global_id} {index_range.local_range}")
 
             if len(signature(kernel_fn).parameters) - len(kernel_args) != 1:
                 raise ValueError(

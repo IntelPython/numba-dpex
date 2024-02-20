@@ -219,7 +219,7 @@ def test_get_group_range():
 
 
 # TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
+# @skip_windows
 def test_get_group_local_range():
     global_size = 100
     group_size = 20
@@ -268,3 +268,6 @@ def test_index_order():
     )
 
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.int32))
+
+if __name__ == "__main__":
+    test_get_group_local_range()
