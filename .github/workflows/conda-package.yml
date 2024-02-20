@@ -153,11 +153,13 @@ jobs:
 
       - name: Install conda build
         run: |
-          mamba install conda-build
+          mamba install conda-build conda-index
 
       - name: Create conda channel
+        # Note conda index (instead of python -m conda_index) may find legacy
+        # conda-build index.
         run: |
-          conda index ${{ env.CHANNEL_PATH }}
+          python -m conda_index ${{ env.CHANNEL_PATH }}
 
       - name: Test conda channel
         run: |
