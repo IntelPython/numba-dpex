@@ -59,6 +59,18 @@ def set_ones_nd_item(nd_item: NdItem, a):
 
 
 @dpex_exp.kernel
+def set_ones_exp_legacy(a):
+    i = dpex.get_global_id(0)
+    a[i] = 1
+
+
+@dpex.kernel
+def set_ones_legacy(a):
+    i = dpex.get_global_id(0)
+    a[i] = 1
+
+
+@dpex_exp.kernel
 def set_local_ones_nd_item(nd_item: NdItem, a):
     i = nd_item.get_local_id(0)
     a[i] = 1
@@ -130,11 +142,29 @@ def test_nd_item_get_local_range():
 
 
 # TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
+# @skip_windows
 def test_nd_item_get_global_id():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(
         set_ones_nd_item, dpex.NdRange((a.size,), (_GROUP_SIZE,)), a
+    )
+
+    assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
+
+
+def test_nd_item_get_global_id_legacy():
+    a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
+    dpex.call_kernel(
+        set_ones_legacy, dpex.NdRange((a.size,), (_GROUP_SIZE,)), a
+    )
+
+    assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
+
+
+def test_nd_item_get_global_id_exp_legacy():
+    a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
+    dpex_exp.call_kernel(
+        set_ones_exp_legacy, dpex.NdRange((a.size,), (_GROUP_SIZE,)), a
     )
 
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
