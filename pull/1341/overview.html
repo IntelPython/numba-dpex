@@ -145,7 +145,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -206,6 +206,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/numba_dpex/kernel_api/atomic_fence/index.html">numba_dpex.kernel_api.atomic_fence</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/numba_dpex/kernel_api/barrier/index.html">numba_dpex.kernel_api.barrier</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/numba_dpex/kernel_api/flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
@@ -257,7 +258,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -267,11 +268,14 @@
 <h1>Overview<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
 <p>Data Parallel Extension for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a free and open-source
 LLVM-based code generator for portable accelerator programming in Python.
-numba_dpex defines a new kernel programming domain-specific language (DSL)
-in pure Python called <cite>KAPI</cite> that is modeled after the C++ embedded DSL
-<a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a>.</p>
-<p>The following example illustrates a relatively simple pairwise distance matrix
-computation example written in KAPI.</p>
+numba_dpex defines a new kernel programming domain-specific language (DSL) in
+pure Python called <cite>KAPI</cite> that is modeled after the C++ embedded DSL <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a>. A
+KAPI function can be JIT compiled by numba-dpex to generate a “data-parallel”
+kernel function that executes in parallel on a supported device. Currently,
+compilation of KAPI is possible for x86 CPU devices (using OpenCL CPU drivers),
+Intel Gen9 integrated GPUs, Intel UHD integrated GPUs, and Intel discrete GPUs.</p>
+<p>The following example presents an example that uses KAPI to code a pairwise
+distance computation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -292,115 +296,60 @@ computation example written in KAPI.</p>
 
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">ranf</span><span class="p">((</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="n">exec_range</span> <span class="o">=</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">kapi</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">pairwise_distance_kernel</span><span class="p">,</span> <span class="n">exec_range</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+<span class="n">kapi</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">pairwise_distance_kernel</span><span class="p">,</span> <span class="n">exec_range</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Skipping over much of the language details, at a high-level the
-<code class="docutils literal notranslate"><span class="pre">pairwise_distance_kernel</span></code> can be viewed as a “data-parallel” function that
-gets executed individually by a set of “work items”. That is, each work item
-runs the same function for a subset of the elements of the input <code class="docutils literal notranslate"><span class="pre">data</span></code> and
-<code class="docutils literal notranslate"><span class="pre">distance</span></code> arrays. For programmers familiar with the CUDA or OpenCL languages,
-it is the same programming model referred to as Single Program Multiple Data
-(SPMD). As Python has no concept of a work item the KAPI function runs
-sequentially resulting in a very slow execution time. Experienced Python
-programmers will most probably write a much faster version of the function using
-NumPy*.</p>
-<p>However, using a JIT compiler numba-dpex can compile a function written in the
-KAPI language to a CPython native extension function that executes according to
-the SPMD programming model, speeding up the execution time by orders of
-magnitude. Currently, compilation of KAPI is possible for x86 CPU devices,
-Intel Gen9 integrated GPUs, Intel UHD integrated GPUs, and Intel discrete GPUs.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is an open-source project and can be installed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel
-AI Analytics Toolkit</a> or the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The package is
-also available on Anaconda cloud and as a Docker image on GitHub. Please refer
-the <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> page to learn more.</p>
-<section id="main-features">
-<h2>Main Features<a class="headerlink" href="#main-features" title="Link to this heading">#</a></h2>
-<section id="portable-kernel-programming">
-<h3>Portable Kernel Programming<a class="headerlink" href="#portable-kernel-programming" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> kernel programming API has a design similar to Numba’s
-<code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> sub-module. The API is modeled after the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language and uses
-the <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL runtime. Currently, compilation of kernels is supported for
-SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI Level Zero</a> devices CPU and GPU devices. In the
-future, compilation support for other types of hardware that are supported by
-DPC++ will be added.</p>
-<p>The following example illustrates a vector addition kernel written with
-<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> kernel API.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">pairwise_distance_kernel</span></code> function is conceptually a “data-parallel”
+function that gets executed individually by a set of “work items”. That is, each
+work item runs the same function for a subset of the elements of the input
+<strong>data</strong> and <strong>distance</strong> arrays. For programmers familiar with the CUDA or
+OpenCL languages, it is the programming model referred to as Single Program
+Multiple Data (SPMD). Although a KAPI function is conceptually following the
+SPMD model, as Python has no concept of a work item a KAPI function
+runs sequentially in Python and needs to be JIT compiled for parallel execution.</p>
+<p>JIT compiling a KAPI function only requires adding the <code class="docutils literal notranslate"><span class="pre">dpex.kernel</span></code> decorator
+to the function and calling the function from the <code class="docutils literal notranslate"><span class="pre">dpex.call_kernel</span></code> method.
+It should be noted that a JIT compiled KAPI function does not support passing in
+NumPy arrays. A KAPI function can only be called using either <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code>
+or <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> array objects. The restriction is due to a
+compiled KAPI function requiring memory that was allocated on the device where
+the kernel should execute. Refer the <a class="reference internal" href="programming_model.html"><span class="doc">Programming Model</span></a> and kernel
+programming user guide for further details. The modification to
+<code class="docutils literal notranslate"><span class="pre">pairwise_distance_kernel</span></code> function for JIT compilation are shown in the next
+example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">dpnp</span>
 
 
 <span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">vecadd_kernel</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">pairwise_distance_kernel</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">data_dims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_dims</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">+=</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">tmp</span>
+
+    <span class="n">distance</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-
-<span class="n">vecadd_kernel</span><span class="p">[</span><span class="n">dpex</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">1024</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">ranf</span><span class="p">((</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dpnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">exec_range</span> <span class="o">=</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">pairwise_distance_kernel</span><span class="p">,</span> <span class="n">exec_range</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the above example, three arrays are allocated on a default <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
-using the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library. The arrays are then passed as input arguments to the
-kernel function. The compilation target and the subsequent execution of the
-kernel is determined by the input arguments and follow the
-“compute-follows-data” programming model as specified in the <a class="reference external" href="https://data-apis.org/array-api/">Python* Array API
-Standard</a>. To change the execution target to a CPU, the device keyword needs to
-be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> arrays. It is also possible
-to leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library select a
-default device based on environment flag settings. Refer the
-<a class="reference internal" href="user_guide/kernel_programming/index.html"><span class="doc">Kernel Programming Basics</span></a> for further details.</p>
-</section>
-<section id="dpjit-decorator">
-<h3><code class="docutils literal notranslate"><span class="pre">dpjit</span></code> decorator<a class="headerlink" href="#dpjit-decorator" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> package provides a new decorator <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> that extends
-Numba’s <code class="docutils literal notranslate"><span class="pre">njit</span></code> decorator. The new decorator is equivalent to
-<code class="docutils literal notranslate"><span class="pre">numba.njit(parallel=True)</span></code>, but additionally supports compiling <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-functions, <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops, and array expressions that use <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code>
-objects.</p>
-<p>Unlike Numba’s NumPy parallelization that only supports CPUs, <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-expressions are first converted to data-parallel kernels and can then be
-<cite>offloaded</cite> to different types of devices. As <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> implements the same API
-as NumPy*, an existing <code class="docutils literal notranslate"><span class="pre">numba.njit</span></code> decorated function that uses
-<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> may be refactored to use <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> and decorated with
-<code class="docutils literal notranslate"><span class="pre">dpjit</span></code>. Such a refactoring can allow the parallel regions to be offloaded
-to a supported GPU device, providing users an additional option to execute their
-code parallelly.</p>
-<p>The vector addition example depicted using the kernel API can also be
-expressed in several different ways using <code class="docutils literal notranslate"><span class="pre">dpjit</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
-<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
-
-
-<span class="nd">@dpex</span><span class="o">.</span><span class="n">dpjit</span>
-<span class="k">def</span> <span class="nf">vecadd_v1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-
-
-<span class="nd">@dpex</span><span class="o">.</span><span class="n">dpjit</span>
-<span class="k">def</span> <span class="nf">vecadd_v2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-
-<span class="nd">@dpex</span><span class="o">.</span><span class="n">dpjit</span>
-<span class="k">def</span> <span class="nf">vecadd_v3</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">c</span>
-</pre></div>
-</div>
-<p>As with the kernel API example, a <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> function if invoked with <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-input arguments follows the compute-follows-data programming model. Refer
-<span class="xref std std-doc">user_manual/dpnp_offload/index</span> for further details.</p>
-</section>
-</section>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is an open-source project and can be installed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel
+AI Analytics Toolkit</a> or the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The package is
+also available on Anaconda cloud, PyPi, and as a Docker image on GitHub.
+Refer the <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> page for further details.</p>
 </section>
 
         </article>
@@ -449,31 +398,8 @@ input arguments follows the compute-follows-data programming model. Refer
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Overview</a><ul>
-<li><a class="reference internal" href="#main-features">Main Features</a><ul>
-<li><a class="reference internal" href="#portable-kernel-programming">Portable Kernel Programming</a></li>
-<li><a class="reference internal" href="#dpjit-decorator"><code class="docutils literal notranslate"><span class="pre">dpjit</span></code> decorator</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
