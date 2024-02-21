@@ -130,18 +130,20 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self,argtypes, cache, key=None):
+    def _compile_and_cache(self, argtypes, cache, key=None):
         """
         Temporary mock to compile old style kernel using experimental features
         to debug github CI
         """
         from numba.core import types
-        from numba_dpex.core.utils import kernel_launcher as kl
+
         import numba_dpex.experimental as dpex_exp
+        from numba_dpex.core.utils import kernel_launcher as kl
         from numba_dpex.kernel_api_impl.spirv.dispatcher import (
             SPIRVKernelDispatcher,
             _SPIRVKernelCompileResult,
         )
+
         # from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
         kernel_dispatcher: SPIRVKernelDispatcher = dpex_exp.kernel(self.pyfunc)
@@ -150,7 +152,7 @@ class JitKernel:
         )
         kernel_module: kl.SPIRVKernelModule = kcres.kernel_device_ir_module
         # kernel_targetctx: SPIRVTargetContext = kernel_dispatcher.targetctx
-        
+
         return kernel_module.kernel_bitcode, kernel_module.kernel_name
 
     def _compile_and_cache_old(self, argtypes, cache, key=None):

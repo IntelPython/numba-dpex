@@ -12,7 +12,7 @@ from numba_dpex import NdRange, Range, float32, usm_ndarray, void
 f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 
-@pytest.skip("debugging")
+@pytest.mark.skip("debugging")
 def test_proper_lowering():
     # This will trigger eager compilation
     @dpex.kernel(void(f32arrty))
@@ -33,7 +33,7 @@ def test_proper_lowering():
     np.testing.assert_allclose(orig * 2, after)
 
 
-@pytest.skip("debugging")
+@pytest.mark.skip("debugging")
 def test_no_arg_barrier_support():
     @dpex.kernel(void(f32arrty))
     def twice(A):
@@ -52,7 +52,7 @@ def test_no_arg_barrier_support():
     np.testing.assert_allclose(orig * 2, after)
 
 
-@pytest.skip("debugging")
+@pytest.mark.skip("debugging")
 def test_local_memory():
     blocksize = 10
 
