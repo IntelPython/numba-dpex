@@ -8,7 +8,7 @@ numba_dpex.experimental module.
 
 from numba.core import types
 from numba.core.datamodel import DataModelManager, models
-from numba.core.datamodel.models import StructModel
+from numba.core.datamodel.models import ArrayModel, StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
@@ -19,6 +19,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
 )
 
 from ..core.types.kernel_api.atomic_ref import AtomicRefType
+from ..core.types.kernel_api.local_accessor import LocalAccessorType
 from .types import KernelDispatcherType
 
 
@@ -60,6 +61,8 @@ def _init_exp_data_model_manager() -> DataModelManager:
     # Register the types and data model in the DpexExpTargetContext
     dmm.register(AtomicRefType, AtomicRefModel)
 
+    dmm.register(LocalAccessorType, dpex_core_models.USMArrayDeviceModel)
+
     # Register the GroupType type
     dmm.register(GroupType, EmptyStructModel)
 
@@ -85,3 +88,7 @@ register_model(ItemType)(EmptyStructModel)
 
 # Register the NdItemType type
 register_model(NdItemType)(EmptyStructModel)
+
+# The LocalAccessorType is registered with the EmptyStructModel in the default
+# data manager so that its attributes are not accessible inside dpjit.
+register_model(LocalAccessorType)(ArrayModel)
