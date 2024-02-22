@@ -266,6 +266,8 @@ extern "C"
                 }
             });
         } catch (std::exception const &e) {
+            DPEXRT_DEBUG(
+                drt_debug_print("DPEXRT-DEBUG: faced exception %s.\n", e.what()));
             error_handler(e, __FILE__, __func__, __LINE__);
             return nullptr;
         }
