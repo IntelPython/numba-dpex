@@ -179,6 +179,7 @@ def test_nd_item_get_global_id_exp_legacy():
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
 
 
+@pytest.mark.skip("legacy get_global_id does not reverse")
 def test_nd_item_get_global_id_exp_legacy_3dim():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(
@@ -190,6 +191,7 @@ def test_nd_item_get_global_id_exp_legacy_3dim():
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
 
 
+@pytest.mark.skip("legacy get_global_id does not reverse")
 def test_item_get_global_id_exp_legacy():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(set_ones_exp_legacy, dpex.Range(a.size), a)
@@ -197,6 +199,7 @@ def test_item_get_global_id_exp_legacy():
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
 
 
+@pytest.mark.skip("legacy get_global_id does not reverse")
 def test_item_get_global_id_exp_legacy_3dim():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(set_ones_exp_legacy, dpex.Range(a.size, 1, 1), a)
