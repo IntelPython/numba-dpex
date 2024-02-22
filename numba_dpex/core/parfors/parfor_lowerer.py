@@ -180,7 +180,8 @@ class ParforLowerImpl:
 
         kl_builder.set_kernel(kernel_ref)
         kl_builder.set_queue(queue_ref)
-        kl_builder.set_range(global_range, local_range)
+        # TODO: update to avoid using reverse.
+        kl_builder.set_range(global_range, local_range, reverse=True)
         kl_builder.set_arguments(
             kernel_fn.kernel_arg_types, kernel_args=kernel_args
         )

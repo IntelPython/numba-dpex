@@ -173,7 +173,7 @@ def generate_index_overload(_type, _intrinsic):
             # TODO: call in reverse index once index reversing is removed from
             # kernel submission
             # pylint: disable=no-value-for-parameter
-            return _intrinsic(dim)
+            return _intrinsic(item.dimensions - 1 - dim)
 
         return ol_item_get_index_impl
 

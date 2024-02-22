@@ -422,7 +422,7 @@ class KernelLaunchIRBuilder:
 
         return ll_array
 
-    def _create_sycl_range(self, idx_range):
+    def _create_sycl_range(self, idx_range, reverse=False):
         """Allocate an array to store the extents of a sycl::range.
 
         Sycl supports upto 3-dimensional ranges and a such the array is
@@ -454,7 +454,8 @@ class KernelLaunchIRBuilder:
         # OpenCL-like LLVM IR intrinsic functions.
         #
         # TODO[2]: Do we need to do this when the backend is LevelZero
-        int64_range.reverse()
+        if reverse:
+            int64_range.reverse()
 
         return self._create_ll_from_py_list(types.uintp, int64_range)
 
@@ -536,11 +537,16 @@ class KernelLaunchIRBuilder:
         self,
         global_range: list,
         local_range: list = None,
+        reverse=False,
     ):
         """Sets global and local range if provided to the argument list."""
-        self.arguments.global_range = self._create_sycl_range(global_range)
+        self.arguments.global_range = self._create_sycl_range(
+            global_range, reverse
+        )
         if local_range is not None and len(local_range) > 0:
-            self.arguments.local_range = self._create_sycl_range(local_range)
+            self.arguments.local_range = self._create_sycl_range(
+                local_range, reverse
+            )
         self.arguments.range_size = self.context.get_constant(
             types.uintp, len(global_range)
         )
