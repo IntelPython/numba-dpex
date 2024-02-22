@@ -40,8 +40,10 @@ def unbox_range(typ, obj, c):
 
         range_struct.ndim = range_attr_native_value_map["ndim"].value
         range_struct.dim0 = range_attr_native_value_map["dim0"].value
-        range_struct.dim1 = range_attr_native_value_map["dim1"].value
-        range_struct.dim2 = range_attr_native_value_map["dim2"].value
+        if typ.ndim > 1:
+            range_struct.dim1 = range_attr_native_value_map["dim1"].value
+        if typ.ndim > 2:
+            range_struct.dim2 = range_attr_native_value_map["dim2"].value
 
     return NativeValue(
         range_struct._getvalue(), is_error=c.builder.load(is_error_ptr)
@@ -87,26 +89,30 @@ def unbox_ndrange(typ, obj, c):
             global_range_struct,
             range_datamodel.get_field_position("dim0"),
         )
-        ndrange_struct.gdim1 = c.builder.extract_value(
-            global_range_struct,
-            range_datamodel.get_field_position("dim1"),
-        )
-        ndrange_struct.gdim2 = c.builder.extract_value(
-            global_range_struct,
-            range_datamodel.get_field_position("dim2"),
-        )
         ndrange_struct.ldim0 = c.builder.extract_value(
             local_range_struct,
             range_datamodel.get_field_position("dim0"),
         )
-        ndrange_struct.ldim1 = c.builder.extract_value(
-            local_range_struct,
-            range_datamodel.get_field_position("dim1"),
-        )
-        ndrange_struct.ldim2 = c.builder.extract_value(
-            local_range_struct,
-            range_datamodel.get_field_position("dim2"),
-        )
+        if typ.ndim > 1:
+            ndrange_struct.gdim1 = c.builder.extract_value(
+                global_range_struct,
+                range_datamodel.get_field_position("dim1"),
+            )
+            ndrange_struct.ldim1 = c.builder.extract_value(
+                local_range_struct,
+                range_datamodel.get_field_position("dim1"),
+            )
+        if typ.ndim > 2:
+            ndrange_struct.gdim2 = c.builder.extract_value(
+                global_range_struct,
+                range_datamodel.get_field_position("dim2"),
+            )
+            ndrange_struct.ldim2 = c.builder.extract_value(
+                local_range_struct,
+                range_datamodel.get_field_position("dim2"),
+            )
+
+        print("unbox dbg:", typ.ndim, ndrange_struct._getvalue())
 
     return NativeValue(
         ndrange_struct._getvalue(), is_error=c.builder.load(is_error_ptr)

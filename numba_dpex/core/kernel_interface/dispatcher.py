@@ -130,7 +130,7 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, cache, key=None):
+    def _compile_and_cache_new(self, argtypes, cache, key=None):
         """
         Temporary mock to compile old style kernel using experimental features
         to debug github CI
@@ -155,7 +155,7 @@ class JitKernel:
 
         return kernel_module.kernel_bitcode, kernel_module.kernel_name
 
-    def _compile_and_cache_old(self, argtypes, cache, key=None):
+    def _compile_and_cache(self, argtypes, cache, key=None):
         """Helper function to compile the Python function or Numba FunctionIR
         object passed to a JitKernel and store it in an internal cache.
         """
