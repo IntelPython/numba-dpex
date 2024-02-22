@@ -235,12 +235,18 @@ extern "C"
                 }
                 switch (NDims) {
                 case 1:
+                    DPEXRT_DEBUG(
+                        drt_debug_print("DPEXRT-DEBUG: submit range<1>.\n"))
                     cgh.parallel_for(range<1>{Range[0]}, *Kernel);
                     break;
                 case 2:
+                    DPEXRT_DEBUG(
+                        drt_debug_print("DPEXRT-DEBUG: submit range<2>.\n"))
                     cgh.parallel_for(range<2>{Range[0], Range[1]}, *Kernel);
                     break;
                 case 3:
+                    DPEXRT_DEBUG(
+                        drt_debug_print("DPEXRT-DEBUG: submit range<3>.\n"))
                     cgh.parallel_for(range<3>{Range[0], Range[1], Range[2]},
                                      *Kernel);
                     break;

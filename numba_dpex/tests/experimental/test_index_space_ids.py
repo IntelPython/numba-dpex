@@ -97,6 +97,8 @@ def test_item_get_id():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(set_ones_item, dpex.Range(a.size), a)
 
+    print(a)
+
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
 
 
@@ -326,4 +328,5 @@ def test_index_order():
 
 if __name__ == "__main__":
     # test_nd_item_get_global_id()
-    test_nd_item_get_local_id()
+    # test_nd_item_get_local_id()
+    test_item_get_id()
