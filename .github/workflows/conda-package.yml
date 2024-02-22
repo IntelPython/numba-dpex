@@ -221,7 +221,8 @@ jobs:
       - name: Run test directly
         if: ${{ matrix.scope == 'tests' }}
         run: |
-          DPCTL_VERBOSITY=1 python -m ${{ env.MODULE_NAME }}.tests.experimental.test_index_space_ids || true
+          NUMBA_DPEX_INLINE_THRESHOLD=3 NUMBA_OPT=3 NUMBA_DPEX_OPT=3 DPCTL_VERBOSITY=1 \
+          python -m ${{ env.MODULE_NAME }}.tests.experimental.test_index_space_ids || true
 
       - name: Run tests
         if: ${{ matrix.scope == 'tests' }}
