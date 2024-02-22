@@ -222,10 +222,16 @@ extern "C"
         auto Queue = unwrap<queue>(QRef);
         event e;
 
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: size of *void %d.\n",
+                                     sizeof(void *)));
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: size of size_t %d.\n",
+                                     sizeof(size_t)));
+
         DPEXRT_DEBUG(
-            drt_debug_print("DPEXRT-DEBUG: size of *void %d.\n",sizeof(void*)));
+            drt_debug_print("DPEXRT-DEBUG: range addr %lld.\n", Range));
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: args addr %lld.\n", Args));
         DPEXRT_DEBUG(
-            drt_debug_print("DPEXRT-DEBUG: size of size_t %d.\n",sizeof(size_t)));
+            drt_debug_print("DPEXRT-DEBUG: arg_types addr %lld.\n", ArgTypes));
 
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-DEBUG: submit range %d (%d, %d, %d).\n",
@@ -293,17 +299,17 @@ extern "C"
         return wrap<event>(new event(std::move(e)));
     }
 
-    DPCTLSyclEventRef DpexDPCTLQueue_SubmitNDRange(
-        const DPCTLSyclKernelRef KRef,
-        const DPCTLSyclQueueRef QRef,
-        void **Args,
-        const DPCTLKernelArgType *ArgTypes,
-        size_t NArgs,
-        const size_t gRange[3],
-        const size_t lRange[3],
-        size_t NDims,
-        const DPCTLSyclEventRef *DepEvents,
-        size_t NDepEvents)
+    DPCTLSyclEventRef
+    DpexDPCTLQueue_SubmitNDRange(const DPCTLSyclKernelRef KRef,
+                                 const DPCTLSyclQueueRef QRef,
+                                 void **Args,
+                                 const DPCTLKernelArgType *ArgTypes,
+                                 size_t NArgs,
+                                 const size_t gRange[3],
+                                 const size_t lRange[3],
+                                 size_t NDims,
+                                 const DPCTLSyclEventRef *DepEvents,
+                                 size_t NDepEvents)
     {
         auto Kernel = unwrap<kernel>(KRef);
         auto Queue = unwrap<queue>(QRef);

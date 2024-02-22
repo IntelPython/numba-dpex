@@ -74,6 +74,9 @@ jobs:
       - name: Install conda-build
         run: mamba install boa
 
+      - name: LS CPU
+        run: lscpu
+
       - name: Build conda package
         run: conda mambabuild --no-test --python ${{ matrix.python }} conda-recipe
 

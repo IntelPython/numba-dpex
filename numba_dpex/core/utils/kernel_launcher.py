@@ -627,13 +627,15 @@ class KernelLaunchIRBuilder:
         # Create LLVM values for the kernel args list and kernel arg types list
         args_list = self._allocate_array(
             self.context.get_value_type(types.voidptr),
-            num_flattened_kernel_args*2,
+            num_flattened_kernel_args,
         )
+        # args_list.align = 32
 
         args_ty_list = self._allocate_array(
             self.context.get_value_type(types.int32),
-            num_flattened_kernel_args*2,
+            num_flattened_kernel_args,
         )
+        # args_ty_list.align = 32
 
         kernel_args_ptrs = []
         for arg in kernel_args:
