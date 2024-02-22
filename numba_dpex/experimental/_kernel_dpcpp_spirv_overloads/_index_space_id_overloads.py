@@ -9,7 +9,7 @@ Implements the SPIR-V overloads for the kernel_api.items class methods.
 import llvmlite.ir as llvmir
 from numba.core import cgutils, types
 from numba.core.errors import TypingError
-from numba.extending import intrinsic, overload_method
+from numba.extending import intrinsic, overload_attribute, overload_method
 
 from numba_dpex.core.types.kernel_api.index_space_ids import (
     GroupType,
@@ -246,5 +246,26 @@ def ol_nd_item_get_group(nd_item):
     def ol_nd_item_get_group_impl(nd_item):
         # pylint: disable=no-value-for-parameter
         return _intrinsic_get_group(nd_item)
+
+    return ol_nd_item_get_group_impl
+
+
+@overload_attribute(GroupType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_attribute(ItemType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_attribute(
+    NdItemType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME
+)
+def ol_nd_item_dimensions(item):
+    """
+    SPIR-V overload for :meth:`numba_dpex.kernel_api.<generic_item>.dimensions`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `sycl::<generic_item>::dimensions` attribute.
+    """
+    dimensions = item.ndim
+
+    # pylint: disable=unused-argument
+    def ol_nd_item_get_group_impl(item):
+        return dimensions
 
     return ol_nd_item_get_group_impl
