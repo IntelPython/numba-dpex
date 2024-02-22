@@ -206,21 +206,26 @@ bool set_kernel_arg(handler &cgh,
 extern "C"
 {
 
-    __dpctl_give DPCTLSyclEventRef
-    DpexDPCTLQueue_SubmitRange(__dpctl_keep const DPCTLSyclKernelRef KRef,
-                               __dpctl_keep const DPCTLSyclQueueRef QRef,
-                               __dpctl_keep void **Args,
-                               __dpctl_keep const DPCTLKernelArgType *ArgTypes,
+    DPCTLSyclEventRef
+    DpexDPCTLQueue_SubmitRange(const DPCTLSyclKernelRef KRef,
+                               const DPCTLSyclQueueRef QRef,
+                               void **Args,
+                               const DPCTLKernelArgType *ArgTypes,
                                size_t NArgs,
-                               //    __dpctl_keep const size_t Range[3],
-                               __dpctl_keep const size_t *Range,
+                               //    const size_t Range[3],
+                               const size_t *Range,
                                size_t NDims,
-                               __dpctl_keep const DPCTLSyclEventRef *DepEvents,
+                               const DPCTLSyclEventRef *DepEvents,
                                size_t NDepEvents)
     {
         auto Kernel = unwrap<kernel>(KRef);
         auto Queue = unwrap<queue>(QRef);
         event e;
+
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: size of *void %d.\n",sizeof(void*)));
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: size of size_t %d.\n",sizeof(size_t)));
 
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-DEBUG: submit range %d (%d, %d, %d).\n",
@@ -229,6 +234,8 @@ extern "C"
         std::cout << "debug from std: " << Range[0] << std::endl;
 
         DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: arg size %d.\n", NArgs););
+
+        // Args[0] = 9;
 
         try {
             e = Queue->submit([&](handler &cgh) {
@@ -286,16 +293,16 @@ extern "C"
         return wrap<event>(new event(std::move(e)));
     }
 
-    __dpctl_give DPCTLSyclEventRef DpexDPCTLQueue_SubmitNDRange(
-        __dpctl_keep const DPCTLSyclKernelRef KRef,
-        __dpctl_keep const DPCTLSyclQueueRef QRef,
-        __dpctl_keep void **Args,
-        __dpctl_keep const DPCTLKernelArgType *ArgTypes,
+    DPCTLSyclEventRef DpexDPCTLQueue_SubmitNDRange(
+        const DPCTLSyclKernelRef KRef,
+        const DPCTLSyclQueueRef QRef,
+        void **Args,
+        const DPCTLKernelArgType *ArgTypes,
         size_t NArgs,
-        __dpctl_keep const size_t gRange[3],
-        __dpctl_keep const size_t lRange[3],
+        const size_t gRange[3],
+        const size_t lRange[3],
         size_t NDims,
-        __dpctl_keep const DPCTLSyclEventRef *DepEvents,
+        const DPCTLSyclEventRef *DepEvents,
         size_t NDepEvents)
     {
         auto Kernel = unwrap<kernel>(KRef);

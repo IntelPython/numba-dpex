@@ -187,7 +187,7 @@ class KernelLaunchIRBuilder:
             self._build_array_attr_arg(
                 array_val=array_attr,
                 array_attr_pos=ndim,
-                array_attr_ty=types.int64,
+                array_attr_ty=types.int32,
                 arg_list=arg_list,
                 args_ty_list=args_ty_list,
                 arg_num=arg_num + ndim,
@@ -627,12 +627,12 @@ class KernelLaunchIRBuilder:
         # Create LLVM values for the kernel args list and kernel arg types list
         args_list = self._allocate_array(
             self.context.get_value_type(types.voidptr),
-            num_flattened_kernel_args,
+            num_flattened_kernel_args*2,
         )
 
         args_ty_list = self._allocate_array(
             self.context.get_value_type(types.int32),
-            num_flattened_kernel_args,
+            num_flattened_kernel_args*2,
         )
 
         kernel_args_ptrs = []
