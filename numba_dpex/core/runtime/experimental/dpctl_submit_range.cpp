@@ -229,9 +229,8 @@ extern "C"
         try {
             e = Queue->submit([&](handler &cgh) {
                 // Depend on any event that was specified by the caller.
-                if (NDepEvents)
-                    for (auto i = 0ul; i < NDepEvents; ++i)
-                        cgh.depends_on(*unwrap<event>(DepEvents[i]));
+                for (auto i = 0ul; i < NDepEvents; ++i)
+                    cgh.depends_on(*unwrap<event>(DepEvents[i]));
 
                 for (auto i = 0ul; i < NArgs; ++i) {
                     // \todo add support for Sycl buffers
@@ -270,6 +269,10 @@ extern "C"
             error_handler(e, __FILE__, __func__, __LINE__);
             return nullptr;
         }
+
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: force wait"));
+        e.wait();
 
         return wrap<event>(new event(std::move(e)));
     }
