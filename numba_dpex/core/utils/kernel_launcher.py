@@ -354,7 +354,10 @@ class KernelLaunchIRBuilder:
         return self.builder.load(sycl_queue_val)
 
     def _allocate_array(
-        self, numba_type: types.Type, size: int
+        # self, numba_type: types.Type, size: int
+        self,
+        numba_type,
+        size: int,
     ) -> llvmir.Instruction:
         """Allocates an LLVM array of given type and size.
 
@@ -364,10 +367,15 @@ class KernelLaunchIRBuilder:
 
         Returns: An LLVM IR value pointing to the array.
         """
+        if isinstance(numba_type, types.Type):
+            numba_type = self.context.get_value_type(numba_type)
+
         return cgutils.alloca_once(
             self.builder,
-            self.context.get_value_type(numba_type),
-            size=self.context.get_constant(types.uintp, size),
+            # self.context.get_value_type(numba_type),
+            numba_type,
+            size=llvmir.Constant(cgutils.intp_t, size),
+            # size=self.context.get_constant(types.uintp, size),
         )
 
     def _populate_array_from_python_list(
@@ -415,7 +423,11 @@ class KernelLaunchIRBuilder:
 
         Returns: An LLVM IR value pointing to the array.
         """
-        ll_array = self._allocate_array(numba_type, len(list_of_ll_values))
+        tp = numba_type
+        if len(list_of_ll_values) > 0:
+            tp = list_of_ll_values[0].type
+
+        ll_array = self._allocate_array(tp, len(list_of_ll_values))
         self._populate_array_from_python_list(
             numba_type, list_of_ll_values, ll_array, force_cast
         )
@@ -536,8 +548,10 @@ class KernelLaunchIRBuilder:
         self.set_queue(queue_ref)
 
     def _populate_range(self, rng: list[llvmir.Instruction]):
+        if len(rng) == 0:
+            return
         while len(rng) < 3:
-            rng.append(llvmir.Constant(utils.LLVMTypes.int64_t, 1))
+            rng.append(llvmir.Constant(rng[0].type, 1))
 
     def set_range(
         self,
@@ -642,12 +656,12 @@ class KernelLaunchIRBuilder:
 
         # Create LLVM values for the kernel args list and kernel arg types list
         args_list = self._allocate_array(
-            types.voidptr,
+            self.context.get_value_type(types.voidptr),
             num_flattened_kernel_args,
         )
 
         args_ty_list = self._allocate_array(
-            types.int32,
+            self.context.get_value_type(types.int32),
             num_flattened_kernel_args,
         )
 
