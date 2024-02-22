@@ -226,6 +226,10 @@ extern "C"
 
         std::cout << "debug from std: " << Range[0] << std::endl;
 
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: arg size %d.\n",
+                            NArgs););
+
         try {
             e = Queue->submit([&](handler &cgh) {
                 // Depend on any event that was specified by the caller.
@@ -234,6 +238,7 @@ extern "C"
 
                 for (auto i = 0ul; i < NArgs; ++i) {
                     // \todo add support for Sycl buffers
+                    std::cout << "arg: "<< i<< " "<< Args[i] << " " << ArgTypes[i] <<std::endl;
                     if (!set_kernel_arg(cgh, i, Args[i], ArgTypes[i]))
                         exit(1);
                 }
