@@ -13,7 +13,7 @@
 
 /* Debugging facilities - enabled at compile-time */
 /* #undef NDEBUG */
-#if 0
+#if 1
 #include <stdio.h>
 #define DPEXRT_DEBUG(X)                                                        \
     {                                                                          \

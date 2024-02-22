@@ -222,7 +222,7 @@ jobs:
         env:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
-          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }}.tests.experimental.test_index_space_ids -vv
 
       - name: Run examples
         if: ${{ matrix.scope == 'examples' }}

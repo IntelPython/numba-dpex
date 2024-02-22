@@ -157,7 +157,7 @@ def dpctl_queue_submit_range(builder: llvmir.IRBuilder, *args):
             cgutils.voidptr_t.as_pointer(),
             llvmir.IntType(64),
         ],
-        func_name="DPCTLQueue_SubmitRange",
+        func_name="DpexDPCTLQueue_SubmitRange",
     )
     ret = builder.call(fn, args)
 
@@ -198,7 +198,7 @@ def dpctl_queue_submit_ndrange(builder: llvmir.IRBuilder, *args):
             cgutils.voidptr_t.as_pointer(),
             llvmir.IntType(64),
         ],
-        func_name="DPCTLQueue_SubmitNDRange",
+        func_name="DpexDPCTLQueue_SubmitNDRange",
     )
     ret = builder.call(fn, args)
 
