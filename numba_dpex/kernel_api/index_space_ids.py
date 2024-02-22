@@ -147,7 +147,7 @@ class Item:
         return self._extent[idx]
 
     @property
-    def ndim(self) -> int:
+    def dimensions(self) -> int:
         """Returns the rank of a Item object.
 
         Returns:
@@ -228,10 +228,10 @@ class NdItem:
         return self._group
 
     @property
-    def ndim(self) -> int:
+    def dimensions(self) -> int:
         """Returns the rank of a NdItem object.
 
         Returns:
             int: Number of dimensions in the NdItem object
         """
-        return self._global_item.ndim
+        return self._global_item.dimensions
