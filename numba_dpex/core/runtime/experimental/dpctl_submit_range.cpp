@@ -239,19 +239,24 @@ extern "C"
                         exit(1);
                 }
                 switch (NDims) {
-                case 1:
+                case 1:{
                     DPEXRT_DEBUG(
-                        drt_debug_print("DPEXRT-DEBUG: submit range<1>.\n"))
-                    cgh.parallel_for(range<1>{Range[0]}, *Kernel);
+                        drt_debug_print("DPEXRT-DEBUG: submit range<1>.\n"));
+                    auto rng = range<1>{Range[0]};
+                    std::cout << "rng debug: "<< rng[0]<< " " <<rng.size() << std::endl;
+                    cgh.parallel_for(rng, *Kernel);
+                    DPEXRT_DEBUG(
+                        drt_debug_print("DPEXRT-DEBUG: sent range<1>.\n"));
                     break;
+                }
                 case 2:
                     DPEXRT_DEBUG(
-                        drt_debug_print("DPEXRT-DEBUG: submit range<2>.\n"))
+                        drt_debug_print("DPEXRT-DEBUG: submit range<2>.\n"));
                     cgh.parallel_for(range<2>{Range[0], Range[1]}, *Kernel);
                     break;
                 case 3:
                     DPEXRT_DEBUG(
-                        drt_debug_print("DPEXRT-DEBUG: submit range<3>.\n"))
+                        drt_debug_print("DPEXRT-DEBUG: submit range<3>.\n"));
                     cgh.parallel_for(range<3>{Range[0], Range[1], Range[2]},
                                      *Kernel);
                     break;
