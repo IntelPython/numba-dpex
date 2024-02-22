@@ -269,8 +269,11 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
             kcres_attrs.append(kernel_device_ir_module)
 
             if config.DUMP_KERNEL_LLVM:
+                file_name = cres.fndesc.llvm_func_name
+                if len(file_name) > 30:
+                    file_name = file_name[-30:]
                 with open(
-                    cres.fndesc.llvm_func_name + ".ll",
+                    file_name + ".ll",
                     "w",
                     encoding="UTF-8",
                 ) as fptr:

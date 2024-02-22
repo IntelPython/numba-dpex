@@ -9,6 +9,8 @@
 // #include "dpctl_error_handlers.h"
 #include <CL/sycl.hpp>
 
+#include <iostream>
+
 using namespace sycl;
 using namespace dpctl::syclinterface;
 
@@ -208,7 +210,8 @@ extern "C"
                                __dpctl_keep void **Args,
                                __dpctl_keep const DPCTLKernelArgType *ArgTypes,
                                size_t NArgs,
-                               __dpctl_keep const size_t Range[3],
+                               //    __dpctl_keep const size_t Range[3],
+                               __dpctl_keep const size_t *Range,
                                size_t NDims,
                                __dpctl_keep const DPCTLSyclEventRef *DepEvents,
                                size_t NDepEvents)
@@ -220,6 +223,8 @@ extern "C"
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-DEBUG: submit range %d (%d, %d, %d).\n",
                             NDims, Range[0], Range[1], Range[2]););
+
+        std::cout << "debug from std: " << Range[0] << std::endl;
 
         try {
             e = Queue->submit([&](handler &cgh) {
