@@ -228,11 +228,11 @@ def test_error_item_get_global_id():
 
 
 def test_no_item():
-    a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
+    a = dpnp.zeros(_SIZE, dtype=dpnp.int32)
     dpex_exp.call_kernel(set_ones_no_item, dpex.Range(a.size), a)
 
     assert np.array_equal(
-        a.asnumpy(), np.array([1] + [0] * (a.size - 1), dtype=np.float32)
+        a.asnumpy(), np.array([1] + [0] * (a.size - 1), dtype=np.int32)
     )
 
 

@@ -172,6 +172,7 @@ bool set_kernel_arg(handler &cgh,
         cgh.set_arg(idx, *(unsigned long *)Arg);
         break;
     case DPCTL_LONG_LONG:
+        // <---
         cgh.set_arg(idx, *(long long *)Arg);
         break;
     case DPCTL_UNSIGNED_LONG_LONG:
@@ -190,6 +191,7 @@ bool set_kernel_arg(handler &cgh,
         cgh.set_arg(idx, *(long double *)Arg);
         break;
     case DPCTL_VOID_PTR:
+        // <----
         cgh.set_arg(idx, Arg);
         break;
     default:
