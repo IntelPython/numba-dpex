@@ -226,9 +226,7 @@ extern "C"
 
         std::cout << "debug from std: " << Range[0] << std::endl;
 
-        DPEXRT_DEBUG(
-            drt_debug_print("DPEXRT-DEBUG: arg size %d.\n",
-                            NArgs););
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: arg size %d.\n", NArgs););
 
         try {
             e = Queue->submit([&](handler &cgh) {
@@ -238,16 +236,19 @@ extern "C"
 
                 for (auto i = 0ul; i < NArgs; ++i) {
                     // \todo add support for Sycl buffers
-                    std::cout << "arg: "<< i<< " "<< Args[i] << " " << ArgTypes[i] <<std::endl;
+                    std::cout << "arg: " << i << " " << Args[i] << " "
+                              << ArgTypes[i] << std::endl;
                     if (!set_kernel_arg(cgh, i, Args[i], ArgTypes[i]))
                         exit(1);
                 }
                 switch (NDims) {
-                case 1:{
+                case 1:
+                {
                     DPEXRT_DEBUG(
                         drt_debug_print("DPEXRT-DEBUG: submit range<1>.\n"));
                     auto rng = range<1>{Range[0]};
-                    std::cout << "rng debug: "<< rng[0]<< " " <<rng.size() << std::endl;
+                    std::cout << "rng debug: " << rng[0] << " " << rng.size()
+                              << std::endl;
                     cgh.parallel_for(rng, *Kernel);
                     DPEXRT_DEBUG(
                         drt_debug_print("DPEXRT-DEBUG: sent range<1>.\n"));
@@ -271,14 +272,13 @@ extern "C"
                 }
             });
         } catch (std::exception const &e) {
-            DPEXRT_DEBUG(
-                drt_debug_print("DPEXRT-DEBUG: faced exception %s.\n", e.what()));
+            DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: faced exception %s.\n",
+                                         e.what()));
             error_handler(e, __FILE__, __func__, __LINE__);
             return nullptr;
         }
 
-        DPEXRT_DEBUG(
-            drt_debug_print("DPEXRT-DEBUG: force wait"));
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: force wait"));
         e.wait();
 
         return wrap<event>(new event(std::move(e)));

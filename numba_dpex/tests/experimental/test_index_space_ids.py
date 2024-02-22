@@ -329,4 +329,5 @@ def test_index_order():
 if __name__ == "__main__":
     # test_nd_item_get_global_id()
     # test_nd_item_get_local_id()
-    test_item_get_id()
+    # test_item_get_id()
+    test_no_item()
