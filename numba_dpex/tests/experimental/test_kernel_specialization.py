@@ -7,26 +7,30 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
 from numba_dpex import DpnpNdArray, float32, int64
 from numba_dpex.core.exceptions import InvalidKernelSpecializationError
-from numba_dpex.kernel_api import Range
+from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
+from numba_dpex.kernel_api import Item, Range
 
 i64arrty = DpnpNdArray(ndim=1, dtype=int64, layout="C")
 f32arrty = DpnpNdArray(ndim=1, dtype=float32, layout="C")
+item_ty = ItemType(ndim=1)
 
-specialized_kernel1 = dpex_exp.kernel((i64arrty, i64arrty, i64arrty))
+specialized_kernel1 = dpex_exp.kernel((item_ty, i64arrty, i64arrty, i64arrty))
 specialized_kernel2 = dpex_exp.kernel(
-    [(i64arrty, i64arrty, i64arrty), (f32arrty, f32arrty, f32arrty)]
+    [
+        (item_ty, i64arrty, i64arrty, i64arrty),
+        (item_ty, f32arrty, f32arrty, f32arrty),
+    ]
 )
 
 
-def data_parallel_sum(a, b, c):
+def data_parallel_sum(item: Item, a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
     """
-    i = dpex.get_global_id(0)
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -46,7 +50,9 @@ def test_invalid_specialization_error():
     """Test if an InvalidKernelSpecializationError is raised when attempting to
     specialize with NumPy arrays.
     """
-    specialized_kernel3 = dpex_exp.kernel((int64[::1], int64[::1], int64[::1]))
+    specialized_kernel3 = dpex_exp.kernel(
+        (item_ty, int64[::1], int64[::1], int64[::1])
+    )
     with pytest.raises(InvalidKernelSpecializationError):
         specialized_kernel3(data_parallel_sum)
 
@@ -90,11 +96,14 @@ def test_string_specialization():
     """Test if NotImplementedError is raised when signature is a string"""
 
     with pytest.raises(NotImplementedError):
-        dpex_exp.kernel("(i64arrty, i64arrty, i64arrty)")
+        dpex_exp.kernel("(item_ty, i64arrty, i64arrty, i64arrty)")
 
     with pytest.raises(NotImplementedError):
         dpex_exp.kernel(
-            ["(i64arrty, i64arrty, i64arrty)", "(f32arrty, f32arrty, f32arrty)"]
+            [
+                "(item_ty, i64arrty, i64arrty, i64arrty)",
+                "(item_ty, f32arrty, f32arrty, f32arrty)",
+            ]
         )
 
     with pytest.raises(ValueError):

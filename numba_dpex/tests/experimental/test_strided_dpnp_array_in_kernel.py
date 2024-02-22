@@ -8,9 +8,8 @@ import dpnp
 import numpy as np
 import pytest
 
-import numba_dpex
 import numba_dpex.experimental as exp_dpex
-from numba_dpex import Range
+from numba_dpex.kernel_api import Item, Range
 
 
 def get_order(a):
@@ -36,14 +35,14 @@ def get_order(a):
 
 
 @exp_dpex.kernel
-def change_values_1d(x, v):
+def change_values_1d(item: Item, x, v):
     """Assign values in a 1d dpnp.ndarray
 
     Args:
         x (dpnp.ndarray): Input array.
         v (int): Value to be assigned.
     """
-    i = numba_dpex.get_global_id(0)
+    i = item.get_id(0)
     x[i] = v
 
 
@@ -59,15 +58,15 @@ def change_values_1d_func(a, p):
 
 
 @exp_dpex.kernel
-def change_values_2d(x, v):
+def change_values_2d(item: Item, x, v):
     """Assign values in a 2d dpnp.ndarray
 
     Args:
         x (dpnp.ndarray): Input array.
         v (int): Value to be assigned.
     """
-    i = numba_dpex.get_global_id(0)
-    j = numba_dpex.get_global_id(1)
+    i = item.get_id(0)
+    j = item.get_id(1)
     x[i, j] = v
 
 
@@ -84,16 +83,16 @@ def change_values_2d_func(a, p):
 
 
 @exp_dpex.kernel
-def change_values_3d(x, v):
+def change_values_3d(item: Item, x, v):
     """Assign values in a 3d dpnp.ndarray
 
     Args:
         x (dpnp.ndarray): Input array.
         v (int): Value to be assigned.
     """
-    i = numba_dpex.get_global_id(0)
-    j = numba_dpex.get_global_id(1)
-    k = numba_dpex.get_global_id(2)
+    i = item.get_id(0)
+    j = item.get_id(1)
+    k = item.get_id(2)
     x[i, j, k] = v
 
 

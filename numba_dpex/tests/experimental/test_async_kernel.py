@@ -7,10 +7,9 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex as dpex
 import numba_dpex.experimental as exp_dpex
-from numba_dpex import Range
 from numba_dpex.experimental import testing
+from numba_dpex.kernel_api import Item, Range
 
 
 @exp_dpex.kernel(
@@ -19,8 +18,8 @@ from numba_dpex.experimental import testing
     no_cpython_wrapper=True,
     no_cfunc_wrapper=True,
 )
-def add(a, b, c):
-    i = dpex.get_global_id(0)
+def add(item: Item, a, b, c):
+    i = item.get_id(0)
     c[i] = b[i] + a[i]
 
 
