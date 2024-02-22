@@ -457,6 +457,8 @@ class KernelLaunchIRBuilder:
         if reverse:
             int64_range.reverse()
 
+        self._populate_range(int64_range)
+
         return self._create_ll_from_py_list(types.uintp, int64_range)
 
     def set_kernel(self, sycl_kernel_ref: llvmir.Instruction):
@@ -532,6 +534,10 @@ class KernelLaunchIRBuilder:
             raise ValueError("There are no arguments that contain queue")
 
         self.set_queue(queue_ref)
+
+    def _populate_range(self, rng: list[llvmir.Instruction]):
+        while len(rng) < 3:
+            rng.append(llvmir.Constant(utils.LLVMTypes.int64_t, 1))
 
     def set_range(
         self,
