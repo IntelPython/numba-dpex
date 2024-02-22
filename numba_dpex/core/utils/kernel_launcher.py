@@ -582,49 +582,19 @@ class KernelLaunchIRBuilder:
         ndim = ty_indexer_arg.ndim
         global_range_extents = []
         local_range_extents = []
-        indexer_datamodel = self.context.data_model_manager.lookup(
-            ty_indexer_arg
-        )
 
         print(f"dbg ndim: {ndim}")
 
+        rng = cgutils.create_struct_proxy(ty_indexer_arg)(
+            self.context, self.builder, value=ll_index_arg
+        )
         if isinstance(ty_indexer_arg, RangeType):
-            for dim_num in range(ndim):
-                dim_pos = indexer_datamodel.get_field_position(
-                    "dim" + str(dim_num)
-                )
-                global_range_extents.append(
-                    self.builder.extract_value(ll_index_arg, dim_pos)
-                )
+            for dim_num in range(ty_indexer_arg.ndim):
+                global_range_extents.append(getattr(rng, f"dim{dim_num}"))
         elif isinstance(ty_indexer_arg, NdRangeType):
-            nd_range = cgutils.create_struct_proxy(NdRangeType(ndim))(
-                self.context, self.builder, value=ll_index_arg
-            )
-            global_range_extents.append(nd_range.gdim0)
-            local_range_extents.append(nd_range.ldim0)
-            if ndim > 1:
-                global_range_extents.append(nd_range.gdim1)
-                local_range_extents.append(nd_range.ldim1)
-            if ndim > 2:
-                global_range_extents.append(nd_range.gdim2)
-                local_range_extents.append(nd_range.ldim2)
-
-            # for dim_num in range(ndim):
-            #     gdim_pos = indexer_datamodel.get_field_position(
-            #         "gdim" + str(dim_num)
-            #     )
-            #     print(f"gdim_pos: {gdim_pos}")
-            #     print(f"ll_index_arg: {ll_index_arg}")
-            #     global_range_extents.append(
-            #         self.builder.extract_value(ll_index_arg, gdim_pos)
-            #     )
-            #     print(f"inc global_range: {global_range_extents[-1]}")
-            #     ldim_pos = indexer_datamodel.get_field_position(
-            #         "ldim" + str(dim_num)
-            #     )
-            #     local_range_extents.append(
-            #         self.builder.extract_value(ll_index_arg, ldim_pos)
-            #     )
+            for dim_num in range(ty_indexer_arg.ndim):
+                global_range_extents.append(getattr(rng, f"gdim{dim_num}"))
+                local_range_extents.append(getattr(rng, f"ldim{dim_num}"))
         else:
             raise UnreachableError
 
