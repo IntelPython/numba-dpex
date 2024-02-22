@@ -469,7 +469,7 @@ class KernelLaunchIRBuilder:
         if reverse:
             int64_range.reverse()
 
-        self._populate_range(int64_range)
+        # self._populate_range(int64_range)
 
         return self._create_ll_from_py_list(types.uintp, int64_range)
 

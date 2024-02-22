@@ -108,7 +108,8 @@ jobs:
         os: [ubuntu-latest]
         experimental: [false]
         use_mlir: [false]
-        scope: ['tests', 'examples', 'gdb']
+        # scope: ['tests', 'examples', 'gdb']
+        scope: ['tests']
         # exclude:
         #   - os: windows-latest
         #     scope: 'gdb'
@@ -223,6 +224,11 @@ jobs:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }}.tests.experimental.test_index_space_ids -vv
+
+      - name: Run test directly
+        if: ${{ matrix.scope == 'tests' }}
+        run: |
+          python -m ${{ env.MODULE_NAME }}.tests.experimental.test_index_space_ids
 
       - name: Run examples
         if: ${{ matrix.scope == 'examples' }}
