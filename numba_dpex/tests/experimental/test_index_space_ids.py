@@ -13,7 +13,6 @@ import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import Item, NdItem, NdRange
 from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
-from numba_dpex.tests._helper import skip_windows
 
 _SIZE = 16
 _GROUP_SIZE = 4
@@ -99,8 +98,6 @@ def test_item_get_range():
     assert np.array_equal(a.asnumpy(), want)
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_nd_item_get_global_range():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(
@@ -114,8 +111,6 @@ def test_nd_item_get_global_range():
     assert np.array_equal(a.asnumpy(), want)
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_nd_item_get_local_range():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(
@@ -129,8 +124,6 @@ def test_nd_item_get_local_range():
     assert np.array_equal(a.asnumpy(), want)
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_nd_item_get_global_id():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
     dpex_exp.call_kernel(
@@ -140,8 +133,6 @@ def test_nd_item_get_global_id():
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.float32))
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_nd_item_get_local_id():
     a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
 
@@ -174,8 +165,6 @@ def test_no_item():
     )
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_get_group_id():
     global_size = 100
     group_size = 20
@@ -196,8 +185,6 @@ def test_get_group_id():
     assert np.array_equal(ka.asnumpy(), expected)
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_get_group_range():
     global_size = 100
     group_size = 20
@@ -218,8 +205,6 @@ def test_get_group_range():
     assert np.array_equal(ka.asnumpy(), expected)
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_get_group_local_range():
     global_size = 100
     group_size = 20
@@ -258,8 +243,6 @@ def set_3d_ones_item(item: Item, a):
     a[index] = 1
 
 
-# TODO: CI tests failing for some reason... Works fine locally on cpu and gpu
-@pytest.mark.skip
 def test_index_order():
     a = dpnp.zeros(I_SIZE * J_SIZE * K_SIZE, dtype=dpnp.int32)
 

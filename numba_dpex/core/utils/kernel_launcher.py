@@ -28,6 +28,8 @@ from numba_dpex.utils import create_null_ptr
 
 MAX_SIZE_OF_SYCL_RANGE = 3
 
+_ARRAY_ALIGN = 16
+
 
 # TODO: probably not best place for it. Should be in kernel_dispatcher once we
 # get merge experimental. Right now it will cause cyclic import
@@ -364,11 +366,13 @@ class KernelLaunchIRBuilder:
 
         Returns: An LLVM IR value pointing to the array.
         """
-        return cgutils.alloca_once(
+        array = cgutils.alloca_once(
             self.builder,
             self.context.get_value_type(numba_type),
             size=self.context.get_constant(types.uintp, size),
         )
+        array.align = _ARRAY_ALIGN
+        return array
 
     def _populate_array_from_python_list(
         self,
