@@ -68,11 +68,11 @@ def typeof_item(val: Item, c):
     Returns: A numba_dpex.experimental.core.types.kernel_api.items.ItemType
         instance.
     """
-    return ItemType(val.ndim)
+    return ItemType(val.dimensions)
 
 
 @typeof_impl.register(NdItem)
-def typeof_nditem(val, c):
+def typeof_nditem(val: NdItem, c):
     """Registers the type inference implementation function for a
     numba_dpex.kernel_api.NdItem PyObject.
 
@@ -83,4 +83,4 @@ def typeof_nditem(val, c):
     Returns: A numba_dpex.experimental.core.types.kernel_api.items.NdItemType
         instance.
     """
-    return NdItemType(val.ndim)
+    return NdItemType(val.dimensions)

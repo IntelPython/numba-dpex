@@ -63,6 +63,24 @@ def set_local_ones_nd_item(nd_item: NdItem, a):
     a[i] = 1
 
 
+@dpex_exp.kernel
+def set_dimensions_item(item: Item, a):
+    i = item.get_id(0)
+    a[i] = item.dimensions
+
+
+@dpex_exp.kernel
+def set_dimensions_nd_item(nd_item: NdItem, a):
+    i = nd_item.get_global_id(0)
+    a[i] = nd_item.dimensions
+
+
+@dpex_exp.kernel
+def set_dimensions_group(nd_item: NdItem, a):
+    i = nd_item.get_global_id(0)
+    a[i] = nd_item.get_group().dimensions
+
+
 def _get_group_id_driver(nditem: NdItem, a):
     i = nditem.get_global_id(0)
     g = nditem.get_group()
@@ -147,6 +165,29 @@ def test_nd_item_get_local_id():
             dtype=np.float32,
         ),
     )
+
+
+@pytest.mark.parametrize("dims", [1, 2, 3])
+def test_item_dimensions(dims):
+    a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
+    rng = [1] * dims
+    rng[0] = a.size
+    dpex_exp.call_kernel(set_dimensions_item, dpex.Range(*rng), a)
+
+    assert np.array_equal(a.asnumpy(), dims * np.ones(a.size, dtype=np.float32))
+
+
+@pytest.mark.parametrize("dims", [1, 2, 3])
+@pytest.mark.parametrize(
+    "kernel", [set_dimensions_nd_item, set_dimensions_group]
+)
+def test_nd_item_dimensions(dims, kernel):
+    a = dpnp.zeros(_SIZE, dtype=dpnp.float32)
+    rng, grp = [1] * dims, [1] * dims
+    rng[0], grp[0] = a.size, _GROUP_SIZE
+    dpex_exp.call_kernel(kernel, dpex.NdRange(rng, grp), a)
+
+    assert np.array_equal(a.asnumpy(), dims * np.ones(a.size, dtype=np.float32))
 
 
 def test_error_item_get_global_id():

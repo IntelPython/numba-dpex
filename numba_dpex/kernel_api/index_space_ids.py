@@ -98,6 +98,14 @@ class Group:
         """
         return self._leader
 
+    @property
+    def dimensions(self) -> int:
+        """Returns the rank of a Group object.
+        Returns:
+            int: Number of dimensions in the Group object
+        """
+        return self._global_range.ndim
+
     @leader.setter
     def leader(self, work_item_id):
         """Sets the leader attribute for the group."""
@@ -147,7 +155,7 @@ class Item:
         return self._extent[idx]
 
     @property
-    def ndim(self) -> int:
+    def dimensions(self) -> int:
         """Returns the rank of a Item object.
 
         Returns:
@@ -228,10 +236,10 @@ class NdItem:
         return self._group
 
     @property
-    def ndim(self) -> int:
+    def dimensions(self) -> int:
         """Returns the rank of a NdItem object.
 
         Returns:
             int: Number of dimensions in the NdItem object
         """
-        return self._global_item.ndim
+        return self._global_item.dimensions
