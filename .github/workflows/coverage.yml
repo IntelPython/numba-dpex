@@ -27,7 +27,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
