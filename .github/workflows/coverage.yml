@@ -9,21 +9,25 @@ on:
       - environment/coverage.yml
       - pyproject.toml
 
+permissions: read-all
+
 jobs:
   main:
     name: Generate coverage and push to Coveralls.io
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     defaults:
       run:
         shell: bash -l {0}
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ github.token }}
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
 
@@ -58,7 +62,7 @@ jobs:
       - name: Install coveralls
         shell: bash -l {0}
         run: |
-          pip install coveralls==3.2.0
+          pip install coveralls
 
       - name: Upload coverage data to coveralls.io
         run: |
