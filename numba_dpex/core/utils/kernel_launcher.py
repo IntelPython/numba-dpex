@@ -221,9 +221,11 @@ class KernelLaunchIRBuilder:
             val,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
         )
-        self.builder.store(val, kernel_arg_dst)
+        self.builder.store(val, kernel_arg_dst, align=8)
         self.builder.store(
-            numba_type_to_dpctl_typenum(self.context, typ), kernel_arg_ty_dst
+            numba_type_to_dpctl_typenum(self.context, typ),
+            kernel_arg_ty_dst,
+            align=4,
         )
 
     def _build_complex_arg(
