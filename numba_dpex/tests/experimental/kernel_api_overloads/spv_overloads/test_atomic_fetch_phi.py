@@ -6,9 +6,8 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import AtomicRef
+from numba_dpex.kernel_api import AtomicRef, Item, Range
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_supported_dtypes = get_all_dtypes(
@@ -45,8 +44,8 @@ def test_fetch_phi_fn(input_arrays, ref_index, fetch_phi_fn):
     """A test for all fetch_phi atomic functions."""
 
     @dpex_exp.kernel
-    def _kernel(a, b, ref_index):
-        i = dpex.get_global_id(0)
+    def _kernel(item: Item, a, b, ref_index):
+        i = item.get_id(0)
         v = AtomicRef(b, index=ref_index)
         getattr(v, fetch_phi_fn)(a[i])
 
@@ -60,9 +59,9 @@ def test_fetch_phi_fn(input_arrays, ref_index, fetch_phi_fn):
         # fetch_and, fetch_or, fetch_xor accept only int arguments.
         # test for TypingError when float arguments are passed.
         with pytest.raises(TypingError):
-            dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b, ref_index)
+            dpex_exp.call_kernel(_kernel, Range(10), a, b, ref_index)
     else:
-        dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b, ref_index)
+        dpex_exp.call_kernel(_kernel, Range(10), a, b, ref_index)
         # Verify that `a` accumulated at b[ref_index] by kernel
         # matches the `a` accumulated at  b[ref_index+1] using Python
         for i in range(a.size):
@@ -76,8 +75,8 @@ def test_fetch_phi_retval(fetch_phi_fn):
     """A test for all fetch_phi atomic functions."""
 
     @dpex_exp.kernel
-    def _kernel(a, b, c):
-        i = dpex.get_global_id(0)
+    def _kernel(item: Item, a, b, c):
+        i = item.get_id(0)
         v = AtomicRef(b, index=i)
         c[i] = getattr(v, fetch_phi_fn)(a[i])
 
@@ -89,7 +88,7 @@ def test_fetch_phi_retval(fetch_phi_fn):
     b_copy = dpnp.copy(b)
     c_copy = dpnp.copy(c)
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b, c)
+    dpex_exp.call_kernel(_kernel, Range(10), a, b, c)
 
     # Verify if the value returned by fetch_phi kernel
     # stored into `c` is same as the value returned
@@ -108,8 +107,8 @@ def test_fetch_phi_diff_types(fetch_phi_fn):
     """
 
     @dpex_exp.kernel
-    def _kernel(a, b):
-        i = dpex.get_global_id(0)
+    def _kernel(item: Item, a, b):
+        i = item.get_id(0)
         v = AtomicRef(b, index=0)
         getattr(v, fetch_phi_fn)(a[i])
 
@@ -118,19 +117,19 @@ def test_fetch_phi_diff_types(fetch_phi_fn):
     b = dpnp.zeros(N, dtype=dpnp.int32)
 
     with pytest.raises(TypingError):
-        dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b)
+        dpex_exp.call_kernel(_kernel, Range(10), a, b)
 
 
 @dpex_exp.kernel
-def atomic_ref_0(a):
-    i = dpex.get_global_id(0)
+def atomic_ref_0(item: Item, a):
+    i = item.get_id(0)
     v = AtomicRef(a, index=0)
     v.fetch_add(a[i + 2])
 
 
 @dpex_exp.kernel
-def atomic_ref_1(a):
-    i = dpex.get_global_id(0)
+def atomic_ref_1(item: Item, a):
+    i = item.get_id(0)
     v = AtomicRef(a, index=1)
     v.fetch_add(a[i + 2])
 
@@ -144,24 +143,24 @@ def test_spirv_compiler_flags_add():
     N = 10
     a = dpnp.ones(N, dtype=dpnp.float32)
 
-    dpex_exp.call_kernel(atomic_ref_0, dpex.Range(N - 2), a)
-    dpex_exp.call_kernel(atomic_ref_1, dpex.Range(N - 2), a)
+    dpex_exp.call_kernel(atomic_ref_0, Range(N - 2), a)
+    dpex_exp.call_kernel(atomic_ref_1, Range(N - 2), a)
 
     assert a[0] == N - 1
     assert a[1] == N - 1
 
 
 @dpex_exp.kernel
-def atomic_max_0(a):
-    i = dpex.get_global_id(0)
+def atomic_max_0(item: Item, a):
+    i = item.get_id(0)
     v = AtomicRef(a, index=0)
     if i != 0:
         v.fetch_max(a[i])
 
 
 @dpex_exp.kernel
-def atomic_max_1(a):
-    i = dpex.get_global_id(0)
+def atomic_max_1(item: Item, a):
+    i = item.get_id(0)
     v = AtomicRef(a, index=0)
     if i != 0:
         v.fetch_max(a[i])
@@ -177,8 +176,8 @@ def test_spirv_compiler_flags_max():
     a = dpnp.arange(N, dtype=dpnp.float32)
     b = dpnp.arange(N, dtype=dpnp.float32)
 
-    dpex_exp.call_kernel(atomic_max_0, dpex.Range(N), a)
-    dpex_exp.call_kernel(atomic_max_1, dpex.Range(N), b)
+    dpex_exp.call_kernel(atomic_max_0, Range(N), a)
+    dpex_exp.call_kernel(atomic_max_1, Range(N), b)
 
     assert a[0] == N - 1
     assert b[0] == N - 1

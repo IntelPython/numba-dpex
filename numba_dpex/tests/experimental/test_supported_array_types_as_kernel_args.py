@@ -8,8 +8,8 @@ import dpctl.tensor as dpt
 import dpnp
 import pytest
 
-import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
+from numba_dpex.kernel_api import Item, Range
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_dtypes = get_all_dtypes(
@@ -28,12 +28,12 @@ def input_array(request):
 
 
 @dpex_exp.kernel
-def set_ones(a):
-    i = dpex.get_global_id(0)
+def set_ones(item: Item, a):
+    i = item.get_id(0)
     a[i] = 1
 
 
 def test_fetch_add(input_array):
-    dpex_exp.call_kernel(set_ones, dpex.Range(_SIZE), input_array)
+    dpex_exp.call_kernel(set_ones, Range(_SIZE), input_array)
 
     assert input_array[0] == 1

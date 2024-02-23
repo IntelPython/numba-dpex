@@ -6,10 +6,11 @@ from numba.core import compiler
 
 import numba_dpex as dpex
 from numba_dpex import experimental as dpex_exp
+from numba_dpex.kernel_api import Item
 
 
-def kernel_func(a, b, c):
-    i = dpex.get_global_id(0)
+def kernel_func(item: Item, a, b, c):
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
 

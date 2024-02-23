@@ -6,22 +6,21 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import AddressSpace, AtomicRef
+from numba_dpex.kernel_api import AddressSpace, AtomicRef, Item, Range
 
 
 def test_atomic_ref_compilation():
     @dpex_exp.kernel
-    def atomic_ref_kernel(a, b):
-        i = dpex.get_global_id(0)
+    def atomic_ref_kernel(item: Item, a, b):
+        i = item.get_id(0)
         v = AtomicRef(b, index=0, address_space=AddressSpace.GLOBAL)
         v.fetch_add(a[i])
 
     a = dpnp.ones(10)
     b = dpnp.zeros(10)
     try:
-        dpex_exp.call_kernel(atomic_ref_kernel, dpex.Range(10), a, b)
+        dpex_exp.call_kernel(atomic_ref_kernel, Range(10), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
 
@@ -33,8 +32,8 @@ def test_atomic_ref_compilation_failure():
     """
 
     @dpex_exp.kernel
-    def atomic_ref_kernel(a, b):
-        i = dpex.get_global_id(0)
+    def atomic_ref_kernel(item: Item, a, b):
+        i = item.get_id(0)
         v = AtomicRef(b, index=0, address_space=AddressSpace.LOCAL)
         v.fetch_add(a[i])
 
@@ -42,4 +41,4 @@ def test_atomic_ref_compilation_failure():
     b = dpnp.zeros(10)
 
     with pytest.raises(TypingError):
-        dpex_exp.call_kernel(atomic_ref_kernel, dpex.Range(10), a, b)
+        dpex_exp.call_kernel(atomic_ref_kernel, Range(10), a, b)

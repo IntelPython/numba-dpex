@@ -5,14 +5,15 @@
 import dpctl
 from numba.core import types
 
-import numba_dpex as dpex
 from numba_dpex import DpctlSyclQueue, DpnpNdArray
 from numba_dpex import experimental as dpex_exp
 from numba_dpex import int64
+from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
+from numba_dpex.kernel_api import Item
 
 
-def kernel_func(a, b, c):
-    i = dpex.get_global_id(0)
+def kernel_func(item: Item, a, b, c):
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -36,7 +37,7 @@ def test_codegen_with_max_inline_threshold():
 
     queue_ty = DpctlSyclQueue(dpctl.SyclQueue())
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
-    kernel_sig = types.void(i64arr_ty, i64arr_ty, i64arr_ty)
+    kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
     disp = dpex_exp.kernel(inline_threshold=3)(kernel_func)
     disp.compile(kernel_sig)
@@ -57,7 +58,7 @@ def test_codegen_without_max_inline_threshold():
 
     queue_ty = DpctlSyclQueue(dpctl.SyclQueue())
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
-    kernel_sig = types.void(i64arr_ty, i64arr_ty, i64arr_ty)
+    kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
     disp = dpex_exp.kernel(kernel_func)
     disp.compile(kernel_sig)
@@ -70,4 +71,4 @@ def test_codegen_without_max_inline_threshold():
         if not f.is_declaration:
             count_of_non_declaration_type_functions += 1
 
-    assert count_of_non_declaration_type_functions == 2
+    assert count_of_non_declaration_type_functions == 3
