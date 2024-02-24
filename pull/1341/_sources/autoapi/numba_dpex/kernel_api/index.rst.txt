@@ -13,22 +13,6 @@ numba_dpex.kernel_api
 
 
 
-Submodules
-----------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 1
-
-   atomic_fence/index.rst
-   atomic_ref/index.rst
-   barrier/index.rst
-   flag_enum/index.rst
-   index_space_ids/index.rst
-   launcher/index.rst
-   memory_enums/index.rst
-   ranges/index.rst
-
-
 Overview
 --------
 

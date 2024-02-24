@@ -1,4 +1,6 @@
 
+:orphan:
+
 numba_dpex.kernel_api.barrier
 =============================
 

@@ -1,0 +1,146 @@
+
+:orphan:
+
+numba_dpex.experimental.target
+==============================
+
+.. py:module:: numba_dpex.experimental.target
+
+.. autoapi-nested-parse::
+
+   A new target descriptor that includes experimental features that should
+   eventually move into the numba_dpex.core.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`SyclDeviceExp <numba_dpex.experimental.target.SyclDeviceExp>`
+     - Mark the hardware target as SYCL Device.
+   * - :py:obj:`DpexExpKernelTypingContext <numba_dpex.experimental.target.DpexExpKernelTypingContext>`
+     - Experimental typing context class extending the DpexKernelTypingContext
+   * - :py:obj:`DpexExpKernelTargetContext <numba_dpex.experimental.target.DpexExpKernelTargetContext>`
+     - Experimental target context class extending the DpexKernelTargetContext
+   * - :py:obj:`DpexExpKernelTarget <numba_dpex.experimental.target.DpexExpKernelTarget>`
+     - Implements a target descriptor for numba_dpex.kernel decorated functions.
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DPEX_KERNEL_EXP_TARGET_NAME <numba_dpex.experimental.target.DPEX_KERNEL_EXP_TARGET_NAME>`
+     - \-
+   * - :py:obj:`dpex_exp_kernel_target <numba_dpex.experimental.target.dpex_exp_kernel_target>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: SyclDeviceExp
+
+   Bases: :py:obj:`numba.core.target_extension.GPU`
+
+   Mark the hardware target as SYCL Device.
+
+
+
+
+.. py:class:: DpexExpKernelTypingContext
+
+   Bases: :py:obj:`numba_dpex.kernel_api_impl.spirv.target.SPIRVTypingContext`
+
+   Experimental typing context class extending the DpexKernelTypingContext
+   by overriding super class functions for new experimental types.
+
+   A new experimental type may require updating type inference for that type
+   when it is used as an argument, value or attribute in a JIT compiled
+   function. All such experimental functionality should be added here till they
+   are stable enough to be migrated to DpexKernelTypingContext.
+
+
+
+
+.. py:class:: DpexExpKernelTargetContext(typingctx, target=DPEX_KERNEL_EXP_TARGET_NAME)
+
+   Bases: :py:obj:`numba_dpex.kernel_api_impl.spirv.target.SPIRVTargetContext`
+
+   Experimental target context class extending the DpexKernelTargetContext
+   by overriding super class functions for new experimental types.
+
+   A new experimental type may require specific ways for handling the lowering
+   to LLVM IR. All such experimental functionality should be added here till
+   they are stable enough to be migrated to DpexKernelTargetContext.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`allow_dynamic_globals <numba_dpex.experimental.target.DpexExpKernelTargetContext.allow_dynamic_globals>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: allow_dynamic_globals
+      :value: True
+
+      
+
+
+
+.. py:class:: DpexExpKernelTarget(target_name)
+
+   Bases: :py:obj:`numba.core.descriptors.TargetDescriptor`
+
+   Implements a target descriptor for numba_dpex.kernel decorated functions.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`options <numba_dpex.experimental.target.DpexExpKernelTarget.options>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: options
+
+      
+
+
+
+
+Attributes
+----------
+.. py:data:: DPEX_KERNEL_EXP_TARGET_NAME
+   :value: 'dpex_kernel_exp'
+
+   
+
+.. py:data:: dpex_exp_kernel_target
+
+   
+
+
+
