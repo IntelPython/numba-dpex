@@ -444,11 +444,7 @@ with “<a class="reference external" href="https://data-apis.org/array-api/late
 in the array API standard. User has full control over memory allocation through
 three keyword arguments present in all <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/creation_functions.html">array creation functions</a>.
 For example, consider</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use usm_type = &#39;device&#39; to get USM-device allocation (default),</span>
-<span class="c1">#     usm_type = &#39;shared&#39; to get USM-shared allocation,</span>
-<span class="c1">#     usm_type = &#39;host&#39;   to get USM-host allocation</span>
-<span class="k">def</span> <span class="nf">dpt</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usm_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sycl_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">usm_ndarray</span><span class="p">:</span>
-    <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO</span>
 </pre></div>
 </div>
 <p>The keyword <code class="docutils literal notranslate"><span class="pre">device</span></code> is <a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html#syntax-for-device-assignment">mandated by the array API</a>.

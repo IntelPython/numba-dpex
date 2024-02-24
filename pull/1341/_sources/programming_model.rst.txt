@@ -228,11 +228,7 @@ For example, consider
 
 .. code:: python
 
-    # Use usm_type = 'device' to get USM-device allocation (default),
-    #     usm_type = 'shared' to get USM-shared allocation,
-    #     usm_type = 'host'   to get USM-host allocation
-    def dpt.empty(..., device=None, usm_type=None, sycl_queue=None) -> dpctl.tensor.usm_ndarray:
-        ...
+    # TODO
 
 The keyword ``device`` is `mandated by the array API
 <https://data-apis.org/array-api/latest/design_topics/device_support.html#syntax-for-device-assignment>`__.
