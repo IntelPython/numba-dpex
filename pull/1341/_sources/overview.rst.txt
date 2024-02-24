@@ -9,7 +9,7 @@ LLVM-based code generator for portable accelerator programming in Python. The
 code generator implements a new pseudo-kernel programming domain-specific
 language (DSL) called `KAPI` that is modeled after the C++ DSL `SYCL*`_. The
 SYCL language is an open standard developed under the Unified Acceleration
-Foundation (`UXL`_`) as a vendor-agnostic way of programming different types of
+Foundation (`UXL`_) as a vendor-agnostic way of programming different types of
 data-parallel hardware such as multi-core CPUs, GPUs, and FPGAs. Numba-dpex and
 KAPI aim to bring the same vendor-agnostic and standard-compliant programming
 model to Python.
