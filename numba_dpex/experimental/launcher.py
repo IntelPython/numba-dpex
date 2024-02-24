@@ -35,14 +35,14 @@ from numba_dpex.kernel_api_impl.spirv.dispatcher import (
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 
-class LLRange(NamedTuple):
+class _LLRange(NamedTuple):
     """Analog of Range and NdRange but for the llvm ir values."""
 
     global_range_extents: list
     local_range_extents: list
 
 
-def wrap_event_reference_tuple(ctx, builder, event1, event2):
+def _wrap_event_reference_tuple(ctx, builder, event1, event2):
     """Creates tuple data model from two event data models, so it can be
     boxed to Python."""
     ty_event = DpctlSyclEvent()
@@ -203,7 +203,7 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
         if not sync:
             host_event_ref = kl_builder.acquire_meminfo_and_submit_release()
 
-            return wrap_event_reference_tuple(
+            return _wrap_event_reference_tuple(
                 cgctx,
                 builder,
                 wrap_event_reference(cgctx, builder, host_event_ref),
