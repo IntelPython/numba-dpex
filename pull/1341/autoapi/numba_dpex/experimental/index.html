@@ -263,10 +263,10 @@ yet production ready.</p>
 <td><p>A decorator to define a kernel function.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental.call_kernel" title="numba_dpex.experimental.call_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call_kernel</span></code></a>(kernel_fn, index_space, *kernel_args)</p></td>
-<td><p>Calls a numba_dpex.kernel decorated function from CPython or from another</p></td>
+<td><p>Calls a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function synchronously from</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental.call_kernel_async" title="numba_dpex.experimental.call_kernel_async"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call_kernel_async</span></code></a>(kernel_fn, index_space, dependent_events, *kernel_args)</p></td>
-<td><p>Calls a numba_dpex.kernel decorated function from CPython or from another</p></td>
+<td><p>Calls a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function asynchronously from</p></td>
 </tr>
 </tbody>
 </table>
@@ -316,19 +316,20 @@ follows data programming model.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.experimental.call_kernel">
 <span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_space</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#numba_dpex.experimental.call_kernel" title="Link to this definition">#</a></dt>
-<dd><p>Calls a numba_dpex.kernel decorated function from CPython or from another
-dpjit function. Kernel execution happens in synchronous way, so the thread
-will be blocked till the kernel done execution.</p>
+<dd><p>Calls a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function synchronously from
+CPython or from another dpjit function.</p>
+<p>Kernel execution happens in synchronous way, so the main thread will be
+blocked till the kernel done execution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel_fn</strong> (<em>numba_dpex.experimental.KernelDispatcher</em>) – A</p></li>
-<li><p><strong>a</strong> (<em>numba_dpex.kernel decorated function that is compiled to</em>) – </p></li>
-<li><p><strong>numba_dpex.</strong> (<em>KernelDispatcher by</em>) – </p></li>
-<li><p><strong>index_space</strong> (<a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a><em> | </em><a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><em>NdRange</em></a>) – A numba_dpex.Range or numba_dpex.NdRange</p></li>
-<li><p><strong>kernel.</strong> (<em>type object that specifies the index space for the</em>) – </p></li>
-<li><p><strong>kernel_args</strong> – List of objects that are passed to the numba_dpex.kernel</p></li>
-<li><p><strong>function.</strong> (<em>decorated</em>) – </p></li>
+<li><p><strong>kernel_fn</strong> (<em>numba_dpex.experimental.KernelDispatcher</em>) – A
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function that is compiled to a
+<code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code>.</p></li>
+<li><p><strong>index_space</strong> (<a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a><em> | </em><a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><em>NdRange</em></a>) – A Range or NdRange type object that
+specifies the index space for the kernel.</p></li>
+<li><p><strong>kernel_args</strong> – List of objects that are passed to the numba_dpex.kernel
+decorated function.</p></li>
 </ul>
 </dd>
 </dl>
@@ -337,27 +338,33 @@ will be blocked till the kernel done execution.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.experimental.call_kernel_async">
 <span class="sig-name descname"><span class="pre">call_kernel_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dpctl.SyclEvent</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dpctl.SyclEvent</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dpctl.SyclEvent</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#numba_dpex.experimental.call_kernel_async" title="Link to this definition">#</a></dt>
-<dd><p>Calls a numba_dpex.kernel decorated function from CPython or from another
-dpjit function. Kernel execution happens in asynchronous way, so the thread
-will not be blocked till the kernel done execution. That means that it is
-user responsibility to properly use any memory used by kernel until the
-kernel execution is completed.</p>
+<dd><p>Calls a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function asynchronously from
+CPython or from a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.dpjit()</span></code> function.</p>
+<p>Kernel execution happens asynchronously, so the main thread will not be
+blocked till the kernel done execution. Instead the function returns back to
+caller a handle for an <em>event</em> to track kernel execution. It is a user’s
+responsibility to properly track kernel execution completion and not use
+any data that may still be used by the kernel prior to the kernel’s
+completion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel_fn</strong> (<em>numba_dpex.experimental.KernelDispatcher</em>) – A</p></li>
-<li><p><strong>a</strong> (<em>numba_dpex.kernel decorated function that is compiled to</em>) – </p></li>
-<li><p><strong>numba_dpex.</strong> (<em>KernelDispatcher by</em>) – </p></li>
-<li><p><strong>index_space</strong> (<a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a><em> | </em><a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><em>NdRange</em></a>) – A numba_dpex.Range or numba_dpex.NdRange</p></li>
-<li><p><strong>kernel.</strong> (<em>type object that specifies the index space for the</em>) – </p></li>
-<li><p><strong>kernel_args</strong> – List of objects that are passed to the numba_dpex.kernel</p></li>
-<li><p><strong>function.</strong> (<em>decorated</em>) – </p></li>
+<li><p><strong>kernel_fn</strong> (<em>numba_dpex.experimental.KernelDispatcher</em>) – A
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated function that is compiled to a
+<code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code>.</p></li>
+<li><p><strong>index_space</strong> (<a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a><em> | </em><a class="reference internal" href="../kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><em>NdRange</em></a>) – A Range or NdRange type object that
+specifies the index space for the kernel.</p></li>
+<li><p><strong>kernel_args</strong> – List of objects that are passed to the numba_dpex.kernel
+decorated function.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>pair of host event and device event. Host event represent host task
-that releases use of any kernel argument so it can be deallocated.
-This task may be executed only after device task is done.</p>
+<dd class="field-even"><p>A pair of <code class="docutils literal notranslate"><span class="pre">dpctl.SyclEvent</span></code> objects. The pair of events constitute of
+a host task and an event associated with the kernel execution. The event
+associated with the kernel execution indicates the execution status of
+the submitted kernel function. The host task manages the lifetime of any
+PyObject passed in as a kernel argument and automatically decrements the
+reference count of the object on kernel execution completion.</p>
 </dd>
 </dl>
 </dd></dl>

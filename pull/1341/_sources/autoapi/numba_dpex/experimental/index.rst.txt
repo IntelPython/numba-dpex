@@ -25,9 +25,9 @@ Overview
    * - :py:obj:`kernel <numba_dpex.experimental.kernel>`\ (func_or_sig, \*\*options)
      - A decorator to define a kernel function.
    * - :py:obj:`call_kernel <numba_dpex.experimental.call_kernel>`\ (kernel_fn, index_space, \*kernel_args)
-     - Calls a numba_dpex.kernel decorated function from CPython or from another
+     - Calls a :func:`numba_dpex.kernel` decorated function synchronously from
    * - :py:obj:`call_kernel_async <numba_dpex.experimental.call_kernel_async>`\ (kernel_fn, index_space, dependent_events, \*kernel_args)
-     - Calls a numba_dpex.kernel decorated function from CPython or from another
+     - Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
 
 
 
@@ -68,42 +68,51 @@ Functions
 
 .. py:function:: call_kernel(kernel_fn, index_space, *kernel_args) -> None
 
-   Calls a numba_dpex.kernel decorated function from CPython or from another
-   dpjit function. Kernel execution happens in synchronous way, so the thread
-   will be blocked till the kernel done execution.
+   Calls a :func:`numba_dpex.kernel` decorated function synchronously from
+   CPython or from another dpjit function.
+
+   Kernel execution happens in synchronous way, so the main thread will be
+   blocked till the kernel done execution.
 
    :param kernel_fn: A
+                     :func:`numba_dpex.kernel` decorated function that is compiled to a
+                     ``KernelDispatcher``.
    :type kernel_fn: numba_dpex.experimental.KernelDispatcher
-   :param numba_dpex.kernel decorated function that is compiled to a:
-   :param KernelDispatcher by numba_dpex.:
-   :param index_space: A numba_dpex.Range or numba_dpex.NdRange
+   :param index_space: A Range or NdRange type object that
+                       specifies the index space for the kernel.
    :type index_space: Range | NdRange
-   :param type object that specifies the index space for the kernel.:
    :param kernel_args: List of objects that are passed to the numba_dpex.kernel
-   :param decorated function.:
+                       decorated function.
 
 
 .. py:function:: call_kernel_async(kernel_fn, index_space, dependent_events: list[dpctl.SyclEvent], *kernel_args) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]
 
-   Calls a numba_dpex.kernel decorated function from CPython or from another
-   dpjit function. Kernel execution happens in asynchronous way, so the thread
-   will not be blocked till the kernel done execution. That means that it is
-   user responsibility to properly use any memory used by kernel until the
-   kernel execution is completed.
+   Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
+   CPython or from a :func:`numba_dpex.dpjit` function.
+
+   Kernel execution happens asynchronously, so the main thread will not be
+   blocked till the kernel done execution. Instead the function returns back to
+   caller a handle for an *event* to track kernel execution. It is a user's
+   responsibility to properly track kernel execution completion and not use
+   any data that may still be used by the kernel prior to the kernel's
+   completion.
 
    :param kernel_fn: A
+                     :func:`numba_dpex.kernel` decorated function that is compiled to a
+                     ``KernelDispatcher``.
    :type kernel_fn: numba_dpex.experimental.KernelDispatcher
-   :param numba_dpex.kernel decorated function that is compiled to a:
-   :param KernelDispatcher by numba_dpex.:
-   :param index_space: A numba_dpex.Range or numba_dpex.NdRange
+   :param index_space: A Range or NdRange type object that
+                       specifies the index space for the kernel.
    :type index_space: Range | NdRange
-   :param type object that specifies the index space for the kernel.:
    :param kernel_args: List of objects that are passed to the numba_dpex.kernel
-   :param decorated function.:
+                       decorated function.
 
-   :returns: pair of host event and device event. Host event represent host task
-             that releases use of any kernel argument so it can be deallocated.
-             This task may be executed only after device task is done.
+   :returns: A pair of ``dpctl.SyclEvent`` objects. The pair of events constitute of
+             a host task and an event associated with the kernel execution. The event
+             associated with the kernel execution indicates the execution status of
+             the submitted kernel function. The host task manages the lifetime of any
+             PyObject passed in as a kernel argument and automatically decrements the
+             reference count of the object on kernel execution completion.
 
 
 
