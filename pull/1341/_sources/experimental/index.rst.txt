@@ -6,8 +6,8 @@ Experimental Features
 
 Numba-dpex includes various experimental features that are not yet suitable for
 everyday production usage, but are included as an engineering preview.
-Following is a list of the most prominent experimental features Currently
-included in numba-dpex.
+The most prominent experimental features currently included in numba-dpex are
+listed in this section.
 
 
 Compiling and Offloading ``dpnp`` statements
