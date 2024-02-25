@@ -16,22 +16,12 @@ numba_dpex.experimental.launcher
 Overview
 --------
 
-.. list-table:: Classes
-   :header-rows: 0
-   :widths: auto
-   :class: summarytable
-
-   * - :py:obj:`LLRange <numba_dpex.experimental.launcher.LLRange>`
-     - Analog of Range and NdRange but for the llvm ir values.
-
 
 .. list-table:: Function
    :header-rows: 0
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`wrap_event_reference_tuple <numba_dpex.experimental.launcher.wrap_event_reference_tuple>`\ (ctx, builder, event1, event2)
-     - Creates tuple data model from two event data models, so it can be
    * - :py:obj:`call_kernel <numba_dpex.experimental.launcher.call_kernel>`\ (kernel_fn, index_space, \*kernel_args)
      - Calls a numba_dpex.kernel decorated function from CPython or from another
    * - :py:obj:`call_kernel_async <numba_dpex.experimental.launcher.call_kernel_async>`\ (kernel_fn, index_space, dependent_events, \*kernel_args)
@@ -39,52 +29,9 @@ Overview
 
 
 
-Classes
--------
-
-.. py:class:: LLRange
-
-   Bases: :py:obj:`NamedTuple`
-
-   Analog of Range and NdRange but for the llvm ir values.
-
-
-   .. rubric:: Overview
-
-   .. list-table:: Attributes
-      :header-rows: 0
-      :widths: auto
-      :class: summarytable
-
-      * - :py:obj:`global_range_extents <numba_dpex.experimental.launcher.LLRange.global_range_extents>`
-        - \-
-      * - :py:obj:`local_range_extents <numba_dpex.experimental.launcher.LLRange.local_range_extents>`
-        - \-
-
-
-
-   .. rubric:: Members
-
-   .. py:attribute:: global_range_extents
-      :type: list
-
-      
-
-   .. py:attribute:: local_range_extents
-      :type: list
-
-      
-
-
 
 Functions
 ---------
-.. py:function:: wrap_event_reference_tuple(ctx, builder, event1, event2)
-
-   Creates tuple data model from two event data models, so it can be
-   boxed to Python.
-
-
 .. py:function:: call_kernel(kernel_fn, index_space, *kernel_args) -> None
 
    Calls a numba_dpex.kernel decorated function from CPython or from another
