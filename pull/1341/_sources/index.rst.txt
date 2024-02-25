@@ -48,6 +48,7 @@ Data Parallel Extension for Numba*
    programming_model
    user_guide/index
    autoapi/index
+   experimental/index
    useful_links
 
 .. toctree::
