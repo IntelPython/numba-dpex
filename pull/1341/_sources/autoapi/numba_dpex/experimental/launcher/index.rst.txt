@@ -23,9 +23,9 @@ Overview
    :class: summarytable
 
    * - :py:obj:`call_kernel <numba_dpex.experimental.launcher.call_kernel>`\ (kernel_fn, index_space, \*kernel_args)
-     - Calls a :func:`numba_dpex.kernel` decorated function synchronously from
+     - Compiles and synchronously executes a kernel function.
    * - :py:obj:`call_kernel_async <numba_dpex.experimental.launcher.call_kernel_async>`\ (kernel_fn, index_space, dependent_events, \*kernel_args)
-     - Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
+     - Compiles and asynchronously executes a kernel function.
 
 
 
@@ -34,8 +34,7 @@ Functions
 ---------
 .. py:function:: call_kernel(kernel_fn, index_space, *kernel_args) -> None
 
-   Calls a :func:`numba_dpex.kernel` decorated function synchronously from
-   CPython or from another dpjit function.
+   Compiles and synchronously executes a kernel function.
 
    Kernel execution happens in synchronous way, so the main thread will be
    blocked till the kernel done execution.
@@ -53,15 +52,15 @@ Functions
 
 .. py:function:: call_kernel_async(kernel_fn, index_space, dependent_events: list[dpctl.SyclEvent], *kernel_args) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]
 
-   Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
-   CPython or from a :func:`numba_dpex.dpjit` function.
+   Compiles and asynchronously executes a kernel function.
 
-   Kernel execution happens asynchronously, so the main thread will not be
-   blocked till the kernel done execution. Instead the function returns back to
-   caller a handle for an *event* to track kernel execution. It is a user's
-   responsibility to properly track kernel execution completion and not use
-   any data that may still be used by the kernel prior to the kernel's
-   completion.
+   Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
+   CPython or from a :func:`numba_dpex.dpjit` function. As the kernel execution
+   happens asynchronously, so the main thread will not be blocked till the
+   kernel done execution. Instead the function returns back to caller a handle
+   for an *event* to track kernel execution. It is a user's responsibility to
+   properly track kernel execution completion and not use any data that may
+   still be used by the kernel prior to the kernel's completion.
 
    :param kernel_fn: A
                      :func:`numba_dpex.kernel` decorated function that is compiled to a
