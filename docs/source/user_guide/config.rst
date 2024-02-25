@@ -3,7 +3,10 @@
 Configuration Options for ``numba-dpex``
 ========================================
 
-``numba-dpex`` provides a set of environment variables and flags for configuring different aspects of the compilation, debugging and execution of programs. The configuration flags of ``numba-dpex`` are mostly inherited from those of Numba*. They are defined in :file:`numba_dpex/core/config.py`.
+``numba-dpex`` provides a set of environment variables and flags for configuring
+different aspects of the compilation, debugging and execution of programs. The
+configuration flags of ``numba-dpex`` are mostly inherited from those of Numba*.
+They are defined in :file:`numba_dpex/core/config.py`.
 
 .. note::
     In order to enable/disable each of the configuration flags, a ``NUMBA_DPEX``
