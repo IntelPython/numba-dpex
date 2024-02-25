@@ -22,19 +22,19 @@ Overview
    :class: summarytable
 
    * - :py:obj:`AtomicRef <numba_dpex.kernel_api.AtomicRef>`
-     - Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
+     - Analogue to the ``sycl::atomic_ref`` class.
    * - :py:obj:`Group <numba_dpex.kernel_api.Group>`
      - Analogue to the ``sycl::group`` type.
    * - :py:obj:`Item <numba_dpex.kernel_api.Item>`
-     - Analogue to the ``sycl::item`` type. Identifies an instance of the
+     - Analogue to the ``sycl::item`` class.
    * - :py:obj:`NdItem <numba_dpex.kernel_api.NdItem>`
-     - Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
+     - Analogue to the ``sycl::nd_item`` class.
    * - :py:obj:`AddressSpace <numba_dpex.kernel_api.AddressSpace>`
-     - The address space values supported by numba_dpex.
+     - An enumeration of the supported address space values.
    * - :py:obj:`MemoryOrder <numba_dpex.kernel_api.MemoryOrder>`
-     - An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
+     - An enumeration of the supported ``sycl::memory_order`` values.
    * - :py:obj:`MemoryScope <numba_dpex.kernel_api.MemoryScope>`
-     - An enumeration of SYCL memory scope. For more details please refer to
+     - An enumeration of the supported ``sycl::memory_scope`` values.
    * - :py:obj:`NdRange <numba_dpex.kernel_api.NdRange>`
      - A class to encapsulate all kernel launch parameters.
    * - :py:obj:`Range <numba_dpex.kernel_api.Range>`
@@ -60,9 +60,10 @@ Classes
 
 .. py:class:: AtomicRef(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
 
-   Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
-   view into a data container that can be then updated atomically using any of
-   the ``fetch_*`` member functions of the class.
+   Analogue to the ``sycl::atomic_ref`` class.
+
+   An atomic reference is a view into a data container that can be then updated
+   atomically using any of the ``fetch_*`` member functions of the class.
 
 
    .. rubric:: Overview
@@ -301,8 +302,10 @@ Classes
 
 .. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
 
-   Analogue to the ``sycl::item`` type. Identifies an instance of the
-   function object executing at each point in an Range.
+   Analogue to the ``sycl::item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.Range`.
 
 
    .. rubric:: Overview
@@ -352,8 +355,10 @@ Classes
 
 .. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
 
-   Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
-   function object executing at each point in an NdRange.
+   Analogue to the ``sycl::nd_item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.NdRange`.
 
 
    .. rubric:: Overview
@@ -367,7 +372,7 @@ Classes
       * - :py:obj:`get_global_id <numba_dpex.kernel_api.NdItem.get_global_id>`\ (idx)
         - Get the global id for a specific dimension.
       * - :py:obj:`get_global_linear_id <numba_dpex.kernel_api.NdItem.get_global_linear_id>`\ ()
-        - Get the global linear id associated with this item for all
+        - Get the linearized global id for the item for all dimensions.
       * - :py:obj:`get_local_id <numba_dpex.kernel_api.NdItem.get_local_id>`\ (idx)
         - Get the local id for a specific dimension.
       * - :py:obj:`get_local_linear_id <numba_dpex.kernel_api.NdItem.get_local_linear_id>`\ ()
@@ -392,8 +397,7 @@ Classes
 
    .. py:method:: get_global_linear_id()
 
-      Get the global linear id associated with this item for all
-      dimensions.
+      Get the linearized global id for the item for all dimensions.
 
       :returns: The global linear id.
       :rtype: int
@@ -445,7 +449,7 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   The address space values supported by numba_dpex.
+   An enumeration of the supported address space values.
 
    ==================   ============
    Address space        Value
@@ -511,8 +515,9 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
-   integer values of the enums is kept consistent with the corresponding
+   An enumeration of the supported ``sycl::memory_order`` values.
+
+   The integer values of the enums is kept consistent with the corresponding
    implementation in dpcpp.
 
    =====================   ============
@@ -587,8 +592,9 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of SYCL memory scope. For more details please refer to
-   SYCL 2020 specification, section 3.8.3.2
+   An enumeration of the supported ``sycl::memory_scope`` values.
+
+   For more details please refer to SYCL 2020 specification, section 3.8.3.2
 
    ===============  ============
    Memory Scope     Enum value

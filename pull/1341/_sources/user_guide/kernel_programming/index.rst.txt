@@ -69,6 +69,9 @@ control over memory allocation on a device.
 Writing an *nd-range* kernel
 ++++++++++++++++++++++++++++
 
+The ``device_func`` decorator
++++++++++++++++++++++++++++++
+
 Supported mathematical operations
 +++++++++++++++++++++++++++++++++
 
@@ -96,8 +99,8 @@ Group barrier synchronization
 Atomic operations
 +++++++++++++++++
 
-The ``device_func`` decorator
-+++++++++++++++++++++++++++++
+Async kernel execution
+++++++++++++++++++++++
 
-Specializing a kernels or a device_func
-+++++++++++++++++++++++++++++++++++++++
+Specializing a kernel or a device_func
+++++++++++++++++++++++++++++++++++++++

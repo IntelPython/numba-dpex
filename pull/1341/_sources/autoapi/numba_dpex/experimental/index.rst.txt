@@ -74,8 +74,8 @@ Functions
    blocked till the kernel done execution.
 
    :param kernel_fn: A
-                     :func:`numba_dpex.kernel` decorated function that is compiled to a
-                     ``KernelDispatcher``.
+                     :func:`numba_dpex.experimental.kernel` decorated function that is
+                     compiled to a ``KernelDispatcher``.
    :type kernel_fn: numba_dpex.experimental.KernelDispatcher
    :param index_space: A Range or NdRange type object that
                        specifies the index space for the kernel.
@@ -88,18 +88,18 @@ Functions
 
    Compiles and asynchronously executes a kernel function.
 
-   Calls a :func:`numba_dpex.kernel` decorated function asynchronously from
-   CPython or from a :func:`numba_dpex.dpjit` function. As the kernel execution
-   happens asynchronously, so the main thread will not be blocked till the
-   kernel done execution. Instead the function returns back to caller a handle
-   for an *event* to track kernel execution. It is a user's responsibility to
-   properly track kernel execution completion and not use any data that may
-   still be used by the kernel prior to the kernel's completion.
+   Calls a :func:`numba_dpex.experimental.kernel` decorated function
+   asynchronously from CPython or from a :func:`numba_dpex.dpjit` function. As
+   the kernel execution happens asynchronously, so the main thread will not be
+   blocked till the kernel done execution. Instead the function returns back to
+   caller a handle for an *event* to track kernel execution. It is a user's
+   responsibility to properly track kernel execution completion and not use any
+   data that may still be used by the kernel prior to the kernel's completion.
 
    :param kernel_fn: A
-                     :func:`numba_dpex.kernel` decorated function that is compiled to a
-                     ``KernelDispatcher``.
-   :type kernel_fn: numba_dpex.experimental.KernelDispatcher
+                     :func:`numba_dpex.experimental.kernel` decorated function that is
+                     compiled to a ``KernelDispatcher``.
+   :type kernel_fn: KernelDispatcher
    :param index_space: A Range or NdRange type object that
                        specifies the index space for the kernel.
    :type index_space: Range | NdRange

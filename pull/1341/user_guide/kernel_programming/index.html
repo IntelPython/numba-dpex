@@ -311,6 +311,9 @@ control over memory allocation on a device.</p>
 <section id="writing-an-nd-range-kernel">
 <h3>Writing an <em>nd-range</em> kernel<a class="headerlink" href="#writing-an-nd-range-kernel" title="Link to this heading">#</a></h3>
 </section>
+<section id="the-device-func-decorator">
+<h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
+</section>
 <section id="supported-mathematical-operations">
 <h3>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h3>
 </section>
@@ -338,11 +341,11 @@ control over memory allocation on a device.</p>
 <section id="atomic-operations">
 <h3>Atomic operations<a class="headerlink" href="#atomic-operations" title="Link to this heading">#</a></h3>
 </section>
-<section id="the-device-func-decorator">
-<h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
+<section id="async-kernel-execution">
+<h3>Async kernel execution<a class="headerlink" href="#async-kernel-execution" title="Link to this heading">#</a></h3>
 </section>
-<section id="specializing-a-kernels-or-a-device-func">
-<h3>Specializing a kernels or a device_func<a class="headerlink" href="#specializing-a-kernels-or-a-device-func" title="Link to this heading">#</a></h3>
+<section id="specializing-a-kernel-or-a-device-func">
+<h3>Specializing a kernel or a device_func<a class="headerlink" href="#specializing-a-kernel-or-a-device-func" title="Link to this heading">#</a></h3>
 </section>
 </section>
 </section>
@@ -416,6 +419,7 @@ control over memory allocation on a device.</p>
 <li><a class="reference internal" href="#basic-concepts">Basic concepts</a><ul>
 <li><a class="reference internal" href="#writing-a-range-kernel">Writing a <em>range</em> kernel</a></li>
 <li><a class="reference internal" href="#writing-an-nd-range-kernel">Writing an <em>nd-range</em> kernel</a></li>
+<li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
 <li><a class="reference internal" href="#supported-mathematical-operations">Supported mathematical operations</a></li>
 <li><a class="reference internal" href="#supported-python-operators">Supported Python operators</a></li>
 <li><a class="reference internal" href="#supported-kernel-arguments">Supported kernel arguments</a></li>
@@ -427,8 +431,8 @@ control over memory allocation on a device.</p>
 <li><a class="reference internal" href="#private-memory-allocation">Private memory allocation</a></li>
 <li><a class="reference internal" href="#group-barrier-synchronization">Group barrier synchronization</a></li>
 <li><a class="reference internal" href="#atomic-operations">Atomic operations</a></li>
-<li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
-<li><a class="reference internal" href="#specializing-a-kernels-or-a-device-func">Specializing a kernels or a device_func</a></li>
+<li><a class="reference internal" href="#async-kernel-execution">Async kernel execution</a></li>
+<li><a class="reference internal" href="#specializing-a-kernel-or-a-device-func">Specializing a kernel or a device_func</a></li>
 </ul>
 </li>
 </ul>

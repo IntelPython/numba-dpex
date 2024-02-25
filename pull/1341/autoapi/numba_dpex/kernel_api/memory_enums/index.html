@@ -257,13 +257,13 @@ memory enum classes.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
-<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values in dpcpp. The</p></td>
+<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
-<td><p>An enumeration of SYCL memory scope. For more details please refer to</p></td>
+<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.memory_enums.AddressSpace" title="numba_dpex.kernel_api.memory_enums.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
-<td><p>The address space values supported by numba_dpex.</p></td>
+<td><p>An enumeration of the supported address space values.</p></td>
 </tr>
 </tbody>
 </table>
@@ -275,8 +275,8 @@ memory enum classes.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.memory_enums.MemoryOrder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values in dpcpp. The
-integer values of the enums is kept consistent with the corresponding
+<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p>
+<p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
@@ -370,8 +370,8 @@ implementation in dpcpp.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.memory_enums.MemoryScope">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.memory_enums.MemoryScope" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of SYCL memory scope. For more details please refer to
-SYCL 2020 specification, section 3.8.3.2</p>
+<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p>
+<p>For more details please refer to SYCL 2020 specification, section 3.8.3.2</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
@@ -453,7 +453,7 @@ SYCL 2020 specification, section 3.8.3.2</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.memory_enums.AddressSpace">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.memory_enums.AddressSpace" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>The address space values supported by numba_dpex.</p>
+<p>An enumeration of the supported address space values.</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>

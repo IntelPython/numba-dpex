@@ -259,25 +259,25 @@ numba_dpex.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicRef</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> type. An atomic reference is a</p></td>
+<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Group</span></code></a></p></td>
 <td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::group</span></code> type.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Item</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> type. Identifies an instance of the</p></td>
+<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdItem</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> type. Identifies an instance of the</p></td>
+<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace" title="numba_dpex.kernel_api.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
-<td><p>The address space values supported by numba_dpex.</p></td>
+<td><p>An enumeration of the supported address space values.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
-<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values in dpcpp. The</p></td>
+<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
-<td><p>An enumeration of SYCL memory scope. For more details please refer to</p></td>
+<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
 <td><p>A class to encapsulate all kernel launch parameters.</p></td>
@@ -310,9 +310,9 @@ numba_dpex.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomicRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryOrder.RELAXED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.DEVICE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AddressSpace.GLOBAL</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> type. An atomic reference is a
-view into a data container that can be then updated atomically using any of
-the <code class="docutils literal notranslate"><span class="pre">fetch_*</span></code> member functions of the class.</p>
+<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> class.</p>
+<p>An atomic reference is a view into a data container that can be then updated
+atomically using any of the <code class="docutils literal notranslate"><span class="pre">fetch_*</span></code> member functions of the class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
 <table class="summarytable docutils align-default" id="id3">
@@ -599,8 +599,9 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> type. Identifies an instance of the
-function object executing at each point in an Range.</p>
+<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p>
+<p>Identifies an instance of the function object executing at each point in an
+<a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
@@ -667,8 +668,9 @@ Original implementation could be found at <code class="docutils literal notransl
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> type. Identifies an instance of the
-function object executing at each point in an NdRange.</p>
+<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p>
+<p>Identifies an instance of the function object executing at each point in an
+<a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
 <table class="summarytable docutils align-default" id="id6">
@@ -678,7 +680,7 @@ function object executing at each point in an NdRange.</p>
 <td><p>Get the global id for a specific dimension.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem.get_global_linear_id" title="numba_dpex.kernel_api.NdItem.get_global_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_linear_id</span></code></a>()</p></td>
-<td><p>Get the global linear id associated with this item for all</p></td>
+<td><p>Get the linearized global id for the item for all dimensions.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem.get_local_id" title="numba_dpex.kernel_api.NdItem.get_local_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_id</span></code></a>(idx)</p></td>
 <td><p>Get the local id for a specific dimension.</p></td>
@@ -716,8 +718,7 @@ function object executing at each point in an NdRange.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_global_linear_id">
 <span class="sig-name descname"><span class="pre">get_global_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_linear_id" title="Link to this definition">#</a></dt>
-<dd><p>Get the global linear id associated with this item for all
-dimensions.</p>
+<dd><p>Get the linearized global id for the item for all dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The global linear id.</p>
@@ -802,7 +803,7 @@ dimensions.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>The address space values supported by numba_dpex.</p>
+<p>An enumeration of the supported address space values.</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
@@ -884,8 +885,8 @@ dimensions.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values in dpcpp. The
-integer values of the enums is kept consistent with the corresponding
+<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p>
+<p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
@@ -979,8 +980,8 @@ implementation in dpcpp.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of SYCL memory scope. For more details please refer to
-SYCL 2020 specification, section 3.8.3.2</p>
+<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p>
+<p>For more details please refer to SYCL 2020 specification, section 3.8.3.2</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
