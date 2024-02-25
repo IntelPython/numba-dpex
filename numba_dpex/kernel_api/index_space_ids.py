@@ -119,8 +119,10 @@ class Group:
 
 
 class Item:
-    """Analogue to the ``sycl::item`` type. Identifies an instance of the
-    function object executing at each point in an Range.
+    """Analogue to the ``sycl::item`` class.
+
+    Identifies an instance of the function object executing at each point in an
+    :class:`.Range`.
     """
 
     def __init__(self, extent: Range, index: list):
@@ -170,7 +172,7 @@ class Item:
 
     @property
     def dimensions(self) -> int:
-        """Returns the rank of a Item object.
+        """Returns the number of dimensions of a Item object.
 
         Returns:
             int: Number of dimensions in the Item object
@@ -179,8 +181,10 @@ class Item:
 
 
 class NdItem:
-    """Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
-    function object executing at each point in an NdRange.
+    """Analogue to the ``sycl::nd_item`` class.
+
+    Identifies an instance of the function object executing at each point in an
+    :class:`.NdRange`.
     """
 
     # TODO: define group type
@@ -201,8 +205,7 @@ class NdItem:
         return self._global_item.get_id(idx)
 
     def get_global_linear_id(self):
-        """Get the global linear id associated with this item for all
-        dimensions.
+        """Get the linearized global id for the item for all dimensions.
 
         Returns:
             int: The global linear id.

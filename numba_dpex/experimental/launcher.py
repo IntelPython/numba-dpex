@@ -220,18 +220,19 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 
 @dpjit
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
-    """Calls a numba_dpex.kernel decorated function from CPython or from another
-    dpjit function. Kernel execution happens in synchronous way, so the thread
-    will be blocked till the kernel done execution.
+    """Compiles and synchronously executes a kernel function.
+
+    Kernel execution happens in synchronous way, so the main thread will be
+    blocked till the kernel done execution.
 
     Args:
         kernel_fn (numba_dpex.experimental.KernelDispatcher): A
-        numba_dpex.kernel decorated function that is compiled to a
-        KernelDispatcher by numba_dpex.
-        index_space (Range | NdRange): A numba_dpex.Range or numba_dpex.NdRange
-        type object that specifies the index space for the kernel.
+            :func:`numba_dpex.experimental.kernel` decorated function that is
+            compiled to a ``KernelDispatcher``.
+        index_space (Range | NdRange): A Range or NdRange type object that
+            specifies the index space for the kernel.
         kernel_args : List of objects that are passed to the numba_dpex.kernel
-        decorated function.
+            decorated function.
     """
     _submit_kernel_sync(  # pylint: disable=E1120
         kernel_fn,
@@ -247,25 +248,32 @@ def call_kernel_async(
     dependent_events: list[dpctl.SyclEvent],
     *kernel_args
 ) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
-    """Calls a numba_dpex.kernel decorated function from CPython or from another
-    dpjit function. Kernel execution happens in asynchronous way, so the thread
-    will not be blocked till the kernel done execution. That means that it is
-    user responsibility to properly use any memory used by kernel until the
-    kernel execution is completed.
+    """Compiles and asynchronously executes a kernel function.
+
+    Calls a :func:`numba_dpex.experimental.kernel` decorated function
+    asynchronously from CPython or from a :func:`numba_dpex.dpjit` function. As
+    the kernel execution happens asynchronously, so the main thread will not be
+    blocked till the kernel done execution. Instead the function returns back to
+    caller a handle for an *event* to track kernel execution. It is a user's
+    responsibility to properly track kernel execution completion and not use any
+    data that may still be used by the kernel prior to the kernel's completion.
 
     Args:
-        kernel_fn (numba_dpex.experimental.KernelDispatcher): A
-        numba_dpex.kernel decorated function that is compiled to a
-        KernelDispatcher by numba_dpex.
-        index_space (Range | NdRange): A numba_dpex.Range or numba_dpex.NdRange
-        type object that specifies the index space for the kernel.
+        kernel_fn (KernelDispatcher): A
+            :func:`numba_dpex.experimental.kernel` decorated function that is
+            compiled to a ``KernelDispatcher``.
+        index_space (Range | NdRange): A Range or NdRange type object that
+            specifies the index space for the kernel.
         kernel_args : List of objects that are passed to the numba_dpex.kernel
-        decorated function.
+            decorated function.
 
     Returns:
-        pair of host event and device event. Host event represent host task
-        that releases use of any kernel argument so it can be deallocated.
-        This task may be executed only after device task is done.
+        A pair of ``dpctl.SyclEvent`` objects. The pair of events constitute of
+        a host task and an event associated with the kernel execution. The event
+        associated with the kernel execution indicates the execution status of
+        the submitted kernel function. The host task manages the lifetime of any
+        PyObject passed in as a kernel argument and automatically decrements the
+        reference count of the object on kernel execution completion.
     """
     return _submit_kernel_async(  # pylint: disable=E1120
         kernel_fn,

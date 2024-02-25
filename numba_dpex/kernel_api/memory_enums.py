@@ -11,8 +11,9 @@ from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 class MemoryOrder(FlagEnum):
     """
-    An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
-    integer values of the enums is kept consistent with the corresponding
+    An enumeration of the supported ``sycl::memory_order`` values.
+
+    The integer values of the enums is kept consistent with the corresponding
     implementation in dpcpp.
 
     =====================   ============
@@ -37,8 +38,9 @@ class MemoryOrder(FlagEnum):
 
 class MemoryScope(FlagEnum):
     """
-    An enumeration of SYCL memory scope. For more details please refer to
-    SYCL 2020 specification, section 3.8.3.2
+    An enumeration of the supported ``sycl::memory_scope`` values.
+
+    For more details please refer to SYCL 2020 specification, section 3.8.3.2
 
     ===============  ============
     Memory Scope     Enum value
@@ -59,7 +61,7 @@ class MemoryScope(FlagEnum):
 
 
 class AddressSpace(FlagEnum):
-    """The address space values supported by numba_dpex.
+    """An enumeration of the supported address space values.
 
     ==================   ============
     Address space        Value
