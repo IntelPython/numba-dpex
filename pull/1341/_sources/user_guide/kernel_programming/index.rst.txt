@@ -4,20 +4,32 @@
 Kernel Programming
 ==================
 
-The tutorial covers the basic concepts around programming a data-parallel
-kernel using KAPI.
+The tutorial covers the most important features of the KAPI kernel programming
+API and introduces the concepts needed to express data-parallel kernels in
+numba-dpex.
 
 
 Preliminary concepts
 --------------------
 
-* *Data parallelism*
-* *Single Program Multiple Data*
-* *Range v/s Nd-Range Kernels*
-* *Work items and Work groups*
+Data parallelism
+++++++++++++++++
+
+Single Program Multiple Data
+++++++++++++++++++++++++++++
+
+Range v/s Nd-Range Kernels
+++++++++++++++++++++++++++
+
+Work items and Work groups
+++++++++++++++++++++++++++
+
+Basic concepts
+--------------
+
 
 Writing a *range* kernel
-------------------------
+++++++++++++++++++++++++
 
 A *range* kernel represents the simplest form of parallelism that can be
 expressed in KAPI. A range kernel represents a data-parallel execution of the
@@ -55,19 +67,19 @@ allow advanced features such as synchronization of work items and fine-grained
 control over memory allocation on a device.
 
 Writing an *nd-range* kernel
-----------------------------
-
-Launching a kernel
-------------------
-
-Supported kernel arguments
---------------------------
+++++++++++++++++++++++++++++
 
 Supported mathematical operations
----------------------------------
++++++++++++++++++++++++++++++++++
 
 Supported Python operators
---------------------------
+++++++++++++++++++++++++++
+
+Supported kernel arguments
+++++++++++++++++++++++++++
+
+Launching a kernel
+++++++++++++++++++
 
 Advanced topics
 ---------------
@@ -87,5 +99,5 @@ Atomic operations
 The ``device_func`` decorator
 +++++++++++++++++++++++++++++
 
-Specialization of kernels
-+++++++++++++++++++++++++
+Specializing a kernels or a device_func
++++++++++++++++++++++++++++++++++++++++

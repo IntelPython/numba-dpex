@@ -248,19 +248,28 @@
         <article role="main">
           <span class="target" id="index"></span><section id="kernel-programming">
 <h1>Kernel Programming<a class="headerlink" href="#kernel-programming" title="Link to this heading">#</a></h1>
-<p>The tutorial covers the basic concepts around programming a data-parallel
-kernel using KAPI.</p>
+<p>The tutorial covers the most important features of the KAPI kernel programming
+API and introduces the concepts needed to express data-parallel kernels in
+numba-dpex.</p>
 <section id="preliminary-concepts">
 <h2>Preliminary concepts<a class="headerlink" href="#preliminary-concepts" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><em>Data parallelism</em></p></li>
-<li><p><em>Single Program Multiple Data</em></p></li>
-<li><p><em>Range v/s Nd-Range Kernels</em></p></li>
-<li><p><em>Work items and Work groups</em></p></li>
-</ul>
+<section id="data-parallelism">
+<h3>Data parallelism<a class="headerlink" href="#data-parallelism" title="Link to this heading">#</a></h3>
 </section>
+<section id="single-program-multiple-data">
+<h3>Single Program Multiple Data<a class="headerlink" href="#single-program-multiple-data" title="Link to this heading">#</a></h3>
+</section>
+<section id="range-v-s-nd-range-kernels">
+<h3>Range v/s Nd-Range Kernels<a class="headerlink" href="#range-v-s-nd-range-kernels" title="Link to this heading">#</a></h3>
+</section>
+<section id="work-items-and-work-groups">
+<h3>Work items and Work groups<a class="headerlink" href="#work-items-and-work-groups" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="basic-concepts">
+<h2>Basic concepts<a class="headerlink" href="#basic-concepts" title="Link to this heading">#</a></h2>
 <section id="writing-a-range-kernel">
-<h2>Writing a <em>range</em> kernel<a class="headerlink" href="#writing-a-range-kernel" title="Link to this heading">#</a></h2>
+<h3>Writing a <em>range</em> kernel<a class="headerlink" href="#writing-a-range-kernel" title="Link to this heading">#</a></h3>
 <p>A <em>range</em> kernel represents the simplest form of parallelism that can be
 expressed in KAPI. A range kernel represents a data-parallel execution of the
 same function by a set of work items. In KAPI, an instance of the
@@ -300,19 +309,20 @@ allow advanced features such as synchronization of work items and fine-grained
 control over memory allocation on a device.</p>
 </section>
 <section id="writing-an-nd-range-kernel">
-<h2>Writing an <em>nd-range</em> kernel<a class="headerlink" href="#writing-an-nd-range-kernel" title="Link to this heading">#</a></h2>
-</section>
-<section id="launching-a-kernel">
-<h2>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h2>
-</section>
-<section id="supported-kernel-arguments">
-<h2>Supported kernel arguments<a class="headerlink" href="#supported-kernel-arguments" title="Link to this heading">#</a></h2>
+<h3>Writing an <em>nd-range</em> kernel<a class="headerlink" href="#writing-an-nd-range-kernel" title="Link to this heading">#</a></h3>
 </section>
 <section id="supported-mathematical-operations">
-<h2>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h2>
+<h3>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h3>
 </section>
 <section id="supported-python-operators">
-<h2>Supported Python operators<a class="headerlink" href="#supported-python-operators" title="Link to this heading">#</a></h2>
+<h3>Supported Python operators<a class="headerlink" href="#supported-python-operators" title="Link to this heading">#</a></h3>
+</section>
+<section id="supported-kernel-arguments">
+<h3>Supported kernel arguments<a class="headerlink" href="#supported-kernel-arguments" title="Link to this heading">#</a></h3>
+</section>
+<section id="launching-a-kernel">
+<h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
+</section>
 </section>
 <section id="advanced-topics">
 <h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
@@ -331,8 +341,8 @@ control over memory allocation on a device.</p>
 <section id="the-device-func-decorator">
 <h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
 </section>
-<section id="specialization-of-kernels">
-<h3>Specialization of kernels<a class="headerlink" href="#specialization-of-kernels" title="Link to this heading">#</a></h3>
+<section id="specializing-a-kernels-or-a-device-func">
+<h3>Specializing a kernels or a device_func<a class="headerlink" href="#specializing-a-kernels-or-a-device-func" title="Link to this heading">#</a></h3>
 </section>
 </section>
 </section>
@@ -396,20 +406,29 @@ control over memory allocation on a device.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Kernel Programming</a><ul>
-<li><a class="reference internal" href="#preliminary-concepts">Preliminary concepts</a></li>
+<li><a class="reference internal" href="#preliminary-concepts">Preliminary concepts</a><ul>
+<li><a class="reference internal" href="#data-parallelism">Data parallelism</a></li>
+<li><a class="reference internal" href="#single-program-multiple-data">Single Program Multiple Data</a></li>
+<li><a class="reference internal" href="#range-v-s-nd-range-kernels">Range v/s Nd-Range Kernels</a></li>
+<li><a class="reference internal" href="#work-items-and-work-groups">Work items and Work groups</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#basic-concepts">Basic concepts</a><ul>
 <li><a class="reference internal" href="#writing-a-range-kernel">Writing a <em>range</em> kernel</a></li>
 <li><a class="reference internal" href="#writing-an-nd-range-kernel">Writing an <em>nd-range</em> kernel</a></li>
-<li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
-<li><a class="reference internal" href="#supported-kernel-arguments">Supported kernel arguments</a></li>
 <li><a class="reference internal" href="#supported-mathematical-operations">Supported mathematical operations</a></li>
 <li><a class="reference internal" href="#supported-python-operators">Supported Python operators</a></li>
+<li><a class="reference internal" href="#supported-kernel-arguments">Supported kernel arguments</a></li>
+<li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced-topics">Advanced topics</a><ul>
 <li><a class="reference internal" href="#local-memory-allocation">Local memory allocation</a></li>
 <li><a class="reference internal" href="#private-memory-allocation">Private memory allocation</a></li>
 <li><a class="reference internal" href="#group-barrier-synchronization">Group barrier synchronization</a></li>
 <li><a class="reference internal" href="#atomic-operations">Atomic operations</a></li>
 <li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
-<li><a class="reference internal" href="#specialization-of-kernels">Specialization of kernels</a></li>
+<li><a class="reference internal" href="#specializing-a-kernels-or-a-device-func">Specializing a kernels or a device_func</a></li>
 </ul>
 </li>
 </ul>
