@@ -12,10 +12,10 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Debugging with Intel® Distribution for GDB*" href="debugging/index.html" /><link rel="prev" title="Kernel Programming" href="kernel_programming/index.html" />
+    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Compiling and Offloading dpnp statements - numba-dpex documentation</title>
+        <title>Experimental Features - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -165,33 +165,32 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../programming_model.html">Programming Model</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="kernel_programming/index.html">Kernel Programming</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="debugging/set_up_machine.html">Set up the machine for debugging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="debugging/debugging_environment.html">Configure debugging environment</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="debugging/breakpoints.html">Breakpoints</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/stepping.html">Stepping</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/frame_info.html">Information About a Frame</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/data.html">Examining Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/symbols.html">Examining the Symbol Table</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/altering.html">Altering Execution</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/local_variables.html">Debugging Local Variables</a></li>
-<li class="toctree-l4"><a class="reference internal" href="debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/kernel_programming/index.html">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="debugging/limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="debugging/common_issues.html">Common issues and tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/debugging/common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -246,17 +245,20 @@
           </label>
         </div>
         <article role="main">
-          <section id="compiling-and-offloading-dpnp-statements">
-<h1>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements<a class="headerlink" href="#compiling-and-offloading-dpnp-statements" title="Link to this heading">#</a></h1>
-<p>Data Parallel Extension for NumPy* (<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) is a drop-in <code class="docutils literal notranslate"><span class="pre">NumPy*</span></code>
-replacement library built on top of oneMKL and SYCL. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> allows
-various <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library function calls to be JIT-compiled using the
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.dpjit</span></code> decorator. Presently, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can compile several
-<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> array constructors (<code class="docutils literal notranslate"><span class="pre">ones</span></code>, <code class="docutils literal notranslate"><span class="pre">zeros</span></code>, <code class="docutils literal notranslate"><span class="pre">full</span></code>, <code class="docutils literal notranslate"><span class="pre">empty</span></code>), most
-universal functions, <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops, and vector expressions using
-<code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> objects.</p>
-<p>An example of a supported usage of <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is
-provided in the following code snippet:</p>
+          <span class="target" id="index"></span><section id="experimental-features">
+<h1>Experimental Features<a class="headerlink" href="#experimental-features" title="Link to this heading">#</a></h1>
+<p>Numba-dpex includes various experimental features that are not yet suitable for
+everyday production usage, but are included as an engineering preview.
+Following is a list of the most prominent experimental features Currently
+included in numba-dpex.</p>
+<section id="compiling-and-offloading-dpnp-statements">
+<h2>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements<a class="headerlink" href="#compiling-and-offloading-dpnp-statements" title="Link to this heading">#</a></h2>
+<p>Data Parallel Extension for NumPy* (<a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a>) is a drop-in NumPy* replacement
+library built using the oneAPI software stack including <a class="reference external" href="https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/2023-2/intel-oneapi-math-kernel-library-onemkl.html">oneMKL</a>, <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-library.html#gs.5izf63">oneDPL</a> and
+<a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a>. numba-dpex has experimental support for compiling a subset of dpnp
+functions. The feature is enabled by the <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.dpjit()</span></code> decorator.</p>
+<p>An example of a supported usage of dpnp in numba-dpex is provided in the
+following code snippet:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">dpjit</span>
 
@@ -272,9 +274,10 @@ provided in the following code snippet:</p>
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 </pre></div>
 </div>
-<section id="parallel-range">
-<h2>Parallel Range<a class="headerlink" href="#parallel-range" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports using the <code class="docutils literal notranslate"><span class="pre">numba.prange</span></code> statements with
+</section>
+<section id="offloading-prange-loops">
+<h2>Offloading <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops<a class="headerlink" href="#offloading-prange-loops" title="Link to this heading">#</a></h2>
+<p>numba-dpex supports using the <code class="docutils literal notranslate"><span class="pre">numba.prange</span></code> statements with
 <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> objects. All such <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops are offloaded as kernels and
 executed on a device inferred using the compute follows data programming model.
 The next examples shows using a <code class="docutils literal notranslate"><span class="pre">prange</span></code> loop.</p>
@@ -343,6 +346,9 @@ demonstrated by the following naive pairwise distance computation.</p>
 </pre></div>
 </div>
 </section>
+<section id="kernel-fusion">
+<h2>Kernel fusion<a class="headerlink" href="#kernel-fusion" title="Link to this heading">#</a></h2>
+</section>
 </section>
 
         </article>
@@ -350,26 +356,8 @@ demonstrated by the following naive pairwise distance computation.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="debugging/index.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Debugging with Intel® Distribution for GDB*</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="kernel_programming/index.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">Kernel Programming</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -403,8 +391,10 @@ demonstrated by the following naive pairwise distance computation.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a><ul>
-<li><a class="reference internal" href="#parallel-range">Parallel Range</a></li>
+<li><a class="reference internal" href="#">Experimental Features</a><ul>
+<li><a class="reference internal" href="#compiling-and-offloading-dpnp-statements">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a></li>
+<li><a class="reference internal" href="#offloading-prange-loops">Offloading <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops</a></li>
+<li><a class="reference internal" href="#kernel-fusion">Kernel fusion</a></li>
 </ul>
 </li>
 </ul>
