@@ -82,7 +82,6 @@ Classes
       Returns: The original value of the object referenced by the AtomicRef.
 
 
-
    .. py:method:: fetch_sub(val)
 
       Subtracts the operand ``val`` to the object referenced by the
@@ -90,10 +89,9 @@ Classes
       Returns the original value of the object.
 
       :param val: Value to be subtracted from the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_min(val)
@@ -103,10 +101,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be compared against the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_max(val)
@@ -116,10 +113,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be compared against the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_and(val)
@@ -129,10 +125,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise ANDed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_or(val)
@@ -142,10 +137,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise ORed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_xor(val)
@@ -155,7 +149,7 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise XORed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
 
@@ -168,46 +162,42 @@ Classes
       Returns: The value of the object referenced by the AtomicRef.
 
 
-
    .. py:method:: store(val)
 
       Stores operand ``val`` to the object referenced by the AtomicRef.
 
-      :param val: Value to be stored in the object referenced by
-      :param the AtomicRef.:
+      :param val: Value to be stored in the object referenced by the AtomicRef.
 
 
    .. py:method:: exchange(val)
 
       Replaces the value of the object referenced by the AtomicRef
-      with value of ``val``. Returns the original value of the referenced object.
+      with value of ``val``. Returns the original value of the referenced
+      object.
 
       :param val: Value to be exchanged against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: compare_exchange(expected, desired, expected_idx=0)
 
       Compares the value of the object referenced by the AtomicRef
-      against the value of ``expected[expected_idx]``.
-      If the values are equal, replaces the value of the
-      referenced object with the value of ``desired``.
-      Otherwise assigns the original value of the
-      referenced object to ``expected[expected_idx]``.
+      against the value of ``expected[expected_idx]``. If the values are
+      equal, replaces the value of the referenced object with the value of
+      ``desired``. Otherwise assigns the original value of the referenced
+      object to ``expected[expected_idx]``.
 
-      :param expected: Array containing the expected value of the
-      :param object referenced by the AtomicRef.:
-      :param desired: Value that replaces the value of the object
-      :param referenced by the AtomicRef.:
+      :param expected: Array containing the expected value of the object
+                       referenced by the AtomicRef.
+      :param desired: Value that replaces the value of the object referenced by
+                      the AtomicRef.
       :param expected_idx: Offset in `expected` array where the expected
       :param value of the object referenced by the AtomicRef is present.:
 
-      Returns: Returns ``True`` if the comparison operation and
-      replacement operation were successful.
-
+      Returns: ``True`` if the comparison operation and replacement operation
+          were successful.
 
 
 

@@ -258,7 +258,7 @@
         <article role="main">
           <section id="module-numba_dpex.kernel_api.barrier">
 <span id="numba-dpex-kernel-api-barrier"></span><h1>numba_dpex.kernel_api.barrier<a class="headerlink" href="#module-numba_dpex.kernel_api.barrier" title="Link to this heading">#</a></h1>
-<p>Python functions that simulate SYCL’s barrier primitives.</p>
+<p>Python functions that simulate SYCL’s group_barrier function.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
@@ -280,12 +280,12 @@
 <dd><p>Performs a barrier operation across all work-items in a work group.</p>
 <p>The function is modeled after the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
 synchronizes work within a group of work items. All the work-items
-of the group must execute the barrier construct before any work-item
+of the group must execute the barrier call before any work-item
 continues execution beyond the barrier.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">group_barrier</span></code> performs mem-fence operations ensuring that memory
 accesses issued before the barrier are not re-ordered with those issued
-after the barrier: all work-items in group g execute a release fence prior
-to synchronizing at the barrier, all work-items in group g execute an
+after the barrier: all work-items in group G execute a release fence prior
+to synchronizing at the barrier, all work-items in group G execute an
 acquire fence afterwards, and there is an implicit synchronization of these
 fences as if provided by an explicit atomic operation on an atomic object.</p>
 <dl class="field-list simple">
