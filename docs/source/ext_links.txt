@@ -26,3 +26,4 @@
 .. _Intel Advisor: https://www.intel.com/content/www/us/en/developer/tools/oneapi/advisor.html
 .. _oneMKL: https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/2023-2/intel-oneapi-math-kernel-library-onemkl.html
 .. _UXL: https://uxlfoundation.org/
+.. _oneAPI GPU optimization guide: https://www.intel.com/content/www/us/en/docs/oneapi/optimization-guide-gpu/2024-0/general-purpose-computing-on-gpu.html

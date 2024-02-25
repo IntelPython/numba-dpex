@@ -1,53 +1,106 @@
 .. _index:
 .. include:: ./../../ext_links.txt
 
-Kernel Programming Basics
-=========================
+Kernel Programming
+==================
 
-`Data Parallel Extensions for Python*`_ introduce a concept of an *offload kernel*, defined as
-a part of a Python program being submitted for execution to the device queue.
+The tutorial covers the most important features of the KAPI kernel programming
+API and introduces the concepts needed to express data-parallel kernels in
+numba-dpex.
 
-.. image:: ./../../../asset/images/kernel-queue-device.png
-    :scale: 50%
-    :align: center
-    :alt: Offload Kernel
 
-There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the *data parallel kernel programming*. In this model you express the work in terms of *work items*.
-You split data into small pieces, and each piece will be a unit of work, or a *work item*. The total number of
-work items is called *global size*. You can also group work items into bigger chunks called *work groups*.
-The number of work items in the work group is called the *local size*.
+Preliminary concepts
+--------------------
 
-.. image:: ./../../../asset/images/kernel_prog_model.png
-    :scale: 50%
-    :align: center
-    :alt: Offload Kernel
+Data parallelism
+++++++++++++++++
 
-In this example there are 48 *work items* (8 in dimension 0, and 6 in dimension 1), that is the *global size* is 48.
-Work items are grouped in *work groups* with the *local size* 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.
+Single Program Multiple Data
+++++++++++++++++++++++++++++
 
-In the *data parallel kernel programming* model you write a function that processes a given work item.
-Such a function is called the *data parallel kernel*.
+Range v/s Nd-Range Kernels
+++++++++++++++++++++++++++
 
-**Data Parallel Extension for Numba** offers a way to write data parallel kernels directly using Python using
-``numba_dpex.kernel``. It bears similarities with ``numba.cuda`` and ``numba.roc``, but unlike these proprietary
-programming models ``numba_dpex`` is built on top of `SYCL*`_ , which is hardware agnostic, meaning
-that with ``numba_dpex.kernel`` programming model you will be able to write a portable code targeting different
-hardware vendors.
+Work items and Work groups
+++++++++++++++++++++++++++
 
-.. note::
-   The current version of ``numba-dpex`` supports Intel SYCL devices only
+Basic concepts
+--------------
 
-.. toctree::
-   :caption: This document will cover the following chapters:
-   :maxdepth: 2
 
-   writing_kernels
-   synchronization
-   device-functions
-   atomic-operations
-   memory_allocation_address_space
-   reduction
-   ufunc
-   supported-python-features
+Writing a *range* kernel
+++++++++++++++++++++++++
+
+A *range* kernel represents the simplest form of parallelism that can be
+expressed in KAPI. A range kernel represents a data-parallel execution of the
+same function by a set of work items. In KAPI, an instance of the
+:py:class:`numba_dpex.kernel_api.Range` class represents the set of work items
+and each work item in the ``Range`` is represented by an instance of the
+:py:class:`numba_dpex.kernel_api.Item` class. As such these two classes are
+essential to writing a range kernel in KAPI.
+
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
+   :language: python
+   :lines: 8-9, 11-15
+   :caption: **EXAMPLE:** A KAPI range kernel
+   :name: ex_kernel_declaration_vector_sum
+
+:ref:`ex_kernel_declaration_vector_sum` shows an example of a range kernel.
+Every range kernel requires its first argument to be an ``Item`` and
+needs to be launched via :py:func:`numba_dpex.experimental.launcher.call_kernel`
+by passing an instance a ``Range`` object.
+
+Do note that a ``Range`` object only controls the creation of work items, the
+distribution of work and data over a ``Range`` still needs to be defined by the
+user-written function. In the example, each work item access a single element of
+each of the three array and performs a single addition operation. It is possible
+to write the kernel differently so that each work item accesses multiple data
+elements or conditionally performs different amount of work. The data access
+patterns in a work item can have performance implications and programmers should
+refer a more topical material such as the `oneAPI GPU optimization guide`_ to
+learn more.
+
+A range kernel is meant to express a basic `parallel-for` calculation that is
+ideally suited for embarrassingly parallel kernels such as elementwise
+computations over ndarrays. The API for expressing a range kernel does not
+allow advanced features such as synchronization of work items and fine-grained
+control over memory allocation on a device.
+
+Writing an *nd-range* kernel
+++++++++++++++++++++++++++++
+
+The ``device_func`` decorator
++++++++++++++++++++++++++++++
+
+Supported mathematical operations
++++++++++++++++++++++++++++++++++
+
+Supported Python operators
+++++++++++++++++++++++++++
+
+Supported kernel arguments
+++++++++++++++++++++++++++
+
+Launching a kernel
+++++++++++++++++++
+
+Advanced topics
+---------------
+
+Local memory allocation
++++++++++++++++++++++++
+
+Private memory allocation
++++++++++++++++++++++++++
+
+Group barrier synchronization
++++++++++++++++++++++++++++++
+
+Atomic operations
++++++++++++++++++
+
+Async kernel execution
+++++++++++++++++++++++
+
+Specializing a kernel or a device_func
+++++++++++++++++++++++++++++++++++++++
