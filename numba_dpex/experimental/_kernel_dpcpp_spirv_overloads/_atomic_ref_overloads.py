@@ -584,7 +584,7 @@ def _check_if_supported_ref(ref):
 )
 def ol_atomic_ref(
     ref,
-    index=0,
+    index,
     memory_order=MemoryOrder.RELAXED,
     memory_scope=MemoryScope.DEVICE,
     address_space=AddressSpace.GLOBAL,
@@ -655,7 +655,7 @@ def ol_atomic_ref(
 
     def ol_atomic_ref_ctor_impl(
         ref,
-        index=0,
+        index,
         memory_order=MemoryOrder.RELAXED,  # pylint: disable=unused-argument
         memory_scope=MemoryScope.DEVICE,  # pylint: disable=unused-argument
         address_space=AddressSpace.GLOBAL,  # pylint: disable=unused-argument

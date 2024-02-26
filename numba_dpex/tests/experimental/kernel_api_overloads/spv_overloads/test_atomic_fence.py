@@ -21,7 +21,7 @@ def test_atomic_fence():
     def _kernel(item: Item, a, b):
         i = item.get_id(0)
 
-        bref = AtomicRef(b)
+        bref = AtomicRef(b, index=0)
 
         if i == 1:
             a[i] += 1
