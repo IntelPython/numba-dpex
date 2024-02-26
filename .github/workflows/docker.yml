@@ -74,7 +74,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -116,7 +116,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -159,7 +159,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -203,7 +203,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -246,7 +246,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -291,7 +291,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -334,7 +334,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -381,7 +381,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -429,7 +429,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -472,7 +472,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
@@ -516,7 +516,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
