@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
+import numpy as np
 import pytest
 from numba.core.errors import TypingError
 
@@ -23,6 +24,27 @@ def test_atomic_ref_compilation():
         dpex_exp.call_kernel(atomic_ref_kernel, Range(10), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
+
+
+def test_atomic_ref_3_dim_compilation():
+    @dpex_exp.kernel
+    def atomic_ref_kernel(item: Item, a, b):
+        i = item.get_id(0)
+        v = AtomicRef(b, index=(1, 1, 1), address_space=AddressSpace.GLOBAL)
+        v.fetch_add(a[i])
+
+    a = dpnp.ones(8)
+    b = dpnp.zeros((2, 2, 2))
+
+    want = np.zeros((2, 2, 2))
+    want[1, 1, 1] = a.size
+
+    try:
+        dpex_exp.call_kernel(atomic_ref_kernel, Range(a.size), a, b)
+    except Exception:
+        pytest.fail("Unexpected execution failure")
+
+    assert np.array_equal(b.asnumpy(), want)
 
 
 def test_atomic_ref_compilation_failure():
