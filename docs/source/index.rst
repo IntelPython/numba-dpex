@@ -41,7 +41,7 @@ Data Parallel Extension for Numba*
 .. module:: numba_dpex
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    overview
    getting_started
@@ -52,16 +52,15 @@ Data Parallel Extension for Numba*
    useful_links
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Development
 
    contribution_guide
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Misc Notes
 
    examples
-   glossary
    license
    release-notes
