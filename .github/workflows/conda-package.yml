@@ -176,8 +176,10 @@ jobs:
 
       # We want to make sure that all dependecies install automatically.
       # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
+      # TODO: remove pytest dependency directly, once resolved:
+      # https://github.com/pytest-dev/pytest/issues/12036
       - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov conda-tree -c ${{ env.CHANNEL_PATH }}
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov pytest=8.0.1 conda-tree -c ${{ env.CHANNEL_PATH }}
 
       - name: Install numba-mlir
         if: matrix.use_mlir
