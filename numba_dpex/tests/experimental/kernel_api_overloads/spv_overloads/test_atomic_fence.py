@@ -9,11 +9,8 @@ from numba_dpex.kernel_api import (
     MemoryScope,
     atomic_fence,
 )
-from numba_dpex.tests._helper import skip_windows
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_atomic_fence():
     """A test for atomic_fence function."""
 
