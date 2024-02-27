@@ -41,6 +41,27 @@ from .spv_fn_declarations import (
 )
 
 
+def _normalize_indices(context, builder, indty, inds, aryty):
+    """
+    Convert integer indices into tuple of intp
+    """
+    if indty in types.integer_domain:
+        indty = types.UniTuple(dtype=indty, count=1)
+        indices = [inds]
+    else:
+        indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
+    indices = [
+        context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+    ]
+
+    if aryty.ndim != len(indty):
+        raise TypeError(
+            f"indexing {aryty.ndim}-D array with {len(indty)}-D index"
+        )
+
+    return indty, indices
+
+
 def _parse_enum_or_int_literal_(literal_int) -> int:
     """Parse an instance of an enum class or numba.core.types.Literal to its
     actual int value.
@@ -208,23 +229,22 @@ def _intrinsic_atomic_ref_ctor(
     sig = ty_retty(ref, ty_index, ty_retty_ref)
 
     def codegen(context, builder, sig, args):
-        ref = args[0]
-        index_pos = args[1]
+        aryty, indty, _ = sig.args
+        ary, inds, _ = args
 
-        dmm = context.data_model_manager
-        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("data")
-        data_attr = builder.extract_value(ref, data_attr_pos)
+        indty, indices = _normalize_indices(
+            context, builder, indty, inds, aryty
+        )
 
-        with builder.goto_entry_block():
-            ptr_to_data_attr = builder.alloca(data_attr.type)
-        builder.store(data_attr, ptr_to_data_attr)
-        ref_ptr_value = builder.gep(builder.load(ptr_to_data_attr), [index_pos])
+        lary = context.make_array(aryty)(context, builder, ary)
+        ref_ptr_value = cgutils.get_item_pointer(
+            context, builder, aryty, lary, indices, wraparound=True
+        )
 
         atomic_ref_struct = cgutils.create_struct_proxy(ty_retty)(
             context, builder
         )
-        ref_attr_pos = dmm.lookup(ty_retty).get_field_position("ref")
-        atomic_ref_struct[ref_attr_pos] = ref_ptr_value
+        atomic_ref_struct.ref = ref_ptr_value
         # pylint: disable=protected-access
         return atomic_ref_struct._getvalue()
 
@@ -564,7 +584,7 @@ def _check_if_supported_ref(ref):
 )
 def ol_atomic_ref(
     ref,
-    index=0,
+    index,
     memory_order=MemoryOrder.RELAXED,
     memory_scope=MemoryScope.DEVICE,
     address_space=AddressSpace.GLOBAL,
@@ -635,7 +655,7 @@ def ol_atomic_ref(
 
     def ol_atomic_ref_ctor_impl(
         ref,
-        index=0,
+        index,
         memory_order=MemoryOrder.RELAXED,  # pylint: disable=unused-argument
         memory_scope=MemoryScope.DEVICE,  # pylint: disable=unused-argument
         address_space=AddressSpace.GLOBAL,  # pylint: disable=unused-argument

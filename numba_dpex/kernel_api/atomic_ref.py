@@ -18,7 +18,7 @@ class AtomicRef:
     def __init__(  # pylint: disable=too-many-arguments
         self,
         ref,
-        index=0,
+        index,
         memory_order=MemoryOrder.RELAXED,
         memory_scope=MemoryScope.DEVICE,
         address_space=AddressSpace.GLOBAL,

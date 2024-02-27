@@ -3,11 +3,8 @@ import dpnp
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import MemoryScope, NdItem, group_barrier
-from numba_dpex.tests._helper import skip_windows
 
 
-# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
-@skip_windows
 def test_group_barrier():
     """A test for group_barrier function."""
 
