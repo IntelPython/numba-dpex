@@ -42,14 +42,20 @@ class Group:
 
     def get_group_linear_id(self):
         """Returns a linearized version of the work-group index."""
-        if len(self._index) == 1:
-            return self._index[0]
-        if len(self._index) == 2:
-            return self._index[0] * self._group_range[1] + self._index[1]
+        if self.dimensions == 1:
+            return self.get_group_id(0)
+        if self.dimensions == 2:
+            return self.get_group_id(0) * self.get_group_range(
+                1
+            ) + self.get_group_id(1)
         return (
-            (self._index[0] * self._group_range[1] * self._group_range[2])
-            + (self._index[1] * self._group_range[2])
-            + (self._index[2])
+            (
+                self.get_group_id(0)
+                * self.get_group_range(1)
+                * self.get_group_range(2)
+            )
+            + (self.get_group_id(1) * self.get_group_range(2))
+            + (self.get_group_id(2))
         )
 
     def get_group_range(self, dim):

@@ -16,7 +16,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
-from numba_dpex.kernel_api import Item, NdItem
+from numba_dpex.kernel_api import Group, Item, NdItem
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
@@ -303,3 +303,4 @@ def register_jitable_method(type_, method):
 register_jitable_method(ItemType, Item.get_linear_id)
 register_jitable_method(NdItemType, NdItem.get_global_linear_id)
 register_jitable_method(NdItemType, NdItem.get_local_linear_id)
+register_jitable_method(GroupType, Group.get_group_linear_id)

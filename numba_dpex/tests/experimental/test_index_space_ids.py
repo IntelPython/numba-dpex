@@ -87,6 +87,12 @@ def _get_group_id_driver(nditem: NdItem, a):
     a[i] = g.get_group_id(0)
 
 
+def _get_group_linear_id_driver(nditem: NdItem, a):
+    i = nditem.get_global_linear_id()
+    g = nditem.get_group()
+    a[i] = g.get_group_linear_id()
+
+
 def _get_group_range_driver(nditem: NdItem, a):
     i = nditem.get_global_id(0)
     g = nditem.get_group()
@@ -206,21 +212,29 @@ def test_no_item():
     )
 
 
-def test_get_group_id():
-    global_size = 100
-    group_size = 20
-    num_groups = global_size // group_size
+@pytest.mark.parametrize(
+    "driver,rng",
+    [
+        (_get_group_id_driver, dpex.NdRange((_SIZE,), (_GROUP_SIZE,))),
+        (_get_group_linear_id_driver, dpex.NdRange((_SIZE,), (_GROUP_SIZE,))),
+        (
+            _get_group_linear_id_driver,
+            dpex.NdRange((1, 1, _SIZE), (1, 1, _GROUP_SIZE)),
+        ),
+    ],
+)
+def test_get_group_id(driver, rng):
+    num_groups = _SIZE // _GROUP_SIZE
 
-    a = dpnp.empty(global_size, dtype=dpnp.int32)
-    ka = dpnp.empty(global_size, dtype=dpnp.int32)
-    expected = np.empty(global_size, dtype=np.int32)
-    ndrange = NdRange((global_size,), (group_size,))
-    dpex_exp.call_kernel(dpex_exp.kernel(_get_group_id_driver), ndrange, a)
-    kapi_call_kernel(_get_group_id_driver, ndrange, ka)
+    a = dpnp.empty(_SIZE, dtype=dpnp.int32)
+    ka = dpnp.empty(_SIZE, dtype=dpnp.int32)
+    expected = np.empty(_SIZE, dtype=np.int32)
+    dpex_exp.call_kernel(dpex_exp.kernel(driver), rng, a)
+    kapi_call_kernel(driver, rng, ka)
 
     for gid in range(num_groups):
-        for lid in range(group_size):
-            expected[gid * group_size + lid] = gid
+        for lid in range(_GROUP_SIZE):
+            expected[gid * _GROUP_SIZE + lid] = gid
 
     assert np.array_equal(a.asnumpy(), expected)
     assert np.array_equal(ka.asnumpy(), expected)
