@@ -277,18 +277,71 @@ def set_3d_ones_item(item: Item, a):
     j = item.get_id(1)
     k = item.get_id(2)
 
-    # Since we have different sizes for each dimention, wrong order will result
+    # Since we have different sizes for each dimension, wrong order will result
     # that some indexes will be set twice and some won't be set.
     index = i + I_SIZE * (j + J_SIZE * k)
 
     a[index] = 1
 
 
-def test_index_order():
+@dpex_exp.kernel
+def set_3d_ones_item_linear(item: Item, a):
+    # Since we have different sizes for each dimension, wrong order will result
+    # that some indexes will be set twice and some won't be set.
+    index = item.get_linear_id()
+
+    a[index] = 1
+
+
+@dpex_exp.kernel
+def set_3d_ones_nd_item_linear(nd_item: NdItem, a):
+    # Since we have different sizes for each dimension, wrong order will result
+    # that some indexes will be set twice and some won't be set.
+    index = nd_item.get_global_linear_id()
+
+    a[index] = 1
+
+
+@dpex_exp.kernel
+def set_local_3d_ones_nd_item_linear(nd_item: NdItem, a):
+    # Since we have different sizes for each dimension, wrong order will result
+    # that some indexes will be set twice and some won't be set.
+    index = nd_item.get_local_linear_id()
+
+    a[index] = 1
+
+
+@pytest.mark.parametrize("kernel", [set_3d_ones_item, set_3d_ones_item_linear])
+def test_item_index_order(kernel):
+    a = dpnp.zeros(I_SIZE * J_SIZE * K_SIZE, dtype=dpnp.int32)
+
+    dpex_exp.call_kernel(kernel, dpex.Range(I_SIZE, J_SIZE, K_SIZE), a)
+
+    assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.int32))
+
+
+def test_nd_item_index_order():
     a = dpnp.zeros(I_SIZE * J_SIZE * K_SIZE, dtype=dpnp.int32)
 
     dpex_exp.call_kernel(
-        set_3d_ones_item, dpex.Range(I_SIZE, J_SIZE, K_SIZE), a
+        set_3d_ones_nd_item_linear,
+        dpex.NdRange((I_SIZE, J_SIZE, K_SIZE), (1, 1, K_SIZE)),
+        a,
     )
 
     assert np.array_equal(a.asnumpy(), np.ones(a.size, dtype=np.int32))
+
+
+def test_nd_item_local_linear_id():
+    a = dpnp.zeros(I_SIZE * J_SIZE * K_SIZE, dtype=dpnp.int32)
+
+    dpex_exp.call_kernel(
+        set_local_3d_ones_nd_item_linear,
+        dpex.NdRange((I_SIZE, J_SIZE, K_SIZE), (1, 1, K_SIZE)),
+        a,
+    )
+
+    assert np.array_equal(
+        a.asnumpy(),
+        np.array([1] * K_SIZE + [0] * (a.size - K_SIZE), dtype=np.int32),
+    )

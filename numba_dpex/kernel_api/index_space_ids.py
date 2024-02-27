@@ -128,14 +128,14 @@ class Item:
         Returns:
             int: The linear id.
         """
-        if len(self._extent) == 1:
-            return self._index[0]
-        if len(self._extent) == 2:
-            return self._index[0] * self._extent[1] + self._index[1]
+        if self.dimensions == 1:
+            return self.get_id(0)
+        if self.dimensions == 2:
+            return self.get_id(0) * self.get_range(1) + self.get_id(1)
         return (
-            (self._index[0] * self._extent[1] * self._extent[2])
-            + (self._index[1] * self._extent[2])
-            + (self._index[2])
+            (self.get_id(0) * self.get_range(1) * self.get_range(2))
+            + (self.get_id(1) * self.get_range(2))
+            + (self.get_id(2))
         )
 
     def get_id(self, idx):
@@ -193,7 +193,24 @@ class NdItem:
         Returns:
             int: The global linear id.
         """
-        return self._global_item.get_linear_id()
+        # Instead of calling self._global_item.get_linear_id(), the linearization
+        # logic is duplicated here so that the method can be JIT compiled by
+        # numba-dpex and works in both Python and Numba nopython modes.
+        if self.dimensions == 1:
+            return self.get_global_id(0)
+        if self.dimensions == 2:
+            return self.get_global_id(0) * self.get_global_range(
+                1
+            ) + self.get_global_id(1)
+        return (
+            (
+                self.get_global_id(0)
+                * self.get_global_range(1)
+                * self.get_global_range(2)
+            )
+            + (self.get_global_id(1) * self.get_global_range(2))
+            + (self.get_global_id(2))
+        )
 
     def get_local_id(self, idx):
         """Get the local id for a specific dimension.
@@ -210,7 +227,24 @@ class NdItem:
         Returns:
             int: The local linear id.
         """
-        return self._local_item.get_linear_id()
+        # Instead of calling self._local_item.get_linear_id(), the linearization
+        # logic is duplicated here so that the method can be JIT compiled by
+        # numba-dpex and works in both Python and Numba nopython modes.
+        if self.dimensions == 1:
+            return self.get_local_id(0)
+        if self.dimensions == 2:
+            return self.get_local_id(0) * self.get_local_range(
+                1
+            ) + self.get_local_id(1)
+        return (
+            (
+                self.get_local_id(0)
+                * self.get_local_range(1)
+                * self.get_local_range(2)
+            )
+            + (self.get_local_id(1) * self.get_local_range(2))
+            + (self.get_local_id(2))
+        )
 
     def get_global_range(self, idx):
         """Get the global range size for a specific dimension.

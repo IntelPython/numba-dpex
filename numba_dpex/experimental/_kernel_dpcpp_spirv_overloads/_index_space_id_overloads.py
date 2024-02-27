@@ -16,6 +16,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
+from numba_dpex.kernel_api import Item, NdItem
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
@@ -274,3 +275,31 @@ def ol_nd_item_dimensions(item):
         return dimensions
 
     return ol_nd_item_get_group_impl
+
+
+def _generate_method_overload(method):
+    """Generates naive method overload with no argument, except self."""
+
+    def ol_method(self):  # pylint: disable=unused-argument
+        return method
+
+    return ol_method
+
+
+def register_jitable_method(type_, method):
+    """
+    Register a regular python method that can be executed by the
+    python interpreter and can be compiled into a nopython
+    function when referenced by other jit'ed functions.
+
+    Same as register_jitable, but for methods with no arguments.
+    """
+    overloaded_method = _generate_method_overload(method)
+    overload_method(type_, method.__name__, target=DPEX_KERNEL_EXP_TARGET_NAME)(
+        overloaded_method
+    )
+
+
+register_jitable_method(ItemType, Item.get_linear_id)
+register_jitable_method(NdItemType, NdItem.get_global_linear_id)
+register_jitable_method(NdItemType, NdItem.get_local_linear_id)
