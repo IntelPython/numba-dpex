@@ -51,7 +51,7 @@ Overview
 
 Functions
 ---------
-.. py:function:: ol_atomic_ref(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+.. py:function:: ol_atomic_ref(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
 
    Overload of the constructor for the class
    class:`numba_dpex.kernel_api.AtomicRef`.
