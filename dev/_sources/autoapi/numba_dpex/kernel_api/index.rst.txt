@@ -74,7 +74,7 @@ Overview
 Classes
 -------
 
-.. py:class:: AtomicRef(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+.. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
 
    Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
    view into a data container that can be then updated atomically using any of
