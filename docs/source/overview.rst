@@ -4,147 +4,86 @@
 Overview
 ========
 
-Data Parallel Extension for Numba* (`numba-dpex`_) is an extension to
-the `Numba*`_ Python JIT compiler adding an architecture-agnostic kernel
-programming API, and a new front-end to compile the Data Parallel Extension
-for Numpy* (`dpnp`_) library. The ``dpnp`` Python library is a data-parallel
-implementation of `NumPy*`_'s API using the `SYCL*`_ language.
+Data Parallel Extension for Numba* (`numba-dpex`_) is a free and open-source
+LLVM-based code generator for portable accelerator programming in Python. The
+code generator implements a new pseudo-kernel programming domain-specific
+language (DSL) called `KAPI` that is modeled after the C++ DSL `SYCL*`_. The
+SYCL language is an open standard developed under the Unified Acceleration
+Foundation (`UXL`_) as a vendor-agnostic way of programming different types of
+data-parallel hardware such as multi-core CPUs, GPUs, and FPGAs. Numba-dpex and
+KAPI aim to bring the same vendor-agnostic and standard-compliant programming
+model to Python.
 
-.. ``numba-dpex``'s support for ``dpnp`` compilation is a new way for Numba* users
-.. to write code in a NumPy-like API that is already supported by Numba*, while at
-.. the same time automatically running such code parallelly on various types of
-.. architecture.
+Numba-dpex is built on top of the open-source `Numba*`_ JIT compiler that
+implements a CPython bytecode parser and code generator to lower the bytecode to
+LLVM IR. The Numba* compiler is able to compile a large sub-set of Python and
+most of the NumPy library. Numba-dpex uses Numba*'s tooling to implement the
+parsing and typing support for the data types and functions defined in the KAPI
+DSL. A custom code generator is then used to lower KAPI to a form of LLVM IR
+that includes special LLVM instructions that define a low-level data-parallel
+kernel API. Thus, a function defined in KAPI is compiled to a data-parallel
+kernel that can run on different types of hardware. Currently, compilation of
+KAPI is possible for x86 CPU devices, Intel Gen9 integrated GPUs, Intel UHD
+integrated GPUs, and Intel discrete GPUs.
 
-``numba-dpex`` is an open-source project and can be installed as part of `Intel
-AI Analytics Toolkit`_ or the `Intel Distribution for Python*`_. The package is
-also available on Anaconda cloud and as a Docker image on GitHub. Please refer
-the :doc:`getting_started` page to learn more.
 
-Main Features
--------------
-
-Portable Kernel Programming
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``numba-dpex`` kernel programming API has a design similar to Numba's
-``cuda.jit`` sub-module. The API is modeled after the `SYCL*`_ language and uses
-the `DPC++`_ SYCL runtime. Currently, compilation of kernels is supported for
-SPIR-V-based OpenCL and `oneAPI Level Zero`_ devices CPU and GPU devices. In the
-future, compilation support for other types of hardware that are supported by
-DPC++ will be added.
-
-The following example illustrates a vector addition kernel written with
-``numba-dpex`` kernel API.
+The following example shows a pairwise distance matrix computation in KAPI.
 
 .. code-block:: python
 
-    import dpnp
-    import numba_dpex as dpex
+    from numba_dpex import kernel_api as kapi
+    import math
 
 
-    @dpex.kernel
-    def vecadd_kernel(a, b, c):
-        i = dpex.get_global_id(0)
-        c[i] = a[i] + b[i]
+    def pairwise_distance_kernel(item: kapi.Item, data, distance):
+        i = item.get_id(0)
+        j = item.get_id(1)
+
+        data_dims = data.shape[1]
+
+        d = data.dtype.type(0.0)
+        for k in range(data_dims):
+            tmp = data[i, k] - data[j, k]
+            d += tmp * tmp
+
+        distance[j, i] = math.sqrt(d)
 
 
-    a = dpnp.ones(1024, device="gpu")
-    b = dpnp.ones(1024, device="gpu")
-    c = dpnp.empty_like(a)
-
-    vecadd_kernel[dpex.Range(1024)](a, b, c)
-    print(c)
-
-In the above example, three arrays are allocated on a default ``gpu`` device
-using the ``dpnp`` library. The arrays are then passed as input arguments to the
-kernel function. The compilation target and the subsequent execution of the
-kernel is determined by the input arguments and follow the
-"compute-follows-data" programming model as specified in the `Python* Array API
-Standard`_. To change the execution target to a CPU, the device keyword needs to
-be changed to ``cpu`` when allocating the ``dpnp`` arrays. It is also possible
-to leave the ``device`` keyword undefined and let the ``dpnp`` library select a
-default device based on environment flag settings. Refer the
-:doc:`user_guide/kernel_programming/index` for further details.
-
-``dpjit`` decorator
-~~~~~~~~~~~~~~~~~~~
-
-The ``numba-dpex`` package provides a new decorator ``dpjit`` that extends
-Numba's ``njit`` decorator. The new decorator is equivalent to
-``numba.njit(parallel=True)``, but additionally supports compiling ``dpnp``
-functions, ``prange`` loops, and array expressions that use ``dpnp.ndarray``
-objects.
-
-Unlike Numba's NumPy parallelization that only supports CPUs, ``dpnp``
-expressions are first converted to data-parallel kernels and can then be
-`offloaded` to different types of devices. As ``dpnp`` implements the same API
-as NumPy*, an existing ``numba.njit`` decorated function that uses
-``numpy.ndarray`` may be refactored to use ``dpnp.ndarray`` and decorated with
-``dpjit``. Such a refactoring can allow the parallel regions to be offloaded
-to a supported GPU device, providing users an additional option to execute their
-code parallelly.
-
-The vector addition example depicted using the kernel API can also be
-expressed in several different ways using ``dpjit``.
+Skipping over much of the language details, at a high-level the
+``pairwise_distance_kernel`` can be viewed as a data-parallel function that gets
+executed individually by a set of "work items". That is, each work item runs the
+same function for a subset of the elements of the input ``data`` and
+``distance`` arrays. For programmers familiar with the CUDA or OpenCL languages,
+it is the same programming model that is referred to as Single Program Multiple
+Data (SPMD). As Python has no concept of a work item the KAPI function itself is
+sequential and needs to be compiled to convert it into a parallel version. The
+next example shows the changes to the original script to compile and run the
+``pairwise_distance_kernel`` in parallel.
 
 .. code-block:: python
 
+    from numba_dpex import kernel, call_kernel
     import dpnp
-    import numba_dpex as dpex
 
+    data = dpnp.random.ranf((10000, 3), device="gpu")
+    distance = dpnp.empty(shape=(data.shape[0], data.shape[0]), device="gpu")
+    exec_range = kapi.Range(data.shape[0], data.shape[0])
+    call_kernel(kernel(pairwise_distance_kernel), exec_range, data, distance)
 
-    @dpex.dpjit
-    def vecadd_v1(a, b):
-        return a + b
+To compile a KAPI function into a data-parallel kernel and run it on a device,
+three things need to be done: allocate the arguments to the function on the
+device where the function is to execute, compile the function by applying a
+numba-dpex decorator, and `launch` or execute the compiled kernel on the device.
 
+Allocating arrays or scalars to be passed to a compiled KAPI function is not
+done directly in numba-dpex. Instead, numba-dpex supports passing in
+tensors/ndarrays created using either the `dpnp`_ NumPy drop-in replacement
+library or the `dpctl`_ SYCl-based Python Array API library. To trigger
+compilation, the ``numba_dpex.kernel`` decorator has to be used, and finally to
+launch a compiled kernel the ``numba_dpex.call_kernel`` function should be
+invoked.
 
-    @dpex.dpjit
-    def vecadd_v2(a, b):
-        return dpnp.add(a, b)
-
-
-    @dpex.dpjit
-    def vecadd_v3(a, b):
-        c = dpnp.empty_like(a)
-        for i in prange(a.shape[0]):
-            c[i] = a[i] + b[i]
-        return c
-
-As with the kernel API example, a ``dpjit`` function if invoked with ``dpnp``
-input arguments follows the compute-follows-data programming model. Refer
-:doc:`user_manual/dpnp_offload/index` for further details.
-
-
-.. Project Goal
-.. ------------
-
-.. If C++ is not your language, you can skip writing data-parallel kernels in SYCL
-.. and directly write them in Python.
-
-.. Our package ``numba-dpex`` extends the Numba compiler to allow kernel creation
-.. directly in Python via a custom compute API
-
-
-.. Contributing
-.. ------------
-
-.. Refer the `contributing guide
-.. <https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
-.. information on coding style and standards used in ``numba-dpex``.
-
-.. License
-.. -------
-
-.. ``numba-dpex`` is Licensed under Apache License 2.0 that can be found in `LICENSE
-.. <https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and
-.. contributions to the project are subject to the terms and conditions of this
-.. license.
-
-
-.. Along with the kernel programming API an auto-offload feature is also provided.
-.. The feature enables automatic generation of kernels from data-parallel NumPy
-.. library calls and array expressions, Numba ``prange`` loops, and `other
-.. "data-parallel by construction" expressions
-.. <https://numba.pydata.org/numba-doc/latest/user/parallel.html>`_ that Numba is
-.. able to parallelize. Following two examples demonstrate the two ways in which
-.. kernels may be written using numba-dpex.
+For a more detailed description about programming with numba-dpex, refer
+the :doc:`programming_model`, :doc:`user_guide/index` and the
+:doc:`autoapi/index` sections of the documentation. To setup numba-dpex and try
+it out refer the :doc:`getting_started` section.

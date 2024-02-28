@@ -33,14 +33,14 @@ def _intrin_range_alloc(typingctx, ty_dim0, ty_dim1, ty_dim2, ty_range):
             range_struct.dim1 = dim1
         else:
             range_struct.dim1 = llvmir.Constant(
-                llvmir.types.IntType(64), Range.UNDEFINED_DIMENSION
+                llvmir.types.IntType(64), Range._UNDEFINED_DIMENSION
             )
 
         if not isinstance(sig.args[2], types.NoneType):
             range_struct.dim2 = dim2
         else:
             range_struct.dim2 = llvmir.Constant(
-                llvmir.types.IntType(64), Range.UNDEFINED_DIMENSION
+                llvmir.types.IntType(64), Range._UNDEFINED_DIMENSION
             )
 
         range_struct.ndim = llvmir.Constant(llvmir.types.IntType(64), typ.ndim)

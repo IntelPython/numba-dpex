@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Python functions that simulate SYCL's barrier primitives.
+"""Python functions that simulate SYCL's group_barrier function.
 """
 
 from .index_space_ids import Group
@@ -14,13 +14,13 @@ def group_barrier(group: Group, fence_scope=MemoryScope.WORK_GROUP):
 
     The function is modeled after the ``sycl::group_barrier`` function. It
     synchronizes work within a group of work items. All the work-items
-    of the group must execute the barrier construct before any work-item
+    of the group must execute the barrier call before any work-item
     continues execution beyond the barrier.
 
     The ``group_barrier`` performs mem-fence operations ensuring that memory
     accesses issued before the barrier are not re-ordered with those issued
-    after the barrier: all work-items in group g execute a release fence prior
-    to synchronizing at the barrier, all work-items in group g execute an
+    after the barrier: all work-items in group G execute a release fence prior
+    to synchronizing at the barrier, all work-items in group G execute an
     acquire fence afterwards, and there is an implicit synchronization of these
     fences as if provided by an explicit atomic operation on an atomic object.
 

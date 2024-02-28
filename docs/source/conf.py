@@ -27,7 +27,6 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
-    "sphinx.ext.autosectionlabel",
     "sphinxcontrib.programoutput",
     "sphinxcontrib.googleanalytics",
     "myst_parser",
@@ -114,19 +113,10 @@ add_module_names = False
 
 # -- Auto API configurations ---------------------------------------------------
 
-
-# def skip_util_classes(app, what, name, obj, skip, options):
-#     if what == "module" and "experimental" in name:
-#         if what == "module" and "decorators" not in name:
-#             skip = True
-#     return skip
-
-
-# def setup(sphinx):
-#     sphinx.connect("autoapi-skip-member", skip_util_classes)
-
-
-autoapi_dirs = ["../../numba_dpex/kernel_api"]
+autoapi_dirs = [
+    "../../numba_dpex/kernel_api",
+    "../../numba_dpex/experimental",
+]
 autoapi_type = "python"
 
 autoapi_template_dir = "_templates/autoapi"
@@ -160,3 +150,14 @@ def prepare_jinja_env(jinja_env) -> None:
 
 
 autoapi_prepare_jinja_env = prepare_jinja_env
+
+
+def skip_member(app, what, name, obj, skip, options):
+    # skip submodules
+    if what == "module":
+        skip = True
+    return skip
+
+
+def setup(sphinx):
+    sphinx.connect("autoapi-skip-member", skip_member)
