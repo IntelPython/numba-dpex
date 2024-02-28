@@ -79,13 +79,13 @@ jobs:
         run: conda mambabuild --no-test --python ${{ matrix.python }} conda-recipe
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
 
       - name: Upload wheels artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python }}
           path: ${{ env.WHEELS_OUTPUT_FOLDER }}${{ env.WHEELS_NAME }}-*.whl
@@ -140,7 +140,7 @@ jobs:
           echo "EXAMPLES_PATH=$CONDA_PREFIX/${{ runner.os == 'Linux' && format('lib/python{0}',matrix.python) || 'Lib' }}/site-packages/numba_dpex/examples/" | tr "\\" "/" >> $GITHUB_ENV
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.PKG_PATH_IN_CHANNEL }}
@@ -273,12 +273,12 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
       - name: Download wheels artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python }}
 
