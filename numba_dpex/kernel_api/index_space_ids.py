@@ -42,14 +42,20 @@ class Group:
 
     def get_group_linear_id(self):
         """Returns a linearized version of the work-group index."""
-        if len(self._index) == 1:
-            return self._index[0]
-        if len(self._index) == 2:
-            return self._index[0] * self._group_range[1] + self._index[1]
+        if self.dimensions == 1:
+            return self.get_group_id(0)
+        if self.dimensions == 2:
+            return self.get_group_id(0) * self.get_group_range(
+                1
+            ) + self.get_group_id(1)
         return (
-            (self._index[0] * self._group_range[1] * self._group_range[2])
-            + (self._index[1] * self._group_range[2])
-            + (self._index[2])
+            (
+                self.get_group_id(0)
+                * self.get_group_range(1)
+                * self.get_group_range(2)
+            )
+            + (self.get_group_id(1) * self.get_group_range(2))
+            + (self.get_group_id(2))
         )
 
     def get_group_range(self, dim):
@@ -61,8 +67,8 @@ class Group:
     def get_group_linear_range(self):
         """Return the total number of work-groups in the nd_range."""
         num_wg = 1
-        for ext in self._group_range:
-            num_wg *= ext
+        for i in range(self.dimensions):
+            num_wg *= self.get_group_range(i)
 
         return num_wg
 
@@ -76,8 +82,8 @@ class Group:
     def get_local_linear_range(self):
         """Return the total number of work-items in the work-group."""
         num_wi = 1
-        for ext in self._local_range:
-            num_wi *= ext
+        for i in range(self.dimensions):
+            num_wi *= self.get_local_range(i)
 
         return num_wi
 
@@ -128,14 +134,14 @@ class Item:
         Returns:
             int: The linear id.
         """
-        if len(self._extent) == 1:
-            return self._index[0]
-        if len(self._extent) == 2:
-            return self._index[0] * self._extent[1] + self._index[1]
+        if self.dimensions == 1:
+            return self.get_id(0)
+        if self.dimensions == 2:
+            return self.get_id(0) * self.get_range(1) + self.get_id(1)
         return (
-            (self._index[0] * self._extent[1] * self._extent[2])
-            + (self._index[1] * self._extent[2])
-            + (self._index[2])
+            (self.get_id(0) * self.get_range(1) * self.get_range(2))
+            + (self.get_id(1) * self.get_range(2))
+            + (self.get_id(2))
         )
 
     def get_id(self, idx):
@@ -145,6 +151,14 @@ class Item:
             int: The id
         """
         return self._index[idx]
+
+    def get_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_range(i)
+
+        return num_wi
 
     def get_range(self, idx):
         """Get the range size for a specific dimension.
@@ -193,7 +207,24 @@ class NdItem:
         Returns:
             int: The global linear id.
         """
-        return self._global_item.get_linear_id()
+        # Instead of calling self._global_item.get_linear_id(), the linearization
+        # logic is duplicated here so that the method can be JIT compiled by
+        # numba-dpex and works in both Python and Numba nopython modes.
+        if self.dimensions == 1:
+            return self.get_global_id(0)
+        if self.dimensions == 2:
+            return self.get_global_id(0) * self.get_global_range(
+                1
+            ) + self.get_global_id(1)
+        return (
+            (
+                self.get_global_id(0)
+                * self.get_global_range(1)
+                * self.get_global_range(2)
+            )
+            + (self.get_global_id(1) * self.get_global_range(2))
+            + (self.get_global_id(2))
+        )
 
     def get_local_id(self, idx):
         """Get the local id for a specific dimension.
@@ -210,7 +241,24 @@ class NdItem:
         Returns:
             int: The local linear id.
         """
-        return self._local_item.get_linear_id()
+        # Instead of calling self._local_item.get_linear_id(), the linearization
+        # logic is duplicated here so that the method can be JIT compiled by
+        # numba-dpex and works in both Python and Numba nopython modes.
+        if self.dimensions == 1:
+            return self.get_local_id(0)
+        if self.dimensions == 2:
+            return self.get_local_id(0) * self.get_local_range(
+                1
+            ) + self.get_local_id(1)
+        return (
+            (
+                self.get_local_id(0)
+                * self.get_local_range(1)
+                * self.get_local_range(2)
+            )
+            + (self.get_local_id(1) * self.get_local_range(2))
+            + (self.get_local_id(2))
+        )
 
     def get_global_range(self, idx):
         """Get the global range size for a specific dimension.
@@ -227,6 +275,22 @@ class NdItem:
             int: The size
         """
         return self._local_item.get_range(idx)
+
+    def get_local_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_local_range(i)
+
+        return num_wi
+
+    def get_global_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_global_range(i)
+
+        return num_wi
 
     def get_group(self):
         """Returns the group.

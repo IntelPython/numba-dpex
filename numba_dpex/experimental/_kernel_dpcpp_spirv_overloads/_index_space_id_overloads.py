@@ -16,6 +16,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
+from numba_dpex.kernel_api import Group, Item, NdItem
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
@@ -180,26 +181,31 @@ def generate_index_overload(_type, _intrinsic):
     return ol_item_gen_index
 
 
-_index_const_overload_methods = [
-    (ItemType, "get_id", _intrinsic_spirv_global_invocation_id),
-    (ItemType, "get_range", _intrinsic_spirv_global_size),
-    (NdItemType, "get_global_id", _intrinsic_spirv_global_invocation_id),
-    (NdItemType, "get_local_id", _intrinsic_spirv_local_invocation_id),
-    (NdItemType, "get_global_range", _intrinsic_spirv_global_size),
-    (NdItemType, "get_local_range", _intrinsic_spirv_workgroup_size),
-    (GroupType, "get_group_id", _intrinsic_spirv_workgroup_id),
-    (GroupType, "get_group_range", _intrinsic_spirv_numworkgroups),
-    (GroupType, "get_local_range", _intrinsic_spirv_workgroup_size),
-]
+def register_index_const_methods():
+    """Register indexing related methods that can be defined as spirv const."""
+    _index_const_overload_methods = [
+        (ItemType, "get_id", _intrinsic_spirv_global_invocation_id),
+        (ItemType, "get_range", _intrinsic_spirv_global_size),
+        (NdItemType, "get_global_id", _intrinsic_spirv_global_invocation_id),
+        (NdItemType, "get_local_id", _intrinsic_spirv_local_invocation_id),
+        (NdItemType, "get_global_range", _intrinsic_spirv_global_size),
+        (NdItemType, "get_local_range", _intrinsic_spirv_workgroup_size),
+        (GroupType, "get_group_id", _intrinsic_spirv_workgroup_id),
+        (GroupType, "get_group_range", _intrinsic_spirv_numworkgroups),
+        (GroupType, "get_local_range", _intrinsic_spirv_workgroup_size),
+    ]
 
-for index_overload in _index_const_overload_methods:
-    _type, method, _intrinsic = index_overload
+    for index_overload in _index_const_overload_methods:
+        _type, method, _intrinsic = index_overload
 
-    ol_index_func = generate_index_overload(_type, _intrinsic)
+        ol_index_func = generate_index_overload(_type, _intrinsic)
 
-    overload_method(_type, method, target=DPEX_KERNEL_EXP_TARGET_NAME)(
-        ol_index_func
-    )
+        overload_method(_type, method, target=DPEX_KERNEL_EXP_TARGET_NAME)(
+            ol_index_func
+        )
+
+
+register_index_const_methods()
 
 
 @intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
@@ -269,3 +275,37 @@ def ol_nd_item_dimensions(item):
         return dimensions
 
     return ol_nd_item_get_group_impl
+
+
+def _generate_method_overload(method):
+    """Generates naive method overload with no argument, except self."""
+
+    def ol_method(self):  # pylint: disable=unused-argument
+        return method
+
+    return ol_method
+
+
+def register_jitable_method(type_, method):
+    """
+    Register a regular python method that can be executed by the
+    python interpreter and can be compiled into a nopython
+    function when referenced by other jit'ed functions.
+
+    Same as register_jitable, but for methods with no arguments.
+    """
+    overloaded_method = _generate_method_overload(method)
+    overload_method(type_, method.__name__, target=DPEX_KERNEL_EXP_TARGET_NAME)(
+        overloaded_method
+    )
+
+
+register_jitable_method(ItemType, Item.get_linear_id)
+register_jitable_method(ItemType, Item.get_linear_range)
+register_jitable_method(NdItemType, NdItem.get_global_linear_id)
+register_jitable_method(NdItemType, NdItem.get_global_linear_range)
+register_jitable_method(NdItemType, NdItem.get_local_linear_range)
+register_jitable_method(NdItemType, NdItem.get_local_linear_id)
+register_jitable_method(GroupType, Group.get_group_linear_id)
+register_jitable_method(GroupType, Group.get_group_linear_range)
+register_jitable_method(GroupType, Group.get_local_linear_range)
