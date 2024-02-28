@@ -1,4 +1,6 @@
 
+:orphan:
+
 numba_dpex.kernel_api.ranges
 ============================
 
@@ -48,14 +50,6 @@ Classes
 
    .. rubric:: Overview
 
-   .. list-table:: Attributes
-      :header-rows: 0
-      :widths: auto
-      :class: summarytable
-
-      * - :py:obj:`UNDEFINED_DIMENSION <numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION>`
-        - \-
-
 
    .. list-table:: Methods
       :header-rows: 0
@@ -69,10 +63,6 @@ Classes
 
 
    .. rubric:: Members
-
-   .. py:attribute:: UNDEFINED_DIMENSION
-
-      
 
    .. py:method:: get(index)
 

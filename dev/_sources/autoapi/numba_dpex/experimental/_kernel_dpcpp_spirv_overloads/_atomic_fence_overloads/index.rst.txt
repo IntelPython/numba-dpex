@@ -1,0 +1,44 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_fence_overloads
+=============================================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_fence_overloads
+
+.. autoapi-nested-parse::
+
+   Provides overloads for functions included in kernel_api.atomic_fence
+   that generate dpcpp SPIR-V LLVM IR intrinsic function calls.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ol_atomic_fence <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_fence_overloads.ol_atomic_fence>`\ (memory_order, memory_scope)
+     - SPIR-V overload for
+
+
+
+
+Functions
+---------
+.. py:function:: ol_atomic_fence(memory_order, memory_scope)
+
+   SPIR-V overload for
+   :meth:`numba_dpex.kernel_api.atomic_fence`.
+
+   Generates the same LLVM IR instruction as DPC++ for the SYCL
+   `atomic_fence` function.
+
+
+
+
+

@@ -13,22 +13,6 @@ numba_dpex.kernel_api
 
 
 
-Submodules
-----------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 1
-
-   atomic_fence/index.rst
-   atomic_ref/index.rst
-   barrier/index.rst
-   flag_enum/index.rst
-   index_space_ids/index.rst
-   launcher/index.rst
-   memory_enums/index.rst
-   ranges/index.rst
-
-
 Overview
 --------
 
@@ -38,19 +22,19 @@ Overview
    :class: summarytable
 
    * - :py:obj:`AtomicRef <numba_dpex.kernel_api.AtomicRef>`
-     - Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
+     - Analogue to the ``sycl::atomic_ref`` class.
    * - :py:obj:`Group <numba_dpex.kernel_api.Group>`
      - Analogue to the ``sycl::group`` type.
    * - :py:obj:`Item <numba_dpex.kernel_api.Item>`
-     - Analogue to the ``sycl::item`` type. Identifies an instance of the
+     - Analogue to the ``sycl::item`` class.
    * - :py:obj:`NdItem <numba_dpex.kernel_api.NdItem>`
-     - Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
+     - Analogue to the ``sycl::nd_item`` class.
    * - :py:obj:`AddressSpace <numba_dpex.kernel_api.AddressSpace>`
-     - The address space values supported by numba_dpex.
+     - An enumeration of the supported address space values.
    * - :py:obj:`MemoryOrder <numba_dpex.kernel_api.MemoryOrder>`
-     - An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
+     - An enumeration of the supported ``sycl::memory_order`` values.
    * - :py:obj:`MemoryScope <numba_dpex.kernel_api.MemoryScope>`
-     - An enumeration of SYCL memory scope. For more details please refer to
+     - An enumeration of the supported ``sycl::memory_scope`` values.
    * - :py:obj:`NdRange <numba_dpex.kernel_api.NdRange>`
      - A class to encapsulate all kernel launch parameters.
    * - :py:obj:`Range <numba_dpex.kernel_api.Range>`
@@ -76,9 +60,10 @@ Classes
 
 .. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
 
-   Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
-   view into a data container that can be then updated atomically using any of
-   the ``fetch_*`` member functions of the class.
+   Analogue to the ``sycl::atomic_ref`` class.
+
+   An atomic reference is a view into a data container that can be then updated
+   atomically using any of the ``fetch_*`` member functions of the class.
 
 
    .. rubric:: Overview
@@ -126,7 +111,6 @@ Classes
       Returns: The original value of the object referenced by the AtomicRef.
 
 
-
    .. py:method:: fetch_sub(val)
 
       Subtracts the operand ``val`` to the object referenced by the
@@ -134,10 +118,9 @@ Classes
       Returns the original value of the object.
 
       :param val: Value to be subtracted from the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_min(val)
@@ -147,10 +130,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be compared against the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_max(val)
@@ -160,10 +142,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be compared against the object referenced by the
-      :param AtomicRef.:
+                  AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_and(val)
@@ -173,10 +154,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise ANDed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_or(val)
@@ -186,10 +166,9 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise ORed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: fetch_xor(val)
@@ -199,7 +178,7 @@ Classes
       referenced object. Returns the original value of the object.
 
       :param val: Value to be bitwise XORed against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
 
@@ -212,46 +191,42 @@ Classes
       Returns: The value of the object referenced by the AtomicRef.
 
 
-
    .. py:method:: store(val)
 
       Stores operand ``val`` to the object referenced by the AtomicRef.
 
-      :param val: Value to be stored in the object referenced by
-      :param the AtomicRef.:
+      :param val: Value to be stored in the object referenced by the AtomicRef.
 
 
    .. py:method:: exchange(val)
 
       Replaces the value of the object referenced by the AtomicRef
-      with value of ``val``. Returns the original value of the referenced object.
+      with value of ``val``. Returns the original value of the referenced
+      object.
 
       :param val: Value to be exchanged against the object referenced by
-      :param the AtomicRef.:
+                  the AtomicRef.
 
       Returns: The original value of the object referenced by the AtomicRef.
-
 
 
    .. py:method:: compare_exchange(expected, desired, expected_idx=0)
 
       Compares the value of the object referenced by the AtomicRef
-      against the value of ``expected[expected_idx]``.
-      If the values are equal, replaces the value of the
-      referenced object with the value of ``desired``.
-      Otherwise assigns the original value of the
-      referenced object to ``expected[expected_idx]``.
+      against the value of ``expected[expected_idx]``. If the values are
+      equal, replaces the value of the referenced object with the value of
+      ``desired``. Otherwise assigns the original value of the referenced
+      object to ``expected[expected_idx]``.
 
-      :param expected: Array containing the expected value of the
-      :param object referenced by the AtomicRef.:
-      :param desired: Value that replaces the value of the object
-      :param referenced by the AtomicRef.:
+      :param expected: Array containing the expected value of the object
+                       referenced by the AtomicRef.
+      :param desired: Value that replaces the value of the object referenced by
+                      the AtomicRef.
       :param expected_idx: Offset in `expected` array where the expected
       :param value of the object referenced by the AtomicRef is present.:
 
-      Returns: Returns ``True`` if the comparison operation and
-      replacement operation were successful.
-
+      Returns: ``True`` if the comparison operation and replacement operation
+          were successful.
 
 
 
@@ -327,8 +302,10 @@ Classes
 
 .. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
 
-   Analogue to the ``sycl::item`` type. Identifies an instance of the
-   function object executing at each point in an Range.
+   Analogue to the ``sycl::item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.Range`.
 
 
    .. rubric:: Overview
@@ -385,8 +362,10 @@ Classes
 
 .. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
 
-   Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
-   function object executing at each point in an NdRange.
+   Analogue to the ``sycl::nd_item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.NdRange`.
 
 
    .. rubric:: Overview
@@ -400,7 +379,7 @@ Classes
       * - :py:obj:`get_global_id <numba_dpex.kernel_api.NdItem.get_global_id>`\ (idx)
         - Get the global id for a specific dimension.
       * - :py:obj:`get_global_linear_id <numba_dpex.kernel_api.NdItem.get_global_linear_id>`\ ()
-        - Get the global linear id associated with this item for all
+        - Get the linearized global id for the item for all dimensions.
       * - :py:obj:`get_local_id <numba_dpex.kernel_api.NdItem.get_local_id>`\ (idx)
         - Get the local id for a specific dimension.
       * - :py:obj:`get_local_linear_id <numba_dpex.kernel_api.NdItem.get_local_linear_id>`\ ()
@@ -429,8 +408,7 @@ Classes
 
    .. py:method:: get_global_linear_id()
 
-      Get the global linear id associated with this item for all
-      dimensions.
+      Get the linearized global id for the item for all dimensions.
 
       :returns: The global linear id.
       :rtype: int
@@ -492,7 +470,7 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   The address space values supported by numba_dpex.
+   An enumeration of the supported address space values.
 
    ==================   ============
    Address space        Value
@@ -558,8 +536,9 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
-   integer values of the enums is kept consistent with the corresponding
+   An enumeration of the supported ``sycl::memory_order`` values.
+
+   The integer values of the enums is kept consistent with the corresponding
    implementation in dpcpp.
 
    =====================   ============
@@ -634,8 +613,9 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of SYCL memory scope. For more details please refer to
-   SYCL 2020 specification, section 3.8.3.2
+   An enumeration of the supported ``sycl::memory_scope`` values.
+
+   For more details please refer to SYCL 2020 specification, section 3.8.3.2
 
    ===============  ============
    Memory Scope     Enum value
@@ -764,14 +744,6 @@ Classes
 
    .. rubric:: Overview
 
-   .. list-table:: Attributes
-      :header-rows: 0
-      :widths: auto
-      :class: summarytable
-
-      * - :py:obj:`UNDEFINED_DIMENSION <numba_dpex.kernel_api.Range.UNDEFINED_DIMENSION>`
-        - \-
-
 
    .. list-table:: Methods
       :header-rows: 0
@@ -785,10 +757,6 @@ Classes
 
 
    .. rubric:: Members
-
-   .. py:attribute:: UNDEFINED_DIMENSION
-
-      
 
    .. py:method:: get(index)
 
@@ -839,13 +807,13 @@ Functions
 
    The function is modeled after the ``sycl::group_barrier`` function. It
    synchronizes work within a group of work items. All the work-items
-   of the group must execute the barrier construct before any work-item
+   of the group must execute the barrier call before any work-item
    continues execution beyond the barrier.
 
    The ``group_barrier`` performs mem-fence operations ensuring that memory
    accesses issued before the barrier are not re-ordered with those issued
-   after the barrier: all work-items in group g execute a release fence prior
-   to synchronizing at the barrier, all work-items in group g execute an
+   after the barrier: all work-items in group G execute a release fence prior
+   to synchronizing at the barrier, all work-items in group G execute an
    acquire fence afterwards, and there is an implicit synchronization of these
    fences as if provided by an explicit atomic operation on an atomic object.
 

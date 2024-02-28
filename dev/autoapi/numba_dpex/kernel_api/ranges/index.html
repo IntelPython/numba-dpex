@@ -12,7 +12,7 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="Useful links" href="../../../../useful_links.html" /><link rel="prev" title="numba_dpex.kernel_api.memory_enums" href="../memory_enums/index.html" />
+    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>numba_dpex.kernel_api.ranges - numba-dpex documentation</title>
@@ -165,27 +165,16 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../programming_model.html">Programming Model</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../user_guide/kernel_programming/index.html">Kernel Programming Basics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Kernel Programming Basics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/ufunc.html">Universal Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/dpnp_offload.html">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/kernel_programming/index.html">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/set_up_machine.html">Set up the machine for debugging</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/debugging_environment.html">Configure debugging environment</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/frame_info.html">Information About a Frame</a></li>
@@ -204,20 +193,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../atomic_fence/index.html">numba_dpex.kernel_api.atomic_fence</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../barrier/index.html">numba_dpex.kernel_api.barrier</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html">numba_dpex.kernel_api.index_space_ids</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html">numba_dpex.kernel_api.launcher</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html">numba_dpex.kernel_api.memory_enums</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">numba_dpex.kernel_api.ranges</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../useful_links.html">Useful links</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -227,7 +209,6 @@
 <p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">List of examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../release-notes.html">Release Notes</a></li>
 </ul>
@@ -301,17 +282,7 @@ the behavior of <cite>sycl::range</cite>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION" title="numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNDEFINED_DIMENSION</span></code></a></p></td>
-<td><p>-</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
-<table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.get" title="numba_dpex.kernel_api.ranges.Range.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(index)</p></td>
 <td><p>Returns the range of a single dimension.</p></td>
@@ -323,11 +294,6 @@ the behavior of <cite>sycl::range</cite>.</p>
 </table>
 </div>
 <p class="rubric">Members</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION">
-<span class="sig-name descname"><span class="pre">UNDEFINED_DIMENSION</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.get" title="Link to this definition">#</a></dt>
@@ -376,9 +342,9 @@ the global index space and the local_range parameter contains the index
 space of a work group. This class mimics the behavior of <cite>sycl::nd_range</cite>
 class.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
-<table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.get_global_range" title="numba_dpex.kernel_api.ranges.NdRange.get_global_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_range</span></code></a>()</p></td>
 <td><p>Returns a Range defining the index space.</p></td>
@@ -428,26 +394,8 @@ class.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../../../../useful_links.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Useful links</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="../memory_enums/index.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">numba_dpex.kernel_api.memory_enums</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -485,7 +433,6 @@ class.</p>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION"><code class="docutils literal notranslate"><span class="pre">Range.UNDEFINED_DIMENSION</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.get"><code class="docutils literal notranslate"><span class="pre">Range.get()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.size"><code class="docutils literal notranslate"><span class="pre">Range.size()</span></code></a></li>
 </ul>

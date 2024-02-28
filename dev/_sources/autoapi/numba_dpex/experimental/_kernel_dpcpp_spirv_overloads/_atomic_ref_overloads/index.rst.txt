@@ -1,0 +1,193 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads
+===========================================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads
+
+.. autoapi-nested-parse::
+
+   Implements the SPIR-V overloads for the kernel_api.AtomicRef class methods.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ol_atomic_ref <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_atomic_ref>`\ (ref, index, memory_order, memory_scope, address_space)
+     - Overload of the constructor for the class
+   * - :py:obj:`ol_fetch_add <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_add>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_add`.
+   * - :py:obj:`ol_fetch_sub <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_sub>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_sub`.
+   * - :py:obj:`ol_fetch_min <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_min>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_min`.
+   * - :py:obj:`ol_fetch_max <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_max>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_max`.
+   * - :py:obj:`ol_fetch_and <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_and>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_and`.
+   * - :py:obj:`ol_fetch_or <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_or>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_or`.
+   * - :py:obj:`ol_fetch_xor <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_fetch_xor>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_xor`.
+   * - :py:obj:`ol_load <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_load>`\ (atomic_ref)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.load`.
+   * - :py:obj:`ol_store <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_store>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.store`.
+   * - :py:obj:`ol_exchange <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_exchange>`\ (atomic_ref, val)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.exchange`.
+   * - :py:obj:`ol_compare_exchange <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._atomic_ref_overloads.ol_compare_exchange>`\ (atomic_ref, expected_ref, desired, expected_idx)
+     - SPIR-V overload for
+
+
+
+
+Functions
+---------
+.. py:function:: ol_atomic_ref(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+
+   Overload of the constructor for the class
+   class:`numba_dpex.kernel_api.AtomicRef`.
+
+   :raises errors.TypingError: If the `ref` argument is not a UsmNdArray type.
+   :raises errors.TypingError: If the dtype of the `ref` is not supported in an
+   :raises AtomicRef.:
+   :raises errors.TypingError: If the device does not support atomic operations on
+   :raises the dtype of the `ref`.:
+   :raises errors.TypingError: If the `memory_order`, `address_type`, or
+   :raises memory_scope:
+   :raises errors.TypingError: If the `address_space` argument is different from
+   :raises the address space attribute of the `ref` argument.:
+   :raises errors.TypingError: If the address space is PRIVATE.
+
+
+.. py:function:: ol_fetch_add(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_add`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_add` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_sub(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_sub`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_sub` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_min(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_min`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_min` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_max(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_max`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_max` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_and(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_and`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_and` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_or(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_or`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_or` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_fetch_xor(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_xor`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::fetch_xor` function.
+
+   :raises TypingError: When the dtype of the aggregator value does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_load(atomic_ref)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.load`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::load` function.
+
+
+
+.. py:function:: ol_store(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.store`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::store` function.
+
+   :raises TypingError: When the dtype of the value stored does not match the
+   :raises dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_exchange(atomic_ref, val)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.exchange`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::exchange` function.
+
+   :raises TypingError: When the dtype of the value passed to `exchange`
+   :raises does not match the dtype of the AtomicRef type.:
+
+
+.. py:function:: ol_compare_exchange(atomic_ref, expected_ref, desired, expected_idx=0)
+
+   SPIR-V overload for
+   :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.compare_exchange`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `atomic_ref::compare_exchange_strong` function.
+
+   :raises TypingError: When the dtype of the value passed to `compare_exchange`
+   :raises does not match the dtype of the AtomicRef type.:
+
+
+
+
+

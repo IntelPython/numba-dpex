@@ -12,10 +12,10 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" /><link rel="prev" title="Tutorials" href="../index.html" />
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Debugging with Intel® Distribution for GDB*" href="../debugging/index.html" /><link rel="prev" title="Tutorials" href="../index.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Kernel Programming Basics - numba-dpex documentation</title>
+        <title>Kernel Programming - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -145,7 +145,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -170,22 +170,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../programming_model.html">Programming Model</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Kernel Programming Basics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Kernel Programming Basics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l3"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../dpnp_offload.html">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../debugging/set_up_machine.html">Set up the machine for debugging</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../debugging/debugging_environment.html">Configure debugging environment</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../debugging/breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../debugging/stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../debugging/frame_info.html">Information About a Frame</a></li>
@@ -204,20 +193,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/atomic_fence/index.html">numba_dpex.kernel_api.atomic_fence</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/barrier/index.html">numba_dpex.kernel_api.barrier</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index_space_ids/index.html">numba_dpex.kernel_api.index_space_ids</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/launcher/index.html">numba_dpex.kernel_api.launcher</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/memory_enums/index.html">numba_dpex.kernel_api.memory_enums</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/ranges/index.html">numba_dpex.kernel_api.ranges</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../useful_links.html">Useful links</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -227,7 +209,6 @@
 <p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">List of examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-notes.html">Release Notes</a></li>
 </ul>
@@ -258,76 +239,114 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <span class="target" id="index"></span><section id="kernel-programming-basics">
-<h1>Kernel Programming Basics<a class="headerlink" href="#kernel-programming-basics" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
-a part of a Python program being submitted for execution to the device queue.</p>
-<a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
-<p>There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the <em>data parallel kernel programming</em>. In this model you express the work in terms of <em>work items</em>.
-You split data into small pieces, and each piece will be a unit of work, or a <em>work item</em>. The total number of
-work items is called <em>global size</em>. You can also group work items into bigger chunks called <em>work groups</em>.
-The number of work items in the work group is called the <em>local size</em>.</p>
-<a class="reference internal image-reference" href="../../_images/kernel_prog_model.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel_prog_model.png" style="width: 344.0px; height: 223.0px;" /></a>
-<p>In this example there are 48 <em>work items</em> (8 in dimension 0, and 6 in dimension 1), that is the <em>global size</em> is 48.
-Work items are grouped in <em>work groups</em> with the <em>local size</em> 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.</p>
-<p>In the <em>data parallel kernel programming</em> model you write a function that processes a given work item.
-Such a function is called the <em>data parallel kernel</em>.</p>
-<p><strong>Data Parallel Extension for Numba</strong> offers a way to write data parallel kernels directly using Python using
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. It bears similarities with <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>, but unlike these proprietary
-programming models <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> is built on top of <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> , which is hardware agnostic, meaning
-that with <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> programming model you will be able to write a portable code targeting different
-hardware vendors.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The current version of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports Intel SYCL devices only</p>
+          <span class="target" id="index"></span><section id="kernel-programming">
+<h1>Kernel Programming<a class="headerlink" href="#kernel-programming" title="Link to this heading">#</a></h1>
+<p>The tutorial covers the most important features of the KAPI kernel programming
+API and introduces the concepts needed to express data-parallel kernels in
+numba-dpex.</p>
+<section id="preliminary-concepts">
+<h2>Preliminary concepts<a class="headerlink" href="#preliminary-concepts" title="Link to this heading">#</a></h2>
+<section id="data-parallelism">
+<h3>Data parallelism<a class="headerlink" href="#data-parallelism" title="Link to this heading">#</a></h3>
+</section>
+<section id="single-program-multiple-data">
+<h3>Single Program Multiple Data<a class="headerlink" href="#single-program-multiple-data" title="Link to this heading">#</a></h3>
+</section>
+<section id="range-v-s-nd-range-kernels">
+<h3>Range v/s Nd-Range Kernels<a class="headerlink" href="#range-v-s-nd-range-kernels" title="Link to this heading">#</a></h3>
+</section>
+<section id="work-items-and-work-groups">
+<h3>Work items and Work groups<a class="headerlink" href="#work-items-and-work-groups" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="basic-concepts">
+<h2>Basic concepts<a class="headerlink" href="#basic-concepts" title="Link to this heading">#</a></h2>
+<section id="writing-a-range-kernel">
+<h3>Writing a <em>range</em> kernel<a class="headerlink" href="#writing-a-range-kernel" title="Link to this heading">#</a></h3>
+<p>A <em>range</em> kernel represents the simplest form of parallelism that can be
+expressed in KAPI. A range kernel represents a data-parallel execution of the
+same function by a set of work items. In KAPI, an instance of the
+<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class represents the set of work items
+and each work item in the <code class="docutils literal notranslate"><span class="pre">Range</span></code> is represented by an instance of the
+<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a> class. As such these two classes are
+essential to writing a range kernel in KAPI.</p>
+<div class="literal-block-wrapper docutils container" id="ex-kernel-declaration-vector-sum">
+<div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> A KAPI range kernel</span><a class="headerlink" href="#ex-kernel-declaration-vector-sum" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
+
+<span class="c1"># Data parallel kernel implementing vector sum</span>
+<span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">kernel_vector_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-declaration">Kernel Declaration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation">Kernel Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-indexing-functions">Kernel Indexing Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#unsupported-constructs">Unsupported Constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#numpy-support">NumPy support</a></li>
-</ul>
-</li>
-</ul>
 </div>
+<p><a class="reference internal" href="#ex-kernel-declaration-vector-sum"><span class="std std-ref">EXAMPLE: A KAPI range kernel</span></a> shows an example of a range kernel.
+Every range kernel requires its first argument to be an <code class="docutils literal notranslate"><span class="pre">Item</span></code> and
+needs to be launched via <a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a>
+by passing an instance a <code class="docutils literal notranslate"><span class="pre">Range</span></code> object.</p>
+<p>Do note that a <code class="docutils literal notranslate"><span class="pre">Range</span></code> object only controls the creation of work items, the
+distribution of work and data over a <code class="docutils literal notranslate"><span class="pre">Range</span></code> still needs to be defined by the
+user-written function. In the example, each work item access a single element of
+each of the three array and performs a single addition operation. It is possible
+to write the kernel differently so that each work item accesses multiple data
+elements or conditionally performs different amount of work. The data access
+patterns in a work item can have performance implications and programmers should
+refer a more topical material such as the <a class="reference external" href="https://www.intel.com/content/www/us/en/docs/oneapi/optimization-guide-gpu/2024-0/general-purpose-computing-on-gpu.html">oneAPI GPU optimization guide</a> to
+learn more.</p>
+<p>A range kernel is meant to express a basic <cite>parallel-for</cite> calculation that is
+ideally suited for embarrassingly parallel kernels such as elementwise
+computations over ndarrays. The API for expressing a range kernel does not
+allow advanced features such as synchronization of work items and fine-grained
+control over memory allocation on a device.</p>
+</section>
+<section id="writing-an-nd-range-kernel">
+<h3>Writing an <em>nd-range</em> kernel<a class="headerlink" href="#writing-an-nd-range-kernel" title="Link to this heading">#</a></h3>
+</section>
+<section id="the-device-func-decorator">
+<h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
+</section>
+<section id="supported-mathematical-operations">
+<h3>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h3>
+</section>
+<section id="supported-python-operators">
+<h3>Supported Python operators<a class="headerlink" href="#supported-python-operators" title="Link to this heading">#</a></h3>
+</section>
+<section id="supported-kernel-arguments">
+<h3>Supported kernel arguments<a class="headerlink" href="#supported-kernel-arguments" title="Link to this heading">#</a></h3>
+</section>
+<section id="launching-a-kernel">
+<h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="advanced-topics">
+<h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
+<section id="local-memory-allocation">
+<h3>Local memory allocation<a class="headerlink" href="#local-memory-allocation" title="Link to this heading">#</a></h3>
+</section>
+<section id="private-memory-allocation">
+<h3>Private memory allocation<a class="headerlink" href="#private-memory-allocation" title="Link to this heading">#</a></h3>
+</section>
+<section id="group-barrier-synchronization">
+<h3>Group barrier synchronization<a class="headerlink" href="#group-barrier-synchronization" title="Link to this heading">#</a></h3>
+</section>
+<section id="atomic-operations">
+<h3>Atomic operations<a class="headerlink" href="#atomic-operations" title="Link to this heading">#</a></h3>
+</section>
+<section id="async-kernel-execution">
+<h3>Async kernel execution<a class="headerlink" href="#async-kernel-execution" title="Link to this heading">#</a></h3>
+</section>
+<section id="specializing-a-kernel-or-a-device-func">
+<h3>Specializing a kernel or a device_func<a class="headerlink" href="#specializing-a-kernel-or-a-device-func" title="Link to this heading">#</a></h3>
+</section>
+</section>
 </section>
 
         </article>
@@ -335,12 +354,12 @@ hardware vendors.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="writing_kernels.html">
+          <a class="next-page" href="../debugging/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Writing Data Parallel Kernels</div>
+                <div class="title">Debugging with Intel® Distribution for GDB*</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -376,8 +395,52 @@ hardware vendors.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Kernel Programming</a><ul>
+<li><a class="reference internal" href="#preliminary-concepts">Preliminary concepts</a><ul>
+<li><a class="reference internal" href="#data-parallelism">Data parallelism</a></li>
+<li><a class="reference internal" href="#single-program-multiple-data">Single Program Multiple Data</a></li>
+<li><a class="reference internal" href="#range-v-s-nd-range-kernels">Range v/s Nd-Range Kernels</a></li>
+<li><a class="reference internal" href="#work-items-and-work-groups">Work items and Work groups</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#basic-concepts">Basic concepts</a><ul>
+<li><a class="reference internal" href="#writing-a-range-kernel">Writing a <em>range</em> kernel</a></li>
+<li><a class="reference internal" href="#writing-an-nd-range-kernel">Writing an <em>nd-range</em> kernel</a></li>
+<li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
+<li><a class="reference internal" href="#supported-mathematical-operations">Supported mathematical operations</a></li>
+<li><a class="reference internal" href="#supported-python-operators">Supported Python operators</a></li>
+<li><a class="reference internal" href="#supported-kernel-arguments">Supported kernel arguments</a></li>
+<li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-topics">Advanced topics</a><ul>
+<li><a class="reference internal" href="#local-memory-allocation">Local memory allocation</a></li>
+<li><a class="reference internal" href="#private-memory-allocation">Private memory allocation</a></li>
+<li><a class="reference internal" href="#group-barrier-synchronization">Group barrier synchronization</a></li>
+<li><a class="reference internal" href="#atomic-operations">Atomic operations</a></li>
+<li><a class="reference internal" href="#async-kernel-execution">Async kernel execution</a></li>
+<li><a class="reference internal" href="#specializing-a-kernel-or-a-device-func">Specializing a kernel or a device_func</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
