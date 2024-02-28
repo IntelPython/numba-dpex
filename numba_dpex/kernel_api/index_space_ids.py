@@ -67,8 +67,8 @@ class Group:
     def get_group_linear_range(self):
         """Return the total number of work-groups in the nd_range."""
         num_wg = 1
-        for ext in self._group_range:
-            num_wg *= ext
+        for i in range(self.dimensions):
+            num_wg *= self.get_group_range(i)
 
         return num_wg
 
@@ -82,8 +82,8 @@ class Group:
     def get_local_linear_range(self):
         """Return the total number of work-items in the work-group."""
         num_wi = 1
-        for ext in self._local_range:
-            num_wi *= ext
+        for i in range(self.dimensions):
+            num_wi *= self.get_local_range(i)
 
         return num_wi
 
@@ -151,6 +151,14 @@ class Item:
             int: The id
         """
         return self._index[idx]
+
+    def get_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_range(i)
+
+        return num_wi
 
     def get_range(self, idx):
         """Get the range size for a specific dimension.
@@ -267,6 +275,22 @@ class NdItem:
             int: The size
         """
         return self._local_item.get_range(idx)
+
+    def get_local_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_local_range(i)
+
+        return num_wi
+
+    def get_global_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for i in range(self.dimensions):
+            num_wi *= self.get_global_range(i)
+
+        return num_wi
 
     def get_group(self):
         """Returns the group.
