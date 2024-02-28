@@ -301,6 +301,11 @@ def register_jitable_method(type_, method):
 
 
 register_jitable_method(ItemType, Item.get_linear_id)
+register_jitable_method(ItemType, Item.get_linear_range)
 register_jitable_method(NdItemType, NdItem.get_global_linear_id)
+register_jitable_method(NdItemType, NdItem.get_global_linear_range)
+register_jitable_method(NdItemType, NdItem.get_local_linear_range)
 register_jitable_method(NdItemType, NdItem.get_local_linear_id)
 register_jitable_method(GroupType, Group.get_group_linear_id)
+register_jitable_method(GroupType, Group.get_group_linear_range)
+register_jitable_method(GroupType, Group.get_local_linear_range)
