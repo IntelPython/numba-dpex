@@ -382,7 +382,10 @@ function object executing at each point in an Range.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_id" title="numba_dpex.kernel_api.index_space_ids.Item.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>(idx)</p></td>
 <td><p>Get the id for a specific dimension.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_range" title="numba_dpex.kernel_api.index_space_ids.Item.get_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_range</span></code></a>(idx)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_range" title="numba_dpex.kernel_api.index_space_ids.Item.get_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linear_range</span></code></a>()</p></td>
+<td><p>Return the total number of work-items in the work-group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_range" title="numba_dpex.kernel_api.index_space_ids.Item.get_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_range</span></code></a>(idx)</p></td>
 <td><p>Get the range size for a specific dimension.</p></td>
 </tr>
 </tbody>
@@ -416,6 +419,12 @@ Original implementation could be found at <code class="docutils literal notransl
 <dd class="field-even"><p>int</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Item.get_linear_range">
+<span class="sig-name descname"><span class="pre">get_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_range" title="Link to this definition">#</a></dt>
+<dd><p>Return the total number of work-items in the work-group.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -461,6 +470,12 @@ function object executing at each point in an NdRange.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_range" title="numba_dpex.kernel_api.index_space_ids.NdItem.get_local_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_range</span></code></a>(idx)</p></td>
 <td><p>Get the local range size for a specific dimension.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range" title="numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_linear_range</span></code></a>()</p></td>
+<td><p>Return the total number of work-items in the work-group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range" title="numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_linear_range</span></code></a>()</p></td>
+<td><p>Return the total number of work-items in the work-group.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_group" title="numba_dpex.kernel_api.index_space_ids.NdItem.get_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group</span></code></a>()</p></td>
 <td><p>Returns the group.</p></td>
@@ -556,6 +571,18 @@ dimensions.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range">
+<span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range" title="Link to this definition">#</a></dt>
+<dd><p>Return the total number of work-items in the work-group.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range">
+<span class="sig-name descname"><span class="pre">get_global_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range" title="Link to this definition">#</a></dt>
+<dd><p>Return the total number of work-items in the work-group.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.NdItem.get_group">
 <span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_group" title="Link to this definition">#</a></dt>
 <dd><p>Returns the group.</p>
@@ -644,6 +671,7 @@ dimensions.</p>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item"><code class="docutils literal notranslate"><span class="pre">Item</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_id"><code class="docutils literal notranslate"><span class="pre">Item.get_linear_id()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_id"><code class="docutils literal notranslate"><span class="pre">Item.get_id()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_range"><code class="docutils literal notranslate"><span class="pre">Item.get_linear_range()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_range"><code class="docutils literal notranslate"><span class="pre">Item.get_range()</span></code></a></li>
 </ul>
 </li>
@@ -654,6 +682,8 @@ dimensions.</p>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_id"><code class="docutils literal notranslate"><span class="pre">NdItem.get_local_linear_id()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_range"><code class="docutils literal notranslate"><span class="pre">NdItem.get_global_range()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_range"><code class="docutils literal notranslate"><span class="pre">NdItem.get_local_range()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range"><code class="docutils literal notranslate"><span class="pre">NdItem.get_local_linear_range()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range"><code class="docutils literal notranslate"><span class="pre">NdItem.get_global_linear_range()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem.get_group"><code class="docutils literal notranslate"><span class="pre">NdItem.get_group()</span></code></a></li>
 </ul>
 </li>

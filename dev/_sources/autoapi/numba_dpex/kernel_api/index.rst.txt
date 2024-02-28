@@ -343,6 +343,8 @@ Classes
         - Get the linear id associated with this item for all dimensions.
       * - :py:obj:`get_id <numba_dpex.kernel_api.Item.get_id>`\ (idx)
         - Get the id for a specific dimension.
+      * - :py:obj:`get_linear_range <numba_dpex.kernel_api.Item.get_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
       * - :py:obj:`get_range <numba_dpex.kernel_api.Item.get_range>`\ (idx)
         - Get the range size for a specific dimension.
 
@@ -364,6 +366,11 @@ Classes
 
       :returns: The id
       :rtype: int
+
+
+   .. py:method:: get_linear_range()
+
+      Return the total number of work-items in the work-group.
 
 
    .. py:method:: get_range(idx)
@@ -402,6 +409,10 @@ Classes
         - Get the global range size for a specific dimension.
       * - :py:obj:`get_local_range <numba_dpex.kernel_api.NdItem.get_local_range>`\ (idx)
         - Get the local range size for a specific dimension.
+      * - :py:obj:`get_local_linear_range <numba_dpex.kernel_api.NdItem.get_local_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+      * - :py:obj:`get_global_linear_range <numba_dpex.kernel_api.NdItem.get_global_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
       * - :py:obj:`get_group <numba_dpex.kernel_api.NdItem.get_group>`\ ()
         - Returns the group.
 
@@ -456,6 +467,16 @@ Classes
 
       :returns: The size
       :rtype: int
+
+
+   .. py:method:: get_local_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+   .. py:method:: get_global_linear_range()
+
+      Return the total number of work-items in the work-group.
 
 
    .. py:method:: get_group()
