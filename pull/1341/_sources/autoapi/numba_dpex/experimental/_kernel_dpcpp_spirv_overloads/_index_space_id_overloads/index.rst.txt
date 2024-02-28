@@ -27,19 +27,15 @@ Overview
      - Declares global external spirv constant
    * - :py:obj:`generate_index_overload <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.generate_index_overload>`\ (_type, _intrinsic)
      - Generates overload for the index method that generates specific IR from
+   * - :py:obj:`register_index_const_methods <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods>`\ ()
+     - Register indexing related methods that can be defined as spirv const.
    * - :py:obj:`ol_nd_item_get_group <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group>`\ (nd_item)
      - SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
    * - :py:obj:`ol_nd_item_dimensions <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions>`\ (item)
      - SPIR-V overload for :meth:`numba_dpex.kernel_api.<generic_item>.dimensions`.
+   * - :py:obj:`register_jitable_method <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method>`\ (type_, method)
+     - Register a regular python method that can be executed by the
 
-
-.. list-table:: Attributes
-   :header-rows: 0
-   :widths: auto
-   :class: summarytable
-
-   * - :py:obj:`ol_index_func <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func>`
-     - \-
 
 
 
@@ -61,6 +57,11 @@ Functions
    provided intrinsic.
 
 
+.. py:function:: register_index_const_methods()
+
+   Register indexing related methods that can be defined as spirv const.
+
+
 .. py:function:: ol_nd_item_get_group(nd_item)
 
    SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
@@ -79,12 +80,15 @@ Functions
    `sycl::<generic_item>::dimensions` attribute.
 
 
+.. py:function:: register_jitable_method(type_, method)
 
-Attributes
-----------
-.. py:data:: ol_index_func
+   Register a regular python method that can be executed by the
+   python interpreter and can be compiled into a nopython
+   function when referenced by other jit'ed functions.
 
-   
+   Same as register_jitable, but for methods with no arguments.
+
+
 
 
 

@@ -263,21 +263,17 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.generate_index_overload" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.generate_index_overload"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_index_overload</span></code></a>(_type, _intrinsic)</p></td>
 <td><p>Generates overload for the index method that generates specific IR from</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ol_nd_item_get_group</span></code></a>(nd_item)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_index_const_methods</span></code></a>()</p></td>
+<td><p>Register indexing related methods that can be defined as spirv const.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ol_nd_item_get_group</span></code></a>(nd_item)</p></td>
 <td><p>SPIR-V overload for <a class="reference internal" href="../../../kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_group" title="numba_dpex.kernel_api.NdItem.get_group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem.get_group()</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ol_nd_item_dimensions</span></code></a>(item)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ol_nd_item_dimensions</span></code></a>(item)</p></td>
 <td><p>SPIR-V overload for <code class="xref py py-meth docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.&lt;generic_item&gt;.dimensions()</span></code>.</p></td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
-<table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ol_index_func</span></code></a></p></td>
-<td><p>-</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method" title="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_jitable_method</span></code></a>(<a href="#id2"><span class="problematic" id="id3">type_</span></a>, method)</p></td>
+<td><p>Register a regular python method that can be executed by the</p></td>
 </tr>
 </tbody>
 </table>
@@ -305,6 +301,12 @@ provided intrinsic.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods">
+<span class="sig-name descname"><span class="pre">register_index_const_methods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods" title="Link to this definition">#</a></dt>
+<dd><p>Register indexing related methods that can be defined as spirv const.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group">
 <span class="sig-name descname"><span class="pre">ol_nd_item_get_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nd_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group" title="Link to this definition">#</a></dt>
 <dd><p>SPIR-V overload for <a class="reference internal" href="../../../kernel_api/index.html#numba_dpex.kernel_api.NdItem.get_group" title="numba_dpex.kernel_api.NdItem.get_group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem.get_group()</span></code></a>.</p>
@@ -325,13 +327,14 @@ provided intrinsic.</p>
 <cite>sycl::&lt;generic_item&gt;::dimensions</cite> attribute.</p>
 </dd></dl>
 
-</section>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func">
-<span class="sig-name descname"><span class="pre">ol_index_func</span></span><a class="headerlink" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method">
+<span class="sig-name descname"><span class="pre">register_jitable_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method" title="Link to this definition">#</a></dt>
+<dd><p>Register a regular python method that can be executed by the
+python interpreter and can be compiled into a nopython
+function when referenced by other jit’ed functions.</p>
+<p>Same as register_jitable, but for methods with no arguments.</p>
+</dd></dl>
 
 </section>
 </section>
@@ -382,12 +385,10 @@ provided intrinsic.</p>
 <li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.spirv_name"><code class="docutils literal notranslate"><span class="pre">spirv_name()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.declare_spirv_const"><code class="docutils literal notranslate"><span class="pre">declare_spirv_const()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.generate_index_overload"><code class="docutils literal notranslate"><span class="pre">generate_index_overload()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods"><code class="docutils literal notranslate"><span class="pre">register_index_const_methods()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group"><code class="docutils literal notranslate"><span class="pre">ol_nd_item_get_group()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions"><code class="docutils literal notranslate"><span class="pre">ol_nd_item_dimensions()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#attributes">Attributes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_index_func"><code class="docutils literal notranslate"><span class="pre">ol_index_func</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method"><code class="docutils literal notranslate"><span class="pre">register_jitable_method()</span></code></a></li>
 </ul>
 </li>
 </ul>
