@@ -1,6 +1,7 @@
 {% set required_compiler_version = "2024.0" %}
 {% set excluded_compiler_version1 = "2024.0.1" %}
 {% set excluded_compiler_version2 = "2024.0.2" %}
+{% set excluded_compiler_version3 = "2024.0.3" %}
 
 package:
     name: numba-dpex
@@ -17,12 +18,14 @@ build:
 requirements:
     build:
         - {{ compiler('cxx') }}
-        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }} # [not osx]
+        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
+        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
         # specific version of sysroot required by dpcpp, but 2024.0.0 package
         # does not have it in meta data
         - sysroot_linux-64 >=2.28  # [linux]
     host:
-        - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}
+        - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
+        - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
         - python
         - setuptools >=63.*
         - scikit-build >=0.15*
