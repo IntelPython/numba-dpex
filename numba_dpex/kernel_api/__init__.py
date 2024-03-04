@@ -15,6 +15,7 @@ from .barrier import group_barrier
 from .index_space_ids import Group, Item, NdItem
 from .launcher import call_kernel
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
+from .private_array import PrivateArray
 from .ranges import NdRange, Range
 
 __all__ = [
@@ -28,6 +29,7 @@ __all__ = [
     "Group",
     "NdItem",
     "Item",
+    "PrivateArray",
     "group_barrier",
     "call_kernel",
 ]

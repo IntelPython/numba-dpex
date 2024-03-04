@@ -17,6 +17,7 @@ from ._kernel_dpcpp_spirv_overloads import (
     _atomic_ref_overloads,
     _group_barrier_overloads,
     _index_space_id_overloads,
+    _private_array_overloads,
 )
 from .decorators import device_func, kernel
 from .launcher import call_kernel, call_kernel_async
