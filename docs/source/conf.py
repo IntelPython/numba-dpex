@@ -31,7 +31,10 @@ extensions = [
     "sphinxcontrib.googleanalytics",
     "myst_parser",
     "autoapi.extension",
+    "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ["bibliography.bib"]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']

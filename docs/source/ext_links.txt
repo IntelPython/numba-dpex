@@ -2,7 +2,7 @@
     **********************************************************
     THESE ARE EXTERNAL PROJECT LINKS USED IN THE DOCUMENTATION
     **********************************************************
-
+.. _math: https://docs.python.org/3/library/math.html
 .. _NumPy*: https://numpy.org/
 .. _Numba*: https://numba.pydata.org/
 .. _numba-dpex: https://github.com/IntelPython/numba-dpex
@@ -14,6 +14,7 @@
 .. _SYCL*: https://www.khronos.org/sycl/
 .. _dpctl: https://intelpython.github.io/dpctl/latest/index.html
 .. _Data Parallel Control: https://intelpython.github.io/dpctl/latest/index.html
+.. _DLPack: https://dmlc.github.io/dlpack/latest/
 .. _Dpnp: https://intelpython.github.io/dpnp/
 .. _dpnp: https://intelpython.github.io/dpnp/
 .. _Data Parallel Extension for Numpy*: https://intelpython.github.io/dpnp/
@@ -28,3 +29,5 @@
 .. _oneDPL: https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-library.html#gs.5izf63
 .. _UXL: https://uxlfoundation.org/
 .. _oneAPI GPU optimization guide: https://www.intel.com/content/www/us/en/docs/oneapi/optimization-guide-gpu/2024-0/general-purpose-computing-on-gpu.html
+.. _dpctl.tensor.usm_ndarray: https://intelpython.github.io/dpctl/latest/docfiles/dpctl/usm_ndarray.html#dpctl.tensor.usm_ndarray
+.. _dpnp.ndarray: https://intelpython.github.io/dpnp/reference/ndarray.html
