@@ -35,6 +35,8 @@ Overview
      - An enumeration of the supported ``sycl::memory_order`` values.
    * - :py:obj:`MemoryScope <numba_dpex.kernel_api.MemoryScope>`
      - An enumeration of the supported ``sycl::memory_scope`` values.
+   * - :py:obj:`PrivateArray <numba_dpex.kernel_api.PrivateArray>`
+     - The ``PrivateArray`` class is an simple version of array intended to be used
    * - :py:obj:`NdRange <numba_dpex.kernel_api.NdRange>`
      - A class to encapsulate all kernel launch parameters.
    * - :py:obj:`Range <numba_dpex.kernel_api.Range>`
@@ -674,6 +676,14 @@ Classes
       :value: 4
 
       
+
+
+
+.. py:class:: PrivateArray(shape, dtype)
+
+   The ``PrivateArray`` class is an simple version of array intended to be used
+   inside kernel work item.
+
 
 
 

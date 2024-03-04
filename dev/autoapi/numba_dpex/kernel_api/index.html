@@ -278,10 +278,13 @@ numba_dpex.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
 <td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
 <td><p>A class to encapsulate all kernel launch parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
 <td><p>A data structure to encapsulate a single kernel launch parameter.</p></td>
 </tr>
 </tbody>
@@ -1086,6 +1089,13 @@ implementation in dpcpp.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.PrivateArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PrivateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.PrivateArray" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used
+inside kernel work item.</p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange" title="Link to this definition">#</a></dt>
 <dd><p>A class to encapsulate all kernel launch parameters.</p>
@@ -1398,6 +1408,7 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope.SYSTEM"><code class="docutils literal notranslate"><span class="pre">MemoryScope.SYSTEM</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray"><code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.NdRange"><code class="docutils literal notranslate"><span class="pre">NdRange</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.NdRange.get_global_range"><code class="docutils literal notranslate"><span class="pre">NdRange.get_global_range()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.NdRange.get_local_range"><code class="docutils literal notranslate"><span class="pre">NdRange.get_local_range()</span></code></a></li>

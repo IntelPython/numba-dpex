@@ -1,0 +1,45 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads
+==============================================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads
+
+.. autoapi-nested-parse::
+
+   Implements the SPIR-V overloads for the kernel_api.PrivateArray class.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ol_private_array_ctor <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads.ol_private_array_ctor>`\ (shape, dtype)
+     - Overload of the constructor for the class
+
+
+
+
+Functions
+---------
+.. py:function:: ol_private_array_ctor(shape, dtype)
+
+   Overload of the constructor for the class
+   class:`numba_dpex.kernel_api.PrivateArray`.
+
+   :raises errors.TypingError: If the shape argument is not a shape compatible
+       type.
+   :raises errors.TypingError: If the dtype argument is not a dtype compatible
+       type.
+
+
+
+
+
