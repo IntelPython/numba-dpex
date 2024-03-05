@@ -40,7 +40,7 @@ def test_compilation_as_literal_constant():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(i64arr_ty)
 
-    disp = exp_dpex.kernel(pass_flags_to_func)
+    disp = exp_dpex.kernel(inline_threshold=0)(pass_flags_to_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module.__str__()

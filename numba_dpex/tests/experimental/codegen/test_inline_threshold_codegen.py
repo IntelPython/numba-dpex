@@ -28,7 +28,7 @@ def test_codegen_with_max_inline_threshold():
     and pipeline to compile both host callable "kernels" and device-only
     "device_func" functions.
 
-    Unless the inline_threshold is set to 3, the `spir_func` function is not
+    Unless the inline_threshold is set to >0, the `spir_func` function is not
     inlined into the wrapper function. The test checks if the `spir_func`
     function is fully inlined into the wrapper. The test is rather rudimentary
     and only checks the count of function in the generated module.
@@ -39,7 +39,7 @@ def test_codegen_with_max_inline_threshold():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
-    disp = dpex_exp.kernel(inline_threshold=3)(kernel_func)
+    disp = dpex_exp.kernel(inline_threshold=1)(kernel_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module
@@ -60,7 +60,7 @@ def test_codegen_without_max_inline_threshold():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
-    disp = dpex_exp.kernel(kernel_func)
+    disp = dpex_exp.kernel(inline_threshold=0)(kernel_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module
