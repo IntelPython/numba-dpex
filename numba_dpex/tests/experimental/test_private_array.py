@@ -23,6 +23,30 @@ def private_array_kernel(item: Item, a):
         a[i] += p[j]
 
 
+def private_array_kernel_fill_true(item: Item, a):
+    i = item.get_linear_id()
+    p = PrivateArray(10, a.dtype, fill_zeros=True)
+
+    for j in range(10):
+        p[j] = j * j
+
+    a[i] = 0
+    for j in range(10):
+        a[i] += p[j]
+
+
+def private_array_kernel_fill_false(item: Item, a):
+    i = item.get_linear_id()
+    p = PrivateArray(10, a.dtype, fill_zeros=False)
+
+    for j in range(10):
+        p[j] = j * j
+
+    a[i] = 0
+    for j in range(10):
+        a[i] += p[j]
+
+
 def private_2d_array_kernel(item: Item, a):
     i = item.get_linear_id()
     p = PrivateArray(shape=(5, 2), dtype=a.dtype)
@@ -36,7 +60,13 @@ def private_2d_array_kernel(item: Item, a):
 
 
 @pytest.mark.parametrize(
-    "kernel", [private_array_kernel, private_2d_array_kernel]
+    "kernel",
+    [
+        private_array_kernel,
+        private_array_kernel_fill_true,
+        private_array_kernel_fill_false,
+        private_2d_array_kernel,
+    ],
 )
 @pytest.mark.parametrize(
     "call_kernel, decorator",
