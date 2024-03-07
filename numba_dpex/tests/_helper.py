@@ -40,6 +40,13 @@ def has_opencl_cpu():
     return bool(dpctl.get_num_devices(backend="opencl", device_type="cpu"))
 
 
+def has_cpu():
+    """
+    Checks if dpctl is able to select any CPU device.
+    """
+    return bool(dpctl.get_num_devices(device_type="cpu"))
+
+
 def has_level_zero():
     """
     Checks if dpctl is able to select a Level Zero GPU device.
