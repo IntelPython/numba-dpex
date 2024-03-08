@@ -41,7 +41,9 @@ def require_literal(literal_type: types.Type):
 
     for i, _ in enumerate(literal_type):
         if not isinstance(literal_type[i], types.Literal):
-            raise errors.TypingError("requires literal type")
+            raise errors.TypingError(
+                "requires each element of tuple literal type"
+            )
 
 
 def make_spirv_array(  # pylint: disable=too-many-arguments
