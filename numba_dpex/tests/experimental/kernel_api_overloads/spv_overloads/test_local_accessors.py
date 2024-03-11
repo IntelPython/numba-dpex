@@ -5,6 +5,7 @@
 
 import dpnp
 import pytest
+from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
@@ -21,23 +22,24 @@ list_of_supported_dtypes = get_all_dtypes(
 )
 
 
+@dpex_exp.kernel
+def _kernel(nd_item: NdItem, a, slm):
+    i = nd_item.get_global_linear_id()
+    j = nd_item.get_local_linear_id()
+
+    slm[j] = 0
+    group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
+
+    for m in range(100):
+        slm[j] += i * m
+        group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
+
+    a[i] = slm[j]
+
+
 @pytest.mark.parametrize("supported_dtype", list_of_supported_dtypes)
 def test_local_accessor(supported_dtype):
     """A test for passing a LocalAccessor object as a kernel argument."""
-
-    @dpex_exp.kernel
-    def _kernel(nd_item: NdItem, a, slm):
-        i = nd_item.get_global_linear_id()
-        j = nd_item.get_local_linear_id()
-
-        slm[j] = 0
-        group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
-
-        for m in range(100):
-            slm[j] += i * m
-            group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
-
-        a[i] = slm[j]
 
     N = 32
     a = dpnp.empty(N, dtype=supported_dtype)
@@ -52,3 +54,18 @@ def test_local_accessor(supported_dtype):
 
     for idx in range(N):
         assert a[idx] == 4950 * idx
+
+
+def test_local_accessor_argument_to_range_kernel():
+    """Checks if an exception is raised when passing a local accessor to a
+    RangeType kernel.
+    """
+    N = 32
+    a = dpnp.empty(N)
+    slm = LocalAccessor((32 * 64), dtype=a.dtype)
+
+    # Passing a local_accessor to a RangeType kernel should raise an exception.
+    # A TypeError is raised if NUMBA_CAPTURED_ERROR=new_style and a
+    # numba.TypingError is raised if NUMBA_CAPTURED_ERROR=old_style
+    with pytest.raises((TypeError, TypingError)):
+        dpex_exp.call_kernel(_kernel, dpex.Range(N), a, slm)

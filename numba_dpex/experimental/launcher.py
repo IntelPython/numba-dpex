@@ -25,6 +25,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
@@ -40,6 +41,23 @@ class _LLRange(NamedTuple):
 
     global_range_extents: list
     local_range_extents: list
+
+
+def _has_a_local_accessor_argument(args):
+    """Checks if there exists at least one LocalAccessorType object in the
+    input tuple.
+
+    Args:
+        args (_type_): A tuple of numba.core.Type objects
+
+    Returns:
+        bool : True if at least one LocalAccessorType object was found,
+            otherwise False.
+    """
+    for arg in args:
+        if isinstance(arg, LocalAccessorType):
+            return True
+    return False
 
 
 def _wrap_event_reference_tuple(ctx, builder, event1, event2):
@@ -151,6 +169,18 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
         warnings.warn(
             "Kernels without item/nd_item will be not supported in the future",
             DeprecationWarning,
+        )
+
+    # Validate local accessor arguments are passed only to a kernel that is
+    # launched with an NdRange index space. Reference section 4.7.6.11. of the
+    # SYCL 2020 specification: A local_accessor must not be used in a SYCL
+    # kernel function that is invoked via single_task or via the simple form of
+    # parallel_for that takes a range parameter.
+    if _has_a_local_accessor_argument(ty_kernel_args_tuple) and isinstance(
+        ty_index_space, RangeType
+    ):
+        raise TypeError(
+            "A RangeType kernel cannot have a LocalAccessor argument"
         )
 
     # ty_kernel_fn is type specific to exact function, so we can get function
