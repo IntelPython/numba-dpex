@@ -54,7 +54,7 @@ def _intrinsic_spirv_global_index_const(
     sig = types.int64(types.int32)
 
     def _intrinsic_spirv_global_index_const_gen(
-        context: SPIRVTargetContext,
+        context: SPIRVTargetContext,  # pylint: disable=unused-argument
         builder: llvmir.IRBuilder,
         sig,  # pylint: disable=unused-argument
         args,
@@ -79,7 +79,16 @@ def _intrinsic_spirv_global_index_const(
             dim,
         )
 
-        return context.cast(builder, res, types.uintp, types.intp)
+        # Generating same check as sycl does. Did they add it to avoid pointer
+        # bitcast on special constant?
+        max_int32 = llvmir.Constant(res.type, 2147483648)
+        cmp = builder.icmp_unsigned("<", res, max_int32)
+
+        inst = builder.assume(cmp)
+        # TODO: tail does not always work
+        inst.tail = "tail"
+
+        return res
 
     return sig, _intrinsic_spirv_global_index_const_gen
 
