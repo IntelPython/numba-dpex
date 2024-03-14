@@ -20,10 +20,7 @@ from numba_dpex.kernel_api import (
     MemoryScope,
 )
 from numba_dpex.kernel_api.flag_enum import FlagEnum
-from numba_dpex.kernel_api_impl.spirv.target import (
-    CC_SPIR_FUNC,
-    LLVM_SPIRV_ARGS,
-)
+from numba_dpex.kernel_api_impl.spirv.target import CC_SPIR_FUNC
 
 from ...core.types.kernel_api.atomic_ref import AtomicRefType
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
@@ -99,15 +96,6 @@ def _intrinsic_helper(
         data_attr_pos = context.data_model_manager.lookup(
             atomic_ref_ty
         ).get_field_position("ref")
-
-        # TODO: evaluating the llvm-spirv flags that dpcpp uses
-        context.extra_compile_options[LLVM_SPIRV_ARGS] = [
-            "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
-        ]
-
-        context.extra_compile_options[LLVM_SPIRV_ARGS] = [
-            "--spirv-ext=+SPV_EXT_shader_atomic_float_min_max"
-        ]
 
         ptr_type = retty.as_pointer()
         ptr_type.addrspace = atomic_ref_ty.address_space
