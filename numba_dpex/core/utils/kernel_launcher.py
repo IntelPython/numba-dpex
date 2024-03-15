@@ -304,6 +304,15 @@ class KernelLaunchIRBuilder:
         context_ref = sycl.dpctl_queue_get_context(self.builder, queue_ref)
         device_ref = sycl.dpctl_queue_get_device(self.builder, queue_ref)
 
+        if config.BUILD_KERNEL_OPTIONS != "":
+            spv_compiler_options = self.context.insert_const_string(
+                self.builder.module, config.BUILD_KERNEL_OPTIONS
+            )
+        else:
+            spv_compiler_options = self.builder.load(
+                create_null_ptr(self.builder, self.context)
+            )
+
         # build_or_get_kernel steals reference to context and device cause it
         # needs to keep them alive for keys.
         kernel_ref = self.dpexrt.build_or_get_kernel(
@@ -318,7 +327,7 @@ class KernelLaunchIRBuilder:
                 llvmir.Constant(
                     llvmir.IntType(64), len(kernel_module.kernel_bitcode)
                 ),
-                self.builder.load(create_null_ptr(self.builder, self.context)),
+                spv_compiler_options,
                 kernel_name,
             ],
         )
