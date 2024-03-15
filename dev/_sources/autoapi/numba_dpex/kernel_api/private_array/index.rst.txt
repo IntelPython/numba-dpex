@@ -31,7 +31,7 @@ Overview
 Classes
 -------
 
-.. py:class:: PrivateArray(shape, dtype)
+.. py:class:: PrivateArray(shape, dtype, fill_zeros=False)
 
    The ``PrivateArray`` class is an simple version of array intended to be used
    inside kernel work item.

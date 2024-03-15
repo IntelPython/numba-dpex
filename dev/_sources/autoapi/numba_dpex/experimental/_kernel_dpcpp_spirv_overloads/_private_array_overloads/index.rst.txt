@@ -21,23 +21,30 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`ol_private_array_ctor <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads.ol_private_array_ctor>`\ (shape, dtype)
-     - Overload of the constructor for the class
+   * - :py:obj:`type_interval <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads.type_interval>`\ (context)
+     - Sets type of the constructor for the class
+   * - :py:obj:`dpex_private_array_lower <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._private_array_overloads.dpex_private_array_lower>`\ (context, builder, sig, args)
+     - Implements lower for the class:`numba_dpex.kernel_api.PrivateArray`
 
 
 
 
 Functions
 ---------
-.. py:function:: ol_private_array_ctor(shape, dtype)
+.. py:function:: type_interval(context)
 
-   Overload of the constructor for the class
+   Sets type of the constructor for the class
    class:`numba_dpex.kernel_api.PrivateArray`.
 
    :raises errors.TypingError: If the shape argument is not a shape compatible
        type.
    :raises errors.TypingError: If the dtype argument is not a dtype compatible
        type.
+
+
+.. py:function:: dpex_private_array_lower(context: numba_dpex.experimental.target.DpexExpKernelTypingContext, builder: llvmlite.ir.builder.IRBuilder, sig: numba.core.typing.templates.Signature, args: list[llvmlite.ir.Value])
+
+   Implements lower for the class:`numba_dpex.kernel_api.PrivateArray`
 
 
 

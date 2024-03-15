@@ -1,0 +1,32 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._registry
+===============================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._registry
+
+.. autoapi-nested-parse::
+
+   Implements the SPIR-V overloads for the kernel_api.PrivateArray class.
+
+
+
+Overview
+--------
+
+
+
+
+Attributes
+----------
+.. py:data:: registry
+
+   
+
+.. py:data:: lower
+
+   
+
+
+
