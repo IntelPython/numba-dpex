@@ -224,7 +224,21 @@ jobs:
         env:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
-          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv -k "not test_1d_strided_dpnp_array_in_kernel[2]"
+
+      - name: Run backendless optimization tests
+        # Running tests that have been found to fail on AMD CPUs with
+        # -cl-opt-disable. The test failures do not happen on other platforms
+        # and are possibly due to some driver/opencl compiler bug.
+        if: ${{ matrix.scope == 'tests' }}
+        env:
+          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
+          # Disabling device driver optimization to prevent catching bugs
+          # from driver compiler.
+          ONEAPI_DEVICE_SELECTOR: "opencl:cpu"
+          NUMBA_DPEX_BUILD_KERNEL_OPTIONS: "-cl-opt-disable"
+        run: |
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv -k "test_1d_strided_dpnp_array_in_kernel[2]"
 
       - name: Run examples
         if: ${{ matrix.scope == 'examples' }}
