@@ -61,28 +61,5 @@ jobs:
           pytest  -q --cov --cov-report term-missing --pyargs numba_dpex \
             -k 'not test_1d_strided_dpnp_array_in_kernel[2]'
 
-      - name: Install coveralls
-        shell: bash -l {0}
-        run: |
-          pip install coveralls
-
-      - name: Upload coverage data to coveralls.io
-        run: |
-          coveralls --service=github
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-          COVERALLS_PARALLEL: true
-
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: main
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Coveralls Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
-        COVERALLS_PARALLEL: true
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
