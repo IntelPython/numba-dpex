@@ -5,6 +5,7 @@
 from numba.core import types
 
 from numba_dpex import dpctl_sem_version
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 
 
 def numba_type_to_dpctl_typenum(context, ty):
@@ -34,6 +35,10 @@ def numba_type_to_dpctl_typenum(context, ty):
             return context.get_constant(
                 types.int32, kargty.dpctl_void_ptr.value
             )
+        elif isinstance(ty, LocalAccessorType):
+            return context.get_constant(
+                types.int32, kargty.dpctl_local_accessor.value
+            )
         else:
             raise NotImplementedError
     else:
@@ -61,5 +66,9 @@ def numba_type_to_dpctl_typenum(context, ty):
         elif ty == types.voidptr or isinstance(ty, types.CPointer):
             # DPCTL_VOID_PTR
             return context.get_constant(types.int32, 15)
+        elif isinstance(ty, LocalAccessorType):
+            raise NotImplementedError(
+                "LocalAccessor args for kernels requires dpctl 0.17 or greater."
+            )
         else:
             raise NotImplementedError
