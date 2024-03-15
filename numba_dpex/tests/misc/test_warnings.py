@@ -16,26 +16,6 @@ def foo(a):
     a[dpex.get_global_id(0)] = 0
 
 
-def test_opt_warning():
-    bkp = config.DPEX_OPT
-    config.DPEX_OPT = 3
-
-    with pytest.warns(UserWarning):
-        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
-
-    config.DPEX_OPT = bkp
-
-
-def test_inline_threshold_eq_3_warning():
-    bkp = config.INLINE_THRESHOLD
-    config.INLINE_THRESHOLD = 3
-
-    with pytest.warns(UserWarning):
-        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
-
-    config.INLINE_THRESHOLD = bkp
-
-
 def test_inline_threshold_negative_val_warning_():
     bkp = config.INLINE_THRESHOLD
     config.INLINE_THRESHOLD = -1

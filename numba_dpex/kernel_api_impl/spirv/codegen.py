@@ -55,12 +55,6 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
             )
             self._inline_threshold = 0
         else:
-            if value == 3:
-                warnings.warn(
-                    "Due to an existing compiler bug, setting INLINE_THRESHOLD "
-                    f"to {value} can lead to incorrect code generation on "
-                    "certain devices."
-                )
             self._inline_threshold = value
 
     def _optimize_final_module(self):
@@ -69,12 +63,6 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
 
         # Make optimization level depending on config.DPEX_OPT variable
         pmb.opt_level = config.DPEX_OPT
-        if config.DPEX_OPT > 2:
-            warnings.warn(
-                "Setting NUMBA_DPEX_OPT greater than 2 known to cause issues "
-                + "related to very aggressive optimizations that leads to "
-                + "broken code."
-            )
 
         pmb.disable_unit_at_a_time = False
 
