@@ -22,8 +22,8 @@ from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
+from numba_dpex.core.utils import kernel_launch_arg_builder as kl_arg_builder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
-from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 from numba_dpex.utils import create_null_ptr
 
 MAX_SIZE_OF_SYCL_RANGE = 3
@@ -98,7 +98,6 @@ class _KernelLaunchIRCachedArguments:
 
 class KernelLaunchIRBuilder:
     """
-    KernelLaunchIRBuilder(lowerer, cres)
     Helper class to build the LLVM IR for the submission of a kernel.
 
     The class generates LLVM IR inside the current LLVM module that is needed
@@ -141,192 +140,6 @@ class KernelLaunchIRBuilder:
         return self.builder.bitcast(
             zero, utils.get_llvm_type(context=self.context, type=types.voidptr)
         )
-
-    def _build_array_attr_arg(  # pylint: disable=too-many-arguments
-        self,
-        array_val,
-        array_attr_pos,
-        array_attr_ty,
-        arg_list,
-        args_ty_list,
-        arg_num,
-    ):
-        array_attr = self.builder.gep(
-            array_val,
-            [
-                self.context.get_constant(types.int32, 0),
-                self.context.get_constant(types.int32, array_attr_pos),
-            ],
-        )
-
-        # FIXME: If pointer arg then load it to some value and pass that value.
-        # We also most likely need an address space cast
-        if isinstance(
-            array_attr_ty, (types.misc.RawPointer, types.misc.CPointer)
-        ):
-            array_attr = self.builder.load(array_attr)
-
-        self._build_arg(
-            val=array_attr,
-            typ=array_attr_ty,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-
-    def _build_unituple_member_arg(  # pylint: disable=too-many-arguments
-        self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
-    ):
-        array_attr = self.builder.gep(
-            array_val,
-            [
-                self.context.get_constant(types.int32, 0),
-                self.context.get_constant(types.int32, array_attr_pos),
-            ],
-        )
-
-        for ndim in range(ndims):
-            self._build_array_attr_arg(
-                array_val=array_attr,
-                array_attr_pos=ndim,
-                array_attr_ty=types.int64,
-                arg_list=arg_list,
-                args_ty_list=args_ty_list,
-                arg_num=arg_num + ndim,
-            )
-
-    def _build_arg(
-        self, val, typ, arg_list, args_ty_list, arg_num
-    ):  # pylint: disable=too-many-arguments
-        """Stores the kernel arguments and the kernel argument types into
-        arrays that will be passed to DPCTLQueue_SubmitRange.
-
-        Args:
-            val: An LLVM IR Value that will be stored into the arguments array
-            typ: A Numba type that will be converted to a DPCTLKernelArgType
-            enum and stored into the argument types list array
-            arg_list: An LLVM IR Value array that stores the kernel arguments
-            args_ty_list: An LLVM IR Value array that stores the
-            DPCTLKernelArgType enum value for each kernel argument
-            arg_num: The index position at which the arg_list and args_ty_list
-            need to be updated.
-        """
-        kernel_arg_dst = self.builder.gep(
-            arg_list,
-            [self.context.get_constant(types.int32, arg_num)],
-        )
-        kernel_arg_ty_dst = self.builder.gep(
-            args_ty_list,
-            [self.context.get_constant(types.int32, arg_num)],
-        )
-        val = self.builder.bitcast(
-            val,
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
-        )
-        self.builder.store(val, kernel_arg_dst)
-        self.builder.store(
-            numba_type_to_dpctl_typenum(self.context, typ), kernel_arg_ty_dst
-        )
-
-    def _build_complex_arg(
-        self, val, typ, arg_list, args_ty_list, arg_num
-    ):  # pylint: disable=too-many-arguments
-        """Creates a list of LLVM Values for an unpacked complex kernel
-        argument.
-        """
-        self._build_array_attr_arg(
-            array_val=val,
-            array_attr_pos=0,
-            array_attr_ty=typ,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        self._build_array_attr_arg(
-            array_val=val,
-            array_attr_pos=1,
-            array_attr_ty=typ,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-
-    def _build_array_arg(  # pylint: disable=too-many-arguments
-        self,
-        host_array_val,  # llvm_val
-        host_array_data_model,
-        kernel_array_data_model,
-        arg_list,  # filling this val
-        args_ty_list,  # filling this val
-        arg_num,
-    ):
-        """Creates a list of LLVM Values for an unpacked USMNdArray kernel
-        argument.
-
-        The steps performed here are the same as in
-        numba_dpex.core.kernel_interface.arg_pack_unpacker._unpack_array_helper
-        """
-        # It might be quite confusing, but we are referring to field position
-        # on host device to cast it then to device type and send to device.vars
-        # Keeping that in mind answers when to use what data_model.
-        # Proper code structure refactoring needed to make it easier to read and
-        # maintain.
-        # Argument nitems
-        self._build_array_attr_arg(
-            array_val=host_array_val,
-            array_attr_pos=host_array_data_model.get_field_position("nitems"),
-            array_attr_ty=kernel_array_data_model.get_member_fe_type("nitems"),
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        # Argument itemsize
-        self._build_array_attr_arg(
-            array_val=host_array_val,
-            array_attr_pos=host_array_data_model.get_field_position("itemsize"),
-            array_attr_ty=kernel_array_data_model.get_member_fe_type(
-                "itemsize"
-            ),
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        # Argument data
-        self._build_array_attr_arg(
-            array_val=host_array_val,
-            array_attr_pos=host_array_data_model.get_field_position("data"),
-            array_attr_ty=kernel_array_data_model.get_member_fe_type("data"),
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        # Arguments for shape
-        shape_member = kernel_array_data_model.get_member_fe_type("shape")
-        self._build_unituple_member_arg(
-            array_val=host_array_val,
-            array_attr_pos=host_array_data_model.get_field_position("shape"),
-            ndims=shape_member.count,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += shape_member.count
-        # Arguments for strides
-        stride_member = kernel_array_data_model.get_member_fe_type("strides")
-        self._build_unituple_member_arg(
-            array_val=host_array_val,
-            array_attr_pos=host_array_data_model.get_field_position("strides"),
-            ndims=stride_member.count,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += stride_member.count
 
     # TODO: remove, not part of the builder
     def get_queue(self, exec_queue: dpctl.SyclQueue) -> llvmir.Instruction:
@@ -794,6 +607,20 @@ class KernelLaunchIRBuilder:
 
         return num_flattened_kernel_args
 
+    def _update_kernel_args_list(
+        self, arg_num, kernel_arg, kernel_args_list, kernel_args_ty_list
+    ):
+        kernel_arg_dst = self.builder.gep(
+            kernel_args_list,
+            [self.context.get_constant(types.int32, arg_num)],
+        )
+        kernel_arg_ty_dst = self.builder.gep(
+            kernel_args_ty_list,
+            [self.context.get_constant(types.int32, arg_num)],
+        )
+        self.builder.store(kernel_arg.llvm_val, kernel_arg_dst)
+        self.builder.store(kernel_arg.typeid, kernel_arg_ty_dst)
+
     def _populate_kernel_args_and_args_ty_arrays(
         self,
         host_kernel_argtys,
@@ -801,49 +628,28 @@ class KernelLaunchIRBuilder:
         kernel_args_list,
         kernel_args_ty_list,
     ):
+        """Populates the array of kernel arguments and the array of typeids that
+        are passed to DpctlQueue_Submit when executing a kernel function.
+        """
         kernel_arg_num = 0
-        for arg_num, argtype in enumerate(host_kernel_argtys):
-            host_llvm_val = host_callargs_ptrs[arg_num]
-            if isinstance(argtype, USMNdArray):
-                kernel_datamodel = self.kernel_dmm.lookup(argtype)
-                host_datamodel = self.context.data_model_manager.lookup(argtype)
-                self._build_array_arg(
-                    host_array_val=host_llvm_val,
-                    host_array_data_model=host_datamodel,
-                    kernel_array_data_model=kernel_datamodel,
-                    arg_list=kernel_args_list,
-                    args_ty_list=kernel_args_ty_list,
-                    arg_num=kernel_arg_num,
+        for arg_num, arg_type in enumerate(host_kernel_argtys):
+            arg_builder = kl_arg_builder.KernelLaunchArgBuilder(
+                target_context=self.context,
+                irbuilder=self.builder,
+                arg_type=arg_type,
+                arg_packed_llvm_val=host_callargs_ptrs[arg_num],
+                arg_kernel_datamodel=self.kernel_dmm.lookup(arg_type),
+            )
+
+            kargs: list[kl_arg_builder.KernelArg] = (
+                arg_builder.get_kernel_arg_list()
+            )
+
+            for karg in kargs:
+                self._update_kernel_args_list(
+                    kernel_arg_num, karg, kernel_args_list, kernel_args_ty_list
                 )
-                kernel_arg_num += kernel_datamodel.flattened_field_count
-            else:
-                if argtype == types.complex64:
-                    self._build_complex_arg(
-                        host_llvm_val,
-                        types.float32,
-                        kernel_args_list,
-                        kernel_args_ty_list,
-                        kernel_arg_num,
-                    )
-                    kernel_arg_num += 2
-                elif argtype == types.complex128:
-                    self._build_complex_arg(
-                        host_llvm_val,
-                        types.float64,
-                        kernel_args_list,
-                        kernel_args_ty_list,
-                        kernel_arg_num,
-                    )
-                    kernel_arg_num += 2
-                else:
-                    self._build_arg(
-                        host_llvm_val,
-                        argtype,
-                        kernel_args_list,
-                        kernel_args_ty_list,
-                        kernel_arg_num,
-                    )
-                    kernel_arg_num += 1
+                kernel_arg_num += 1
 
 
 def get_queue_from_llvm_values(
