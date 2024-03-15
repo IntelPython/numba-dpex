@@ -7,7 +7,7 @@ Implementation is intended to be used in pure Python code when prototyping a
 kernel function.
 """
 
-from numpy import ndarray
+import numpy as np
 
 
 class PrivateArray:
@@ -16,10 +16,13 @@ class PrivateArray:
     inside kernel work item.
     """
 
-    def __init__(self, shape, dtype) -> None:
+    def __init__(self, shape, dtype, fill_zeros=False) -> None:
         """Creates a new PrivateArray instance of the given shape and dtype."""
 
-        self._data = ndarray(shape=shape, dtype=dtype)
+        if fill_zeros:
+            self._data = np.zeros(shape=shape, dtype=dtype)
+        else:
+            self._data = np.empty(shape=shape, dtype=dtype)
 
     def __getitem__(self, idx_obj):
         """Returns the value stored at the position represented by idx_obj in

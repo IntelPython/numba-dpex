@@ -5,6 +5,7 @@
 """Implements a new numba dispatcher class and a compiler class to compile and
 call numba_dpex.kernel decorated function.
 """
+import hashlib
 from collections import namedtuple
 from contextlib import ExitStack
 from typing import Tuple
@@ -181,6 +182,9 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
         # all linking libraries getting linked together and final optimization
         # including inlining of functions if an inlining level is specified.
         kernel_library.finalize()
+
+        if config.DUMP_KERNEL_LLVM:
+            self._dump_kernel(kernel_fndesc, kernel_library)
         # Compiled the LLVM IR to SPIR-V
         kernel_spirv_module = spirv_generator.llvm_to_spirv(
             kernel_targetctx,
@@ -268,19 +272,25 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
 
             kcres_attrs.append(kernel_device_ir_module)
 
-            if config.DUMP_KERNEL_LLVM:
-                with open(
-                    cres.fndesc.llvm_func_name + ".ll",
-                    "w",
-                    encoding="UTF-8",
-                ) as fptr:
-                    fptr.write(str(cres.library.final_module))
-
         except errors.TypingError as err:
             self._failed_cache[key] = err
             return False, err
 
         return True, _SPIRVKernelCompileResult(*kcres_attrs)
+
+    def _dump_kernel(self, fndesc, library):
+        """Dump kernel into file."""
+        name = fndesc.llvm_func_name
+        if len(name) > 200:
+            sha256 = hashlib.sha256(name.encode("utf-8")).hexdigest()
+            name = name[:150] + "_" + sha256
+
+        with open(
+            name + ".ll",
+            "w",
+            encoding="UTF-8",
+        ) as fptr:
+            fptr.write(str(library.final_module))
 
 
 class SPIRVKernelDispatcher(Dispatcher):
