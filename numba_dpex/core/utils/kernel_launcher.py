@@ -22,7 +22,9 @@ from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
-from numba_dpex.core.utils import kernel_launch_arg_builder as kl_arg_builder
+from numba_dpex.core.utils.kernel_flattened_args_builder import (
+    KernelFlattenedArgsBuilder,
+)
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.utils import create_null_ptr
 
@@ -631,25 +633,24 @@ class KernelLaunchIRBuilder:
         """Populates the array of kernel arguments and the array of typeids that
         are passed to DpctlQueue_Submit when executing a kernel function.
         """
-        kernel_arg_num = 0
+        args_builder = KernelFlattenedArgsBuilder(
+            context=self.context,
+            builder=self.builder,
+            kernel_dmm=self.kernel_dmm,
+        )
+
         for arg_num, arg_type in enumerate(host_kernel_argtys):
-            arg_builder = kl_arg_builder.KernelLaunchArgBuilder(
-                target_context=self.context,
-                irbuilder=self.builder,
+            args_builder.add_argument(
                 arg_type=arg_type,
                 arg_packed_llvm_val=host_callargs_ptrs[arg_num],
-                arg_kernel_datamodel=self.kernel_dmm.lookup(arg_type),
             )
 
-            kargs: list[kl_arg_builder.KernelArg] = (
-                arg_builder.get_kernel_arg_list()
+        for kernel_arg_num, karg in enumerate(
+            args_builder.get_kernel_arg_list()
+        ):
+            self._update_kernel_args_list(
+                kernel_arg_num, karg, kernel_args_list, kernel_args_ty_list
             )
-
-            for karg in kargs:
-                self._update_kernel_args_list(
-                    kernel_arg_num, karg, kernel_args_list, kernel_args_ty_list
-                )
-                kernel_arg_num += 1
 
 
 def get_queue_from_llvm_values(

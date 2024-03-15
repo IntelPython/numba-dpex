@@ -25,7 +25,7 @@ class KernelArg(NamedTuple):
     typeid: int
 
 
-class KernelLaunchArgBuilder:
+class KernelFlattenedArgsBuilder:
     """Helper to generate the flattened list of kernel arguments to be
     passed to a DPCTLQueue_Submit function.
 
@@ -54,23 +54,49 @@ class KernelLaunchArgBuilder:
     correct type for the attribute.
     """
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
-        target_context: CPUContext,
-        irbuilder: llvmir.IRBuilder,
+        context: CPUContext,
+        builder: llvmir.IRBuilder,
+        kernel_dmm,
+    ):
+        self._context = context
+        self._builder = builder
+        self._kernel_dmm = kernel_dmm
+        self._kernel_arg_list = []
+
+    def add_argument(
+        self,
         arg_type,
         arg_packed_llvm_val,
-        arg_kernel_datamodel,
-    ) -> list[KernelArg]:
-
-        self._context = target_context
-        self._builder = irbuilder
-        self._arg_type = arg_type
-        self._arg_llvm_val = arg_packed_llvm_val
-        self._arg_host_datamodel = self._context.data_model_manager.lookup(
-            self._arg_type
-        )
-        self._arg_kernel_datamodel = arg_kernel_datamodel
+    ):
+        """Add kernel argument that need to be flatten."""
+        if isinstance(arg_type, USMNdArray):
+            self._kernel_arg_list.extend(
+                self._build_array_arg(
+                    arg_type, llvm_array_val=arg_packed_llvm_val
+                )
+            )
+        elif arg_type == types.complex64:
+            self._kernel_arg_list.extend(
+                self._build_complex_arg(
+                    llvm_val=arg_packed_llvm_val,
+                    numba_type=types.float32,
+                )
+            )
+        elif arg_type == types.complex128:
+            self._kernel_arg_list.extend(
+                self._build_complex_arg(
+                    llvm_val=arg_packed_llvm_val,
+                    numba_type=types.float64,
+                )
+            )
+        else:
+            self._kernel_arg_list.extend(
+                self._build_arg(
+                    llvm_val=arg_packed_llvm_val, numba_type=arg_type
+                )
+            )
 
     def get_kernel_arg_list(self) -> list[KernelArg]:
         """Returns a list of KernelArg objects representing a flattened kernel
@@ -79,39 +105,15 @@ class KernelLaunchArgBuilder:
         Returns:
             list[KernelArg]: List of flattened KernelArg objects
         """
-        kernel_arg_list = []
+        return self._kernel_arg_list
 
-        if isinstance(self._arg_type, USMNdArray):
-            kernel_arg_list.extend(
-                self._build_array_arg(llvm_array_val=self._arg_llvm_val)
-            )
-        elif self._arg_type == types.complex64:
-            kernel_arg_list.extend(
-                self._build_complex_arg(
-                    llvm_val=self._arg_llvm_val, numba_type=types.float32
-                )
-            )
-        elif self._arg_type == types.complex128:
-            kernel_arg_list.extend(
-                self._build_complex_arg(
-                    llvm_val=self._arg_llvm_val, numba_type=types.float64
-                )
-            )
-        else:
-            kernel_arg_list.extend(
-                self._build_arg(
-                    llvm_val=self._arg_llvm_val, numba_type=self._arg_type
-                )
-            )
-
-        return kernel_arg_list
-
-    def print_kernel_arg_list(self, args_list: list[KernelArg]) -> None:
+    def print_kernel_arg_list(self) -> None:
         """Prints out the kernel argument list in a human readable format.
 
         Args:
             args_list (list[KernelArg]): List of kernel arguments to be printed
         """
+        args_list = self._kernel_arg_list
         print(f"Number of flattened kernel arguments: {len(args_list)}")
         for karg in args_list:
             print(f"    {karg.llvm_val} of typeid {karg.typeid}")
@@ -211,38 +213,33 @@ class KernelLaunchArgBuilder:
             ),
         )
 
-    def _build_array_arg(self, llvm_array_val):
+    def _build_array_arg(self, arg_type, llvm_array_val):
         """Creates a list of LLVM Values for an unpacked USMNdArray kernel
         argument.
         """
         kernel_arg_list = []
 
+        kernel_data_model = self._kernel_dmm.lookup(arg_type)
+        host_data_model = self._context.data_model_manager.lookup(arg_type)
+
         kernel_arg_list.extend(
             self._build_collections_attr_arg(
                 llvm_val=llvm_array_val,
-                attr_index=self._arg_host_datamodel.get_field_position(
-                    "nitems"
-                ),
-                attr_type=self._arg_kernel_datamodel.get_member_fe_type(
-                    "nitems"
-                ),
+                attr_index=host_data_model.get_field_position("nitems"),
+                attr_type=kernel_data_model.get_member_fe_type("nitems"),
             )
         )
         # Argument itemsize
         kernel_arg_list.extend(
             self._build_collections_attr_arg(
                 llvm_val=llvm_array_val,
-                attr_index=self._arg_host_datamodel.get_field_position(
-                    "itemsize"
-                ),
-                attr_type=self._arg_kernel_datamodel.get_member_fe_type(
-                    "itemsize"
-                ),
+                attr_index=host_data_model.get_field_position("itemsize"),
+                attr_type=kernel_data_model.get_member_fe_type("itemsize"),
             )
         )
         # Argument data
-        data_attr_pos = self._arg_host_datamodel.get_field_position("data")
-        data_attr_ty = self._arg_kernel_datamodel.get_member_fe_type("data")
+        data_attr_pos = host_data_model.get_field_position("data")
+        data_attr_ty = kernel_data_model.get_member_fe_type("data")
         kernel_arg_list.extend(
             self._build_collections_attr_arg(
                 llvm_val=llvm_array_val,
@@ -254,20 +251,16 @@ class KernelLaunchArgBuilder:
         kernel_arg_list.extend(
             self._build_unituple_member_arg(
                 llvm_val=llvm_array_val,
-                attr_pos=self._arg_host_datamodel.get_field_position("shape"),
-                ndims=self._arg_kernel_datamodel.get_member_fe_type(
-                    "shape"
-                ).count,
+                attr_pos=host_data_model.get_field_position("shape"),
+                ndims=kernel_data_model.get_member_fe_type("shape").count,
             )
         )
         # Arguments for strides
         kernel_arg_list.extend(
             self._build_unituple_member_arg(
                 llvm_val=llvm_array_val,
-                attr_pos=self._arg_host_datamodel.get_field_position("strides"),
-                ndims=self._arg_kernel_datamodel.get_member_fe_type(
-                    "strides"
-                ).count,
+                attr_pos=host_data_model.get_field_position("strides"),
+                ndims=kernel_data_model.get_member_fe_type("strides").count,
             )
         )
 
