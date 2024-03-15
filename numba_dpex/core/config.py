@@ -73,6 +73,11 @@ DUMP_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DUMP_KERNEL_LAUNCHER", int, 0)
 # a kernel decorated function
 DEBUG_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER", int, 0)
 
+# Sets build kernel options for the kernel compilation on the device side.
+# For available OpenCL options refer
+# https://intel.github.io/llvm-docs/clang/ClangCommandLineReference.html#opencl-options
+BUILD_KERNEL_OPTIONS = _readenv("NUMBA_DPEX_BUILD_KERNEL_OPTIONS", str, "")
+
 # Flag to enable caching, set NUMBA_DPEX_ENABLE_CACHE=0 to turn it off.
 ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
 # To specify the default cache size, 20 by default.
@@ -96,6 +101,6 @@ STATIC_LOCAL_MEM_PASS = _readenv("NUMBA_DPEX_STATIC_LOCAL_MEM_PASS", int, 0)
 
 DPEX_OPT = _readenv("NUMBA_DPEX_OPT", int, 2)
 
-INLINE_THRESHOLD = _readenv("NUMBA_DPEX_INLINE_THRESHOLD", int, None)
+INLINE_THRESHOLD = _readenv("NUMBA_DPEX_INLINE_THRESHOLD", int, 2)
 
 USE_MLIR = _readenv("NUMBA_DPEX_USE_MLIR", int, 0)
