@@ -9,12 +9,14 @@ object.
 
 from typing import NamedTuple
 
+import dpctl
 from llvmlite import ir as llvmir
 from numba.core import types
 from numba.core.cpu import CPUContext
 
 from numba_dpex import utils
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 
@@ -70,7 +72,7 @@ class KernelFlattenedArgsBuilder:
         arg_type,
         arg_packed_llvm_val,
     ):
-        """Add kernel argument that need to be flatten."""
+        """Add flattened representation of a kernel argument."""
         if isinstance(arg_type, USMNdArray):
             self._kernel_arg_list.extend(
                 self._build_array_arg(
@@ -117,6 +119,40 @@ class KernelFlattenedArgsBuilder:
         print(f"Number of flattened kernel arguments: {len(args_list)}")
         for karg in args_list:
             print(f"    {karg.llvm_val} of typeid {karg.typeid}")
+
+    def _allocate_local_accessor_metadata_struct(self):
+        """Allocates a struct into the current function to store the metadata
+        that should be passed to libsyclinterface to allocate a
+        sycl::local_accessor object. The constructor of the sycl::local_accessor
+        class is: local_accessor<Ty, Ndim>(range<Ndims> r).
+
+        For this reason, the struct is allocated as:
+
+        LOCAL_ACCESSOR_MDSTRUCT_TYPE = llvmir.LiteralStructType(
+                [
+                    llvmir.IntType(64), # Ndim (0..3]
+                    llvmir.IntType(32), # typeid
+                    llvmir.IntType(64), # Dim0 extent
+                    llvmir.IntType(64), # Dim1 extent or NULL
+                    llvmir.IntType(64), # Dim2 extent or NULL
+                ]
+            )
+        """
+        local_accessor_mdstruct_type = llvmir.LiteralStructType(
+            [
+                llvmir.IntType(64),
+                llvmir.IntType(32),
+                llvmir.IntType(64),
+                llvmir.IntType(64),
+                llvmir.IntType(64),
+            ]
+        )
+
+        struct_ref = None
+        with self._builder.goto_entry_block():
+            struct_ref = self._builder.alloca(typ=local_accessor_mdstruct_type)
+
+        return struct_ref
 
     def _build_arg(self, llvm_val, numba_type):
         """Returns a KernelArg to be passed to a DPCTLQueue_Submit call.
@@ -213,6 +249,114 @@ class KernelFlattenedArgsBuilder:
             ),
         )
 
+    def _build_local_accessor_metadata_arg(
+        self, llvm_val, arg_type, data_attr_ty
+    ):
+        """Handles the special case of building the kernel argument for the data
+        attribute of a kernel_api.LocalAccessor object.
+
+        A kernel_api.LocalAccessor conceptually represents a device-only memory
+        allocation. The mock kernel_api.LocalAccessor uses a numpy.ndarray to
+        represent the data allocation. The numpy.ndarray cannot be passed to the
+        kernel and is ignored when building the kernel argument. Instead, a
+        struct is allocated to store the metadata about the size of the device
+        memory allocation and a reference to the struct is passed to the
+        DPCTLQueue_Submit call. The DPCTLQueue_Submit then constructs a
+        sycl::local_accessor object using the metadata and passes the
+        sycl::local_accessor as the kernel argument, letting the DPC++ runtime
+        handle proper device memory allocation.
+        """
+
+        kernel_data_model = self._kernel_dmm.lookup(arg_type)
+        host_data_model = self._context.data_model_manager.lookup(arg_type)
+        shape_member = kernel_data_model.get_member_fe_type("shape")
+        shape_member_pos = host_data_model.get_field_position("shape")
+        ndim = shape_member.count
+
+        mdstruct_ref = self._allocate_local_accessor_metadata_struct()
+
+        # Store the number of dimensions in the local accessor
+        self._store_val_into_struct(
+            mdstruct_ref,
+            index=0,
+            val=self._context.get_constant(types.int64, ndim),
+        )
+        # Get the underlying dtype of the data (a CPointer) attribute of a
+        # local_accessor object
+        self._store_val_into_struct(
+            mdstruct_ref,
+            index=1,
+            val=numba_type_to_dpctl_typenum(self._context, data_attr_ty.dtype),
+        )
+        # Extract and store the shape values from array into mdstruct
+        shape_attr = self._builder.gep(
+            llvm_val,
+            [
+                self._context.get_constant(types.int32, 0),
+                self._context.get_constant(types.int32, shape_member_pos),
+            ],
+        )
+        # Store the extent of the 1st dimension of the local accessor
+        dim0_shape_ext = self._builder.gep(
+            shape_attr,
+            [
+                self._context.get_constant(types.int32, 0),
+                self._context.get_constant(types.int32, 0),
+            ],
+        )
+        self._store_val_into_struct(
+            mdstruct_ref,
+            index=2,
+            val=self._builder.load(dim0_shape_ext),
+        )
+
+        if ndim == 2:
+            dim1_shape_ext = self._builder.gep(
+                shape_attr,
+                [
+                    self._context.get_constant(types.int32, 0),
+                    self._context.get_constant(types.int32, 1),
+                ],
+            )
+            self._store_val_into_struct(
+                mdstruct_ref,
+                index=3,
+                val=self._builder.load(dim1_shape_ext),
+            )
+        else:
+            self._store_val_into_struct(
+                mdstruct_ref,
+                index=3,
+                val=self._context.get_constant(types.int64, 1),
+            )
+
+        if ndim == 3:
+            dim2_shape_ext = self._builder.gep(
+                shape_attr,
+                [
+                    self._context.get_constant(types.int32, 0),
+                    self._context.get_constant(types.int32, 2),
+                ],
+            )
+            self._store_val_into_struct(
+                mdstruct_ref,
+                index=4,
+                val=self._builder.load(dim2_shape_ext),
+            )
+        else:
+            self._store_val_into_struct(
+                mdstruct_ref,
+                index=4,
+                val=self._context.get_constant(types.int64, 1),
+            )
+
+        return self._build_arg(
+            llvm_val=mdstruct_ref,
+            numba_type=LocalAccessorType(
+                ndim, dpctl.tensor.dtype(data_attr_ty.dtype.name)
+            ),
+        )
+
     def _build_array_arg(self, arg_type, llvm_array_val):
         """Creates a list of LLVM Values for an unpacked USMNdArray kernel
         argument.
@@ -240,13 +384,23 @@ class KernelFlattenedArgsBuilder:
         # Argument data
         data_attr_pos = host_data_model.get_field_position("data")
         data_attr_ty = kernel_data_model.get_member_fe_type("data")
-        kernel_arg_list.extend(
-            self._build_collections_attr_arg(
-                llvm_val=llvm_array_val,
-                attr_index=data_attr_pos,
-                attr_type=data_attr_ty,
+
+        if isinstance(arg_type, LocalAccessorType):
+            kernel_arg_list.extend(
+                self._build_local_accessor_metadata_arg(
+                    llvm_val=llvm_array_val,
+                    arg_type=arg_type,
+                    data_attr_ty=data_attr_ty,
+                )
             )
-        )
+        else:
+            kernel_arg_list.extend(
+                self._build_collections_attr_arg(
+                    llvm_val=llvm_array_val,
+                    attr_index=data_attr_pos,
+                    attr_type=data_attr_ty,
+                )
+            )
         # Arguments for shape
         kernel_arg_list.extend(
             self._build_unituple_member_arg(

@@ -21,6 +21,7 @@ from numba_dpex.core import config
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
 from numba_dpex.core.utils.kernel_flattened_args_builder import (
     KernelFlattenedArgsBuilder,
@@ -675,7 +676,9 @@ def get_queue_from_llvm_values(
     the queue from the first USMNdArray argument can be extracted.
     """
     for arg_num, argty in enumerate(ty_kernel_args):
-        if isinstance(argty, USMNdArray):
+        if isinstance(argty, USMNdArray) and not isinstance(
+            argty, LocalAccessorType
+        ):
             llvm_val = ll_kernel_args[arg_num]
             datamodel = ctx.data_model_manager.lookup(argty)
             sycl_queue_attr_pos = datamodel.get_field_position("sycl_queue")
