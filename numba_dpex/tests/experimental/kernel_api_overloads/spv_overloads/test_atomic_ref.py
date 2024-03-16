@@ -8,29 +8,34 @@ import pytest
 from numba.core.errors import TypingError
 
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import AddressSpace, AtomicRef, Item, Range
+import numba_dpex.kernel_api as kapi
+
+
+@pytest.fixture(params=[dpnp.ones(10), np.ones(10)])
+def ref_type_options(request):
+    return request.param
 
 
 def test_atomic_ref_compilation():
     @dpex_exp.kernel
-    def atomic_ref_kernel(item: Item, a, b):
+    def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
-        v = AtomicRef(b, index=0, address_space=AddressSpace.GLOBAL)
+        v = kapi.AtomicRef(b, index=0)
         v.fetch_add(a[i])
 
     a = dpnp.ones(10)
     b = dpnp.zeros(10)
     try:
-        dpex_exp.call_kernel(atomic_ref_kernel, Range(10), a, b)
+        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
 
 
 def test_atomic_ref_3_dim_compilation():
     @dpex_exp.kernel
-    def atomic_ref_kernel(item: Item, a, b):
+    def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
-        v = AtomicRef(b, index=(1, 1, 1), address_space=AddressSpace.GLOBAL)
+        v = kapi.AtomicRef(b, index=(1, 1, 1))
         v.fetch_add(a[i])
 
     a = dpnp.ones(8)
@@ -40,7 +45,7 @@ def test_atomic_ref_3_dim_compilation():
     want[1, 1, 1] = a.size
 
     try:
-        dpex_exp.call_kernel(atomic_ref_kernel, Range(a.size), a, b)
+        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(a.size), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
 
@@ -54,13 +59,49 @@ def test_atomic_ref_compilation_failure():
     """
 
     @dpex_exp.kernel
-    def atomic_ref_kernel(item: Item, a, b):
+    def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
-        v = AtomicRef(b, index=0, address_space=AddressSpace.LOCAL)
+        v = kapi.AtomicRef(b, index=0, address_space=kapi.AddressSpace.LOCAL)
         v.fetch_add(a[i])
 
     a = dpnp.ones(10)
     b = dpnp.zeros(10)
 
     with pytest.raises(TypingError):
-        dpex_exp.call_kernel(atomic_ref_kernel, Range(10), a, b)
+        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
+
+
+def test_atomic_ref_compilation_local_accessor():
+    """Tests if an AtomicRef object can be constructed from a LocalAccessor"""
+
+    @dpex_exp.kernel
+    def atomic_ref_slm_kernel(nditem: kapi.Item, a, slm):
+        gi = nditem.get_global_id(0)
+        v = kapi.AtomicRef(slm, 0)
+        v.fetch_add(a.dtype.type(5))
+        gr = nditem.get_group()
+        kapi.group_barrier(gr)
+        a[gi] = slm[0]
+
+    a = dpnp.zeros(32)
+    slm = kapi.LocalAccessor(1, a.dtype)
+    dpex_exp.call_kernel(
+        atomic_ref_slm_kernel, kapi.NdRange((32,), (32,)), a, slm
+    )
+    want = dpnp.full_like(a, 32 * a.dtype.type(5))
+    assert np.allclose(a.asnumpy(), want.asnumpy())
+
+
+def test_atomic_ref_creation(ref_type_options):
+    """Tests AtomicRef construction from supported array types."""
+    try:
+        kapi.AtomicRef(ref_type_options, 0)
+    except:
+        pytest.fail("Unexpected error in creating an AtomicRef")
+
+
+def test_atomic_ref_creation_expected_failure():
+    """Tests AtomicRef construction failure from unsupported types."""
+
+    with pytest.raises(TypeError):
+        kapi.AtomicRef(1, 0)
