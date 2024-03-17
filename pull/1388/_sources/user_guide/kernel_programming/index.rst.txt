@@ -286,6 +286,8 @@ work groups each with it own set of work items.
 The ``device_func`` decorator
 +++++++++++++++++++++++++++++
 
+.. include:: ./device-functions.txt
+
 Supported mathematical operations
 +++++++++++++++++++++++++++++++++
 

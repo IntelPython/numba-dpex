@@ -490,6 +490,37 @@ work groups each with it own set of work items.</p>
 </section>
 <section id="the-device-func-decorator">
 <h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
+<p>Numba-dpex provides a decorator to express auxiliary device-only functions that
+can be called from a kernel or another device function, but are not callable
+from the host. This decorator <a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.device_func" title="numba_dpex.experimental.device_func"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.device_func()</span></code></a> has no
+direct analogue in SYCL and primarily is provided to help programmers make their
+kapi applications modular.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">experimental</span> <span class="k">as</span> <span class="n">dpex_exp</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
+
+<span class="c1"># Array size</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">device_func</span>
+<span class="k">def</span> <span class="nf">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A device callable function that can be invoked from a ``kernel`` or</span>
+<span class="sd">    another device function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">a_kernel_function</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonstrates calling a device function from a kernel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">kapi</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>A device function does not require the first argument to be an index space id
+class, and unlike a kernel function a device function is allowed to return a
+value.</p>
 </section>
 <section id="supported-mathematical-operations">
 <h3>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h3>
