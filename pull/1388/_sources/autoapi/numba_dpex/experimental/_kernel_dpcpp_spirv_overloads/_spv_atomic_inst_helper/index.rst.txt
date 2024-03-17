@@ -1,0 +1,74 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._spv_atomic_inst_helper
+=============================================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._spv_atomic_inst_helper
+
+.. autoapi-nested-parse::
+
+   Helper module to generate LLVM IR SPIR-V intrinsic calls.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`get_atomic_inst_name <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._spv_atomic_inst_helper.get_atomic_inst_name>`\ (atomic_inst, atomic_ref_dtype)
+     - Returns a string corresponding to the LLVM IR intrinsic function
+   * - :py:obj:`get_memory_semantics_mask <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._spv_atomic_inst_helper.get_memory_semantics_mask>`\ (memory_order)
+     - Equivalent of the getMemorySemanticsMask function in dpcpp's
+   * - :py:obj:`get_scope <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._spv_atomic_inst_helper.get_scope>`\ (memory_scope)
+     - Translates a memory scope enum value to an equivalent SPIR-V memory scope
+
+
+
+
+Functions
+---------
+.. py:function:: get_atomic_inst_name(atomic_inst: str, atomic_ref_dtype: numba.core.types.Type) -> str
+
+   Returns a string corresponding to the LLVM IR intrinsic function
+   generated for a particular atomic operation for a specific data type.
+
+   :param atomic_inst: The string name of an atomic operation to look up.
+   :type atomic_inst: str
+   :param atomic_ref_dtype: The Numba type object
+   :type atomic_ref_dtype: numba.core.types.Type
+   :param corresponding to the dtype of the object stored in an AtomicRef.:
+
+   :raises ValueError: If the atomic operation is not found in the
+   :raises `_spv_atomic_instructions_map`` dictionary:
+   :raises ValueError: If no instruction is found for a combination of the
+   :raises atomic operation and the dtype in the ``_spv_atomic_instructions_map``:
+   :raises dictionary.:
+
+   :returns: A string corresponding to the LLVM IR intrinsic that should be
+             generated for the atomic operation for the specified dtype.
+   :rtype: str
+
+
+.. py:function:: get_memory_semantics_mask(memory_order)
+
+   Equivalent of the getMemorySemanticsMask function in dpcpp's
+   sycl/include/sycl/detail/spirv.hpp.  Translates SYCL memory order to a
+   SPIR-V  memory semantics mask.
+
+
+
+.. py:function:: get_scope(memory_scope)
+
+   Translates a memory scope enum value to an equivalent SPIR-V memory scope
+   value.
+
+
+
+
+

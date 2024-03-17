@@ -1,0 +1,119 @@
+
+numba_dpex.experimental
+=======================
+
+.. py:module:: numba_dpex.experimental
+
+.. autoapi-nested-parse::
+
+   Contains experimental features that are meant as engineering preview and not
+   yet production ready.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`device_func <numba_dpex.experimental.device_func>`\ (func_or_sig, \*\*options)
+     - Generates a function with a device-only calling convention, e.g.,
+   * - :py:obj:`kernel <numba_dpex.experimental.kernel>`\ (func_or_sig, \*\*options)
+     - A decorator to define a kernel function.
+   * - :py:obj:`call_kernel <numba_dpex.experimental.call_kernel>`\ (kernel_fn, index_space, \*kernel_args)
+     - Compiles and synchronously executes a kernel function.
+   * - :py:obj:`call_kernel_async <numba_dpex.experimental.call_kernel_async>`\ (kernel_fn, index_space, dependent_events, \*kernel_args)
+     - Compiles and asynchronously executes a kernel function.
+
+
+
+
+Functions
+---------
+.. py:function:: device_func(func_or_sig=None, **options)
+
+   Generates a function with a device-only calling convention, e.g.,
+   spir_func for SPIR-V based devices.
+
+   The decorator is used to compile overloads in the DpexKernelTarget and
+   users should use the decorator to define functions that are only callable
+   from inside another device_func or a kernel.
+
+   A device_func is not compiled down to device binary IR and instead left as
+   LLVM IR. It is done so that the function can be inlined fully into the
+   kernel module from where it is used at the LLVM level, leading to more
+   optimization opportunities.
+
+   :returns: A KernelDispatcher instance with the
+             _compilation_mode option set to DEVICE_FUNC.
+   :rtype: KernelDispatcher
+
+
+.. py:function:: kernel(func_or_sig=None, **options)
+
+   A decorator to define a kernel function.
+
+   A kernel function is conceptually equivalent to a SYCL kernel function, and
+   gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
+   A kernel decorated Python function has the following restrictions:
+
+       * The function can not return any value.
+       * All array arguments passed to a kernel should adhere to compute
+         follows data programming model.
+
+
+.. py:function:: call_kernel(kernel_fn, index_space, *kernel_args) -> None
+
+   Compiles and synchronously executes a kernel function.
+
+   Kernel execution happens in synchronous way, so the main thread will be
+   blocked till the kernel done execution.
+
+   :param kernel_fn: A
+                     :func:`numba_dpex.experimental.kernel` decorated function that is
+                     compiled to a ``KernelDispatcher``.
+   :type kernel_fn: numba_dpex.experimental.KernelDispatcher
+   :param index_space: A Range or NdRange type object that
+                       specifies the index space for the kernel.
+   :type index_space: Range | NdRange
+   :param kernel_args: List of objects that are passed to the numba_dpex.kernel
+                       decorated function.
+
+
+.. py:function:: call_kernel_async(kernel_fn, index_space, dependent_events: list[dpctl.SyclEvent], *kernel_args) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]
+
+   Compiles and asynchronously executes a kernel function.
+
+   Calls a :func:`numba_dpex.experimental.kernel` decorated function
+   asynchronously from CPython or from a :func:`numba_dpex.dpjit` function. As
+   the kernel execution happens asynchronously, so the main thread will not be
+   blocked till the kernel done execution. Instead the function returns back to
+   caller a handle for an *event* to track kernel execution. It is a user's
+   responsibility to properly track kernel execution completion and not use any
+   data that may still be used by the kernel prior to the kernel's completion.
+
+   :param kernel_fn: A
+                     :func:`numba_dpex.experimental.kernel` decorated function that is
+                     compiled to a ``KernelDispatcher``.
+   :type kernel_fn: KernelDispatcher
+   :param index_space: A Range or NdRange type object that
+                       specifies the index space for the kernel.
+   :type index_space: Range | NdRange
+   :param kernel_args: List of objects that are passed to the numba_dpex.kernel
+                       decorated function.
+
+   :returns: A pair of ``dpctl.SyclEvent`` objects. The pair of events constitute of
+             a host task and an event associated with the kernel execution. The event
+             associated with the kernel execution indicates the execution status of
+             the submitted kernel function. The host task manages the lifetime of any
+             PyObject passed in as a kernel argument and automatically decrements the
+             reference count of the object on kernel execution completion.
+
+
+
+
+

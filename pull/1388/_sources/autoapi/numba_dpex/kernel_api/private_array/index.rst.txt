@@ -1,0 +1,44 @@
+
+:orphan:
+
+numba_dpex.kernel_api.private_array
+===================================
+
+.. py:module:: numba_dpex.kernel_api.private_array
+
+.. autoapi-nested-parse::
+
+   Implements a simple array intended to be used inside kernel work item.
+   Implementation is intended to be used in pure Python code when prototyping a
+   kernel function.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`PrivateArray <numba_dpex.kernel_api.private_array.PrivateArray>`
+     - The ``PrivateArray`` class is an simple version of array intended to be used
+
+
+
+
+Classes
+-------
+
+.. py:class:: PrivateArray(shape, dtype, fill_zeros=False)
+
+   The ``PrivateArray`` class is an simple version of array intended to be used
+   inside kernel work item.
+
+
+
+
+
+
+

@@ -1,0 +1,94 @@
+
+:orphan:
+
+numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads
+===============================================================================
+
+.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads
+
+.. autoapi-nested-parse::
+
+   Implements the SPIR-V overloads for the kernel_api.items class methods.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`spirv_name <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.spirv_name>`\ (name)
+     - Converts name to spirv name by adding __spirv_ prefix.
+   * - :py:obj:`declare_spirv_const <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.declare_spirv_const>`\ (builder, name)
+     - Declares global external spirv constant
+   * - :py:obj:`generate_index_overload <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.generate_index_overload>`\ (_type, _intrinsic)
+     - Generates overload for the index method that generates specific IR from
+   * - :py:obj:`register_index_const_methods <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_index_const_methods>`\ ()
+     - Register indexing related methods that can be defined as spirv const.
+   * - :py:obj:`ol_nd_item_get_group <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_get_group>`\ (nd_item)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
+   * - :py:obj:`ol_nd_item_dimensions <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.ol_nd_item_dimensions>`\ (item)
+     - SPIR-V overload for :meth:`numba_dpex.kernel_api.<generic_item>.dimensions`.
+   * - :py:obj:`register_jitable_method <numba_dpex.experimental._kernel_dpcpp_spirv_overloads._index_space_id_overloads.register_jitable_method>`\ (type_, method)
+     - Register a regular python method that can be executed by the
+
+
+
+
+Functions
+---------
+.. py:function:: spirv_name(name: str)
+
+   Converts name to spirv name by adding __spirv_ prefix.
+
+
+.. py:function:: declare_spirv_const(builder: llvmlite.ir.IRBuilder, name: str)
+
+   Declares global external spirv constant
+
+
+.. py:function:: generate_index_overload(_type, _intrinsic)
+
+   Generates overload for the index method that generates specific IR from
+   provided intrinsic.
+
+
+.. py:function:: register_index_const_methods()
+
+   Register indexing related methods that can be defined as spirv const.
+
+
+.. py:function:: ol_nd_item_get_group(nd_item)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `sycl::nd_item::get_group` function.
+
+   :raises TypingError: When argument is not NdItem.
+
+
+.. py:function:: ol_nd_item_dimensions(item)
+
+   SPIR-V overload for :meth:`numba_dpex.kernel_api.<generic_item>.dimensions`.
+
+   Generates the same LLVM IR instruction as dpcpp for the
+   `sycl::<generic_item>::dimensions` attribute.
+
+
+.. py:function:: register_jitable_method(type_, method)
+
+   Register a regular python method that can be executed by the
+   python interpreter and can be compiled into a nopython
+   function when referenced by other jit'ed functions.
+
+   Same as register_jitable, but for methods with no arguments.
+
+
+
+
+

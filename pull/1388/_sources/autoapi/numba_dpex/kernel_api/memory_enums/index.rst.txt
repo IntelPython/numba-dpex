@@ -1,0 +1,250 @@
+
+:orphan:
+
+numba_dpex.kernel_api.memory_enums
+==================================
+
+.. py:module:: numba_dpex.kernel_api.memory_enums
+
+.. autoapi-nested-parse::
+
+   A collection of FlagEnum classes that syntactically represents the SYCL
+   memory enum classes.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`MemoryOrder <numba_dpex.kernel_api.memory_enums.MemoryOrder>`
+     - An enumeration of the supported ``sycl::memory_order`` values.
+   * - :py:obj:`MemoryScope <numba_dpex.kernel_api.memory_enums.MemoryScope>`
+     - An enumeration of the supported ``sycl::memory_scope`` values.
+   * - :py:obj:`AddressSpace <numba_dpex.kernel_api.memory_enums.AddressSpace>`
+     - An enumeration of the supported address space values.
+
+
+
+
+Classes
+-------
+
+.. py:class:: MemoryOrder
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   An enumeration of the supported ``sycl::memory_order`` values.
+
+   The integer values of the enums is kept consistent with the corresponding
+   implementation in dpcpp.
+
+   =====================   ============
+   Order                   Enum value
+   =====================   ============
+   RELAXED                 0
+   ACQUIRE                 1
+   CONSUME_UNSUPPORTED     2
+   RELEASE                 3
+   ACQ_REL                 4
+   SEQ_CST                 5
+   =====================   ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`RELAXED <numba_dpex.kernel_api.memory_enums.MemoryOrder.RELAXED>`
+        - \-
+      * - :py:obj:`ACQUIRE <numba_dpex.kernel_api.memory_enums.MemoryOrder.ACQUIRE>`
+        - \-
+      * - :py:obj:`CONSUME_UNSUPPORTED <numba_dpex.kernel_api.memory_enums.MemoryOrder.CONSUME_UNSUPPORTED>`
+        - \-
+      * - :py:obj:`RELEASE <numba_dpex.kernel_api.memory_enums.MemoryOrder.RELEASE>`
+        - \-
+      * - :py:obj:`ACQ_REL <numba_dpex.kernel_api.memory_enums.MemoryOrder.ACQ_REL>`
+        - \-
+      * - :py:obj:`SEQ_CST <numba_dpex.kernel_api.memory_enums.MemoryOrder.SEQ_CST>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: RELAXED
+      :value: 0
+
+      
+
+   .. py:attribute:: ACQUIRE
+      :value: 1
+
+      
+
+   .. py:attribute:: CONSUME_UNSUPPORTED
+      :value: 2
+
+      
+
+   .. py:attribute:: RELEASE
+      :value: 3
+
+      
+
+   .. py:attribute:: ACQ_REL
+      :value: 4
+
+      
+
+   .. py:attribute:: SEQ_CST
+      :value: 5
+
+      
+
+
+
+.. py:class:: MemoryScope
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   An enumeration of the supported ``sycl::memory_scope`` values.
+
+   For more details please refer to SYCL 2020 specification, section 3.8.3.2
+
+   ===============  ============
+   Memory Scope     Enum value
+   ===============  ============
+   WORK_ITEM        0
+   SUB_GROUP        1
+   WORK_GROUP       2
+   DEVICE           3
+   SYSTEM           4
+   ===============  ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`WORK_ITEM <numba_dpex.kernel_api.memory_enums.MemoryScope.WORK_ITEM>`
+        - \-
+      * - :py:obj:`SUB_GROUP <numba_dpex.kernel_api.memory_enums.MemoryScope.SUB_GROUP>`
+        - \-
+      * - :py:obj:`WORK_GROUP <numba_dpex.kernel_api.memory_enums.MemoryScope.WORK_GROUP>`
+        - \-
+      * - :py:obj:`DEVICE <numba_dpex.kernel_api.memory_enums.MemoryScope.DEVICE>`
+        - \-
+      * - :py:obj:`SYSTEM <numba_dpex.kernel_api.memory_enums.MemoryScope.SYSTEM>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: WORK_ITEM
+      :value: 0
+
+      
+
+   .. py:attribute:: SUB_GROUP
+      :value: 1
+
+      
+
+   .. py:attribute:: WORK_GROUP
+      :value: 2
+
+      
+
+   .. py:attribute:: DEVICE
+      :value: 3
+
+      
+
+   .. py:attribute:: SYSTEM
+      :value: 4
+
+      
+
+
+
+.. py:class:: AddressSpace
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   An enumeration of the supported address space values.
+
+   ==================   ============
+   Address space        Value
+   ==================   ============
+   PRIVATE              0
+   GLOBAL               1
+   CONSTANT             2
+   LOCAL                3
+   GENERIC              4
+   ==================   ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`PRIVATE <numba_dpex.kernel_api.memory_enums.AddressSpace.PRIVATE>`
+        - \-
+      * - :py:obj:`GLOBAL <numba_dpex.kernel_api.memory_enums.AddressSpace.GLOBAL>`
+        - \-
+      * - :py:obj:`CONSTANT <numba_dpex.kernel_api.memory_enums.AddressSpace.CONSTANT>`
+        - \-
+      * - :py:obj:`LOCAL <numba_dpex.kernel_api.memory_enums.AddressSpace.LOCAL>`
+        - \-
+      * - :py:obj:`GENERIC <numba_dpex.kernel_api.memory_enums.AddressSpace.GENERIC>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: PRIVATE
+      :value: 0
+
+      
+
+   .. py:attribute:: GLOBAL
+      :value: 1
+
+      
+
+   .. py:attribute:: CONSTANT
+      :value: 2
+
+      
+
+   .. py:attribute:: LOCAL
+      :value: 3
+
+      
+
+   .. py:attribute:: GENERIC
+      :value: 4
+
+      
+
+
+
+
+
+

@@ -1,0 +1,208 @@
+
+:orphan:
+
+numba_dpex.kernel_api.atomic_ref
+================================
+
+.. py:module:: numba_dpex.kernel_api.atomic_ref
+
+.. autoapi-nested-parse::
+
+   Implements a mock Python class to represent ``sycl::atomic_ref`` for
+   prototyping numba_dpex kernel functions before they are JIT compiled.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`AtomicRef <numba_dpex.kernel_api.atomic_ref.AtomicRef>`
+     - Analogue to the ``sycl::atomic_ref`` class.
+
+
+
+
+Classes
+-------
+
+.. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+
+   Analogue to the ``sycl::atomic_ref`` class.
+
+   An atomic reference is a view into a data container that can be then updated
+   atomically using any of the ``fetch_*`` member functions of the class.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`fetch_add <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_add>`\ (val)
+        - Adds the operand ``val`` to the object referenced by the AtomicRef
+      * - :py:obj:`fetch_sub <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_sub>`\ (val)
+        - Subtracts the operand ``val`` to the object referenced by the
+      * - :py:obj:`fetch_min <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_min>`\ (val)
+        - Calculates the minimum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_max <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_max>`\ (val)
+        - Calculates the maximum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_and <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_and>`\ (val)
+        - Calculates the bitwise AND of the operand ``val`` and the object
+      * - :py:obj:`fetch_or <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_or>`\ (val)
+        - Calculates the bitwise OR of the operand ``val`` and the object
+      * - :py:obj:`fetch_xor <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_xor>`\ (val)
+        - Calculates the bitwise XOR of the operand ``val`` and the object
+      * - :py:obj:`load <numba_dpex.kernel_api.atomic_ref.AtomicRef.load>`\ ()
+        - Loads the value of the object referenced by the AtomicRef.
+      * - :py:obj:`store <numba_dpex.kernel_api.atomic_ref.AtomicRef.store>`\ (val)
+        - Stores operand ``val`` to the object referenced by the AtomicRef.
+      * - :py:obj:`exchange <numba_dpex.kernel_api.atomic_ref.AtomicRef.exchange>`\ (val)
+        - Replaces the value of the object referenced by the AtomicRef
+      * - :py:obj:`compare_exchange <numba_dpex.kernel_api.atomic_ref.AtomicRef.compare_exchange>`\ (expected, desired, expected_idx)
+        - Compares the value of the object referenced by the AtomicRef
+
+
+   .. rubric:: Members
+
+   .. py:method:: fetch_add(val)
+
+      Adds the operand ``val`` to the object referenced by the AtomicRef
+      and assigns the result to the value of the referenced object. Returns
+      the original value of the object.
+
+      :param val: Value to be added to the object referenced by the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_sub(val)
+
+      Subtracts the operand ``val`` to the object referenced by the
+      AtomicRef and assigns the result to the value of the referenced object.
+      Returns the original value of the object.
+
+      :param val: Value to be subtracted from the object referenced by the
+                  AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_min(val)
+
+      Calculates the minimum value of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be compared against the object referenced by the
+                  AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_max(val)
+
+      Calculates the maximum value of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be compared against the object referenced by the
+                  AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_and(val)
+
+      Calculates the bitwise AND of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise ANDed against the object referenced by
+                  the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_or(val)
+
+      Calculates the bitwise OR of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise ORed against the object referenced by
+                  the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: fetch_xor(val)
+
+      Calculates the bitwise XOR of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise XORed against the object referenced by
+                  the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: load()
+
+      Loads the value of the object referenced by the AtomicRef.
+
+      Returns: The value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: store(val)
+
+      Stores operand ``val`` to the object referenced by the AtomicRef.
+
+      :param val: Value to be stored in the object referenced by the AtomicRef.
+
+
+   .. py:method:: exchange(val)
+
+      Replaces the value of the object referenced by the AtomicRef
+      with value of ``val``. Returns the original value of the referenced
+      object.
+
+      :param val: Value to be exchanged against the object referenced by
+                  the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+   .. py:method:: compare_exchange(expected, desired, expected_idx=0)
+
+      Compares the value of the object referenced by the AtomicRef
+      against the value of ``expected[expected_idx]``. If the values are
+      equal, replaces the value of the referenced object with the value of
+      ``desired``. Otherwise assigns the original value of the referenced
+      object to ``expected[expected_idx]``.
+
+      :param expected: Array containing the expected value of the object
+                       referenced by the AtomicRef.
+      :param desired: Value that replaces the value of the object referenced by
+                      the AtomicRef.
+      :param expected_idx: Offset in `expected` array where the expected
+      :param value of the object referenced by the AtomicRef is present.:
+
+      Returns: ``True`` if the comparison operation and replacement operation
+          were successful.
+
+
+
+
+
+
+

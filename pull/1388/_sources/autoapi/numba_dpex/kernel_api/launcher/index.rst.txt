@@ -1,0 +1,47 @@
+
+:orphan:
+
+numba_dpex.kernel_api.launcher
+==============================
+
+.. py:module:: numba_dpex.kernel_api.launcher
+
+.. autoapi-nested-parse::
+
+   Implementation of mock kernel launcher functions
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`call_kernel <numba_dpex.kernel_api.launcher.call_kernel>`\ (kernel_fn, index_range, \*kernel_args)
+     - Mocks the launching of a kernel function over either a Range or NdRange.
+
+
+
+
+Functions
+---------
+.. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
+
+   Mocks the launching of a kernel function over either a Range or NdRange.
+
+   :param kernel_fn: A callable function object
+   :param index_range: An instance of a Range object
+   :type index_range: numba_dpex.Range
+
+   :raises ValueError: If the first positional argument is not callable
+   :raises ValueError: If the second positional argument is not a Range or an
+   :raises Ndrange object:
+
+
+
+
+
