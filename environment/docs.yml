@@ -24,6 +24,7 @@ dependencies:
     - recommonmark
     - sphinx-rtd-theme
     - sphinxcontrib-apidoc
+    - sphinxcontrib-bibtex
     - sphinxcontrib-googleanalytics
     - sphinxcontrib.programoutput
     - pydata-sphinx-theme
