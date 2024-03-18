@@ -256,7 +256,7 @@ the concepts needed to write data-parallel kernels in numba-dpex.</p>
 <p>A <em>range</em> kernel represents the simplest form of parallelism that can be
 expressed in numba-dpex using kapi. Such a kernel represents a data-parallel
 execution over a set of work items with each work item representing a logical
-thread of execution. <a class="reference internal" href="#ex-vecadd-kernel"><span class="std std-ref">Example: Vector addition using a range kernel</span></a> shows an example of a range kernel
+thread of execution. <a class="reference internal" href="writing-range-kernel.html#ex-vecadd-kernel"><span class="std std-ref">Example: Vector addition using a range kernel</span></a> shows an example of a range kernel
 written in numba-dpex.</p>
 <div class="literal-block-wrapper docutils container" id="ex-vecadd-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Vector addition using a range kernel</span><a class="headerlink" href="#ex-vecadd-kernel" title="Link to this code">#</a></div>
@@ -292,7 +292,7 @@ is 2^32 and a kernel requesting more work items than that bound will not
 execute. As such, programmers need to consider the size of the data and the
 access patterns for their kernels before scheduling a range kernel. The maximum
 number of work items can be queried programmatically as shown in
-<a class="reference internal" href="#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a>.</p>
+<a class="reference internal" href="writing-range-kernel.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a>.</p>
 <div class="literal-block-wrapper docutils container" id="ex-max-work-item">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Query maximum number of work items for a device</span><a class="headerlink" href="#ex-max-work-item" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -322,9 +322,9 @@ number of work items can be queried programmatically as shown in
 </pre></div>
 </div>
 </div>
-<p>The output for <a class="reference internal" href="#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a> on a system with an Intel Gen9 integrated
+<p>The output for <a class="reference internal" href="writing-range-kernel.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a> on a system with an Intel Gen9 integrated
 graphics processor and a 9th Generation Coffee Lake CPU is shown in
-<a class="reference internal" href="#ex-max-work-item-output"><span class="std std-ref">OUTPUT: Query maximum number of work items for a device</span></a>.</p>
+<a class="reference internal" href="writing-range-kernel.html#ex-max-work-item-output"><span class="std std-ref">OUTPUT: Query maximum number of work items for a device</span></a>.</p>
 <div class="literal-block-wrapper docutils container" id="ex-max-work-item-output">
 <div class="code-block-caption"><span class="caption-text"><strong>OUTPUT:</strong> Query maximum number of work items for a device</span><a class="headerlink" href="#ex-max-work-item-output" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>UHD<span class="w"> </span>Graphics<span class="w"> </span><span class="m">630</span><span class="w"> </span><span class="o">[</span>0x3e98<span class="o">]</span>
@@ -1096,8 +1096,59 @@ updates.</p>
 <section id="supported-python-operators">
 <h3>Supported Python operators<a class="headerlink" href="#supported-python-operators" title="Link to this heading">#</a></h3>
 </section>
-<section id="supported-kernel-argument-types">
-<h3>Supported kernel argument types<a class="headerlink" href="#supported-kernel-argument-types" title="Link to this heading">#</a></h3>
+<section id="supported-general-python-features">
+<h3>Supported general Python features<a class="headerlink" href="#supported-general-python-features" title="Link to this heading">#</a></h3>
+<p>A kapi function when run in the purely interpreted mode by the CPython
+interpreter is a regular Python function, and as such in theory any Python
+feature can be used in the body of the function. In practice, to be
+JIT compilable and executable on a device only a subset of Python language
+features are supported in a kapi function. The restriction stems from both
+limitations in the Numba compiler tooling and also from the device-specific
+calling convention and other restrictions applied by a device’s ABI.</p>
+<p>This section provides a partial support matrix for Python features with respect
+to their usage in a kapi function.</p>
+<section id="built-in-types">
+<h4>Built-in types<a class="headerlink" href="#built-in-types" title="Link to this heading">#</a></h4>
+<p><strong>Supported Types</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+</ul>
+<p><strong>Unsupported Types</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">complex</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tuple</span></code></p></li>
+</ul>
+</section>
+<section id="built-in-functions">
+<h4>Built-in functions<a class="headerlink" href="#built-in-functions" title="Link to this heading">#</a></h4>
+<p>The following built-in functions are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">abs()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">range()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">round()</span></code></p></li>
+</ul>
+</section>
+<section id="unsupported-constructs">
+<h4>Unsupported Constructs<a class="headerlink" href="#unsupported-constructs" title="Link to this heading">#</a></h4>
+<p>The following Python constructs are <strong>not supported</strong>:</p>
+<ul class="simple">
+<li><p>Exception handling (<code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">..</span> <span class="pre">except</span></code>, <code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">..</span> <span class="pre">finally</span></code>)</p></li>
+<li><p>Context management (the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement)</p></li>
+<li><p>Comprehensions (either list, dict, set or generator comprehensions)</p></li>
+<li><p>Generator (any <code class="docutils literal notranslate"><span class="pre">yield</span></code> statements)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">raise</span></code> statement</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">assert</span></code> statement</p></li>
+</ul>
+</section>
+</section>
+<section id="supported-types-of-kernel-argument">
+<h3>Supported types of kernel argument<a class="headerlink" href="#supported-types-of-kernel-argument" title="Link to this heading">#</a></h3>
 </section>
 <section id="launching-a-kernel">
 <h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
@@ -1191,7 +1242,13 @@ updates.</p>
 <li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
 <li><a class="reference internal" href="#supported-mathematical-operations">Supported mathematical operations</a></li>
 <li><a class="reference internal" href="#supported-python-operators">Supported Python operators</a></li>
-<li><a class="reference internal" href="#supported-kernel-argument-types">Supported kernel argument types</a></li>
+<li><a class="reference internal" href="#supported-general-python-features">Supported general Python features</a><ul>
+<li><a class="reference internal" href="#built-in-types">Built-in types</a></li>
+<li><a class="reference internal" href="#built-in-functions">Built-in functions</a></li>
+<li><a class="reference internal" href="#unsupported-constructs">Unsupported Constructs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#supported-types-of-kernel-argument">Supported types of kernel argument</a></li>
 <li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
 </ul>
 </li>
