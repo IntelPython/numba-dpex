@@ -353,6 +353,10 @@ can either be a <code class="docutils literal notranslate"><span class="pre">dpn
 values can be of any Python numeric type. Array arguments are passed by
 reference, <em>i.e.</em>, changes to an array in a kernel are visible outside the
 kernel. Scalar values are always passed by value.</p></li>
+<li><p>At least one argument of a kernel should be an array. The requirement is so
+that the kernel launcher (<a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.call_kernel" title="numba_dpex.experimental.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code></a>) can
+determine the execution queue on which to launch the kernel. Refer
+the “Launching a kernel” section for more details.</p></li>
 </ul>
 <p>A range kernel has to be executed by calling the
 <a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a> function. The execution
@@ -361,8 +365,8 @@ range for the kernel is specified by creating an instance of a
 an argument to <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code>. The <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function does three things:
 compiles the kernel if needed, “unboxes” all kernel arguments by converting
 CPython objects into numba-dpex objects, and finally submitting the kernel to an
-execution queue with the specified execution range. Refer the API documentation
-for further details.</p>
+execution queue with the specified execution range. Refer the
+<a class="reference internal" href="../../autoapi/index.html"><span class="doc">API Reference</span></a> for further details.</p>
 <p>A range kernel is meant to express a basic <cite>parallel-for</cite> calculation that is
 ideally suited for embarrassingly parallel kernels such as elementwise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
