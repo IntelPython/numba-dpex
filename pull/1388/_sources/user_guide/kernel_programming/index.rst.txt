@@ -38,7 +38,7 @@ written in numba-dpex.
 
 .. code-block:: python
     :linenos:
-    :caption: **EXAMPLE:** Vector addition using a range kernel
+    :caption: **Example:** Vector addition using a range kernel
     :name: ex_vecadd_kernel
     :emphasize-lines: 9,17
 
@@ -76,7 +76,7 @@ number of work items can be queried programmatically as shown in
 
 .. code-block:: python
     :linenos:
-    :caption: **EXAMPLE:** Query maximum number of work items for a device
+    :caption: **Example:** Query maximum number of work items for a device
     :name: ex_max_work_item
 
     import dpctl
@@ -188,7 +188,7 @@ and some of the advanced features programmers can use in this type of kernel.
 
 .. code-block:: python
     :linenos:
-    :caption: **EXAMPLE:** Sliding window matrix multiplication as an nd-range kernel
+    :caption: **Example:** Sliding window matrix multiplication as an nd-range kernel
     :name: ex_matmul_kernel
 
     from numba_dpex import kernel_api as kapi
@@ -286,10 +286,12 @@ work groups each with it own set of work items.
 The ``device_func`` decorator
 +++++++++++++++++++++++++++++
 
-.. include:: ./device-functions.txt
+.. include:: ./device-functions.rst
 
 Supported mathematical operations
 +++++++++++++++++++++++++++++++++
+
+.. include:: ./math-functions.rst
 
 Supported Python operators
 ++++++++++++++++++++++++++

@@ -1,0 +1,36 @@
+Numba-dpex provides a decorator to express auxiliary device-only functions that
+can be called from a kernel or another device function, but are not callable
+from the host. This decorator :func:`numba_dpex.experimental.device_func` has no
+direct analogue in SYCL and primarily is provided to help programmers make their
+kapi applications modular.
+
+
+.. code-block:: python
+
+    import dpnp as np
+
+    from numba_dpex import experimental as dpex_exp
+    from numba_dpex import kernel_api as kapi
+
+    # Array size
+    N = 10
+
+
+    @dpex_exp.device_func
+    def a_device_function(a):
+        """A device callable function that can be invoked from a ``kernel`` or
+        another device function.
+        """
+        return a + 1
+
+
+    @ndpx.kernel
+    def a_kernel_function(item: kapi.Item, a, b):
+        """Demonstrates calling a device function from a kernel."""
+        i = kapi.get_id(0)
+        b[i] = a_device_function(a[i])
+
+
+A device function does not require the first argument to be an index space id
+class, and unlike a kernel function a device function is allowed to return a
+value.
