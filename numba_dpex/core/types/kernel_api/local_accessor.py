@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from numba.core.pythonapi import unbox
-from numba.core.types import Array, Type
+from numba.core import cgutils
+from numba.core.types import Type, UniTuple, intp
+from numba.extending import NativeValue, unbox
 from numba.np import numpy_support
 
 from numba_dpex.core.types import USMNdArray
@@ -69,7 +70,15 @@ def unbox_local_accessor(typ, obj, c):  # pylint: disable=unused-argument
     generate the kernel signature passing in a pointer in the local address
     space.
     """
+    shape = c.pyapi.object_getattr_string(obj, "_shape")
+    local_accessor = cgutils.create_struct_proxy(typ)(c.context, c.builder)
 
-    nparrobj = c.pyapi.object_getattr_string(obj, "_data")
-    nparrtype = Array(typ.dtype, typ.ndim, typ.layout, readonly=False)
-    return c.unbox(nparrtype, nparrobj)
+    ty_unituple = UniTuple(intp, typ.ndim)
+    ll_shape = c.unbox(ty_unituple, shape)
+    local_accessor.shape = ll_shape.value
+
+    return NativeValue(
+        c.builder.load(local_accessor._getpointer()),
+        is_error=ll_shape.is_error,
+        cleanup=ll_shape.cleanup,
+    )

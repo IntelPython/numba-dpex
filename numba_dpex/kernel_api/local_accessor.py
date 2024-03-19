@@ -35,19 +35,17 @@ class LocalAccessor:
             if hasattr(shape, "tolist"):
                 fn = getattr(shape, "tolist")
                 if callable(fn):
-                    self._shape = shape.tolist()
+                    self._shape = tuple(shape.tolist())
             else:
                 try:
-                    self._shape = [
-                        shape,
-                    ]
+                    self._shape = (shape,)
                 except Exception as e:
                     raise TypeError(
                         "Argument shape must a non-negative integer, "
                         "or a list/tuple of such integers."
                     ) from e
         else:
-            self._shape = list(shape)
+            self._shape = tuple(shape)
 
         # Make sure shape is made up a supported types
         if not self._verify_positive_integral_list(self._shape):
@@ -118,7 +116,9 @@ class _LocalAccessorMock:
     """
 
     def __init__(self, local_accessor: LocalAccessor):
-        self._data = local_accessor._data
+        self._data = numpy.empty(
+            local_accessor._shape, dtype=local_accessor._dtype
+        )
 
     def __getitem__(self, idx_obj):
         """Returns the value stored at the position represented by idx_obj in

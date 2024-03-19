@@ -97,4 +97,4 @@ def typeof_local_accessor(val: LocalAccessor, c) -> LocalAccessorType:
     Returns: LocalAccessorType object corresponding to the LocalAccessor object.
     """
     # pylint: disable=protected-access
-    return LocalAccessorType(ndim=val._data.ndim, dtype=val._data.dtype)
+    return LocalAccessorType(ndim=len(val._shape), dtype=val._dtype)

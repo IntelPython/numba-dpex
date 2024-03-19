@@ -8,10 +8,11 @@ numba_dpex.experimental module.
 
 from numba.core import types
 from numba.core.datamodel import DataModelManager, models
-from numba.core.datamodel.models import ArrayModel, StructModel
+from numba.core.datamodel.models import StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
+from numba_dpex.core.datamodel.models import USMArrayDeviceModel
 from numba_dpex.core.types.kernel_api.index_space_ids import (
     GroupType,
     ItemType,
@@ -68,6 +69,17 @@ class DpctlMDLocalAccessorModel(StructModel):
         super().__init__(dmm, fe_type, members)
 
 
+class LocalAccessorModel(StructModel):
+    """Data model for the LocalAccessor type when used in a host-only function."""
+
+    def __init__(self, dmm, fe_type):
+        ndim = fe_type.ndim
+        members = [
+            ("shape", types.UniTuple(types.intp, ndim)),
+        ]
+        super().__init__(dmm, fe_type, members)
+
+
 def _init_exp_data_model_manager() -> DataModelManager:
     """Initializes a DpexExpKernelTarget-specific data model manager.
 
@@ -84,7 +96,8 @@ def _init_exp_data_model_manager() -> DataModelManager:
     # Register the types and data model in the DpexExpTargetContext
     dmm.register(AtomicRefType, AtomicRefModel)
 
-    dmm.register(LocalAccessorType, dpex_core_models.USMArrayDeviceModel)
+    # Register the LocalAccessorType type
+    dmm.register(LocalAccessorType, USMArrayDeviceModel)
 
     # Register the GroupType type
     dmm.register(GroupType, EmptyStructModel)
@@ -115,6 +128,5 @@ register_model(NdItemType)(EmptyStructModel)
 # Register the MDLocalAccessorType type
 register_model(DpctlMDLocalAccessorType)(DpctlMDLocalAccessorModel)
 
-# The LocalAccessorType is registered with the EmptyStructModel in the default
-# data manager so that its attributes are not accessible inside dpjit.
-register_model(LocalAccessorType)(ArrayModel)
+# Register the LocalAccessorType type
+register_model(LocalAccessorType)(LocalAccessorModel)
