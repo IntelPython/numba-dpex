@@ -31,3 +31,6 @@
 .. _oneAPI GPU optimization guide: https://www.intel.com/content/www/us/en/docs/oneapi/optimization-guide-gpu/2024-0/general-purpose-computing-on-gpu.html
 .. _dpctl.tensor.usm_ndarray: https://intelpython.github.io/dpctl/latest/docfiles/dpctl/usm_ndarray.html#dpctl.tensor.usm_ndarray
 .. _dpnp.ndarray: https://intelpython.github.io/dpnp/reference/ndarray.html
+
+.. _Dispatcher: https://numba.readthedocs.io/en/stable/reference/jit-compilation.html#dispatcher-objects
+.. _Unboxes: https://numba.readthedocs.io/en/stable/extending/interval-example.html#boxing-and-unboxing

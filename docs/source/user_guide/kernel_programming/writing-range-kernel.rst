@@ -1,6 +1,6 @@
 A *range* kernel represents the simplest form of parallelism that can be
 expressed in numba-dpex using kapi. Such a kernel represents a data-parallel
-execution over a set of work items with each work item representing a logical
+execution over a set of work-items with each work-item representing a logical
 thread of execution. :ref:`ex_vecadd_kernel` shows an example of a range kernel
 written in numba-dpex.
 
@@ -11,7 +11,7 @@ written in numba-dpex.
     :emphasize-lines: 9,17
 
     import dpnp
-    import numba_dpex.experimental as dpex
+    import numba_dpex as dpex
     from numba_dpex import kernel_api as kapi
 
 
@@ -29,81 +29,20 @@ written in numba-dpex.
     dpex.call_kernel(vecadd, kapi.Range(N), a, b, c)
 
 The highlighted lines in the example demonstrate the definition of the execution
-range on **line 17** and extraction of every work items' *id* or index position
+range on **line 17** and extraction of every work-items' *id* or index position
 via the ``item.get_id`` call on **line 10**. An execution range comprising of
-1024 work items is defined when calling the kernel and each work item then
-executes a single addition. Note that the array sizes for the input and output
-arguments are equal to the size of the execution range. For very large arrays,
-the design will not scale as there is usually an upper bound for the range size
-depending on device. For most current Intel GPU devices, the maximum range size
-is 2^32 and a kernel requesting more work items than that bound will not
-execute. As such, programmers need to consider the size of the data and the
-access patterns for their kernels before scheduling a range kernel. The maximum
-number of work items can be queried programmatically as shown in
-:ref:`ex_max_work_item`.
-
-.. code-block:: python
-    :linenos:
-    :caption: **Example:** Query maximum number of work items for a device
-    :name: ex_max_work_item
-
-    import dpctl
-    import math
-
-    d = dpctl.SyclDevice("gpu")
-    d.print_device_info()
-
-    max_num_work_items = (
-        d.max_work_group_size
-        * d.max_work_item_sizes1d[0]
-        * d.max_work_item_sizes2d[0]
-        * d.max_work_item_sizes3d[0]
-    )
-    print(max_num_work_items, f"(2^{int(math.log(max_num_work_items, 2))})")
-
-    cpud = dpctl.SyclDevice("cpu")
-    cpud.print_device_info()
-
-    max_num_work_items_cpu = (
-        cpud.max_work_group_size
-        * cpud.max_work_item_sizes1d[0]
-        * cpud.max_work_item_sizes2d[0]
-        * cpud.max_work_item_sizes3d[0]
-    )
-    print(max_num_work_items_cpu, f"(2^{int(math.log(max_num_work_items_cpu, 2))})")
-
-The output for :ref:`ex_max_work_item` on a system with an Intel Gen9 integrated
-graphics processor and a 9th Generation Coffee Lake CPU is shown in
-:ref:`ex_max_work_item_output`.
-
-.. code-block:: bash
-    :caption: **OUTPUT:** Query maximum number of work items for a device
-    :name: ex_max_work_item_output
-
-        Name            Intel(R) UHD Graphics 630 [0x3e98]
-        Driver version  1.3.24595
-        Vendor          Intel(R) Corporation
-        Filter string   level_zero:gpu:0
-
-    4294967296 (2^32)
-        Name            Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz
-        Driver version  2023.16.12.0.12_195853.xmain-hotfix
-        Vendor          Intel(R) Corporation
-        Filter string   opencl:cpu:0
-
-    4503599627370496 (2^52)
-
-
+1024 work-items is defined when calling the kernel and each work-item then
+executes a single addition.
 
 There are a few semantic rules that have to be adhered to when writing a range
 kernel:
 
 * Analogous to the API of SYCL a range kernel can execute only over a 1-, 2-, or
-  a 3-dimensional set of work items.
+  a 3-dimensional set of work-items.
 
 * Every range kernel requires its first argument to be an instance of the
   :class:`numba_dpex.kernel_api.Item` class. The ``Item`` object is an
-  abstraction encapsulating the index position (id) of a single work item in the
+  abstraction encapsulating the index position (id) of a single work-item in the
   global execution range. The id will be a 1-, 2-, or a 3-tuple depending
   the dimensionality of the execution range.
 
@@ -119,28 +58,24 @@ kernel:
   kernel. Scalar values are always passed by value.
 
 * At least one argument of a kernel should be an array. The requirement is so
-  that the kernel launcher (:func:`numba_dpex.experimental.call_kernel`) can
-  determine the execution queue on which to launch the kernel. Refer
-  the "Launching a kernel" section for more details.
+  that the kernel launcher (:func:`numba_dpex.core.kernel_launcher.call_kernel`)
+  can determine the execution queue on which to launch the kernel. Refer to the
+  :ref:`launching-a-kernel` section for more details.
 
-A range kernel has to be executed by calling the
-:py:func:`numba_dpex.experimental.launcher.call_kernel` function. The execution
-range for the kernel is specified by creating an instance of a
-:class:`numba_dpex.kernel_api.Range` class and passing the ``Range`` object as
-an argument to ``call_kernel``. The ``call_kernel`` function does three things:
-compiles the kernel if needed, "unboxes" all kernel arguments by converting
-CPython objects into numba-dpex objects, and finally submitting the kernel to an
-execution queue with the specified execution range. Refer the
-:doc:`../../autoapi/index` for further details.
+A range kernel has to be executed via the
+:py:func:`numba_dpex.core.kernel_launcher.call_kernel` function by passing in
+an instance of the :class:`numba_dpex.kernel_api.Range` class. Refer to the
+:ref:`launching-a-kernel` section for more details on how to launch a range
+kernel.
 
 A range kernel is meant to express a basic `parallel-for` calculation that is
-ideally suited for embarrassingly parallel kernels such as elementwise
+ideally suited for embarrassingly parallel kernels such as element-wise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
-range kernel does not allow advanced features such as synchronization of work
-items and fine-grained control over memory allocation on a device. For such
+range kernel does not allow advanced features such as synchronization of
+work-items and fine-grained control over memory allocation on a device. For such
 advanced features, an nd-range kernel should be used.
 
 .. seealso::
     Refer API documentation for :class:`numba_dpex.kernel_api.Range`,
     :class:`numba_dpex.kernel_api.Item`,  and
-    :func:`numba_dpex.experimental.launcher.call_kernel` for more details.
+    :func:`numba_dpex.core.kernel_launcher.call_kernel` for more details.
