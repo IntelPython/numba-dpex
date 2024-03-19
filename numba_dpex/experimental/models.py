@@ -19,7 +19,10 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
 )
 
 from ..core.types.kernel_api.atomic_ref import AtomicRefType
-from ..core.types.kernel_api.local_accessor import LocalAccessorType
+from ..core.types.kernel_api.local_accessor import (
+    DpctlMDLocalAccessorType,
+    LocalAccessorType,
+)
 from .types import KernelDispatcherType
 
 
@@ -42,6 +45,26 @@ class EmptyStructModel(StructModel):
 
     def __init__(self, dmm, fe_type):
         members = []
+        super().__init__(dmm, fe_type, members)
+
+
+class DpctlMDLocalAccessorModel(StructModel):
+    """Data model to represent DpctlMDLocalAccessorType.
+
+    Must be the same structure as
+    dpctl/syclinterface/dpctl_sycl_queue_interface.h::MDLocalAccessor.
+
+    Structure intended to be used only on host side of the kernel call.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            ("ndim", types.size_t),
+            ("dpctl_type_id", types.int32),
+            ("dim0", types.size_t),
+            ("dim1", types.size_t),
+            ("dim2", types.size_t),
+        ]
         super().__init__(dmm, fe_type, members)
 
 
@@ -88,6 +111,9 @@ register_model(ItemType)(EmptyStructModel)
 
 # Register the NdItemType type
 register_model(NdItemType)(EmptyStructModel)
+
+# Register the MDLocalAccessorType type
+register_model(DpctlMDLocalAccessorType)(DpctlMDLocalAccessorModel)
 
 # The LocalAccessorType is registered with the EmptyStructModel in the default
 # data manager so that its attributes are not accessible inside dpjit.

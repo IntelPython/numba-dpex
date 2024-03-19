@@ -10,6 +10,15 @@ from numba_dpex.core.types import USMNdArray
 from numba_dpex.utils import address_space as AddressSpace
 
 
+class DpctlMDLocalAccessorType(Type):
+    """numba-dpex internal type to represent a dpctl SyclInterface type
+    `MDLocalAccessorTy`.
+    """
+
+    def __init__(self):
+        super().__init__(name="DpctlMDLocalAccessor")
+
+
 class LocalAccessorType(USMNdArray):
     """numba-dpex internal type to represent a Python object of
     :class:`numba_dpex.experimental.kernel_iface.LocalAccessor`.
