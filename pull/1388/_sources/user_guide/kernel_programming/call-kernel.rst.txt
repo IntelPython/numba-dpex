@@ -1,0 +1,43 @@
+.. _launching-a-kernel:
+
+Launching a kernel
+==================
+
+A ``kernel`` decorated kapi function produces a ``KernelDispatcher`` object that
+is a type of a Numba* `Dispatcher`_ object. However, unlike regular Numba*
+Dispatcher objects a ``KernelDispatcher`` object cannot be directly invoked from
+either CPython or another compiled Numba* ``jit`` function. To invoke a
+``kernel`` decorated function, a programmer has to use the
+:func:`numba_dpex.experimental.call_kernel` function.
+
+To invoke a ``KernelDispatcher`` the ``call_kernel`` function requires three
+things: the ``KernelDispatcher`` object, the ``Range`` or ``NdRange`` object
+over which the kernel is to be executed, and the list of arguments to be passed
+to the compiled kernel. Once called with the necessary  arguments, the
+``call_kernel`` function does the following main things:
+
+- Compiles the ``KernelDispatcher`` object specializing it for the provided
+  argument types.
+
+- `Unboxes`_  the kernel arguments by converting CPython objects into Numba* or
+   numba-dpex objects.
+
+- Infer the execution queue on which to submit the kernel from the provided
+  kernel arguments. (TODO: Refer compute follows data.)
+
+- Submits the kernel to the execution queue.
+
+- Waits for the execution completion, before returning control back to the
+  caller.
+
+The ``call_kernel`` function can be invoked both from CPython and from another
+Numba* compiled function. Note that the ``call_kernel`` function supports only
+synchronous execution of kernel and the ``call_kernel_async`` function should be
+used for asynchronous mode of kernel execution (refer
+:ref:`launching-an-async-kernel`).
+
+
+.. seealso::
+
+    Refer the API documentation for
+    :func:`numba_dpex.experimental.launcher.call_kernel` for more details.

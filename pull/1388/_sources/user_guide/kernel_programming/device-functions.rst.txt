@@ -2,9 +2,13 @@ Numba-dpex provides a decorator to express auxiliary device-only functions that
 can be called from a kernel or another device function, but are not callable
 from the host. This decorator :func:`numba_dpex.experimental.device_func` has no
 direct analogue in SYCL and primarily is provided to help programmers make their
-kapi applications modular.
+kapi applications modular. :ref:`ex_device_func1` shows a simple usage of the
+``device_func`` decorator.
 
 .. code-block:: python
+    :linenos:
+    :caption: **Example:** Basic usage of device_func
+    :name: ex_device_func1
 
     import dpnp
 
@@ -17,7 +21,7 @@ kapi applications modular.
 
     @dpex_exp.device_func
     def a_device_function(a):
-        """A device callable function that can be invoked from a ``kernel`` or
+        """A device callable function that can be invoked from a kernel or
         another device function.
         """
         return a + 1
@@ -35,6 +39,17 @@ kapi applications modular.
     b = dpnp.zeros(N, dtype=dpnp.int32)
 
     dpex_exp.call_kernel(a_kernel_function, dpex.Range(N), a, b)
+
+
+.. code-block:: python
+    :linenos:
+    :caption: **Example:** Using kapi functionalities in a device_func
+    :name: ex_device_func2
+
+    import dpnp
+
+    from numba_dpex import experimental as dpex_exp
+    from numba_dpex import kernel_api as kapi
 
 
     @dpex_exp.device_func
@@ -57,6 +72,9 @@ kapi applications modular.
         """The kernel does everything by calling a device_func."""
         increment_value(nd_item, a)
 
+
+    N = 16
+    b = dpnp.ones(N, dtype=dpnp.int32)
 
     dpex_exp.call_kernel(another_kernel, dpex.NdRange((N,), (N,)), b)
 

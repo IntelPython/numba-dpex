@@ -236,8 +236,10 @@ users should first convert their input tensor or ndarray object into either of
 the two supported array types, both of which support DLPack.
 
 
-Launching a kernel
-==================
+.. Launching a kernel
+.. ==================
+
+.. include:: ./call-kernel.rst
 
 Advanced concepts
 *****************
@@ -254,8 +256,10 @@ Group barrier synchronization
 Atomic operations
 =================
 
-Async kernel execution
-======================
+.. Async kernel execution
+.. ======================
+
+.. include:: ./call-kernel-async.rst
 
 Specializing a kernel or a device_func
 ======================================
