@@ -4,10 +4,9 @@ from the host. This decorator :func:`numba_dpex.experimental.device_func` has no
 direct analogue in SYCL and primarily is provided to help programmers make their
 kapi applications modular.
 
-
 .. code-block:: python
 
-    import dpnp as np
+    import dpnp
 
     from numba_dpex import experimental as dpex_exp
     from numba_dpex import kernel_api as kapi
@@ -24,13 +23,46 @@ kapi applications modular.
         return a + 1
 
 
-    @ndpx.kernel
+    @dpex_exp.kernel
     def a_kernel_function(item: kapi.Item, a, b):
         """Demonstrates calling a device function from a kernel."""
-        i = kapi.get_id(0)
+        i = item.get_id(0)
         b[i] = a_device_function(a[i])
+
+
+    N = 16
+    a = dpnp.ones(N, dtype=dpnp.int32)
+    b = dpnp.zeros(N, dtype=dpnp.int32)
+
+    dpex_exp.call_kernel(a_kernel_function, dpex.Range(N), a, b)
+
+
+    @dpex_exp.device_func
+    def increment_value(nd_item: NdItem, a):
+        """Demonstrates the usage of group_barrier and NdItem usage in a
+        device_func.
+        """
+        i = nd_item.get_global_id(0)
+
+        a[i] += 1
+        group_barrier(nd_item.get_group(), MemoryScope.DEVICE)
+
+        if i == 0:
+            for idx in range(1, a.size):
+                a[0] += a[idx]
+
+
+    @dpex_exp.kernel
+    def another_kernel(nd_item: NdItem, a):
+        """The kernel does everything by calling a device_func."""
+        increment_value(nd_item, a)
+
+
+    dpex_exp.call_kernel(another_kernel, dpex.NdRange((N,), (N,)), b)
 
 
 A device function does not require the first argument to be an index space id
 class, and unlike a kernel function a device function is allowed to return a
-value.
+value. All kapi functionality can be used in a ``device_func`` decorated
+function and at compilation stage numba-dpex will attempt to inline a
+``device_func`` into the kernel where it is used.
