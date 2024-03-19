@@ -22,8 +22,9 @@ from ..types import (
 )
 
 
-def _get_flattened_member_count(ty):
-    """Return the number of fields in an instance of a given StructModel."""
+def get_flattened_member_count(ty):
+    """Returns the number of fields in an instance of a given StructModel."""
+
     flattened_member_count = 0
     members = ty._members
     for member in members:
@@ -109,7 +110,7 @@ class USMArrayDeviceModel(StructModel):
         """
         Return the number of fields in an instance of a USMArrayDeviceModel.
         """
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class USMArrayHostModel(StructModel):
@@ -143,7 +144,7 @@ class USMArrayHostModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a USMArrayHostModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class SyclQueueModel(StructModel):
@@ -223,7 +224,7 @@ class RangeModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a RangeModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class NdRangeModel(StructModel):
@@ -246,7 +247,7 @@ class NdRangeModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a NdRangeModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 def _init_data_model_manager() -> datamodel.DataModelManager:

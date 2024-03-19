@@ -14,7 +14,8 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
-from numba_dpex.kernel_api import AtomicRef, Group, Item, NdItem
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
+from numba_dpex.kernel_api import AtomicRef, Group, Item, LocalAccessor, NdItem
 
 from ..core.types.kernel_api.atomic_ref import AtomicRefType
 
@@ -84,3 +85,16 @@ def typeof_nditem(val: NdItem, c):
         instance.
     """
     return NdItemType(val.dimensions)
+
+
+@typeof_impl.register(LocalAccessor)
+def typeof_local_accessor(val: LocalAccessor, c) -> LocalAccessorType:
+    """Returns a ``numba_dpex.experimental.dpctpp_types.LocalAccessorType``
+    instance for a Python LocalAccessor object.
+    Args:
+        val (LocalAccessor): Instance of the LocalAccessor type.
+        c : Numba typing context used for type inference.
+    Returns: LocalAccessorType object corresponding to the LocalAccessor object.
+    """
+    # pylint: disable=protected-access
+    return LocalAccessorType(ndim=len(val._shape), dtype=val._dtype)
