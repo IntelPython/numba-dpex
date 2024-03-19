@@ -30,6 +30,8 @@ Overview
      - Registers the type inference implementation function for a
    * - :py:obj:`typeof_nditem <numba_dpex.experimental.typeof.typeof_nditem>`\ (val, c)
      - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_local_accessor <numba_dpex.experimental.typeof.typeof_local_accessor>`\ (val, c)
+     - Returns a ``numba_dpex.experimental.dpctpp_types.LocalAccessorType``
 
 
 
@@ -83,6 +85,17 @@ Functions
 
    Returns: A numba_dpex.experimental.core.types.kernel_api.items.NdItemType
        instance.
+
+
+.. py:function:: typeof_local_accessor(val: numba_dpex.kernel_api.LocalAccessor, c) -> numba_dpex.core.types.kernel_api.local_accessor.LocalAccessorType
+
+   Returns a ``numba_dpex.experimental.dpctpp_types.LocalAccessorType``
+   instance for a Python LocalAccessor object.
+   :param val: Instance of the LocalAccessor type.
+   :type val: LocalAccessor
+   :param c: Numba typing context used for type inference.
+
+   Returns: LocalAccessorType object corresponding to the LocalAccessor object.
 
 
 

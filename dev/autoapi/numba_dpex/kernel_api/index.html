@@ -269,22 +269,25 @@ numba_dpex.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdItem</span></code></a></p></td>
 <td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace" title="numba_dpex.kernel_api.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.LocalAccessor" title="numba_dpex.kernel_api.LocalAccessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace" title="numba_dpex.kernel_api.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
 <td><p>An enumeration of the supported address space values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
 <td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
 <td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
 <td><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
 <td><p>A class to encapsulate all kernel launch parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
 <td><p>A data structure to encapsulate a single kernel launch parameter.</p></td>
 </tr>
 </tbody>
@@ -826,6 +829,15 @@ dimensions.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.LocalAccessor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.LocalAccessor" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code>
+class. The class acts a s proxy to allocating device local memory and
+accessing that memory from within a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated
+function.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -1383,6 +1395,7 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.NdItem.get_group"><code class="docutils literal notranslate"><span class="pre">NdItem.get_group()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.LocalAccessor"><code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace"><code class="docutils literal notranslate"><span class="pre">AddressSpace</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace.PRIVATE"><code class="docutils literal notranslate"><span class="pre">AddressSpace.PRIVATE</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace.GLOBAL"><code class="docutils literal notranslate"><span class="pre">AddressSpace.GLOBAL</span></code></a></li>

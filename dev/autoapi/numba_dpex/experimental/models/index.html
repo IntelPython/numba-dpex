@@ -261,6 +261,12 @@ numba_dpex.experimental module.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental.models.EmptyStructModel" title="numba_dpex.experimental.models.EmptyStructModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmptyStructModel</span></code></a></p></td>
 <td><p>Data model that does not take space. Intended to be used with types that</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental.models.DpctlMDLocalAccessorModel" title="numba_dpex.experimental.models.DpctlMDLocalAccessorModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpctlMDLocalAccessorModel</span></code></a></p></td>
+<td><p>Data model to represent DpctlMDLocalAccessorType.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental.models.LocalAccessorModel" title="numba_dpex.experimental.models.LocalAccessorModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalAccessorModel</span></code></a></p></td>
+<td><p>Data model for the LocalAccessor type when used in a host-only function.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -290,6 +296,23 @@ numba_dpex.experimental module.</p>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.datamodel.models.StructModel</span></code></p>
 <p>Data model that does not take space. Intended to be used with types that
 are presented only at typing stage and not represented physically.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.experimental.models.DpctlMDLocalAccessorModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpctlMDLocalAccessorModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental.models.DpctlMDLocalAccessorModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.datamodel.models.StructModel</span></code></p>
+<p>Data model to represent DpctlMDLocalAccessorType.</p>
+<p>Must be the same structure as
+dpctl/syclinterface/dpctl_sycl_queue_interface.h::MDLocalAccessor.</p>
+<p>Structure intended to be used only on host side of the kernel call.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.experimental.models.LocalAccessorModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessorModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental.models.LocalAccessorModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.datamodel.models.StructModel</span></code></p>
+<p>Data model for the LocalAccessor type when used in a host-only function.</p>
 </dd></dl>
 
 </section>
@@ -348,6 +371,8 @@ are presented only at typing stage and not represented physically.</p>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
 <li><a class="reference internal" href="#numba_dpex.experimental.models.AtomicRefModel"><code class="docutils literal notranslate"><span class="pre">AtomicRefModel</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.experimental.models.EmptyStructModel"><code class="docutils literal notranslate"><span class="pre">EmptyStructModel</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.experimental.models.DpctlMDLocalAccessorModel"><code class="docutils literal notranslate"><span class="pre">DpctlMDLocalAccessorModel</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.experimental.models.LocalAccessorModel"><code class="docutils literal notranslate"><span class="pre">LocalAccessorModel</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#attributes">Attributes</a><ul>

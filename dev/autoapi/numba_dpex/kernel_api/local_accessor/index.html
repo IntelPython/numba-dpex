@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.experimental.typeof - numba-dpex documentation</title>
+        <title>numba_dpex.kernel_api.local_accessor - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -194,9 +194,9 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
@@ -245,119 +245,33 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.experimental.typeof">
-<span id="numba-dpex-experimental-typeof"></span><h1>numba_dpex.experimental.typeof<a class="headerlink" href="#module-numba_dpex.experimental.typeof" title="Link to this heading">#</a></h1>
-<p>Adds typeof implementations to Numba registry for all numba-dpex experimental
-types.</p>
+          <section id="module-numba_dpex.kernel_api.local_accessor">
+<span id="numba-dpex-kernel-api-local-accessor"></span><h1>numba_dpex.kernel_api.local_accessor<a class="headerlink" href="#module-numba_dpex.kernel_api.local_accessor" title="Link to this heading">#</a></h1>
+<p>Implements a Python analogue to SYCL’s local_accessor class. The class is
+intended to be used in pure Python code when prototyping a kernel function
+and to be passed to an actual kernel function for local memory allocation.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_atomic_ref" title="numba_dpex.experimental.typeof.typeof_atomic_ref"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeof_atomic_ref</span></code></a>(val, ctx)</p></td>
-<td><p>Returns a <code class="docutils literal notranslate"><span class="pre">numba_dpex.experimental.dpctpp_types.AtomicRefType</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_group" title="numba_dpex.experimental.typeof.typeof_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeof_group</span></code></a>(val, c)</p></td>
-<td><p>Registers the type inference implementation function for a</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_item" title="numba_dpex.experimental.typeof.typeof_item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeof_item</span></code></a>(val, c)</p></td>
-<td><p>Registers the type inference implementation function for a</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_nditem" title="numba_dpex.experimental.typeof.typeof_nditem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeof_nditem</span></code></a>(val, c)</p></td>
-<td><p>Registers the type inference implementation function for a</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_local_accessor" title="numba_dpex.experimental.typeof.typeof_local_accessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeof_local_accessor</span></code></a>(val, c)</p></td>
-<td><p>Returns a <code class="docutils literal notranslate"><span class="pre">numba_dpex.experimental.dpctpp_types.LocalAccessorType</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.local_accessor.LocalAccessor" title="numba_dpex.kernel_api.local_accessor.LocalAccessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.experimental.typeof.typeof_atomic_ref">
-<span class="sig-name descname"><span class="pre">typeof_atomic_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><span class="pre">numba_dpex.kernel_api.AtomicRef</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba_dpex.core.types.kernel_api.atomic_ref.AtomicRefType</span></span></span><a class="headerlink" href="#numba_dpex.experimental.typeof.typeof_atomic_ref" title="Link to this definition">#</a></dt>
-<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">numba_dpex.experimental.dpctpp_types.AtomicRefType</span></code>
-instance for a Python AtomicRef object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>val</strong> (<a class="reference internal" href="../../kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef" title="numba_dpex.kernel_api.atomic_ref.AtomicRef"><em>AtomicRef</em></a>) – Instance of the AtomicRef type.</p></li>
-<li><p><strong>ctx</strong> – Numba typing context used for type inference.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns: AtomicRefType object corresponding to the AtomicRef object.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.experimental.typeof.typeof_group">
-<span class="sig-name descname"><span class="pre">typeof_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">numba_dpex.kernel_api.Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental.typeof.typeof_group" title="Link to this definition">#</a></dt>
-<dd><p>Registers the type inference implementation function for a
-numba_dpex.kernel_api.Group PyObject.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>val</strong> – An instance of numba_dpex.kernel_api.Group.</p></li>
-<li><p><strong>c</strong> – Unused argument used to be consistent with Numba API.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Returns: A numba_dpex.experimental.core.types.kernel_api.items.GroupType</dt><dd><p>instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.experimental.typeof.typeof_item">
-<span class="sig-name descname"><span class="pre">typeof_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">numba_dpex.kernel_api.Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental.typeof.typeof_item" title="Link to this definition">#</a></dt>
-<dd><p>Registers the type inference implementation function for a
-numba_dpex.kernel_api.Item PyObject.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>val</strong> – An instance of numba_dpex.kernel_api.Item.</p></li>
-<li><p><strong>c</strong> – Unused argument used to be consistent with Numba API.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Returns: A numba_dpex.experimental.core.types.kernel_api.items.ItemType</dt><dd><p>instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.experimental.typeof.typeof_nditem">
-<span class="sig-name descname"><span class="pre">typeof_nditem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><span class="pre">numba_dpex.kernel_api.NdItem</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.experimental.typeof.typeof_nditem" title="Link to this definition">#</a></dt>
-<dd><p>Registers the type inference implementation function for a
-numba_dpex.kernel_api.NdItem PyObject.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>val</strong> – An instance of numba_dpex.kernel_api.NdItem.</p></li>
-<li><p><strong>c</strong> – Unused argument used to be consistent with Numba API.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Returns: A numba_dpex.experimental.core.types.kernel_api.items.NdItemType</dt><dd><p>instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.experimental.typeof.typeof_local_accessor">
-<span class="sig-name descname"><span class="pre">typeof_local_accessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.LocalAccessor" title="numba_dpex.kernel_api.LocalAccessor"><span class="pre">numba_dpex.kernel_api.LocalAccessor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba_dpex.core.types.kernel_api.local_accessor.LocalAccessorType</span></span></span><a class="headerlink" href="#numba_dpex.experimental.typeof.typeof_local_accessor" title="Link to this definition">#</a></dt>
-<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">numba_dpex.experimental.dpctpp_types.LocalAccessorType</span></code>
-instance for a Python LocalAccessor object.
-:param val: Instance of the LocalAccessor type.
-:type val: LocalAccessor
-:param c: Numba typing context used for type inference.</p>
-<p>Returns: LocalAccessorType object corresponding to the LocalAccessor object.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.local_accessor.LocalAccessor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.local_accessor.LocalAccessor" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code>
+class. The class acts a s proxy to allocating device local memory and
+accessing that memory from within a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated
+function.</p>
 </dd></dl>
 
 </section>
@@ -403,14 +317,10 @@ instance for a Python LocalAccessor object.
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.experimental.typeof</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.kernel_api.local_accessor</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#functions">Functions</a><ul>
-<li><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_atomic_ref"><code class="docutils literal notranslate"><span class="pre">typeof_atomic_ref()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_group"><code class="docutils literal notranslate"><span class="pre">typeof_group()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_item"><code class="docutils literal notranslate"><span class="pre">typeof_item()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_nditem"><code class="docutils literal notranslate"><span class="pre">typeof_nditem()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.experimental.typeof.typeof_local_accessor"><code class="docutils literal notranslate"><span class="pre">typeof_local_accessor()</span></code></a></li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.kernel_api.local_accessor.LocalAccessor"><code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></li>
 </ul>
 </li>
 </ul>
