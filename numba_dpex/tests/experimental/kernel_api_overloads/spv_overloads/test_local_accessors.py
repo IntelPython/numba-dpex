@@ -9,12 +9,8 @@ from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import (
-    LocalAccessor,
-    MemoryScope,
-    NdItem,
-    group_barrier,
-)
+from numba_dpex.kernel_api import LocalAccessor, NdItem
+from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_supported_dtypes = get_all_dtypes(
@@ -22,7 +18,6 @@ list_of_supported_dtypes = get_all_dtypes(
 )
 
 
-@dpex_exp.kernel
 def _kernel1(nd_item: NdItem, a, slm):
     i = nd_item.get_global_linear_id()
 
@@ -30,16 +25,13 @@ def _kernel1(nd_item: NdItem, a, slm):
     j = (nd_item.get_local_id(0),)
 
     slm[j] = 0
-    group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     for m in range(100):
         slm[j] += i * m
-        group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     a[i] = slm[j]
 
 
-@dpex_exp.kernel
 def _kernel2(nd_item: NdItem, a, slm):
     i = nd_item.get_global_linear_id()
 
@@ -47,16 +39,13 @@ def _kernel2(nd_item: NdItem, a, slm):
     j = (nd_item.get_local_id(0), nd_item.get_local_id(1))
 
     slm[j] = 0
-    group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     for m in range(100):
         slm[j] += i * m
-        group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     a[i] = slm[j]
 
 
-@dpex_exp.kernel
 def _kernel3(nd_item: NdItem, a, slm):
     i = nd_item.get_global_linear_id()
 
@@ -68,13 +57,21 @@ def _kernel3(nd_item: NdItem, a, slm):
     )
 
     slm[j] = 0
-    group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     for m in range(100):
         slm[j] += i * m
-        group_barrier(nd_item.get_group(), MemoryScope.WORK_GROUP)
 
     a[i] = slm[j]
+
+
+def device_func_kernel(func):
+    _df = dpex_exp.device_func(func)
+
+    @dpex_exp.kernel
+    def _kernel(item, a, slm):
+        _df(item, a, slm)
+
+    return _kernel
 
 
 @pytest.mark.parametrize("supported_dtype", list_of_supported_dtypes)
@@ -86,7 +83,17 @@ def _kernel3(nd_item: NdItem, a, slm):
         (dpex.NdRange((1, 32, 1), (1, 32, 1)), _kernel3),
     ],
 )
-def test_local_accessor(supported_dtype, nd_range: dpex.NdRange, _kernel):
+@pytest.mark.parametrize(
+    "call_kernel, kernel",
+    [
+        (dpex_exp.call_kernel, dpex_exp.kernel),
+        (dpex_exp.call_kernel, device_func_kernel),
+        (kapi_call_kernel, lambda f: f),
+    ],
+)
+def test_local_accessor(
+    supported_dtype, nd_range: dpex.NdRange, _kernel, call_kernel, kernel
+):
     """A test for passing a LocalAccessor object as a kernel argument."""
 
     N = 32
@@ -98,7 +105,7 @@ def test_local_accessor(supported_dtype, nd_range: dpex.NdRange, _kernel):
     # `4950 * get_global_linear_id` and stores it into the work groups local
     # memory. The local memory is of size 32*64 elements of the requested dtype.
     # The result is then stored into `a` in global memory
-    dpex_exp.call_kernel(_kernel, nd_range, a, slm)
+    call_kernel(kernel(_kernel), nd_range, a, slm)
 
     for idx in range(N):
         assert a[idx] == 4950 * idx
