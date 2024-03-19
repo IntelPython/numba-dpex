@@ -82,3 +82,29 @@ def test_private_array(call_kernel, decorator, kernel):
     want = np.full(a.size, (9) * (9 + 1) * (2 * 9 + 1) / 6, dtype=np.float32)
 
     assert np.array_equal(want, a.asnumpy())
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        private_array_kernel,
+        private_array_kernel_fill_true,
+        private_array_kernel_fill_false,
+        private_2d_array_kernel,
+    ],
+)
+def test_private_array_in_device_func(func):
+
+    _df = dpex_exp.device_func(func)
+
+    @dpex_exp.kernel
+    def _kernel(item: Item, a):
+        _df(item, a)
+
+    a = dpnp.empty(10, dtype=dpnp.float32)
+    dpex_exp.call_kernel(_kernel, Range(a.size), a)
+
+    # sum of squares from 1 to n: n*(n+1)*(2*n+1)/6
+    want = np.full(a.size, (9) * (9 + 1) * (2 * 9 + 1) / 6, dtype=np.float32)
+
+    assert np.array_equal(want, a.asnumpy())

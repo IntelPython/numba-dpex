@@ -29,3 +29,29 @@ def test_group_barrier():
     dpex_exp.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
 
     assert a[0] == N * 2
+
+
+def test_group_barrier_device_func():
+    """A test for group_barrier function."""
+
+    @dpex_exp.device_func
+    def _increment_value(nd_item: NdItem, a):
+        i = nd_item.get_global_id(0)
+
+        a[i] += 1
+        group_barrier(nd_item.get_group(), MemoryScope.DEVICE)
+
+        if i == 0:
+            for idx in range(1, a.size):
+                a[0] += a[idx]
+
+    @dpex_exp.kernel
+    def _kernel(nd_item: NdItem, a):
+        _increment_value(nd_item, a)
+
+    N = 16
+    a = dpnp.ones(N, dtype=dpnp.int32)
+
+    dpex_exp.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
+
+    assert a[0] == N * 2
