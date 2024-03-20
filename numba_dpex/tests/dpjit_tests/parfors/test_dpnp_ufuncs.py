@@ -23,7 +23,6 @@ from numba_dpex.core.typing.dpnpdecl import (
 from numba_dpex.tests._helper import (
     get_float_dtypes,
     get_int_dtypes,
-    has_opencl_gpu,
     is_gen12,
     num_required_arguments,
 )
@@ -154,7 +153,7 @@ def test_unary_ops(unary_op, dtype):
         pytest.xfail(reason="not supported")
 
     xfail_ops = ["sign", "log", "log2", "log10", "expm1", "arccosh"]
-    if unary_op in xfail_ops and is_gen12(dpctl.SyclDevice().filter_string):
+    if unary_op in xfail_ops and is_gen12():
         pytest.xfail(f"{unary_op} does not work on gen12")
 
     a = dpnp.array(dpnp.random.random(N), dtype)
