@@ -415,13 +415,6 @@ class SPIRVKernelDispatcher(Dispatcher):
                     except ExecutionQueueInferenceError as eqie:
                         raise eqie
 
-                    # A function being compiled in the KERNEL compilation mode
-                    # cannot have a non-void return value
-                    if return_type and return_type != void:
-                        raise KernelHasReturnValueError(
-                            kernel_name=None, return_type=return_type, sig=sig
-                        )
-
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
                 if existing is not None:
@@ -444,6 +437,16 @@ class SPIRVKernelDispatcher(Dispatcher):
                         kcres: _SPIRVKernelCompileResult = compiler.compile(
                             args, return_type
                         )
+                        if (
+                            self.targetoptions["_compilation_mode"]
+                            == CompilationMode.KERNEL
+                            and kcres.signature.return_type is not None
+                            and kcres.signature.return_type != types.void
+                        ):
+                            raise KernelHasReturnValueError(
+                                kernel_name=self.py_func.__name__,
+                                return_type=kcres.signature.return_type,
+                            )
                     except errors.ForceLiteralArg as err:
 
                         def folded(args, kws):
