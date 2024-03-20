@@ -4,6 +4,7 @@
 
 """Module that contains numba style wrapper around sycl kernel submit."""
 
+import warnings
 from dataclasses import dataclass
 from functools import cached_property
 from typing import NamedTuple, Union
@@ -32,6 +33,9 @@ from numba_dpex.utils import create_null_ptr
 MAX_SIZE_OF_SYCL_RANGE = 3
 
 _ARRAY_ALIGN = 16
+
+OPEN_CL_OPT_DISABLE_FLAG = "-cl-opt-disable"
+L0_OPT_DISABLE_FLAG = "-g"
 
 
 # TODO: probably not best place for it. Should be in kernel_dispatcher once we
@@ -282,7 +286,9 @@ class KernelLaunchIRBuilder:
         """Sets kernel to the argument list."""
         self.arguments.sycl_kernel_ref = sycl_kernel_ref
 
-    def set_kernel_from_spirv(self, kernel_module: SPIRVKernelModule):
+    def set_kernel_from_spirv(
+        self, kernel_module: SPIRVKernelModule, debug=False
+    ):
         """Sets kernel to the argument list from the SPIRV bytecode.
 
         It pastes bytecode as a constant string and create kernel bundle from it
@@ -305,9 +311,28 @@ class KernelLaunchIRBuilder:
         context_ref = sycl.dpctl_queue_get_context(self.builder, queue_ref)
         device_ref = sycl.dpctl_queue_get_device(self.builder, queue_ref)
 
-        if config.BUILD_KERNEL_OPTIONS != "":
+        build_kernel_options = ""
+        if debug:
+            build_kernel_options = (
+                OPEN_CL_OPT_DISABLE_FLAG + " " + L0_OPT_DISABLE_FLAG
+            )
+        if config.BUILD_KERNEL_OPTIONS:
+            # User settings are higher priority than kernel configuration
+            build_kernel_options = config.BUILD_KERNEL_OPTIONS
+            if debug and not (
+                OPEN_CL_OPT_DISABLE_FLAG in build_kernel_options
+                and L0_OPT_DISABLE_FLAG in build_kernel_options
+            ):
+                warnings.warn(
+                    "Debugging without device optimization may lead to "
+                    "unexpected behavior"
+                )
+
+        print(build_kernel_options)
+
+        if build_kernel_options != "":
             spv_compiler_options = self.context.insert_const_string(
-                self.builder.module, config.BUILD_KERNEL_OPTIONS
+                self.builder.module, build_kernel_options
             )
         else:
             spv_compiler_options = self.builder.load(
