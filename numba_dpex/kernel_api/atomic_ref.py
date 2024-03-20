@@ -22,7 +22,7 @@ class AtomicRef:
         index,
         memory_order=MemoryOrder.RELAXED,
         memory_scope=MemoryScope.DEVICE,
-        address_space=AddressSpace.GLOBAL,
+        address_space=None,
     ):
         """A Python stub to represent a SYCL AtomicRef class. An AtomicRef
         object represents a single element view into a Python array-like object
@@ -35,6 +35,11 @@ class AtomicRef:
         self._memory_order = memory_order
         self._memory_scope = memory_scope
         self._address_space = address_space
+
+        if not (hasattr(ref, "__getitem__") and hasattr(ref, "__setitem__")):
+            raise TypeError(
+                "Cannot create an AtomicRef from an unsupported ref type."
+            )
         self._ref = ref
         self._index = index
 
