@@ -8,7 +8,7 @@ import dpnp
 import numpy
 import pytest
 
-import numba_dpex as dpex
+import numba_dpex.experimental as dpex
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_unary_ops = ["fabs", "exp", "log", "sqrt", "sin", "cos", "tan"]
@@ -39,8 +39,8 @@ def test_binary_ops(unary_op, input_arrays):
     dpnp_uop = getattr(dpnp, unary_op)
 
     @dpex.kernel
-    def f(a, b):
-        i = dpex.get_global_id(0)
+    def f(item, a, b):
+        i = item.get_id(0)
         b[i] = uop(a[i])
 
     dpex.call_kernel(f, dpex.Range(a.size), a, b)

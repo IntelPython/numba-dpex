@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
-from numpy.testing import assert_almost_equal
 
-import numba_dpex as ndpx
+import numba_dpex.experimental as ndpx
 from numba_dpex import float32
+from numba_dpex import kernel_api as kapi
 
 COEFFICIENTS = dpnp.asarray(
     [
@@ -64,9 +64,11 @@ COEFFICIENTS = dpnp.asarray(
 
 
 @ndpx.kernel()
-def _kernel(coefficients):
-    c = ndpx.private.array(4, dtype=float32)
-    gr_id = ndpx.get_group_id(0)
+def _kernel(nditem: kapi.NdItem, coefficients):
+    c = kapi.PrivateArray(4, dtype=float32)
+    gr: kapi.Group = nditem.get_group()
+    gr_id = gr.get_group_id(0)
+
     c[0] = coefficients[gr_id][0]
     c[1] = coefficients[gr_id][1]
     c[2] = coefficients[gr_id][2]

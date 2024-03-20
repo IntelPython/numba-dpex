@@ -6,21 +6,21 @@ import dpnp
 import numpy
 import pytest
 
-import numba_dpex as dpex
+import numba_dpex.experimental as dpex
 from numba_dpex.tests._helper import get_all_dtypes
 
 N = 1024
 
 
 @dpex.kernel
-def kernel_scalar(a, b, c):
-    i = dpex.get_global_id(0)
+def kernel_scalar(item, a, b, c):
+    i = item.get_id(0)
     b[i] = a[i] * c
 
 
 @dpex.kernel
-def kernel_array(a, b, c):
-    i = dpex.get_global_id(0)
+def kernel_array(item, a, b, c):
+    i = item.get_id(0)
     b[i] = a[i] * c[i]
 
 
