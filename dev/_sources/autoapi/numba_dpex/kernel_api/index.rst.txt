@@ -62,7 +62,7 @@ Overview
 Classes
 -------
 
-.. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+.. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=None)
 
    Analogue to the ``sycl::atomic_ref`` class.
 

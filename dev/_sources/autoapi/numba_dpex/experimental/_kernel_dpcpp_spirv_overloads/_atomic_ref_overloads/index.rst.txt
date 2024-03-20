@@ -51,20 +51,32 @@ Overview
 
 Functions
 ---------
-.. py:function:: ol_atomic_ref(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+.. py:function:: ol_atomic_ref(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=None)
 
    Overload of the constructor for the class
    class:`numba_dpex.kernel_api.AtomicRef`.
 
-   :raises errors.TypingError: If the `ref` argument is not a UsmNdArray type.
+   Note that the ``address_space`` argument by default is set to None and is
+   inferred from the address space of the ``ref`` argument. If an address space
+   value is explicitly passed in, then it needs to match with the address space
+   of the ``ref`` argument.
+
+   TODO: The SYCL usage of the ``address_space`` argument to a sycl::atomic_ref
+   constructor should be evaluated. Either we need to allow passing in a
+   different address_space value w.r.t. the ``ref`` argument's address space
+   and handle it the way SYCL does (probably by introducing an
+   addresspace_cast), or the argument should be removed all together.
+
+   :raises errors.TypingError: If the `ref` argument is not a UsmNdArray or a
+       LocalAccessorType type.
    :raises errors.TypingError: If the dtype of the `ref` is not supported in an
-   :raises AtomicRef.:
+       AtomicRef.
    :raises errors.TypingError: If the device does not support atomic operations on
-   :raises the dtype of the `ref`.:
+       the dtype of the `ref`.
    :raises errors.TypingError: If the `memory_order`, `address_type`, or
-   :raises memory_scope:
+       `memory_scope` arguments could not be parsed as integer literals.
    :raises errors.TypingError: If the `address_space` argument is different from
-   :raises the address space attribute of the `ref` argument.:
+       the address space attribute of the `ref` argument.
    :raises errors.TypingError: If the address space is PRIVATE.
 
 
