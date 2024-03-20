@@ -542,7 +542,8 @@ def _check_if_supported_ref(ref):
         raise errors.TypingError(
             f"Cannot create an AtomicRef from {ref}. "
             "An AtomicRef can only be constructed from a 0-dimensional "
-            "dpctl.tensor.usm_ndarray or a dpnp.ndarray array."
+            "dpctl.tensor.usm_ndarray, dpnp.ndarray array, or a "
+            "kernel_api.LocalAccessor object."
         )
     if ref.dtype not in [
         types.int32,
@@ -575,33 +576,55 @@ def ol_atomic_ref(
     index,
     memory_order=MemoryOrder.RELAXED,
     memory_scope=MemoryScope.DEVICE,
-    address_space=AddressSpace.GLOBAL,
+    address_space=None,
 ):
     """Overload of the constructor for the class
     class:`numba_dpex.kernel_api.AtomicRef`.
 
+    Note that the ``address_space`` argument by default is set to None and is
+    inferred from the address space of the ``ref`` argument. If an address space
+    value is explicitly passed in, then it needs to match with the address space
+    of the ``ref`` argument.
+
+    TODO: The SYCL usage of the ``address_space`` argument to a sycl::atomic_ref
+    constructor should be evaluated. Either we need to allow passing in a
+    different address_space value w.r.t. the ``ref`` argument's address space
+    and handle it the way SYCL does (probably by introducing an
+    addresspace_cast), or the argument should be removed all together.
+
     Raises:
-        errors.TypingError: If the `ref` argument is not a UsmNdArray type.
+        errors.TypingError: If the `ref` argument is not a UsmNdArray or a
+            LocalAccessorType type.
         errors.TypingError: If the dtype of the `ref` is not supported in an
-        AtomicRef.
+            AtomicRef.
         errors.TypingError: If the device does not support atomic operations on
-        the dtype of the `ref`.
+            the dtype of the `ref`.
         errors.TypingError: If the `memory_order`, `address_type`, or
-        `memory_scope` arguments could not be parsed as integer literals.
+            `memory_scope` arguments could not be parsed as integer literals.
         errors.TypingError: If the `address_space` argument is different from
-        the address space attribute of the `ref` argument.
+            the address space attribute of the `ref` argument.
         errors.TypingError: If the address space is PRIVATE.
 
     """
     _check_if_supported_ref(ref)
 
-    try:
-        _address_space = _parse_enum_or_int_literal_(address_space)
-    except errors.TypingError as exc:
-        raise errors.TypingError(
-            "Address space argument to AtomicRef constructor should "
-            "be an IntegerLiteral."
-        ) from exc
+    if address_space is None:
+        _address_space = ref.addrspace
+    else:
+        try:
+            _address_space = _parse_enum_or_int_literal_(address_space)
+        except errors.TypingError as exc:
+            raise errors.TypingError(
+                "Address space argument to AtomicRef constructor should "
+                "be an IntegerLiteral."
+            ) from exc
+        if _address_space != ref.addrspace:
+            raise errors.TypingError(
+                "The address_space specified via the AtomicRef constructor "
+                f"{_address_space} does not match the address space "
+                f"{ref.addrspace} of the referred object for which the "
+                "AtomicRef is to be constructed."
+            )
 
     try:
         _memory_order = _parse_enum_or_int_literal_(memory_order)
@@ -618,14 +641,6 @@ def ol_atomic_ref(
             "Memory scope argument to AtomicRef constructor should "
             "be an IntegerLiteral."
         ) from exc
-
-    if _address_space != ref.addrspace:
-        raise errors.TypingError(
-            "The address_space specified via the AtomicRef constructor "
-            f"{_address_space} does not match the address space "
-            f"{ref.addrspace} of the referred object for which the AtomicRef "
-            "is to be constructed."
-        )
 
     if _address_space == AddressSpace.PRIVATE:
         raise errors.TypingError(
@@ -646,7 +661,7 @@ def ol_atomic_ref(
         index,
         memory_order=MemoryOrder.RELAXED,  # pylint: disable=unused-argument
         memory_scope=MemoryScope.DEVICE,  # pylint: disable=unused-argument
-        address_space=AddressSpace.GLOBAL,  # pylint: disable=unused-argument
+        address_space=None,  # pylint: disable=unused-argument
     ):
         # pylint: disable=no-value-for-parameter
         return _intrinsic_atomic_ref_ctor(ref, index, ty_retty)
