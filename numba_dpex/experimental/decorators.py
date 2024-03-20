@@ -99,7 +99,7 @@ def kernel(func_or_sig=None, **options):
             "Argument passed to the kernel decorator is neither a "
             "function object, nor a signature. If you are trying to "
             "specialize the kernel that takes a single argument, specify "
-            "the return type as void explicitly."
+            "the return type as None explicitly."
         )
     return _kernel_dispatcher(func)
 
@@ -132,13 +132,28 @@ def device_func(func_or_sig=None, **options):
         )
     options["_compilation_mode"] = CompilationMode.DEVICE_FUNC
 
+    func, sigs = _parse_func_or_sig(func_or_sig)
+    for sig in sigs:
+        if isinstance(sig, str):
+            raise NotImplementedError(
+                "Specifying signatures as string is not yet supported"
+            )
+
     def _kernel_dispatcher(pyfunc):
-        return dispatcher(
+        disp: SPIRVKernelDispatcher = dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
 
-    if func_or_sig is None:
+        if len(sigs) > 0:
+            with typeinfer.register_dispatcher(disp):
+                for sig in sigs:
+                    disp.compile(sig)
+                disp.disable_compile()
+
+        return disp
+
+    if func is None:
         return _kernel_dispatcher
 
     return _kernel_dispatcher(func_or_sig)
