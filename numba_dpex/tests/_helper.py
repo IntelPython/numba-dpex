@@ -65,15 +65,13 @@ def has_sycl_platforms():
     return False
 
 
-def is_gen12(device_type):
-    with dpctl.device_context(device_type):
-        q = dpctl.get_current_queue()
-        device = q.get_sycl_device()
-        name = device.name
-        if "Gen12" in name:
-            return True
+def is_gen12():
+    """Checks if the default device is an Intel Gen12 (Xe) GPU."""
+    device_name = dpctl.SyclDevice().name
+    if "Gen12" in device_name:
+        return True
 
-        return False
+    return False
 
 
 def platform_not_supported(device_type):
