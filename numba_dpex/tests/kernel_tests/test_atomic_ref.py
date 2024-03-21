@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex.experimental as dpex_exp
+import numba_dpex as dpex
 import numba_dpex.kernel_api as kapi
 
 
@@ -17,7 +17,7 @@ def ref_type_options(request):
 
 
 def test_atomic_ref_compilation():
-    @dpex_exp.kernel
+    @dpex.kernel
     def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
         v = kapi.AtomicRef(b, index=0)
@@ -26,13 +26,13 @@ def test_atomic_ref_compilation():
     a = dpnp.ones(10)
     b = dpnp.zeros(10)
     try:
-        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
+        dpex.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
 
 
 def test_atomic_ref_3_dim_compilation():
-    @dpex_exp.kernel
+    @dpex.kernel
     def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
         v = kapi.AtomicRef(b, index=(1, 1, 1))
@@ -45,7 +45,7 @@ def test_atomic_ref_3_dim_compilation():
     want[1, 1, 1] = a.size
 
     try:
-        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(a.size), a, b)
+        dpex.call_kernel(atomic_ref_kernel, kapi.Range(a.size), a, b)
     except Exception:
         pytest.fail("Unexpected execution failure")
 
@@ -58,7 +58,7 @@ def test_atomic_ref_compilation_failure():
     ref.
     """
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def atomic_ref_kernel(item: kapi.Item, a, b):
         i = item.get_id(0)
         v = kapi.AtomicRef(b, index=0, address_space=kapi.AddressSpace.LOCAL)
@@ -68,13 +68,13 @@ def test_atomic_ref_compilation_failure():
     b = dpnp.zeros(10)
 
     with pytest.raises(TypingError):
-        dpex_exp.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
+        dpex.call_kernel(atomic_ref_kernel, kapi.Range(10), a, b)
 
 
 def test_atomic_ref_compilation_local_accessor():
     """Tests if an AtomicRef object can be constructed from a LocalAccessor"""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def atomic_ref_slm_kernel(nditem: kapi.Item, a, slm):
         gi = nditem.get_global_id(0)
         v = kapi.AtomicRef(slm, 0)
@@ -85,9 +85,7 @@ def test_atomic_ref_compilation_local_accessor():
 
     a = dpnp.zeros(32)
     slm = kapi.LocalAccessor(1, a.dtype)
-    dpex_exp.call_kernel(
-        atomic_ref_slm_kernel, kapi.NdRange((32,), (32,)), a, slm
-    )
+    dpex.call_kernel(atomic_ref_slm_kernel, kapi.NdRange((32,), (32,)), a, slm)
     want = dpnp.full_like(a, 32 * a.dtype.type(5))
     assert np.allclose(a.asnumpy(), want.asnumpy())
 

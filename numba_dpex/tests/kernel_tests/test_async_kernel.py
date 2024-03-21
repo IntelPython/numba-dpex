@@ -7,12 +7,12 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex.experimental import testing
 from numba_dpex.kernel_api import Item, Range
 
 
-@exp_dpex.kernel(
+@dpex.kernel(
     release_gil=False,
     no_compile=True,
     no_cpython_wrapper=True,
@@ -31,7 +31,7 @@ def test_async_add():
 
     r = Range(size)
 
-    host_ref, event_ref = exp_dpex.call_kernel_async(
+    host_ref, event_ref = dpex.call_kernel_async(
         add,
         r,
         (),
@@ -60,7 +60,7 @@ def test_async_dependent_add_list_exception():
     # TODO: should capture ValueError, but numba captures it and generates
     # TypingError. ValueError is still readable there.
     with pytest.raises(TypingError):
-        exp_dpex.call_kernel_async(
+        dpex.call_kernel_async(
             add,
             Range(size),
             [dpctl.SyclEvent()],
@@ -78,7 +78,7 @@ def test_async_dependent_add():
 
     r = Range(size)
 
-    host_ref, event_ref = exp_dpex.call_kernel_async(
+    host_ref, event_ref = dpex.call_kernel_async(
         add,
         r,
         (),
@@ -87,7 +87,7 @@ def test_async_dependent_add():
         c,
     )
 
-    host2_ref, event2_ref = exp_dpex.call_kernel_async(
+    host2_ref, event2_ref = dpex.call_kernel_async(
         add,
         r,
         (event_ref,),

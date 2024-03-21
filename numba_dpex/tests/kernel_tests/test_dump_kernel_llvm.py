@@ -9,7 +9,7 @@ import os
 
 from numba.core import types
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 from numba_dpex import float32, usm_ndarray
 from numba_dpex.core import config
 from numba_dpex.core.descriptor import dpex_kernel_target

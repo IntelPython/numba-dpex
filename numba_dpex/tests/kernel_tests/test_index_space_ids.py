@@ -9,7 +9,6 @@ import numpy as np
 import pytest
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import Item, NdItem, NdRange
 from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
 from numba_dpex.tests._helper import has_cpu
@@ -18,7 +17,7 @@ _SIZE = 100
 _GROUP_SIZE = 20
 
 
-_kernel_decorators = [(dpex_exp.call_kernel, dpex_exp.kernel)]
+_kernel_decorators = [(dpex.call_kernel, dpex.kernel)]
 # run simulator tests only with arrays allocated on cpu to avoid performance
 # issues
 if has_cpu():

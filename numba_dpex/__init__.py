@@ -108,8 +108,9 @@ from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 # backward compatibility
 from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 
+from .core.decorators import device_func, dpjit, kernel  # noqa E402
+from .core.kernel_launcher import call_kernel, call_kernel_async  # noqa E402
 from .core.targets import dpjit_target  # noqa E402
-from .decorators import dpjit, func, kernel  # noqa E402
 from .ocl.stubs import (  # noqa E402
     GLOBAL_MEM_FENCE,
     LOCAL_MEM_FENCE,
@@ -137,4 +138,11 @@ from numba_dpex._version import get_versions  # noqa E402
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = types.__all__ + ["Range", "NdRange", "call_kernel"]
+__all__ = types.__all__ + [
+    "call_kernel",
+    "device_func",
+    "dpjit",
+    "kernel",
+    "Range",
+    "NdRange",
+]

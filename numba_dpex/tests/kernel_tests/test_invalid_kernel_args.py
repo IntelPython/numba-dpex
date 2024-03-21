@@ -5,7 +5,7 @@
 import numpy
 import pytest
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 from numba_dpex import kernel_api as kapi
 
 N = 1024

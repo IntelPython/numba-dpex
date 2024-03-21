@@ -6,7 +6,7 @@ import dpnp
 import numpy as np
 from numba import int32, int64
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 
 i32_signature = dpex.device_func(int32(int32))
 i32i64_signature = dpex.device_func([int32(int32), int64(int64)])

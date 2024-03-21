@@ -4,7 +4,7 @@
 
 import dpnp
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex import Range
 from numba_dpex.kernel_api import AddressSpace, MemoryOrder, MemoryScope
 
@@ -12,7 +12,7 @@ from numba_dpex.kernel_api import AddressSpace, MemoryOrder, MemoryScope
 def test_compilation_of_memory_order():
     """Tests if a MemoryOrder flags can be used inside a kernel function."""
 
-    @exp_dpex.kernel
+    @dpex.kernel
     def store_memory_order_flag(a):
         a[0] = MemoryOrder.RELAXED
         a[1] = MemoryOrder.CONSUME_UNSUPPORTED
@@ -22,7 +22,7 @@ def test_compilation_of_memory_order():
         a[5] = MemoryOrder.SEQ_CST
 
     a = dpnp.ones(10, dtype=dpnp.int64)
-    exp_dpex.call_kernel(store_memory_order_flag, Range(10), a)
+    dpex.call_kernel(store_memory_order_flag, Range(10), a)
 
     assert a[0] == MemoryOrder.RELAXED
     assert a[1] == MemoryOrder.CONSUME_UNSUPPORTED
@@ -35,7 +35,7 @@ def test_compilation_of_memory_order():
 def test_compilation_of_memory_scope():
     """Tests if a MemoryScope flags can be used inside a kernel function."""
 
-    @exp_dpex.kernel
+    @dpex.kernel
     def store_memory_scope_flag(a):
         a[0] = MemoryScope.DEVICE
         a[1] = MemoryScope.SUB_GROUP
@@ -44,7 +44,7 @@ def test_compilation_of_memory_scope():
         a[4] = MemoryScope.WORK_ITEM
 
     a = dpnp.ones(10, dtype=dpnp.int64)
-    exp_dpex.call_kernel(store_memory_scope_flag, Range(10), a)
+    dpex.call_kernel(store_memory_scope_flag, Range(10), a)
 
     assert a[0] == MemoryScope.DEVICE
     assert a[1] == MemoryScope.SUB_GROUP
@@ -56,7 +56,7 @@ def test_compilation_of_memory_scope():
 def test_compilation_of_address_space():
     """Tests if a AddressSpace flags can be used inside a kernel function."""
 
-    @exp_dpex.kernel
+    @dpex.kernel
     def store_address_space_flag(a):
         a[0] = AddressSpace.CONSTANT
         a[1] = AddressSpace.GENERIC
@@ -65,7 +65,7 @@ def test_compilation_of_address_space():
         a[4] = AddressSpace.PRIVATE
 
     a = dpnp.ones(10, dtype=dpnp.int64)
-    exp_dpex.call_kernel(store_address_space_flag, Range(10), a)
+    dpex.call_kernel(store_address_space_flag, Range(10), a)
 
     assert a[0] == AddressSpace.CONSTANT
     assert a[1] == AddressSpace.GENERIC

@@ -5,7 +5,7 @@
 import dpnp
 import numpy
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 
 
 @dpex.device_func

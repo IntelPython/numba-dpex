@@ -5,11 +5,11 @@
 import dpctl
 import dpnp
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex import NdRange, Range, dpjit
 
 
-@exp_dpex.kernel(
+@dpex.kernel(
     release_gil=False,
     no_compile=True,
     no_cpython_wrapper=True,
@@ -19,7 +19,7 @@ def add(a, b, c):
     c[0] = b[0] + a[0]
 
 
-@exp_dpex.kernel(
+@dpex.kernel(
     release_gil=False,
     no_compile=True,
     no_cpython_wrapper=True,
@@ -42,11 +42,11 @@ def test_call_kernel_from_cpython():
     r = Range(100)
     ndr = NdRange(global_size=(100,), local_size=(1,))
 
-    exp_dpex.call_kernel(add, r, a, b, c)
+    dpex.call_kernel(add, r, a, b, c)
 
     assert c[0] == b[0] + a[0]
 
-    exp_dpex.call_kernel(add, ndr, a, b, c)
+    dpex.call_kernel(add, ndr, a, b, c)
 
     assert c[0] == b[0] + a[0]
 
@@ -60,7 +60,7 @@ def test_call_kernel_from_dpjit():
     @dpjit
     def range_kernel_caller(q, a, b, c):
         r = Range(100)
-        exp_dpex.call_kernel(add, r, a, b, c)
+        dpex.call_kernel(add, r, a, b, c)
         return c
 
     @dpjit
@@ -68,7 +68,7 @@ def test_call_kernel_from_dpjit():
         gr = Range(100)
         lr = Range(1)
         ndr = NdRange(gr, lr)
-        exp_dpex.call_kernel(add, ndr, a, b, c)
+        dpex.call_kernel(add, ndr, a, b, c)
         return c
 
     q = dpctl.SyclQueue()
@@ -96,10 +96,10 @@ def test_call_multiple_kernels():
     c = dpnp.zeros_like(a, sycl_queue=q)
     r = Range(100)
 
-    exp_dpex.call_kernel(add, r, a, b, c)
+    dpex.call_kernel(add, r, a, b, c)
 
     assert c[0] == b[0] + a[0]
 
-    exp_dpex.call_kernel(sq, r, a, c)
+    dpex.call_kernel(sq, r, a, c)
 
     assert a[0] == c[0] * c[0]
