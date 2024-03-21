@@ -108,11 +108,7 @@ def test_breakpoint_common(app, breakpoint, script):
     "breakpoint, variable_name, variable_value",
     [
         # commands/break_conditional # noqa: E800
-        (
-            f"{simple_sum_condition_breakpoint} if i == 1",
-            "i",
-            "1",
-        ),
+        (f"{simple_sum_condition_breakpoint} if i == 1", "i", "1"),
     ],
 )
 def test_breakpoint_with_condition_common(
