@@ -25,8 +25,8 @@ def side_by_side_info_case(api):
         f"side-by-side.py --api={api}",
         None,
         (
-            r"param_a = .*",
-            r"param_b = .*",
+            r"param_a = [0-9]+",
+            r"param_b = [0-9]+",
         ),
     )
 
@@ -38,7 +38,7 @@ def side_by_side_print_case(api):
         None,
         (
             "param_a",
-            r"\$1 = .*",
+            r"\$1 = [0-9]+",
             r"type = float32",
             r"type = float32",
         ),
@@ -53,9 +53,9 @@ def side_by_side_print_case(api):
             "simple_dpex_func.py",
             r".*18.*i = ndpx.get_global_id\(0\)",
             (
-                r"a_in_kernel = {meminfo = ",
-                r"b_in_kernel = {meminfo = ",
-                r"c_in_kernel = {meminfo = ",
+                r"a_in_kernel = {nitems = ",
+                r"b_in_kernel = {nitems = ",
+                r"c_in_kernel = {nitems = ",
             ),
         ),
         side_by_side_info_case("numba"),
@@ -79,7 +79,7 @@ def test_info_args(app, breakpoint, script, expected_line, expected_args):
             r".*18.*i = ndpx.get_global_id\(0\)",
             (
                 "a_in_kernel",
-                r"\$1 = {meminfo = ",
+                r"\$1 = {nitems = ",
                 r"type = struct DpnpNdArray\(dtype=float32, ndim=1, layout=C.*\) \({.*}\)",
                 r"type = DpnpNdArray\(dtype=float32, ndim=1, layout=C.*\) \({.*}\)",
             ),
@@ -120,7 +120,7 @@ def side_by_side_info_locals_case(api):
         None,
         (
             r"param_c = 15",
-            r"param_d = 0",
+            r"param_d = 2.5",
             r"result = 0",
         ),
         (),
@@ -145,11 +145,11 @@ def side_by_side_2_info_locals_case(api):
         (
             r"param_a = 5",
             r"param_b = 5",
-            r"param_c = .*",
-            r"param_d = .*",
+            r"param_c = [0-9]+",
+            r"param_d = [0-9]+",
             r"result = 0",
         ),
-        ((r"a", r"\$1 = {meminfo = ", ptype, whatis),),
+        ((r"a", r"\$1 = {(meminfo|nitems) = ", ptype, whatis),),
     )
 
 
@@ -162,26 +162,26 @@ def side_by_side_2_info_locals_case(api):
             "sum_local_vars.py",
             r"16\s+c\[i\] = l1 \+ l2",
             (
-                r"i = .*",
-                r"l1 = [0-9]\.[0-9]*.*",
-                r"l2 = [0-9]\.[0-9]*.*",
+                r"i = [0-9]+",
+                r"l1 = [0-9]\.[0-9]{3}",
+                r"l2 = [0-9]\.[0-9]{3}",
             ),
             (
                 (
                     "a",
-                    r"\$1 = {meminfo = ",
+                    r"\$1 = {nitems = ",
                     r"type = struct DpnpNdArray\(dtype=float32, ndim=1, layout=C.*\) \({.*}\)",
                     r"type = DpnpNdArray\(dtype=float32, ndim=1, layout=C.*\) \({.*}\)",
                 ),
                 (
                     "l1",
-                    r"\$2 = [0-9]\.[0-9]*",
+                    r"\$2 = [0-9]\.[0-9]{3}",
                     r"type = float64",
                     r"type = float64",
                 ),
                 (
                     "l2",
-                    r"\$3 = [0-9]\.[0-9]*",
+                    r"\$3 = [0-9]\.[0-9]{3}",
                     r"type = float64",
                     r"type = float64",
                 ),
@@ -194,8 +194,8 @@ def side_by_side_2_info_locals_case(api):
             r"16\s+c\[i\] = l1 \+ l2",
             (
                 r".*i = [0-9]",
-                r"l1 = [0-9]\.[0-9]*",
-                r"l2 = [0-9]\.[0-9]*",
+                r"l1 = [0-9]\.[0-9]{3}",
+                r"l2 = [0-9]\.[0-9]{3}",
             ),
             (
                 (
@@ -206,13 +206,13 @@ def side_by_side_2_info_locals_case(api):
                 ),
                 (
                     "l1",
-                    r"\$2 = [0-9]\.[0-9]*",
+                    r"\$2 = [0-9]\.[0-9]{3}",
                     r"type = float64",
                     r"type = float64",
                 ),
                 (
                     "l1",
-                    r"\$3 = [0-9]\.[0-9]*",
+                    r"\$3 = [0-9]\.[0-9]{3}",
                     r"type = float64",
                     r"type = float64",
                 ),
@@ -318,7 +318,7 @@ def side_by_side_2_assignment_to_variable_case(api):
             (r"param_c", r"\$1 = 15"),
             (r"param_c=150", r"\$2 = 150"),
             (r"param_c", r"\$3 = 150"),
-            (r"i", r"\$4 = .*"),
+            (r"i", r"\$4 = [0-9]+"),
             (r"i=50", r"\$5 = 50"),
             (r"i", r"\$6 = 50"),
         ],
