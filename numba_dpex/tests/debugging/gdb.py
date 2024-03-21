@@ -24,9 +24,6 @@ class gdb:
         self.spawn()
         self.setup_gdb()
 
-    def __del__(self):
-        self.teardown_gdb()
-
     def spawn(self):
         env = os.environ.copy()
         env["NUMBA_OPT"] = "0"
@@ -50,8 +47,10 @@ class gdb:
         self.child.sendintr()
         self.child.expect("(gdb)", timeout=5)
         self.child.sendline("quit")
-        self.child.expect("Quit anyway?", timeout=5)
-        self.child.sendline("y")
+        # We want to force quit only if program did not do it itself.
+        index = self.child.expect(["Quit anyway?", pexpect.EOF], timeout=5)
+        if index == 0:
+            self.child.sendline("y")
 
     def _command(self, command):
         self.child.expect("(gdb)", timeout=5)
