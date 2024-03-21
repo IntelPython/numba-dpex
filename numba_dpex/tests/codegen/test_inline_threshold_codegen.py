@@ -5,9 +5,8 @@
 import dpctl
 from numba.core import types
 
-from numba_dpex import DpctlSyclQueue, DpnpNdArray
-from numba_dpex import experimental as dpex_exp
-from numba_dpex import int64
+import numba_dpex as dpex
+from numba_dpex import DpctlSyclQueue, DpnpNdArray, int64
 from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
 from numba_dpex.kernel_api import Item
 
@@ -39,7 +38,7 @@ def test_codegen_with_max_inline_threshold():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
-    disp = dpex_exp.kernel(inline_threshold=1)(kernel_func)
+    disp = dpex.kernel(inline_threshold=1)(kernel_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module
@@ -60,7 +59,7 @@ def test_codegen_without_max_inline_threshold():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(ItemType(1), i64arr_ty, i64arr_ty, i64arr_ty)
 
-    disp = dpex_exp.kernel(inline_threshold=0)(kernel_func)
+    disp = dpex.kernel(inline_threshold=0)(kernel_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module

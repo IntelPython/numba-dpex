@@ -4,11 +4,9 @@
 
 import dpctl
 from llvmlite import ir as llvmir
-from numba.core import types
 
-from numba_dpex import DpctlSyclQueue, DpnpNdArray
-from numba_dpex import experimental as dpex_exp
-from numba_dpex import int64
+import numba_dpex as dpex
+from numba_dpex import DpctlSyclQueue, DpnpNdArray, int64
 from numba_dpex.core.types.kernel_api.index_space_ids import NdItemType
 from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 from numba_dpex.kernel_api import (
@@ -37,7 +35,7 @@ def test_codegen_local_accessor_kernel_arg():
     queue_ty = DpctlSyclQueue(dpctl.SyclQueue())
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     slm_ty = LocalAccessorType(ndim=1, dtype=int64)
-    disp = dpex_exp.kernel(inline_threshold=3)(kernel_func)
+    disp = dpex.kernel(inline_threshold=3)(kernel_func)
     dmm = disp.targetctx.data_model_manager
 
     i64arr_ty_flattened_arg_count = dmm.lookup(i64arr_ty).flattened_field_count
