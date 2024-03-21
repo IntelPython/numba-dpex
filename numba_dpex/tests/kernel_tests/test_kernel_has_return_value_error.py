@@ -6,7 +6,7 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 from numba_dpex import int32, usm_ndarray
 from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types.kernel_api.index_space_ids import ItemType

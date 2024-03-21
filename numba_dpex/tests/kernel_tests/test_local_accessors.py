@@ -8,7 +8,6 @@ import pytest
 from numba.core.errors import TypingError
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import LocalAccessor, NdItem
 from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
 from numba_dpex.tests._helper import get_all_dtypes
@@ -65,9 +64,9 @@ def _kernel3(nd_item: NdItem, a, slm):
 
 
 def device_func_kernel(func):
-    _df = dpex_exp.device_func(func)
+    _df = dpex.device_func(func)
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item, a, slm):
         _df(item, a, slm)
 
@@ -86,8 +85,8 @@ def device_func_kernel(func):
 @pytest.mark.parametrize(
     "call_kernel, kernel",
     [
-        (dpex_exp.call_kernel, dpex_exp.kernel),
-        (dpex_exp.call_kernel, device_func_kernel),
+        (dpex.call_kernel, dpex.kernel),
+        (dpex.call_kernel, device_func_kernel),
         (kapi_call_kernel, lambda f: f),
     ],
 )
@@ -123,4 +122,4 @@ def test_local_accessor_argument_to_range_kernel():
     # A TypeError is raised if NUMBA_CAPTURED_ERROR=new_style and a
     # numba.TypingError is raised if NUMBA_CAPTURED_ERROR=old_style
     with pytest.raises((TypeError, TypingError)):
-        dpex_exp.call_kernel(_kernel1, dpex.Range(N), a, slm)
+        dpex.call_kernel(_kernel1, dpex.Range(N), a, slm)

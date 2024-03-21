@@ -5,14 +5,13 @@
 import dpnp
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import MemoryScope, NdItem, group_barrier
 
 
 def test_group_barrier():
     """A test for group_barrier function."""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(nd_item: NdItem, a):
         i = nd_item.get_global_id(0)
 
@@ -26,7 +25,7 @@ def test_group_barrier():
     N = 16
     a = dpnp.ones(N, dtype=dpnp.int32)
 
-    dpex_exp.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
+    dpex.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
 
     assert a[0] == N * 2
 
@@ -34,7 +33,7 @@ def test_group_barrier():
 def test_group_barrier_device_func():
     """A test for group_barrier function."""
 
-    @dpex_exp.device_func
+    @dpex.device_func
     def _increment_value(nd_item: NdItem, a):
         i = nd_item.get_global_id(0)
 
@@ -45,13 +44,13 @@ def test_group_barrier_device_func():
             for idx in range(1, a.size):
                 a[0] += a[idx]
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(nd_item: NdItem, a):
         _increment_value(nd_item, a)
 
     N = 16
     a = dpnp.ones(N, dtype=dpnp.int32)
 
-    dpex_exp.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
+    dpex.call_kernel(_kernel, dpex.NdRange((N,), (N,)), a)
 
     assert a[0] == N * 2

@@ -8,7 +8,6 @@ import pytest
 from numba.core.errors import TypingError
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import AtomicRef
 from numba_dpex.tests._helper import get_all_dtypes
 
@@ -26,7 +25,7 @@ def store_exchange_fn(request):
 def test_load_store_fn(supported_dtype):
     """A test for load/store atomic functions."""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item, a, b):
         i = item.get_id(0)
         a_ref = AtomicRef(a, index=i)
@@ -38,7 +37,7 @@ def test_load_store_fn(supported_dtype):
     a = dpnp.zeros(2 * N, dtype=supported_dtype)
     b = dpnp.arange(N, dtype=supported_dtype)
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(b.size), a, b)
+    dpex.call_kernel(_kernel, dpex.Range(b.size), a, b)
     # Verify that `b[i]` loaded and stored into a[i] by kernel
     # matches the `b[i]` loaded stored into a[i] using Python
     for i in range(b.size):
@@ -54,7 +53,7 @@ def test_load_store_fn(supported_dtype):
 def test_exchange_fn(supported_dtype):
     """A test for exchange atomic function."""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item, a, b):
         i = item.get_id(0)
         v = AtomicRef(a, index=i)
@@ -67,7 +66,7 @@ def test_exchange_fn(supported_dtype):
     a_copy = dpnp.copy(a_orig)
     b_copy = dpnp.copy(b_orig)
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(b_orig.size), a_copy, b_copy)
+    dpex.call_kernel(_kernel, dpex.Range(b_orig.size), a_copy, b_copy)
 
     # Values in `b` have been exchanged
     # with values in `a`.
@@ -82,7 +81,7 @@ def test_exchange_fn(supported_dtype):
 def test_compare_exchange_fns(supported_dtype):
     """A test for compare exchange atomic functions."""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(b):
         b_ref = AtomicRef(b, index=1)
         b[0] = b_ref.compare_exchange(
@@ -91,13 +90,13 @@ def test_compare_exchange_fns(supported_dtype):
 
     b = dpnp.arange(4, dtype=supported_dtype)
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(1), b)
+    dpex.call_kernel(_kernel, dpex.Range(1), b)
 
     # check for failure
     assert b[0] == 0
     assert b[2] == b[1]
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(1), b)
+    dpex.call_kernel(_kernel, dpex.Range(1), b)
 
     # check for success
     assert b[0] == 1
@@ -109,7 +108,7 @@ def test_store_exchange_diff_types(store_exchange_fn):
     AtomicRef type and value are of different types.
     """
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item, a, b):
         i = item.get_id(0)
         v = AtomicRef(b, index=0)
@@ -120,4 +119,4 @@ def test_store_exchange_diff_types(store_exchange_fn):
     b = dpnp.zeros(N, dtype=dpnp.int32)
 
     with pytest.raises(TypingError):
-        dpex_exp.call_kernel(_kernel, dpex.Range(10), a, b)
+        dpex.call_kernel(_kernel, dpex.Range(10), a, b)

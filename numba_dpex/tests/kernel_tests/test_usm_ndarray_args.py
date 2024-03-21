@@ -6,7 +6,7 @@ import dpctl.tensor as dpt
 import numpy
 import pytest
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 from numba_dpex.tests._helper import get_all_dtypes
 
 list_of_dtype = get_all_dtypes(

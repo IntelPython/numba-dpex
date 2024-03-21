@@ -6,7 +6,7 @@ import dpnp
 import numpy as np
 import pytest
 
-import numba_dpex.experimental as dpex_exp
+import numba_dpex as dpex
 from numba_dpex.kernel_api import Item, PrivateArray, Range
 from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
 
@@ -70,7 +70,7 @@ def private_2d_array_kernel(item: Item, a):
 )
 @pytest.mark.parametrize(
     "call_kernel, decorator",
-    [(dpex_exp.call_kernel, dpex_exp.kernel), (kapi_call_kernel, lambda a: a)],
+    [(dpex.call_kernel, dpex.kernel), (kapi_call_kernel, lambda a: a)],
 )
 def test_private_array(call_kernel, decorator, kernel):
     kernel = decorator(kernel)
@@ -95,14 +95,14 @@ def test_private_array(call_kernel, decorator, kernel):
 )
 def test_private_array_in_device_func(func):
 
-    _df = dpex_exp.device_func(func)
+    _df = dpex.device_func(func)
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item: Item, a):
         _df(item, a)
 
     a = dpnp.empty(10, dtype=dpnp.float32)
-    dpex_exp.call_kernel(_kernel, Range(a.size), a)
+    dpex.call_kernel(_kernel, Range(a.size), a)
 
     # sum of squares from 1 to n: n*(n+1)*(2*n+1)/6
     want = np.full(a.size, (9) * (9 + 1) * (2 * 9 + 1) / 6, dtype=np.float32)

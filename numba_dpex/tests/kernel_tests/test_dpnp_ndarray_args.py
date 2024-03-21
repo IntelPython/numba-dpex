@@ -4,7 +4,7 @@
 
 import dpnp
 
-import numba_dpex.experimental as ndpx
+import numba_dpex as ndpx
 from numba_dpex import float32
 from numba_dpex import kernel_api as kapi
 

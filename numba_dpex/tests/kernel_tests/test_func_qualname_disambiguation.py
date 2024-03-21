@@ -5,7 +5,7 @@
 import dpnp
 import numpy as np
 
-import numba_dpex.experimental as ndpx
+import numba_dpex as ndpx
 
 
 def make_write_values_kernel(n_rows):

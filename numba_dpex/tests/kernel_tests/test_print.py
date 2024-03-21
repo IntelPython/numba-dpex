@@ -7,7 +7,7 @@ import dpnp
 import pytest
 from numba.core.errors import TypingError
 
-import numba_dpex.experimental as dpex
+import numba_dpex as dpex
 
 list_of_dtypes = [
     dpnp.int32,

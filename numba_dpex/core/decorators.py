@@ -1,24 +1,23 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" The set of experimental decorators provided by numba_dpex that are not yet
-ready to move to numba_dpex.core.
-"""
 import inspect
 from warnings import warn
 
-from numba.core import sigutils, typeinfer
+from numba.core import decorators, sigutils, typeinfer
 from numba.core.target_extension import (
     jit_registry,
     resolve_dispatcher_from_str,
     target_registry,
 )
 
+from numba_dpex.core import config
+from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
+from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
 from numba_dpex.kernel_api_impl.spirv.target import CompilationMode
-
-from .target import DPEX_KERNEL_EXP_TARGET_NAME
 
 
 def _parse_func_or_sig(signature_or_function):
@@ -321,4 +320,31 @@ def device_func(function_or_signature=None, **options):
     return _kernel_dispatcher(function_or_signature)
 
 
+# ----------------- Experimental dpjit decorator ------------------------------#
+
+
+def dpjit(*args, **kws):
+    if "nopython" in kws and kws["nopython"] is not True:
+        warn("nopython is set for dpjit and is ignored", RuntimeWarning)
+    if "forceobj" in kws:
+        warn("forceobj is set for dpjit and is ignored", RuntimeWarning)
+        del kws["forceobj"]
+    if "pipeline_class" in kws:
+        warn("pipeline class is set for dpjit and is ignored", RuntimeWarning)
+        del kws["pipeline_class"]
+
+    use_mlir = kws.pop("use_mlir", bool(config.USE_MLIR))
+
+    kws.update({"nopython": True})
+    kws.update({"parallel": True})
+    kws.update({"pipeline_class": get_compiler(use_mlir)})
+
+    kws.update({"_target": DPEX_TARGET_NAME})
+
+    return decorators.jit(*args, **kws)
+
+
+# add it to the decorator registry, this is so e.g. @overload can look up a
+# JIT function to do the compilation work.
+jit_registry[target_registry[DPEX_TARGET_NAME]] = dpjit
 jit_registry[target_registry[DPEX_KERNEL_EXP_TARGET_NAME]] = device_func
