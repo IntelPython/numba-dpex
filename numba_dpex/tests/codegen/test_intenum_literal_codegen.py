@@ -7,7 +7,7 @@ import re
 import dpctl
 from numba.core import types
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex import DpctlSyclQueue, DpnpNdArray, int64
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 
@@ -27,7 +27,7 @@ def test_compilation_as_literal_constant():
         FLAG1 = 1
         FLAG2 = 2
 
-    @exp_dpex.device_func
+    @dpex.device_func
     def bitwise_or_flags(flag1, flag2):
         return flag1 | flag2
 
@@ -40,7 +40,7 @@ def test_compilation_as_literal_constant():
     i64arr_ty = DpnpNdArray(ndim=1, dtype=int64, layout="C", queue=queue_ty)
     kernel_sig = types.void(i64arr_ty)
 
-    disp = exp_dpex.kernel(inline_threshold=0)(pass_flags_to_func)
+    disp = dpex.kernel(inline_threshold=0)(pass_flags_to_func)
     disp.compile(kernel_sig)
     kcres = disp.overloads[kernel_sig.args]
     llvm_ir_mod = kcres.library._final_module.__str__()
