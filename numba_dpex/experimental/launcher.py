@@ -220,7 +220,10 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
             ty_kernel_args_tuple, ll_kernel_args_tuple
         )
         kl_builder.set_queue_from_arguments()
-        kl_builder.set_kernel_from_spirv(kernel_module)
+        kl_builder.set_kernel_from_spirv(
+            kernel_module,
+            debug=kernel_dispatcher.targetoptions.get("debug", False),
+        )
         if ty_dependent_events is None:
             kl_builder.set_dependent_events([])
         else:
