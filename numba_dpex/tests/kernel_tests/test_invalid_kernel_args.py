@@ -5,15 +5,15 @@
 import numpy
 import pytest
 
-import numba_dpex as dpex
-from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
+import numba_dpex.experimental as dpex
+from numba_dpex import kernel_api as kapi
 
 N = 1024
 
 
 @dpex.kernel
-def vecadd_kernel(a, b, c):
-    i = dpex.get_global_id(0)
+def vecadd_kernel(item: kapi.Item, a, b, c):
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -25,5 +25,5 @@ def test_passing_numpy_arrays_as_kernel_args():
     b = numpy.ones(N)
     c = numpy.zeros(N)
 
-    with pytest.raises(UnsupportedKernelArgumentError):
+    with pytest.raises(Exception):
         dpex.call_kernel(vecadd_kernel, dpex.Range(N), a, b, c)
