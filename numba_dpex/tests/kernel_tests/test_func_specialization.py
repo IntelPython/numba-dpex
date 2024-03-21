@@ -51,7 +51,7 @@ def test_calling_specialized_device_func_wrong_signature():
     """Tests that calling specialized signature with wrong signature does not
     trigger recompilation.
 
-    Tests kernel_function with float32. Numba will downcast float32 to int32
+    Tests kernel_function with float32. Numba* will downcast float32 to int32
     and call the specialized function. The implicit casting is a problem, but
     for the purpose of this test case, all we care is to check if the
     specialized function was called and we did not recompiled the device_func.
@@ -64,11 +64,11 @@ def test_calling_specialized_device_func_wrong_signature():
 
     dpex.call_kernel(kernel_function, dpex.Range(N), a, b)
 
-    # Since Numba is calling the i32 specialization of increment, the values in
+    # Since Numba* is calling the i32 specialization of increment, the values in
     # `a` are first down converted to int32, *i.e.*, 1.5 to 1 and then
     # incremented. Thus, the output is 2 instead of 2.5.
-    # The implicit down casting is a dangerous thing for Numba to do, but we use
-    # to our advantage to test if re compilation did not happen for a
+    # The implicit down casting is a dangerous thing for Numba* to do, but we
+    # use to our advantage to test if re compilation did not happen for a
     # specialized device function.
     assert np.all(dpnp.asnumpy(b) == 2)
     assert not np.all(dpnp.asnumpy(b) == 2.5)

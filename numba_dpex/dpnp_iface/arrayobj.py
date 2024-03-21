@@ -1074,7 +1074,7 @@ def ol_dpnp_full_like(
 @lower_builtin(operator.getitem, DpnpNdArray, types.SliceType)
 def getitem_arraynd_intp(context, builder, sig, args):
     """
-    Overrding the numba.np.arrayobj.getitem_arraynd_intp to support dpnp.ndarray
+    Overriding the numba.np.arrayobj.getitem_arraynd_intp to support dpnp.ndarray
 
     The data model for numba.types.Array and numba_dpex.types.DpnpNdArray
     are different. DpnpNdArray has an extra attribute to store a sycl::queue

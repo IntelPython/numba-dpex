@@ -2,9 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+""" The module exposes short names for some Numba* types that are supported in
+numba-dpex.
+"""
 from numba.core.types import Boolean, Float, Integer, NoneType
-
-# Short names for numba types supported in dpex kernel
 
 none = NoneType("none")
 
