@@ -11,7 +11,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Continuing-and-Stepping.html
 
 from numba_dpex.tests._helper import skip_no_gdb
 
-from .common import setup_breakpoint
+from .gdb import setup_breakpoint
 
 pytestmark = skip_no_gdb
 
