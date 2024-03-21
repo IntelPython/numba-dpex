@@ -254,10 +254,9 @@ jobs:
       - name: Run gdb tests
         if: ${{ matrix.scope == 'gdb' }}
         env:
-          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/afb921d3-c9e7-4610-b3a9-725c77a87cf4/l_dpcpp_dbg_p_2024.0.0.49350_offline.sh
-          GDB_INSTALLER: l_dpcpp_dbg_p_2024.0.0.49350_offline.sh
+          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/72038301-92f9-4db2-8fe0-db1fe9e9bca9/l_dpcpp_dbg_p_2024.0.1.9_offline.sh
+          GDB_INSTALLER: l_dpcpp_dbg_p_2024.0.1.9_offline.sh
         run: |
-          conda install intel::dpcpp_linux-64
           conda install pexpect
           wget -nc -q ${{ env.GDB_URL }}
           chmod +x ${{ env.GDB_INSTALLER }}
@@ -265,8 +264,10 @@ jobs:
           export ONEAPI_ROOT=/tmp/gdb
           ./${{ env.GDB_INSTALLER }} -a -s --eula accept --install-dir $ONEAPI_ROOT
           source $ONEAPI_ROOT/debugger/latest/env/vars.sh
+          # We match only major and minor version because latest gdb is not
+          # often available.
           gdb_version=$(echo "$GDB_INSTALLER" | grep -oP '\d+\.\d+' | head -n 1)
-          icpx_version=$(icpx --version | head -n 1 | awk '{print $NF}' | cut -c 2-7)
+          icpx_version=$(conda list dpcpp-cpp-rt | tail -n 1 | awk '{print $2}' | grep -oP '\d+\.\d+')
           if [ "$gdb_version" != "$icpx_version" ]; then
             echo "Error: GDB version ($gdb_version) does not match icpx version ($icpx_version)"
             exit 1
