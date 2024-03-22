@@ -57,9 +57,7 @@ def numba_func_driver(a, b, c):
 
 
 def ndpx_func_driver(a, b, c):
-    device = dpctl.select_default_device()
-    with dpctl.device_context(device):
-        kernel[ndpx.Range(len(c))](a, b, c)
+    kernel[ndpx.Range(len(c))](a, b, c)
 
 
 @ndpx.kernel(debug=True)
