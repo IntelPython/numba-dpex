@@ -134,15 +134,10 @@ filter_strings_level_zero_gpu = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
 
-skip_no_numba056 = pytest.mark.skipif(
-    numba_sem_version < (0, 56), reason="Need Numba 0.56 or higher"
-)
-
 skip_no_gdb = pytest.mark.skipif(
     config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
     reason="Intel® Distribution for GDB* is not available",
 )
-
 
 decorators = [
     pytest.param(dpjit, id="dpjit"),

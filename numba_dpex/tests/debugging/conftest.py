@@ -6,9 +6,13 @@
 
 import pytest
 
+from .gdb import gdb
+
 
 @pytest.fixture
 def app():
-    from .gdb import gdb
+    g = gdb()
 
-    return gdb()
+    yield g
+
+    g.teardown_gdb()
