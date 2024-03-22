@@ -115,7 +115,7 @@ add_module_names = False
 
 autoapi_dirs = [
     "../../numba_dpex/kernel_api",
-    "../../numba_dpex/experimental",
+    "../../numba_dpex/core",
 ]
 autoapi_type = "python"
 
