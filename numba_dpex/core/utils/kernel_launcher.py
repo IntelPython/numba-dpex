@@ -328,8 +328,6 @@ class KernelLaunchIRBuilder:
                     "unexpected behavior"
                 )
 
-        print(build_kernel_options)
-
         if build_kernel_options != "":
             spv_compiler_options = self.context.insert_const_string(
                 self.builder.module, build_kernel_options
