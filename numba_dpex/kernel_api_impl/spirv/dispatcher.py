@@ -35,7 +35,7 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.utils import kernel_launcher as kl
+from numba_dpex.core.utils import kernel_launcher_codegen as kl
 from numba_dpex.experimental.target import (
     DPEX_KERNEL_EXP_TARGET_NAME,
     dpex_exp_kernel_target,

@@ -21,7 +21,7 @@ from numba_dpex import utils
 from numba_dpex.core.datamodel.models import (
     dpex_data_model_manager as kernel_dmm,
 )
-from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
+from numba_dpex.core.utils.kernel_launcher_codegen import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 from ..types.dpnp_ndarray_type import DpnpNdArray
