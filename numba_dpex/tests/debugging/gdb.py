@@ -18,6 +18,25 @@ if config.TESTING_SKIP_NO_DEBUGGING:
 else:
     import pexpect
 
+RE_DEVICE_ARRAY = (
+    r"\{\s*nitems\s+=\s+[0-9]+,\s+"
+    r"itemsize\s+=\s+[0-9]+,\s+"
+    r"data\s+=\s+0x[0-9a-f]+,\s+"
+    r"shape\s+=\s+\{\s*[0-9]+\s*\},\s+"
+    r"strides\s+=\s+\{\s*[0-9]+\s*\}\s*}"
+)
+
+RE_DEVICE_ARRAY_TYPE = (
+    r"DpnpNdArray\("
+    r"dtype=[a-z0-9]+,\s+"
+    r"ndim=[0-9]+,\s+"
+    r"layout=[A-Z],\s+"
+    r"address_space=[0-4],\s+"
+    r"usm_type=[a-z]+,\s+"
+    r"device=[a-z:0-9]+,\s+"
+    r"sycl_queue=[A-Za-z:0-9 ]+\)"
+)
+
 
 class gdb:
     def __init__(self):
@@ -30,6 +49,7 @@ class gdb:
         env["NUMBA_DPEX_OPT"] = "0"
         env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
         env["NUMBA_DPEX_DEBUGINFO"] = "1"
+        env["NUMBA_DEBUGINFO"] = "1"
 
         self.child = pexpect.spawn(
             "gdb-oneapi -q python", env=env, encoding="utf-8"
@@ -38,10 +58,8 @@ class gdb:
             self.child.logfile = sys.stdout
 
     def setup_gdb(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("set breakpoint pending on")
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("set style enabled off")  # disable colors symbols
+        self._command("set breakpoint pending on")
+        self._command("set style enabled off")  # disable colors symbols
 
     def teardown_gdb(self):
         self.child.sendintr()
@@ -59,17 +77,58 @@ class gdb:
     def set_environment(self, varname, value):
         self._command(f"set environment {varname} {value}")
 
-    def breakpoint(self, breakpoint):
-        self._command("break " + breakpoint)
+    def breakpoint(
+        self,
+        location: str,
+        condition: str = None,
+        expected_location=None,
+        expected_line: int = None,
+    ):
+        cmd = f"break {location}"
+        if condition is not None:
+            cmd += f" if {condition}"
+        self._command(cmd)
+
+        if expected_location is not None:
+            self.child.expect(
+                rf"Thread .* hit Breakpoint .* at {expected_location}"
+            )
+
+        if expected_line is not None:
+            self.child.expect(f"{expected_line}")
 
     def run(self, script):
         self._command("run " + self.script_path(script))
 
+    def expect(self, pattern, with_eol=False, **kw):
+        self.child.expect(pattern, **kw)
+        if with_eol:
+            self.expect_eol()
+
+    def expect_eol(self):
+        self.child.expect(r"[^\n]*\n")
+
+    def expect_hit_breakpoint(self, expected_location=None):
+        expect = r"Thread [0-9A-Za-z \"]+ hit Breakpoint [0-9\.]+"
+        if expected_location is not None:
+            # function name + args could be long, so we have to assume that
+            # the message may be splitted in multiple lines. It potentially can
+            # cause messed up buffer reading, but it must be extremely rare.
+            expect += f".* at {expected_location}"
+        self.child.expect(expect)
+        self.expect_eol()
+
     def backtrace(self):
         self._command("backtrace")
 
-    def print(self, var):
+    def print(self, var, expected=None):
         self._command("print " + var)
+        if expected is not None:
+            self.child.expect(rf"\$[0-9]+ = {expected}")
+            self.expect_eol()
+
+    def set_variable(self, var, val):
+        self._command(f"set variable {var} = {val}")
 
     def info_args(self):
         self._command("info args")
@@ -82,6 +141,9 @@ class gdb:
 
     def next(self):
         self._command("next")
+
+    def nexti(self):
+        self._command("nexti")
 
     def ptype(self, var):
         self._command("ptype " + var)
@@ -106,52 +168,3 @@ class gdb:
 def script_path(script):
     package_path = pathlib.Path(numba_dpex.__file__).parent
     return str(package_path / "examples/debug" / script)
-
-
-def line_number(file_path, text):
-    """Return line number of the text in the file"""
-    with open(file_path, "r") as lines:
-        for line_number, line in enumerate(lines):
-            if text in line:
-                return line_number + 1
-
-    raise RuntimeError(f"Can not find {text} in {file_path}")
-
-
-def breakpoint_by_mark(script, mark, offset=0):
-    """Return breakpoint for the mark in the script
-
-    Example: breakpoint_by_mark("script.py", "Set here") -> "script.py:25"
-    """
-    return f"{script}:{line_number(script_path(script), mark) + offset}"
-
-
-def breakpoint_by_function(script, function):
-    """Return breakpoint for the function in the script"""
-    return breakpoint_by_mark(script, f"def {function}", 1)
-
-
-def setup_breakpoint(
-    app: gdb,
-    breakpoint: str,
-    script=None,
-    expected_location=None,
-    expected_line=None,
-):
-    if not script:
-        script = breakpoint.split(" ")[0].split(":")[0]
-
-    if not expected_location:
-        expected_location = breakpoint.split(" ")[0]
-        if not expected_location.split(":")[-1].isnumeric():
-            expected_location = breakpoint_by_function(
-                script, expected_location.split(":")[-1]
-            )
-
-    app.breakpoint(breakpoint)
-    app.run(script)
-
-    app.child.expect(rf"Thread .* hit Breakpoint .* at {expected_location}")
-
-    if expected_line:
-        app.child.expect(expected_line)

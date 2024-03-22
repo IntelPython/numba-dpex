@@ -11,8 +11,6 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Backtrace.html
 
 from numba_dpex.tests._helper import skip_no_gdb
 
-from .gdb import setup_breakpoint
-
 pytestmark = skip_no_gdb
 
 
@@ -21,12 +19,13 @@ def test_backtrace(app):
 
     commands/backtrace
     """
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:12",
-        expected_line=r"12\s+result = a_in_func \+ b_in_func",
-    )
+    app.breakpoint("simple_dpex_func.py:12")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:12")
 
     app.backtrace()
 
-    app.child.expect(r"#0.*__main__::func_sum.* at simple_dpex_func.py:12")
+    app.expect(
+        r"#0.*__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True
+    )
+    app.expect(r"#1.*__main__::kernel_sum", with_eol=True)

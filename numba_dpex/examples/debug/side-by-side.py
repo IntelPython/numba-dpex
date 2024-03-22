@@ -13,8 +13,8 @@ import numba_dpex as ndpx
 
 
 def common_loop_body(param_a, param_b):
-    param_c = param_a + 10  # Set breakpoint here
-    param_d = param_b * 0.5
+    param_c = param_a + numba.float32(10)  # Set breakpoint here
+    param_d = param_b * numba.float32(0.5)
     result = param_c + param_d
     return result
 

@@ -9,64 +9,62 @@
 https://www.sourceware.org/gdb/onlinedocs/gdb/Continuing-and-Stepping.html
 """
 
+import pytest
+
 from numba_dpex.tests._helper import skip_no_gdb
 
-from .gdb import setup_breakpoint
+from .gdb import gdb
 
 pytestmark = skip_no_gdb
 
 
-# commands/next
-def test_next(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:18",
-        expected_line=r"18\s+i = ndpx.get_global_id\(0\)",
-    )
+def test_next(app: gdb):
+    app.breakpoint("simple_dpex_func.py:18")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:18")
+    app.expect(r"18\s+i = ndpx.get_global_id\(0\)", with_eol=True)
     app.set_scheduler_lock()
     app.next()
-    app.child.expect(
-        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
+    # checking that we did not step in
+    app.next()
+    app.expect(r"in _ZN8__main__21kernel_sum_", with_eol=True)
 
 
-# commands/step_dpex_func
-def test_step(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:18",
-        expected_line=r"18\s+i = ndpx.get_global_id\(0\)",
-    )
-
+def test_step(app: gdb):
+    app.breakpoint("simple_dpex_func.py:18")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:18")
+    app.expect(r"18\s+i = ndpx.get_global_id\(0\)", with_eol=True)
     app.set_scheduler_lock()
     app.step()
-    app.child.expect(
-        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
-
     app.step()
-    app.child.expect(r"__main__::func_sum.* at simple_dpex_func.py:12")
-    app.child.expect(r"12\s+result = a_in_func \+ b_in_func")
+    app.expect(r"__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True)
+    app.expect(r"12\s+result = a_in_func \+ b_in_func", with_eol=True)
 
 
-# commands/stepi
-def test_stepi(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:19",
-        expected_line=r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+@pytest.mark.parametrize("func", ["stepi", "nexti"])
+def test_stepi(app: gdb, func: str):
+    app.breakpoint("simple_dpex_func.py:19")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:19")
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
-
-    app.stepi()
-
-    app.child.expect(
-        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
-    )
-
-    app.stepi()
-
-    app.child.expect(r"[Switching to Thread.*]")
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dpex_func.py:19")
-    app.child.expect(
-        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    app.set_scheduler_lock()
+    # Stepi/nexti steps over instruction, so the same source code line is
+    # reached, but with a different instruction address.
+    f = getattr(app, func)
+    f()
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
