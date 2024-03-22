@@ -2,36 +2,45 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpnp as np
+"""The example demonstrates the use of :class:`numba_dpex.kernel_api.AtomicRef`.
 
-import numba_dpex as ndpx
+The kernel shows the implementation of a reduction operation in numba-dpex
+where every work-item is updating a global accumulator atomically.
+"""
+import dpnp
+
+import numba_dpex as dpex
+from numba_dpex import kernel_api as kapi
 
 
-@ndpx.kernel
-def atomic_reduction(a, res):
-    """Summarize all the items in a and writes it into res using atomic.add.
+@dpex.kernel
+def atomic_reduction(item: kapi.Item, a, res):
+    """Array reduction using :func:`AtomicRef.fetch_add`.
 
-    :param a: array of values to get sum
-    :param res: result where to add all the items from a array. It must be preset to 0.
+    Args:
+        item (kapi.Item): Index space id for each work item.
+        a (dpnp.ndarray): An 1-d array to be reduced.
+        res (dpnp.ndarray): A single element array into which the result is
+            accumulated.
     """
-    idx = ndpx.get_global_id(0)
-    ndpx.atomic.add(res, 0, a[idx])
+    idx = item.get_id(0)
+    acc = kapi.AtomicRef(res, 0)
+    acc.fetch_add(a[idx])
 
 
 def main():
-    N = 10
+    N = 1024
 
-    # We are storing sum to the first element
-    a = np.arange(0, N)
-    res = np.zeros(1, dtype=a.dtype)
+    a = dpnp.arange(0, N)
+    res = dpnp.zeros(1, dtype=a.dtype)
 
-    print("Using device ...")
-    print(a.device)
+    print("Executing on device:")
+    a.device.print_device_info()
 
-    atomic_reduction[ndpx.Range(N)](a, res)
-    print("Reduction sum =", res[0])
+    dpex.call_kernel(atomic_reduction, dpex.Range(N), a, res)
+    print(f"Summation of {N} integers = {res[0]}")
 
-    print("Done...")
+    assert res[0] == N * (N - 1) / 2
 
 
 if __name__ == "__main__":

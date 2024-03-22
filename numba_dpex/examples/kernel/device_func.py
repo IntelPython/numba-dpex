@@ -2,148 +2,64 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpnp as np
+"""Demonstrates the usage of the :func:`numba_dpex.device_func` decorator.
 
-import numba_dpex as ndpx
-from numba_dpex import float32, int32, int64
+Refer the API documentation and the Kenrel programming guide for further
+details.
+"""
 
-# Array size
-N = 10
+import dpnp
+
+import numba_dpex as dpex
+from numba_dpex import kernel_api as kapi
 
 
-# A device callable function that can be invoked from
-# ``kernel`` and other device functions
-@ndpx.func
-def a_device_function(a):
+@dpex.device_func
+def increment_by_1(a):
+    """A device callable function that can be invoked from a kernel or
+    another device function.
+    """
     return a + 1
 
 
-# A device callable function with signature that can be invoked
-# from ``kernel`` and other device functions
-@ndpx.func(int32(int32))
-def a_device_function_int32(a):
-    return a + 1
+@dpex.device_func
+def increment_and_sum_up(nd_item: kapi.NdItem, a):
+    """Demonstrates the usage of group_barrier and NdItem usage in a
+    device_func.
+    """
+    i = nd_item.get_global_id(0)
+
+    a[i] += 1
+    kapi.group_barrier(nd_item.get_group(), kapi.MemoryScope.DEVICE)
+
+    if i == 0:
+        for idx in range(1, a.size):
+            a[0] += a[idx]
 
 
-# A device callable function with list signature that can be invoked
-# from ``kernel`` and other device functions
-@ndpx.func([int32(int32), float32(float32)])
-def a_device_function_int32_float32(a):
-    return a + 1
+@dpex.kernel
+def kernel1(item: kapi.Item, a, b):
+    """Demonstrates calling a device function from a kernel."""
+    i = item.get_id(0)
+    b[i] = increment_by_1(a[i])
 
 
-# A device callable function can call another device function
-@ndpx.func
-def another_device_function(a):
-    return a_device_function(a * 2)
+@dpex.kernel
+def kernel2(nd_item: kapi.NdItem, a):
+    """The kernel delegates everything to a device_func and calls it."""
+    increment_and_sum_up(nd_item, a)
 
 
-# A kernel function that calls the device function
-@ndpx.kernel
-def a_kernel_function(a, b):
-    i = ndpx.get_global_id(0)
-    b[i] = another_device_function(a[i])
-
-
-# A kernel function that calls the device function
-@ndpx.kernel
-def a_kernel_function_int32(a, b):
-    i = ndpx.get_global_id(0)
-    b[i] = a_device_function_int32(a[i])
-
-
-# A kernel function that calls the device function
-@ndpx.kernel
-def a_kernel_function_int32_float32(a, b):
-    i = ndpx.get_global_id(0)
-    b[i] = a_device_function_int32_float32(a[i])
-
-
-# test function 1: tests basic
-def test1():
-    a = np.ones(N)
-    b = np.ones(N)
-
-    print("Using device ...")
-    print(a.device)
-
-    print("A=", a)
-    try:
-        a_kernel_function[ndpx.Range(N)](a, b)
-    except Exception as err:
-        print(err)
-    print("B=", b)
-
-    print("Done...")
-
-
-# test function 2: test device func with signature
-def test2():
-    a = np.ones(N, dtype=np.int32)
-    b = np.ones(N, dtype=np.int32)
-
-    print("Using device ...")
-    print(a.device)
-
-    print("A=", a)
-    try:
-        a_kernel_function_int32[ndpx.Range(N)](a, b)
-    except Exception as err:
-        print(err)
-    print("B=", b)
-
-    print("Done...")
-
-
-# test function 3: test device function with list signature
-def test3():
-    a = np.ones(N, dtype=np.int32)
-    b = np.ones(N, dtype=np.int32)
-
-    print("Using device ...")
-    print(a.device)
-
-    print("A=", a)
-    try:
-        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
-    except Exception as err:
-        print(err)
-    print("B=", b)
-
-    # with a different dtype
-    a = np.ones(N, dtype=np.float32)
-    b = np.ones(N, dtype=np.float32)
-
-    print("Using device ...")
-    print(a.device)
-
-    print("A=", a)
-    try:
-        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
-    except Exception as err:
-        print(err)
-    print("B=", b)
-
-    # this will fail, since int64 is not in
-    # the signature list: [int32(int32), float32(float32)]
-    a = np.ones(N, dtype=np.int64)
-    b = np.ones(N, dtype=np.int64)
-
-    print("Using device ...")
-    print(a.device)
-
-    print("A=", a)
-    try:
-        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
-    except Exception as err:
-        print(err)
-    print("B=", b)
-
-    print("Done...")
-
-
-# main function
 if __name__ == "__main__":
-    test1()
-    test2()
-    test3()
+    # Array size
+    N = 100
+    a = dpnp.ones(N, dtype=dpnp.int32)
+    b = dpnp.zeros(N, dtype=dpnp.int32)
+
+    dpex.call_kernel(kernel1, dpex.Range(N), a, b)
+    # b should be [2, 2, ...., 2]
+    print(b)
+
+    dpex.call_kernel(kernel2, dpex.NdRange((N,), (N,)), b)
+    # b[0] should be 300
+    print(b[0])

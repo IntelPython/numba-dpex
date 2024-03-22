@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""The example demonstrates a 1D vector addition kernel.
+"""
+
 import dpnp
 import numpy.testing as testing
 
@@ -10,14 +13,14 @@ import numba_dpex as ndpx
 
 # Data parallel kernel implementing vector sum
 @ndpx.kernel
-def kernel_vector_sum(a, b, c):
-    i = ndpx.get_global_id(0)
+def kernel_vector_sum(item, a, b, c):
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
 
 # Utility function for printing and testing
 def driver(a, b, c, global_size):
-    kernel_vector_sum[ndpx.Range(global_size)](a, b, c)
+    ndpx.call_kernel(kernel_vector_sum, ndpx.Range(global_size), a, b, c)
     a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
     b_np = dpnp.asnumpy(b)  # Copy dpnp array b to NumPy array b_np
     c_np = dpnp.asnumpy(c)  # Copy dpnp array c to NumPy array c_np
@@ -35,8 +38,8 @@ def main():
     b = dpnp.random.random(N)
     c = dpnp.ones_like(a)
 
-    print("Using device ...")
-    print(a.device)
+    print("Executing on device:")
+    a.device.print_device_info()
     driver(a, b, c, global_size)
     print("Done...")
 
