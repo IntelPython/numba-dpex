@@ -256,29 +256,6 @@ section provides two approaches for writing a reduction kernel as a
 <p>This example demonstrates a summation reduction on a one-dimensional array.</p>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
 <p>In this example, to reduce the array we invoke the kernel multiple times.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="c1"># sum two element</span>
-    <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
-    <span class="c1"># store the sum to be used in nex iteration</span>
-    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Size of A should be power of two.&quot;&quot;&quot;</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="c1"># max size will require half the size of A to store sum</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-    <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">global_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">global_size</span>
-        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
 </section>
 <section id="example-2">
 <h2>Example 2<a class="headerlink" href="#example-2" title="Link to this heading">#</a></h2>
