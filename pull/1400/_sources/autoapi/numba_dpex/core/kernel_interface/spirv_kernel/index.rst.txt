@@ -1,0 +1,71 @@
+
+:orphan:
+
+numba_dpex.core.kernel_interface.spirv_kernel
+=============================================
+
+.. py:module:: numba_dpex.core.kernel_interface.spirv_kernel
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`SpirvKernel <numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel>`
+     - An interface for compute kernel that was generated either from a
+
+
+
+
+Classes
+-------
+
+.. py:class:: SpirvKernel(func, func_name)
+
+   Bases: :py:obj:`numba_dpex.core.kernel_interface.kernel_base.KernelInterface`
+
+   An interface for compute kernel that was generated either from a
+   Python function object or as a Numba IR FunctionType object.
+
+   :param metaclass: The interface is derived from abc.ABCMeta.
+   :type metaclass: optional
+
+   :raises NotImplementedError: The interface does not implement any of the
+   :raises methods and subclasses are required to implement them.:
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`compile <numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile>`\ (target_ctx, typing_ctx, args, debug, compile_flags)
+        - Compiles a kernel using numba_dpex.core.compiler.Compiler.
+
+
+   .. rubric:: Members
+
+   .. py:method:: compile(target_ctx, typing_ctx, args, debug, compile_flags)
+
+      Compiles a kernel using numba_dpex.core.compiler.Compiler.
+
+      :param args: _description_
+      :type args: _type_
+      :param debug: _description_
+      :type debug: _type_
+      :param compile_flags: _description_
+      :type compile_flags: _type_
+
+
+
+
+
+
+

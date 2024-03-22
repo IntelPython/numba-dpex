@@ -1,0 +1,82 @@
+
+:orphan:
+
+numba_dpex.core.types.kernel_api.literal_intenum
+================================================
+
+.. py:module:: numba_dpex.core.types.kernel_api.literal_intenum
+
+.. autoapi-nested-parse::
+
+   Definition of a new Literal type in numba-dpex that allows treating IntEnum
+   members as integer literals inside a JIT compiled function.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`IntEnumLiteral <numba_dpex.core.types.kernel_api.literal_intenum.IntEnumLiteral>`
+     - A Literal type for IntEnum objects. The type contains the original Python
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`box_literal_integer <numba_dpex.core.types.kernel_api.literal_intenum.box_literal_integer>`\ (typ, val, ctx)
+     - Defines how a Numba representation for an IntEnumLiteral object should
+
+
+
+Classes
+-------
+
+.. py:class:: IntEnumLiteral(value)
+
+   Bases: :py:obj:`numba.core.types.Literal`, :py:obj:`numba.core.types.Integer`
+
+   A Literal type for IntEnum objects. The type contains the original Python
+   value of the IntEnum class in it.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`can_convert_to <numba_dpex.core.types.kernel_api.literal_intenum.IntEnumLiteral.can_convert_to>`\ (typingctx, other)
+        - Check whether this type can be converted to the *other*.
+
+
+   .. rubric:: Members
+
+   .. py:method:: can_convert_to(typingctx, other) -> bool
+
+      Check whether this type can be converted to the *other*.
+      If successful, must return a string describing the conversion, e.g.
+      "exact", "promote", "unsafe", "safe"; otherwise None is returned.
+
+
+
+
+Functions
+---------
+.. py:function:: box_literal_integer(typ, val, ctx)
+
+   Defines how a Numba representation for an IntEnumLiteral object should
+   be converted to a PyObject* object and returned back to Python.
+
+
+
+
+

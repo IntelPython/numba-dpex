@@ -1,0 +1,32 @@
+
+:orphan:
+
+numba_dpex.core.passes.dufunc_inliner
+=====================================
+
+.. py:module:: numba_dpex.core.passes.dufunc_inliner
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`dufunc_inliner <numba_dpex.core.passes.dufunc_inliner.dufunc_inliner>`\ (func_ir, calltypes, typemap, typingctx, targetctx)
+     - \-
+
+
+
+
+Functions
+---------
+.. py:function:: dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx)
+
+
+
+
+

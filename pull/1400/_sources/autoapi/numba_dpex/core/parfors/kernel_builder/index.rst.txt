@@ -1,0 +1,79 @@
+
+:orphan:
+
+numba_dpex.core.parfors.kernel_builder
+======================================
+
+.. py:module:: numba_dpex.core.parfors.kernel_builder
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ParforKernel <numba_dpex.core.parfors.kernel_builder.ParforKernel>`
+     - \-
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`create_kernel_for_parfor <numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor>`\ (lowerer, parfor_node, typemap, flags, loop_ranges, has_aliases, races, parfor_outputs)
+     - Creates a numba_dpex.kernel function for a parfor node.
+   * - :py:obj:`update_sentinel <numba_dpex.core.parfors.kernel_builder.update_sentinel>`\ (kernel_ir, sentinel_name, kernel_body, new_label)
+     - Searched all the blocks in the IR generated from a kernel template and
+
+
+
+Classes
+-------
+
+.. py:class:: ParforKernel(name, kernel, signature, kernel_args, kernel_arg_types, queue: dpctl.SyclQueue)
+
+
+
+
+Functions
+---------
+.. py:function:: create_kernel_for_parfor(lowerer, parfor_node, typemap, flags, loop_ranges, has_aliases, races, parfor_outputs) -> ParforKernel
+
+   Creates a numba_dpex.kernel function for a parfor node.
+
+   There are two parts to this function:
+
+       1) Code to iterate across the iteration space as defined by
+          the schedule.
+       2) The parfor body that does the work for a single point in
+          the iteration space.
+
+   Part 1 is created as Python text for simplicity with a sentinel
+   assignment to mark the point in the IR where the parfor body
+   should be added. This Python text is 'exec'ed into existence and its
+   IR retrieved with run_frontend. The IR is scanned for the sentinel
+   assignment where that basic block is split and the IR for the parfor
+   body inserted.
+
+
+.. py:function:: update_sentinel(kernel_ir, sentinel_name, kernel_body, new_label)
+
+   Searched all the blocks in the IR generated from a kernel template and
+   replaces the __sentinel__ instruction with the actual op for the parfor.
+
+   :param kernel_ir: Numba FunctionIR that was generated from a kernel template
+   :param sentinel_name: The name of the sentinel instruction that is to be
+   :param replaced.:
+   :param kernel_body: The function body of the kernel template generated
+   :param numba_dpex.kernel function:
+   :param new_label: The new label to be used for the basic block created to store
+   :param the instructions that replaced the sentinel:
+
+
+
+
+

@@ -1,0 +1,62 @@
+
+:orphan:
+
+numba_dpex.core.utils.caching_utils
+===================================
+
+.. py:module:: numba_dpex.core.utils.caching_utils
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`build_key <numba_dpex.core.utils.caching_utils.build_key>`\ (\*args)
+     - Constructs key from variable list of args
+   * - :py:obj:`create_func_hash <numba_dpex.core.utils.caching_utils.create_func_hash>`\ (pyfunc)
+     - Creates a tuple of sha256 hashes out of code and
+   * - :py:obj:`strip_usm_metadata <numba_dpex.core.utils.caching_utils.strip_usm_metadata>`\ (argtypes)
+     - Convert the USMNdArray to an abridged type that disregards the
+
+
+
+
+Functions
+---------
+.. py:function:: build_key(*args)
+
+   Constructs key from variable list of args
+
+   :param \*args: List of components to construct key
+
+   :returns: Tuple of args
+
+
+.. py:function:: create_func_hash(pyfunc)
+
+   Creates a tuple of sha256 hashes out of code and
+   variable bytes extracted from the compiled funtion.
+
+   :param pyfunc: Python function object
+
+   :returns: Tuple of hashes of code and variable bytes
+
+
+.. py:function:: strip_usm_metadata(argtypes)
+
+   Convert the USMNdArray to an abridged type that disregards the
+   usm_type, device, queue, address space attributes.
+
+   :param argtypes: List of types
+
+   :returns: Tuple of types after removing USM metadata from USMNdArray type
+
+
+
+
+

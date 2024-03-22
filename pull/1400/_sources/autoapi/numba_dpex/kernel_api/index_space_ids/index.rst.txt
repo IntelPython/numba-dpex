@@ -1,0 +1,275 @@
+
+:orphan:
+
+numba_dpex.kernel_api.index_space_ids
+=====================================
+
+.. py:module:: numba_dpex.kernel_api.index_space_ids
+
+.. autoapi-nested-parse::
+
+   Implements a mock Python classes to represent ``sycl::item`` and
+   ``sycl::nd_item``for prototyping numba_dpex kernel functions before they are JIT
+   compiled.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`Group <numba_dpex.kernel_api.index_space_ids.Group>`
+     - Analogue to the ``sycl::group`` type.
+   * - :py:obj:`Item <numba_dpex.kernel_api.index_space_ids.Item>`
+     - Analogue to the ``sycl::item`` class.
+   * - :py:obj:`NdItem <numba_dpex.kernel_api.index_space_ids.NdItem>`
+     - Analogue to the ``sycl::nd_item`` class.
+
+
+
+
+Classes
+-------
+
+.. py:class:: Group(global_range: numba_dpex.kernel_api.ranges.Range, local_range: numba_dpex.kernel_api.ranges.Range, group_range: numba_dpex.kernel_api.ranges.Range, index: list)
+
+   Analogue to the ``sycl::group`` type.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_group_id <numba_dpex.kernel_api.index_space_ids.Group.get_group_id>`\ (dim)
+        - Returns the index of the work-group within the global nd-range for
+      * - :py:obj:`get_group_linear_id <numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id>`\ ()
+        - Returns a linearized version of the work-group index.
+      * - :py:obj:`get_group_range <numba_dpex.kernel_api.index_space_ids.Group.get_group_range>`\ (dim)
+        - Returns a the extent of the range representing the number of groups
+      * - :py:obj:`get_group_linear_range <numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range>`\ ()
+        - Return the total number of work-groups in the nd_range.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.index_space_ids.Group.get_local_range>`\ (dim)
+        - Returns the extent of the SYCL range representing all dimensions
+      * - :py:obj:`get_local_linear_range <numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_group_id(dim)
+
+      Returns the index of the work-group within the global nd-range for
+      specified dimension.
+
+      Since the work-items in a work-group have a defined position within the
+      global nd-range, the returned group id can be used along with the local
+      id to uniquely identify the work-item in the global nd-range.
+
+
+   .. py:method:: get_group_linear_id()
+
+      Returns a linearized version of the work-group index.
+
+
+   .. py:method:: get_group_range(dim)
+
+      Returns a the extent of the range representing the number of groups
+      in the nd-range for a specified dimension.
+
+
+   .. py:method:: get_group_linear_range()
+
+      Return the total number of work-groups in the nd_range.
+
+
+   .. py:method:: get_local_range(dim)
+
+      Returns the extent of the SYCL range representing all dimensions
+      of the local range for a specified dimension. This local range may
+      have been provided by the programmer, or chosen by the SYCL runtime.
+
+
+   .. py:method:: get_local_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+
+
+.. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
+
+   Analogue to the ``sycl::item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.Range`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_linear_id <numba_dpex.kernel_api.index_space_ids.Item.get_linear_id>`\ ()
+        - Get the linear id associated with this item for all dimensions.
+      * - :py:obj:`get_id <numba_dpex.kernel_api.index_space_ids.Item.get_id>`\ (idx)
+        - Get the id for a specific dimension.
+      * - :py:obj:`get_linear_range <numba_dpex.kernel_api.index_space_ids.Item.get_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+      * - :py:obj:`get_range <numba_dpex.kernel_api.index_space_ids.Item.get_range>`\ (idx)
+        - Get the range size for a specific dimension.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_linear_id()
+
+      Get the linear id associated with this item for all dimensions.
+      Original implementation could be found at ``sycl::item_base`` class.
+
+      :returns: The linear id.
+      :rtype: int
+
+
+   .. py:method:: get_id(idx)
+
+      Get the id for a specific dimension.
+
+      :returns: The id
+      :rtype: int
+
+
+   .. py:method:: get_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+   .. py:method:: get_range(idx)
+
+      Get the range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+
+
+.. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
+
+   Analogue to the ``sycl::nd_item`` class.
+
+   Identifies an instance of the function object executing at each point in an
+   :class:`.NdRange`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_global_id <numba_dpex.kernel_api.index_space_ids.NdItem.get_global_id>`\ (idx)
+        - Get the global id for a specific dimension.
+      * - :py:obj:`get_global_linear_id <numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_id>`\ ()
+        - Get the linearized global id for the item for all dimensions.
+      * - :py:obj:`get_local_id <numba_dpex.kernel_api.index_space_ids.NdItem.get_local_id>`\ (idx)
+        - Get the local id for a specific dimension.
+      * - :py:obj:`get_local_linear_id <numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_id>`\ ()
+        - Get the local linear id associated with this item for all
+      * - :py:obj:`get_global_range <numba_dpex.kernel_api.index_space_ids.NdItem.get_global_range>`\ (idx)
+        - Get the global range size for a specific dimension.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.index_space_ids.NdItem.get_local_range>`\ (idx)
+        - Get the local range size for a specific dimension.
+      * - :py:obj:`get_local_linear_range <numba_dpex.kernel_api.index_space_ids.NdItem.get_local_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+      * - :py:obj:`get_global_linear_range <numba_dpex.kernel_api.index_space_ids.NdItem.get_global_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+      * - :py:obj:`get_group <numba_dpex.kernel_api.index_space_ids.NdItem.get_group>`\ ()
+        - Returns the group.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_global_id(idx)
+
+      Get the global id for a specific dimension.
+
+      :returns: The global id
+      :rtype: int
+
+
+   .. py:method:: get_global_linear_id()
+
+      Get the linearized global id for the item for all dimensions.
+
+      :returns: The global linear id.
+      :rtype: int
+
+
+   .. py:method:: get_local_id(idx)
+
+      Get the local id for a specific dimension.
+
+      :returns: The local id
+      :rtype: int
+
+
+   .. py:method:: get_local_linear_id()
+
+      Get the local linear id associated with this item for all
+      dimensions.
+
+      :returns: The local linear id.
+      :rtype: int
+
+
+   .. py:method:: get_global_range(idx)
+
+      Get the global range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+   .. py:method:: get_local_range(idx)
+
+      Get the local range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+   .. py:method:: get_local_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+   .. py:method:: get_global_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+   .. py:method:: get_group()
+
+      Returns the group.
+
+      :returns: A group object.
+
+
+
+
+
+
+

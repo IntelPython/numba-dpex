@@ -1,0 +1,95 @@
+
+:orphan:
+
+numba_dpex.core.config
+======================
+
+.. py:module:: numba_dpex.core.config
+
+
+Overview
+--------
+
+
+
+
+Attributes
+----------
+.. py:data:: SAVE_IR_FILES
+
+   
+
+.. py:data:: OFFLOAD_DIAGNOSTICS
+
+   
+
+.. py:data:: DEBUG
+
+   
+
+.. py:data:: DEBUGINFO_DEFAULT
+
+   
+
+.. py:data:: DUMP_KERNEL_LLVM
+
+   
+
+.. py:data:: DUMP_KERNEL_LAUNCHER
+
+   
+
+.. py:data:: DEBUG_KERNEL_LAUNCHER
+
+   
+
+.. py:data:: BUILD_KERNEL_OPTIONS
+
+   
+
+.. py:data:: ENABLE_CACHE
+
+   
+
+.. py:data:: CACHE_SIZE
+
+   
+
+.. py:data:: DEBUG_CACHE
+
+   
+
+.. py:data:: STATIC_LOCAL_MEM_PASS
+
+   
+
+.. py:data:: TESTING_SKIP_NO_DPNP
+
+   
+
+.. py:data:: TESTING_SKIP_NO_DEBUGGING
+
+   
+
+.. py:data:: TESTING_LOG_DEBUGGING
+
+   
+
+.. py:data:: STATIC_LOCAL_MEM_PASS
+
+   
+
+.. py:data:: DPEX_OPT
+
+   
+
+.. py:data:: INLINE_THRESHOLD
+
+   
+
+.. py:data:: USE_MLIR
+
+   
+
+
+

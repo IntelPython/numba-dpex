@@ -1,0 +1,61 @@
+
+:orphan:
+
+numba_dpex.core.dpjit_dispatcher
+================================
+
+.. py:module:: numba_dpex.core.dpjit_dispatcher
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpjitDispatcher <numba_dpex.core.dpjit_dispatcher.DpjitDispatcher>`
+     - A dpex.djit-specific dispatcher.
+
+
+
+
+Classes
+-------
+
+.. py:class:: DpjitDispatcher(py_func, locals={}, targetoptions={}, pipeline_class=dpjit_compiler.DpjitCompiler)
+
+   Bases: :py:obj:`numba.core.dispatcher.Dispatcher`
+
+   A dpex.djit-specific dispatcher.
+
+   The DpjitDispatcher sets the targetdescr string to "dpex" so that Numba's
+   Dispatcher can lookup the global target_registry with that string and
+   correctly use the DpexTarget context.
+
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`targetdescr <numba_dpex.core.dpjit_dispatcher.DpjitDispatcher.targetdescr>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: targetdescr
+
+      
+
+
+
+
+
+

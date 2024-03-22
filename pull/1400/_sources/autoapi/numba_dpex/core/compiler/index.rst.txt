@@ -1,0 +1,46 @@
+
+:orphan:
+
+numba_dpex.core.compiler
+========================
+
+.. py:module:: numba_dpex.core.compiler
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`compile_with_dpex <numba_dpex.core.compiler.compile_with_dpex>`\ (pyfunc, pyfunc_name, args, return_type, target_context, typing_context, debug, is_kernel, extra_compile_flags)
+     - Compiles a function using class:`numba_dpex.core.pipelines.KernelCompiler`
+
+
+
+
+Functions
+---------
+.. py:function:: compile_with_dpex(pyfunc, pyfunc_name, args, return_type, target_context, typing_context, debug=False, is_kernel=True, extra_compile_flags=None)
+
+   Compiles a function using class:`numba_dpex.core.pipelines.KernelCompiler`
+   and returns the compiled result.
+
+   :param args: The list of arguments passed to the kernel.
+   :param debug: Optional flag to turn on debug mode compilation.
+   :type debug: bool
+   :param extra_compile_flags: Extra flags passed to the compiler.
+
+   :returns: Compiled result.
+   :rtype: cres
+
+   :raises KernelHasReturnValueError: If the compiled function returns a
+   :raises non-void value.:
+
+
+
+
+

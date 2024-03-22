@@ -1,0 +1,105 @@
+
+:orphan:
+
+numba_dpex.core.utils.kernel_templates.reduction_template
+=========================================================
+
+.. py:module:: numba_dpex.core.utils.kernel_templates.reduction_template
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`TreeReduceIntermediateKernelTemplate <numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate>`
+     - The class to build reduction main kernel_txt template and
+   * - :py:obj:`RemainderReduceIntermediateKernelTemplate <numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate>`
+     - The class to build reduction remainder kernel_txt template and
+
+
+
+
+Classes
+-------
+
+.. py:class:: TreeReduceIntermediateKernelTemplate(kernel_name, kernel_params, ivar_names, sentinel_name, loop_ranges, param_dict, parfor_dim, redvars, parfor_args, parfor_reddict, redvars_dict, typemap, work_group_size)
+
+   Bases: :py:obj:`numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface`
+
+   The class to build reduction main kernel_txt template and
+   compiled Numba functionIR.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`dump_kernel_string <numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string>`\ ()
+        - Helper to print the kernel function string.
+      * - :py:obj:`dump_kernel_ir <numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir>`\ ()
+        - Helper to dump the Numba IR for a
+
+
+   .. rubric:: Members
+
+   .. py:method:: dump_kernel_string()
+
+      Helper to print the kernel function string.
+
+
+   .. py:method:: dump_kernel_ir()
+
+      Helper to dump the Numba IR for a
+      TreeReduceIntermediateKernelTemplate.
+
+
+
+
+.. py:class:: RemainderReduceIntermediateKernelTemplate(kernel_name, kernel_params, sentinel_name, redvars, parfor_reddict, redvars_dict, typemap, legal_loop_indices, global_size_var_name, global_size_mod_var_name, partial_sum_size_var_name, partial_sum_var_name, final_sum_var_name, reductionKernelVar)
+
+   Bases: :py:obj:`numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface`
+
+   The class to build reduction remainder kernel_txt template and
+   compiled Numba functionIR.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`dump_kernel_string <numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string>`\ ()
+        - Helper to print the kernel function string.
+      * - :py:obj:`dump_kernel_ir <numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir>`\ ()
+        - Helper to dump the Numba IR for the
+
+
+   .. rubric:: Members
+
+   .. py:method:: dump_kernel_string()
+
+      Helper to print the kernel function string.
+
+
+   .. py:method:: dump_kernel_ir()
+
+      Helper to dump the Numba IR for the
+      RemainderReduceIntermediateKernelTemplate.
+
+
+
+
+
+
+

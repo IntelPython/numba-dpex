@@ -1,0 +1,7 @@
+
+numba_dpex.core.parfors
+=======================
+
+.. py:module:: numba_dpex.core.parfors
+
+

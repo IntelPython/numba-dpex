@@ -1,0 +1,39 @@
+
+:orphan:
+
+numba_dpex.core.types.dpnp_ndarray_type
+=======================================
+
+.. py:module:: numba_dpex.core.types.dpnp_ndarray_type
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpnpNdArray <numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray>`
+     - The Numba type to represent an dpnp.ndarray. The type has the same
+
+
+
+
+Classes
+-------
+
+.. py:class:: DpnpNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+
+   Bases: :py:obj:`numba_dpex.core.types.usm_ndarray_type.USMNdArray`
+
+   The Numba type to represent an dpnp.ndarray. The type has the same
+   structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.
+
+
+
+
+
+
+

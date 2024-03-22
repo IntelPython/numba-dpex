@@ -1,0 +1,254 @@
+
+:orphan:
+
+numba_dpex.core.utils.kernel_launcher
+=====================================
+
+.. py:module:: numba_dpex.core.utils.kernel_launcher
+
+.. autoapi-nested-parse::
+
+   Module that contains numba style wrapper around sycl kernel submit.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`SPIRVKernelModule <numba_dpex.core.utils.kernel_launcher.SPIRVKernelModule>`
+     - Represents SPIRV binary code and function name in this binary
+   * - :py:obj:`KernelLaunchIRBuilder <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder>`
+     - Helper class to build the LLVM IR for the submission of a kernel.
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`get_queue_from_llvm_values <numba_dpex.core.utils.kernel_launcher.get_queue_from_llvm_values>`\ (ctx, builder, ty_kernel_args, ll_kernel_args)
+     - Get the sycl queue from the first USMNdArray argument. Prior passes
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`MAX_SIZE_OF_SYCL_RANGE <numba_dpex.core.utils.kernel_launcher.MAX_SIZE_OF_SYCL_RANGE>`
+     - \-
+   * - :py:obj:`OPEN_CL_OPT_DISABLE_FLAG <numba_dpex.core.utils.kernel_launcher.OPEN_CL_OPT_DISABLE_FLAG>`
+     - \-
+   * - :py:obj:`L0_OPT_DISABLE_FLAG <numba_dpex.core.utils.kernel_launcher.L0_OPT_DISABLE_FLAG>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: SPIRVKernelModule
+
+   Bases: :py:obj:`NamedTuple`
+
+   Represents SPIRV binary code and function name in this binary
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`kernel_name <numba_dpex.core.utils.kernel_launcher.SPIRVKernelModule.kernel_name>`
+        - \-
+      * - :py:obj:`kernel_bitcode <numba_dpex.core.utils.kernel_launcher.SPIRVKernelModule.kernel_bitcode>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: kernel_name
+      :type: str
+
+      
+
+   .. py:attribute:: kernel_bitcode
+      :type: bytes
+
+      
+
+
+
+.. py:class:: KernelLaunchIRBuilder(context: numba.core.cpu.CPUContext, builder: llvmlite.ir.builder.IRBuilder, kernel_dmm: numba.core.datamodel.DataModelManager)
+
+   Helper class to build the LLVM IR for the submission of a kernel.
+
+   The class generates LLVM IR inside the current LLVM module that is needed
+   for submitting kernels. The LLVM Values that
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`dpexrt <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.dpexrt>`\ ()
+        - Dpex runtime context.
+      * - :py:obj:`get_queue <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.get_queue>`\ (exec_queue)
+        - Allocates memory on the stack to store a DPCTLSyclQueueRef.
+      * - :py:obj:`set_kernel <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_kernel>`\ (sycl_kernel_ref)
+        - Sets kernel to the argument list.
+      * - :py:obj:`set_kernel_from_spirv <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_kernel_from_spirv>`\ (kernel_module, debug)
+        - Sets kernel to the argument list from the SPIRV bytecode.
+      * - :py:obj:`set_queue <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_queue>`\ (sycl_queue_ref)
+        - Sets queue to the argument list.
+      * - :py:obj:`set_queue_from_arguments <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_queue_from_arguments>`\ ()
+        - Sets the sycl queue from the first USMNdArray argument provided
+      * - :py:obj:`set_range <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_range>`\ (global_range, local_range)
+        - Sets global and local range if provided to the argument list.
+      * - :py:obj:`set_range_from_indexer <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_range_from_indexer>`\ (ty_indexer_arg, ll_index_arg)
+        - Returns two lists of LLVM IR Values that hold the unboxed extents of
+      * - :py:obj:`set_arguments <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_arguments>`\ (ty_kernel_args, kernel_args)
+        - Sets flattened kernel args, kernel arg types and number of those
+      * - :py:obj:`set_arguments_form_tuple <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_arguments_form_tuple>`\ (ty_kernel_args_tuple, ll_kernel_args_tuple)
+        - Sets flattened kernel args, kernel arg types and number of those
+      * - :py:obj:`set_dependent_events <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_dependent_events>`\ (dep_events)
+        - Sets dependent events to the argument list.
+      * - :py:obj:`set_dependent_events_from_tuple <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.set_dependent_events_from_tuple>`\ (ty_dependent_events, ll_dependent_events)
+        - Set's dependent events from tuple represented by LLVM IR.
+      * - :py:obj:`submit <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit>`\ ()
+        - Submits kernel by calling sycl.dpctl_queue_submit_range or
+      * - :py:obj:`acquire_meminfo_and_submit_release <numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.acquire_meminfo_and_submit_release>`\ ()
+        - Schedule sycl host task to release nrt meminfo of the arguments used
+
+
+   .. rubric:: Members
+
+   .. py:method:: dpexrt()
+
+      Dpex runtime context.
+
+
+   .. py:method:: get_queue(exec_queue: dpctl.SyclQueue) -> llvmlite.ir.Instruction
+
+      Allocates memory on the stack to store a DPCTLSyclQueueRef.
+
+      Returns: A LLVM Value storing the pointer to the SYCL queue created
+      using the filter string for the Python exec_queue (dpctl.SyclQueue).
+
+
+   .. py:method:: set_kernel(sycl_kernel_ref: llvmlite.ir.Instruction)
+
+      Sets kernel to the argument list.
+
+
+   .. py:method:: set_kernel_from_spirv(kernel_module: SPIRVKernelModule, debug=False)
+
+      Sets kernel to the argument list from the SPIRV bytecode.
+
+      It pastes bytecode as a constant string and create kernel bundle from it
+      using SYCL API. It caches kernel, so it won't be sent to device second
+      time.
+
+
+   .. py:method:: set_queue(sycl_queue_ref: llvmlite.ir.Instruction)
+
+      Sets queue to the argument list.
+
+
+   .. py:method:: set_queue_from_arguments()
+
+      Sets the sycl queue from the first USMNdArray argument provided
+      earlier.
+
+
+   .. py:method:: set_range(global_range: list, local_range: list = None)
+
+      Sets global and local range if provided to the argument list.
+
+
+   .. py:method:: set_range_from_indexer(ty_indexer_arg: Union[numba_dpex.core.types.kernel_api.ranges.RangeType, numba_dpex.core.types.kernel_api.ranges.NdRangeType], ll_index_arg: llvmlite.ir.BaseStructType)
+
+      Returns two lists of LLVM IR Values that hold the unboxed extents of
+      a Python Range or NdRange object.
+
+
+   .. py:method:: set_arguments(ty_kernel_args: list[numba.core.types.Type], kernel_args: list[llvmlite.ir.Instruction])
+
+      Sets flattened kernel args, kernel arg types and number of those
+      arguments to the argument list.
+
+
+   .. py:method:: set_arguments_form_tuple(ty_kernel_args_tuple: numba.core.types.containers.UniTuple, ll_kernel_args_tuple: llvmlite.ir.Instruction)
+
+      Sets flattened kernel args, kernel arg types and number of those
+      arguments to the argument list based on the arguments stored in tuple.
+
+
+   .. py:method:: set_dependent_events(dep_events: list[llvmlite.ir.Instruction])
+
+      Sets dependent events to the argument list.
+
+
+   .. py:method:: set_dependent_events_from_tuple(ty_dependent_events: numba.core.types.containers.UniTuple, ll_dependent_events: llvmlite.ir.Instruction)
+
+      Set's dependent events from tuple represented by LLVM IR.
+
+      :param ll_dependent_events: tuple of numba's data models.
+
+
+   .. py:method:: submit() -> llvmlite.ir.Instruction
+
+      Submits kernel by calling sycl.dpctl_queue_submit_range or
+      sycl.dpctl_queue_submit_ndrange. Must be called after all arguments
+      set.
+
+
+   .. py:method:: acquire_meminfo_and_submit_release() -> llvmlite.ir.Instruction
+
+      Schedule sycl host task to release nrt meminfo of the arguments used
+      to run job. Use it to keep arguments alive during kernel execution.
+
+
+
+
+Functions
+---------
+.. py:function:: get_queue_from_llvm_values(ctx: numba.core.cpu.CPUContext, builder: llvmlite.ir.builder.IRBuilder, ty_kernel_args: list[numba.core.types.Type], ll_kernel_args: list[llvmlite.ir.Instruction])
+
+   Get the sycl queue from the first USMNdArray argument. Prior passes
+   before lowering make sure that compute-follows-data is enforceable
+   for a specific call to a kernel. As such, at the stage of lowering
+   the queue from the first USMNdArray argument can be extracted.
+
+
+
+Attributes
+----------
+.. py:data:: MAX_SIZE_OF_SYCL_RANGE
+   :value: 3
+
+   
+
+.. py:data:: OPEN_CL_OPT_DISABLE_FLAG
+   :value: '-cl-opt-disable'
+
+   
+
+.. py:data:: L0_OPT_DISABLE_FLAG
+   :value: '-g'
+
+   
+
+
+

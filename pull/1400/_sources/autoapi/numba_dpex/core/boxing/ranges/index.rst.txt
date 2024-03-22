@@ -1,0 +1,57 @@
+
+:orphan:
+
+numba_dpex.core.boxing.ranges
+=============================
+
+.. py:module:: numba_dpex.core.boxing.ranges
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`unbox_range <numba_dpex.core.boxing.ranges.unbox_range>`\ (typ, obj, c)
+     - Converts a Python Range object to numba-dpex's native struct representation
+   * - :py:obj:`unbox_ndrange <numba_dpex.core.boxing.ranges.unbox_ndrange>`\ (typ, obj, c)
+     - Converts a Python Range object to numba-dpex's native struct representation
+   * - :py:obj:`box_range <numba_dpex.core.boxing.ranges.box_range>`\ (typ, val, c)
+     - Convert a native range structure to a Range object.
+   * - :py:obj:`box_ndrange <numba_dpex.core.boxing.ranges.box_ndrange>`\ (typ, val, c)
+     - Convert a native range structure to a Range object.
+
+
+
+
+Functions
+---------
+.. py:function:: unbox_range(typ, obj, c)
+
+   Converts a Python Range object to numba-dpex's native struct representation
+   for RangeType.
+
+
+.. py:function:: unbox_ndrange(typ, obj, c)
+
+   Converts a Python Range object to numba-dpex's native struct representation
+   for NdRangeType.
+
+
+.. py:function:: box_range(typ, val, c)
+
+   Convert a native range structure to a Range object.
+
+
+.. py:function:: box_ndrange(typ, val, c)
+
+   Convert a native range structure to a Range object.
+
+
+
+
+

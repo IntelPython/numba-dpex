@@ -1,0 +1,384 @@
+
+numba_dpex.core.boxing
+======================
+
+.. py:module:: numba_dpex.core.boxing
+
+.. autoapi-nested-parse::
+
+   Contains the ``box`` and ``unbox`` functions for numba_dpex types that are
+   passable as arguments to a kernel or dpjit decorated function.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`NdRangeType <numba_dpex.core.boxing.NdRangeType>`
+     - Numba-dpex type corresponding to
+   * - :py:obj:`RangeType <numba_dpex.core.boxing.RangeType>`
+     - Numba-dpex type corresponding to
+   * - :py:obj:`NdRange <numba_dpex.core.boxing.NdRange>`
+     - A class to encapsulate all kernel launch parameters.
+   * - :py:obj:`Range <numba_dpex.core.boxing.Range>`
+     - A data structure to encapsulate a single kernel launch parameter.
+   * - :py:obj:`USMNdArray <numba_dpex.core.boxing.USMNdArray>`
+     - A type class to represent dpctl.tensor.usm_ndarray.
+   * - :py:obj:`NdRange <numba_dpex.core.boxing.NdRange>`
+     - A class to encapsulate all kernel launch parameters.
+   * - :py:obj:`Range <numba_dpex.core.boxing.Range>`
+     - A data structure to encapsulate a single kernel launch parameter.
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`unbox_range <numba_dpex.core.boxing.unbox_range>`\ (typ, obj, c)
+     - Converts a Python Range object to numba-dpex's native struct representation
+   * - :py:obj:`unbox_ndrange <numba_dpex.core.boxing.unbox_ndrange>`\ (typ, obj, c)
+     - Converts a Python Range object to numba-dpex's native struct representation
+   * - :py:obj:`box_range <numba_dpex.core.boxing.box_range>`\ (typ, val, c)
+     - Convert a native range structure to a Range object.
+   * - :py:obj:`box_ndrange <numba_dpex.core.boxing.box_ndrange>`\ (typ, val, c)
+     - Convert a native range structure to a Range object.
+   * - :py:obj:`unbox_dpnp_nd_array <numba_dpex.core.boxing.unbox_dpnp_nd_array>`\ (typ, obj, c)
+     - Converts a dpctl.tensor.usm_ndarray/dpnp.ndarray object to a Numba-dpex
+   * - :py:obj:`box_array <numba_dpex.core.boxing.box_array>`\ (typ, val, c)
+     - Boxes a NativeValue representation of USMNdArray/DpnpNdArray type into a
+
+
+
+Classes
+-------
+
+.. py:class:: NdRangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.NdRange`
+
+
+
+
+.. py:class:: RangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.Range`
+
+
+
+
+.. py:class:: NdRange(global_size, local_size)
+
+   A class to encapsulate all kernel launch parameters.
+
+   The NdRange defines the index space for a work group as well as
+   the global index space. It is passed to parallel_for to execute
+   a kernel on a set of work items.
+
+   This class basically contains two Range object, one for the global_range
+   and the other for the local_range. The global_range parameter contains
+   the global index space and the local_range parameter contains the index
+   space of a work group. This class mimics the behavior of `sycl::nd_range`
+   class.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_global_range <numba_dpex.core.boxing.NdRange.get_global_range>`\ ()
+        - Returns a Range defining the index space.
+      * - :py:obj:`get_local_range <numba_dpex.core.boxing.NdRange.get_local_range>`\ ()
+        - Returns a Range defining the index space of a work group.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_global_range()
+
+      Returns a Range defining the index space.
+
+      :returns: A `Range` object defining the index space.
+      :rtype: Range
+
+
+   .. py:method:: get_local_range()
+
+      Returns a Range defining the index space of a work group.
+
+      :returns: A `Range` object to specify index space of a work group.
+      :rtype: Range
+
+
+
+
+.. py:class:: Range
+
+   Bases: :py:obj:`tuple`
+
+   A data structure to encapsulate a single kernel launch parameter.
+
+   The range is an abstraction that describes the number of elements
+   in each dimension of buffers and index spaces. It can contain
+   1, 2, or 3 numbers, depending on the dimensionality of the
+   object it describes.
+
+   This is just a wrapper class on top of a 3-tuple. The kernel launch
+   parameter is consisted of three int's. This class basically mimics
+   the behavior of `sycl::range`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get <numba_dpex.core.boxing.Range.get>`\ (index)
+        - Returns the range of a single dimension.
+      * - :py:obj:`size <numba_dpex.core.boxing.Range.size>`\ ()
+        - Returns the size of a range.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get(index)
+
+      Returns the range of a single dimension.
+
+      :param index: The index of the dimension, i.e. [0,2]
+      :type index: int
+
+      :returns: The range of the dimension indexed by `index`.
+      :rtype: int
+
+
+   .. py:method:: size()
+
+      Returns the size of a range.
+
+      Returns the size of a range by multiplying
+      the range of the individual dimensions.
+
+      :returns: The size of a range.
+      :rtype: int
+
+
+
+
+.. py:class:: USMNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+
+   Bases: :py:obj:`numba.core.types.npytypes.Array`
+
+   A type class to represent dpctl.tensor.usm_ndarray.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`copy <numba_dpex.core.boxing.USMNdArray.copy>`\ (dtype, ndim, layout, readonly, addrspace, device, usm_type)
+        - \-
+      * - :py:obj:`unify <numba_dpex.core.boxing.USMNdArray.unify>`\ (typingctx, other)
+        - Unify this with the *other* USMNdArray.
+      * - :py:obj:`can_convert_to <numba_dpex.core.boxing.USMNdArray.can_convert_to>`\ (typingctx, other)
+        - Convert this USMNdArray to the *other*.
+
+
+   .. rubric:: Members
+
+   .. py:method:: copy(dtype=None, ndim=None, layout=None, readonly=None, addrspace=None, device=None, usm_type=None)
+
+
+   .. py:method:: unify(typingctx, other)
+
+      Unify this with the *other* USMNdArray.
+
+
+   .. py:method:: can_convert_to(typingctx, other)
+
+      Convert this USMNdArray to the *other*.
+
+
+
+
+.. py:class:: NdRange(global_size, local_size)
+
+   A class to encapsulate all kernel launch parameters.
+
+   The NdRange defines the index space for a work group as well as
+   the global index space. It is passed to parallel_for to execute
+   a kernel on a set of work items.
+
+   This class basically contains two Range object, one for the global_range
+   and the other for the local_range. The global_range parameter contains
+   the global index space and the local_range parameter contains the index
+   space of a work group. This class mimics the behavior of `sycl::nd_range`
+   class.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_global_range <numba_dpex.core.boxing.NdRange.get_global_range>`\ ()
+        - Returns a Range defining the index space.
+      * - :py:obj:`get_local_range <numba_dpex.core.boxing.NdRange.get_local_range>`\ ()
+        - Returns a Range defining the index space of a work group.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_global_range()
+
+      Returns a Range defining the index space.
+
+      :returns: A `Range` object defining the index space.
+      :rtype: Range
+
+
+   .. py:method:: get_local_range()
+
+      Returns a Range defining the index space of a work group.
+
+      :returns: A `Range` object to specify index space of a work group.
+      :rtype: Range
+
+
+
+
+.. py:class:: Range
+
+   Bases: :py:obj:`tuple`
+
+   A data structure to encapsulate a single kernel launch parameter.
+
+   The range is an abstraction that describes the number of elements
+   in each dimension of buffers and index spaces. It can contain
+   1, 2, or 3 numbers, depending on the dimensionality of the
+   object it describes.
+
+   This is just a wrapper class on top of a 3-tuple. The kernel launch
+   parameter is consisted of three int's. This class basically mimics
+   the behavior of `sycl::range`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get <numba_dpex.core.boxing.Range.get>`\ (index)
+        - Returns the range of a single dimension.
+      * - :py:obj:`size <numba_dpex.core.boxing.Range.size>`\ ()
+        - Returns the size of a range.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get(index)
+
+      Returns the range of a single dimension.
+
+      :param index: The index of the dimension, i.e. [0,2]
+      :type index: int
+
+      :returns: The range of the dimension indexed by `index`.
+      :rtype: int
+
+
+   .. py:method:: size()
+
+      Returns the size of a range.
+
+      Returns the size of a range by multiplying
+      the range of the individual dimensions.
+
+      :returns: The size of a range.
+      :rtype: int
+
+
+
+
+Functions
+---------
+.. py:function:: unbox_range(typ, obj, c)
+
+   Converts a Python Range object to numba-dpex's native struct representation
+   for RangeType.
+
+
+.. py:function:: unbox_ndrange(typ, obj, c)
+
+   Converts a Python Range object to numba-dpex's native struct representation
+   for NdRangeType.
+
+
+.. py:function:: box_range(typ, val, c)
+
+   Convert a native range structure to a Range object.
+
+
+.. py:function:: box_ndrange(typ, val, c)
+
+   Convert a native range structure to a Range object.
+
+
+.. py:function:: unbox_dpnp_nd_array(typ, obj, c)
+
+   Converts a dpctl.tensor.usm_ndarray/dpnp.ndarray object to a Numba-dpex
+   internal array structure.
+
+   :param typ: The Numba type of the PyObject
+   :param obj: The actual PyObject to be unboxed
+   :param c: The unboxing context
+
+   Returns: A NativeValue object representing an unboxed
+       dpctl.tensor.usm_ndarray/dpnp.ndarray
+
+
+.. py:function:: box_array(typ, val, c)
+
+   Boxes a NativeValue representation of USMNdArray/DpnpNdArray type into a
+   dpctl.tensor.usm_ndarray/dpnp.ndarray PyObject
+
+   :param typ: The representation of the USMNdArray/DpnpNdArray type.
+   :param val: A native representation of a Numba USMNdArray/DpnpNdArray type
+               object.
+   :param c: The boxing context.
+
+   Returns: A Pyobject for a dpctl.tensor.usm_ndarray/dpnp.ndarray boxed from
+       the Numba-dpex native value.
+
+
+
+
+

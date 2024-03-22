@@ -1,0 +1,41 @@
+
+:orphan:
+
+numba_dpex.core.parfors.reduction_kernel_builder
+================================================
+
+.. py:module:: numba_dpex.core.parfors.reduction_kernel_builder
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`create_reduction_main_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor>`\ (loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict)
+     - Creates a numba_dpex.kernel function for reduction main kernel.
+   * - :py:obj:`create_reduction_remainder_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor>`\ (parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict, reductionHelperList)
+     - Creates a numba_dpex.kernel function for a reduction remainder kernel.
+
+
+
+
+Functions
+---------
+.. py:function:: create_reduction_main_kernel_for_parfor(loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict=None)
+
+   Creates a numba_dpex.kernel function for reduction main kernel.
+
+
+.. py:function:: create_reduction_remainder_kernel_for_parfor(parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict, reductionHelperList)
+
+   Creates a numba_dpex.kernel function for a reduction remainder kernel.
+
+
+
+
+

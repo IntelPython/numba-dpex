@@ -1,0 +1,190 @@
+
+:orphan:
+
+numba_dpex.core.datamodel.models
+================================
+
+.. py:module:: numba_dpex.core.datamodel.models
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`GenericPointerModel <numba_dpex.core.datamodel.models.GenericPointerModel>`
+     - A primitive type can be represented natively in the target in all
+   * - :py:obj:`IntEnumLiteralModel <numba_dpex.core.datamodel.models.IntEnumLiteralModel>`
+     - Representation of an object of LiteralIntEnum type using Numba's
+   * - :py:obj:`USMArrayDeviceModel <numba_dpex.core.datamodel.models.USMArrayDeviceModel>`
+     - A data model to represent a usm array type in the LLVM IR generated for a
+   * - :py:obj:`USMArrayHostModel <numba_dpex.core.datamodel.models.USMArrayHostModel>`
+     - Data model for the USMNdArray type when used in a host-only function.
+   * - :py:obj:`SyclQueueModel <numba_dpex.core.datamodel.models.SyclQueueModel>`
+     - Represents the native data model for a dpctl.SyclQueue PyObject.
+   * - :py:obj:`SyclEventModel <numba_dpex.core.datamodel.models.SyclEventModel>`
+     - Represents the native data model for a dpctl.SyclEvent PyObject.
+   * - :py:obj:`RangeModel <numba_dpex.core.datamodel.models.RangeModel>`
+     - The numba_dpex data model for a numba_dpex.kernel_api.Range PyObject.
+   * - :py:obj:`NdRangeModel <numba_dpex.core.datamodel.models.NdRangeModel>`
+     - The numba_dpex data model for a numba_dpex.kernel_api.NdRange PyObject.
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`get_flattened_member_count <numba_dpex.core.datamodel.models.get_flattened_member_count>`\ (ty)
+     - Returns the number of fields in an instance of a given StructModel.
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`dpex_data_model_manager <numba_dpex.core.datamodel.models.dpex_data_model_manager>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: GenericPointerModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.PrimitiveModel`
+
+   A primitive type can be represented natively in the target in all
+   usage contexts.
+
+
+
+
+.. py:class:: IntEnumLiteralModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.PrimitiveModel`
+
+   Representation of an object of LiteralIntEnum type using Numba's
+   PrimitiveModel that can be represented natively in the target in all
+   usage contexts.
+
+
+
+
+.. py:class:: USMArrayDeviceModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   A data model to represent a usm array type in the LLVM IR generated for a
+   device-only kernel function.
+
+   The USMArrayDeviceModel adds an extra address space attribute to the data
+   member. The extra attribute is needed when passing usm_ndarray array
+   arguments to kernels that are compiled for certain OpenCL GPU devices. Note
+   that the address space attribute is applied only to the data member and not
+   other members of USMArrayDeviceModel that are pointers. It is done this way
+   as other pointer members such as meminfo are not used inside a kernel and
+   these members maybe removed from the USMArrayDeviceModel in
+   future (refer #929).
+
+   We use separate data models for host (USMArrayHostModel) and device
+   (USMArrayDeviceModel) as the address space attribute is only required for
+   kernel functions and not needed for functions that are compiled for a host
+   memory space.
+
+
+
+
+.. py:class:: USMArrayHostModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Data model for the USMNdArray type when used in a host-only function.
+
+   USMArrayHostModel is used by the numba_dpex.types.USMNdArray and
+   numba_dpex.types.DpnpNdArray type and abstracts the usmarystruct_t C type
+   defined in numba_dpex.core.runtime._usmarraystruct.h.
+
+   The USMArrayDeviceModel differs from numba's ArrayModel by including an
+   extra member sycl_queue that maps to _usmarraystruct.sycl_queue pointer. The
+   _usmarraystruct.sycl_queue pointer stores the C++ sycl::queue pointer that
+   was used to allocate the data for the dpctl.tensor.usm_ndarray or
+   dpnp.ndarray represented by an instance of _usmarraystruct.
+
+
+
+
+.. py:class:: SyclQueueModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Represents the native data model for a dpctl.SyclQueue PyObject.
+
+   Numba-dpex uses a C struct as defined in
+   numba_dpex/core/runtime._queuestruct.h to store the required attributes for
+   a ``dpctl.SyclQueue`` Python object.
+
+       - ``queue_ref``: An opaque C pointer to an actual SYCL queue C++ object.
+       - ``parent``: A PyObject* that stores a reference back to the original
+                     ``dpctl.SyclQueue`` PyObject if the native struct is
+                     created by unboxing the PyObject.
+
+
+
+
+.. py:class:: SyclEventModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Represents the native data model for a dpctl.SyclEvent PyObject.
+
+   Numba-dpex uses a C struct as defined in
+   numba_dpex/core/runtime._eventstruct.h to store the required attributes for
+   a ``dpctl.SyclEvent`` Python object.
+
+       - ``event_ref``: An opaque C pointer to an actual SYCL event C++ object.
+       - ``parent``: A PyObject* that stores a reference back to the original
+                     ``dpctl.SyclEvent`` PyObject if the native struct is
+                     created by unboxing the PyObject.
+
+
+
+
+.. py:class:: RangeModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   The numba_dpex data model for a numba_dpex.kernel_api.Range PyObject.
+
+
+
+
+.. py:class:: NdRangeModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   The numba_dpex data model for a numba_dpex.kernel_api.NdRange PyObject.
+
+
+
+
+Functions
+---------
+.. py:function:: get_flattened_member_count(ty)
+
+   Returns the number of fields in an instance of a given StructModel.
+
+
+
+Attributes
+----------
+.. py:data:: dpex_data_model_manager
+
+   
+
+
+
