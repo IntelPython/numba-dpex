@@ -261,13 +261,13 @@ See <a class="reference external" href="https://github.com/numba/numba/pull/7196
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/side-by-side-2.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">14</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="linenos">15</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">16</span>    <span class="n">param_b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">17</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
-<span class="linenos">18</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
-<span class="hll"><span class="linenos">19</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
-</span><span class="linenos">20</span>    <span class="k">return</span> <span class="n">result</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">13</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="linenos">14</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">15</span>    <span class="n">param_b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">16</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
+<span class="linenos">17</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="hll"><span class="linenos">18</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
+</span><span class="linenos">19</span>    <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 </div>
 <p>Debug session:</p>
