@@ -4,7 +4,6 @@
 
 import argparse
 
-import dpctl
 import numba
 import numpy as np
 
@@ -48,19 +47,17 @@ def numba_func_driver(a, b, c):
 
 
 def ndpx_func_driver(a, b, c):
-    device = dpctl.select_default_device()
-    with dpctl.device_context(device):
-        kernel[ndpx.Range(len(c))](a, b, c)
+    ndpx.call_kernel(_kernel, ndpx.Range(len(c)), a, b, c)
 
 
 @ndpx.kernel(debug=True)
-def kernel(a_in_kernel, b_in_kernel, c_in_kernel):
-    i = ndpx.get_global_id(0)
+def _kernel(item, a_in_kernel, b_in_kernel, c_in_kernel):
+    i = item.get_id(0)
     c_in_kernel[i] = ndpx_loop_body(i, a_in_kernel, b_in_kernel)
 
 
 numba_loop_body = numba.njit(debug=True)(common_loop_body)
-ndpx_loop_body = ndpx.func(debug=True)(common_loop_body)
+ndpx_loop_body = ndpx.device_func(debug=True)(common_loop_body)
 
 
 def main():

@@ -2,15 +2,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
 import dpnp as np
 
 import numba_dpex as ndpx
 
 
 @ndpx.kernel(debug=True)
-def data_parallel_sum(a, b, c):
-    i = ndpx.get_global_id(0)
+def data_parallel_sum(item, a, b, c):
+    i = item.get_id(0)
     c[i] = a[i] + b[i]  # Condition breakpoint location
 
 
@@ -21,6 +20,6 @@ a = np.array(np.random.random(N), dtype=np.float32)
 b = np.array(np.random.random(N), dtype=np.float32)
 c = np.ones_like(a)
 
-data_parallel_sum[ndpx.Range(global_size)](a, b, c)
+ndpx.call_kernel(data_parallel_sum, ndpx.Range(global_size), a, b, c)
 
 print("Done...")
