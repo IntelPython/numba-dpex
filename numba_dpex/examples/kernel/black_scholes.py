@@ -1,13 +1,22 @@
 # SPDX-FileCopyrightText: 2022 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache 2.0
-# SPDX-License-Identifier: Apache-2.0
+
+"""The example shows the implementation of the Black-Scholes formula as a range kernel.
+
+The Black-Scholes model is a mathematical model for derivatives trading with
+various underlying assumptions. The example shown here is a simplified
+representation of the actual model.
+
+Refer: https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model
+"""
 
 from math import erf, exp, log, sqrt
 
 import dpnp as np
 
-import numba_dpex as ndpx
+import numba_dpex as dpex
+from numba_dpex import kernel_api as kapi
 
 # Stock price range
 S0L = 10.0
@@ -47,14 +56,17 @@ def initialize():
     return price, strike, t, rate, volatility, call, put
 
 
-@ndpx.kernel
-def kernel_black_scholes(price, strike, t, rate, volatility, call, put):
+@dpex.kernel
+def kernel_black_scholes(
+    item: kapi.Item, price, strike, t, rate, volatility, call, put
+):
+    """A range kernel implementing a simplified Black-Scholes model."""
     # Scalars
     mr = -rate
     sig_sig_two = volatility * volatility * 2.0
 
     # Current index
-    i = ndpx.get_global_id(0)
+    i = item.get_id(0)
 
     # Get inputs into private memory
     p = price[i]
@@ -86,11 +98,19 @@ def kernel_black_scholes(price, strike, t, rate, volatility, call, put):
 def main():
     price, strike, t, rate, volatility, call, put = initialize()
 
-    print("Using device ...")
-    print(price.device)
+    print("Executing on device:")
+    price.device.print_device_info()
 
-    kernel_black_scholes[ndpx.Range(NOPT)](
-        price, strike, t, rate, volatility, call, put
+    dpex.call_kernel(
+        kernel_black_scholes,
+        dpex.Range(NOPT),
+        price,
+        strike,
+        t,
+        rate,
+        volatility,
+        call,
+        put,
     )
 
     print("Call:", call)

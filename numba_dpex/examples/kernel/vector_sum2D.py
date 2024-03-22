@@ -4,6 +4,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""The example demonstrates a 2-D vector addition kernel.
+"""
+
 import dpctl
 import dpctl.tensor as dpt
 import numpy as np
@@ -12,17 +15,17 @@ import numba_dpex as ndpx
 
 
 @ndpx.kernel
-def data_parallel_sum(a, b, c):
+def data_parallel_sum(item, a, b, c):
     """
     A two-dimensional vector addition example using the ``kernel`` decorator.
     """
-    i = ndpx.get_global_id(0)
-    j = ndpx.get_global_id(1)
+    i = item.get_id(0)
+    j = item.get_id(1)
     c[i, j] = a[i, j] + b[i, j]
 
 
 def driver(a, b, c, global_size):
-    data_parallel_sum[global_size](a, b, c)
+    ndpx.call_kernel(data_parallel_sum, global_size, a, b, c)
 
 
 def main():
@@ -45,7 +48,7 @@ def main():
     c_dpt = dpt.empty_like(a_dpt)
     c_dpt = dpt.reshape(c_dpt, (X, Y))
 
-    print("Using device ...")
+    print("Executing on device:")
     device.print_device_info()
 
     print("Running kernel ...")
