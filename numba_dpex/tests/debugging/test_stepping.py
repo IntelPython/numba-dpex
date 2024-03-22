@@ -22,7 +22,7 @@ def test_next(app: gdb):
     app.breakpoint("simple_dpex_func.py:18")
     app.run("simple_dpex_func.py")
     app.expect_hit_breakpoint("simple_dpex_func.py:18")
-    app.expect(r"18\s+i = ndpx.get_global_id\(0\)", with_eol=True)
+    app.expect(r"18\s+i = item.get_id\(0\)", with_eol=True)
     app.set_scheduler_lock()
     app.next()
     app.expect(
@@ -35,19 +35,22 @@ def test_next(app: gdb):
 
 
 def test_step(app: gdb):
-    app.breakpoint("simple_dpex_func.py:18")
+    app.breakpoint("simple_dpex_func.py:19")
     app.run("simple_dpex_func.py")
-    app.expect_hit_breakpoint("simple_dpex_func.py:18")
-    app.expect(r"18\s+i = ndpx.get_global_id\(0\)", with_eol=True)
-    app.set_scheduler_lock()
-    app.step()
+    app.expect_hit_breakpoint("simple_dpex_func.py:19")
     app.expect(
         r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
         with_eol=True,
     )
+    app.set_scheduler_lock()
     app.step()
     app.expect(r"__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True)
     app.expect(r"12\s+result = a_in_func \+ b_in_func", with_eol=True)
+    app.step()
+    app.expect(
+        r"13\s+return result",
+        with_eol=True,
+    )
 
 
 @pytest.mark.parametrize("func", ["stepi", "nexti"])

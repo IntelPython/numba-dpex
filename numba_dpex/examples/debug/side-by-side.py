@@ -59,7 +59,7 @@ def ndpx_func_driver(a, b, c):
 
 @ndpx.kernel(debug=True)
 def _kernel(item, a_in_kernel, b_in_kernel, c_in_kernel):
-    i = item.get_global_id(0)
+    i = item.get_id(0)
     c_in_kernel[i] = ndpx_loop_body(a_in_kernel[i], b_in_kernel[i])
 
 
