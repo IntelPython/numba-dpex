@@ -1,0 +1,640 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.runtime.context - numba-dpex documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../programming_model.html">Programming Model</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../user_guide/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/kernel_programming/index.html">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/debugging/common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../kernel_api/index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../experimental/index.html">Experimental Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../useful_links.html">Useful links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contribution_guide.html">Contribution Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-numba_dpex.core.runtime.context">
+<span id="numba-dpex-core-runtime-context"></span><h1>numba_dpex.core.runtime.context<a class="headerlink" href="#module-numba_dpex.core.runtime.context" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id15">
+<table class="summarytable docutils align-default" id="id15">
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext" title="numba_dpex.core.runtime.context.DpexRTContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpexRTContext</span></code></a></p></td>
+<td><p>An object providing access to DPEXRT API in the lowering pass.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpexRTContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An object providing access to DPEXRT API in the lowering pass.</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id16">
+<table class="summarytable docutils align-default" id="id16">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc" title="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meminfo_alloc</span></code></a>(builder, size, usm_type, queue_ref)</p></td>
+<td><p>Wrapper to call <code class="xref py py-func docutils literal notranslate"><span class="pre">meminfo_alloc_unchecked()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill" title="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meminfo_fill</span></code></a>(builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)</p></td>
+<td><p>Wrapper to call <code class="xref py py-func docutils literal notranslate"><span class="pre">meminfo_fill_unchecked()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked" title="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meminfo_alloc_unchecked</span></code></a>(builder, size, usm_type, queue_ref)</p></td>
+<td><p>Allocate a new MemInfo with a data payload of <cite>size</cite> bytes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked" title="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meminfo_fill_unchecked</span></code></a>(builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)</p></td>
+<td><p>Fills an allocated <cite>MemInfo</cite> with the value specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python" title="numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arraystruct_from_python</span></code></a>(pyapi, obj, ptr)</p></td>
+<td><p>Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python" title="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queuestruct_from_python</span></code></a>(pyapi, obj, ptr)</p></td>
+<td><p>Calls the c function DPEXRT_sycl_queue_from_python</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python" title="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queuestruct_to_python</span></code></a>(pyapi, val)</p></td>
+<td><p>Calls the c function DPEXRT_sycl_queue_to_python</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python" title="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eventstruct_from_python</span></code></a>(pyapi, obj, ptr)</p></td>
+<td><p>Calls the c function DPEXRT_sycl_event_from_python</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python" title="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eventstruct_to_python</span></code></a>(pyapi, val)</p></td>
+<td><p>Calls the c function DPEXRT_sycl_event_to_python</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init" title="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eventstruct_init</span></code></a>(pyapi, event, struct)</p></td>
+<td><p>Calls the c function DPEXRT_sycl_event_init</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref" title="numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref"><code class="xref py py-obj docutils literal notranslate"><span class="pre">usm_ndarray_to_python_acqref</span></code></a>(pyapi, aryty, ary, dtypeptr)</p></td>
+<td><p>Boxes a DpnpNdArray native object into a Python dpnp.ndarray.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string" title="numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_queue_from_filter_string</span></code></a>(builder, device)</p></td>
+<td><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_range" title="numba_dpex.core.runtime.context.DpexRTContext.submit_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit_range</span></code></a>(builder, kref, qref, args, argtys, nargs, range, nrange, depevents, ndepevents)</p></td>
+<td><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange" title="numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit_ndrange</span></code></a>(builder, kref, qref, args, argtys, nargs, grange, lrange, ndims, depevents, ndepevents)</p></td>
+<td><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release" title="numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acquire_meminfo_and_schedule_release</span></code></a>(builder, args)</p></td>
+<td><p>Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel" title="numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_or_get_kernel</span></code></a>(builder, args)</p></td>
+<td><p>Inserts LLVM IR to call build_or_get_kernel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size" title="numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_cache_size</span></code></a>(builder)</p></td>
+<td><p>Inserts LLVM IR to call kernel_cache_size.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc">
+<span class="sig-name descname"><span class="pre">meminfo_alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper to call <code class="xref py py-func docutils literal notranslate"><span class="pre">meminfo_alloc_unchecked()</span></code>
+with null checking of the returned value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill">
+<span class="sig-name descname"><span class="pre">meminfo_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meminfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper to call <code class="xref py py-func docutils literal notranslate"><span class="pre">meminfo_fill_unchecked()</span></code>
+with null checking of the returned value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked">
+<span class="sig-name descname"><span class="pre">meminfo_alloc_unchecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked" title="Link to this definition">#</a></dt>
+<dd><p>Allocate a new MemInfo with a data payload of <cite>size</cite> bytes.</p>
+<p>The result of the call is checked and if it is NULL, i.e. allocation
+failed, then a MemoryError is raised. If the allocation succeeded then
+a pointer to the MemInfo is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>builder</strong> (<cite>llvmlite.ir.builder.IRBuilder</cite>) – LLVM IR builder.</p></li>
+<li><p><strong>size</strong> (<cite>llvmlite.ir.values.Argument</cite>) – LLVM uint64 value specifying
+the size in bytes for the data payload, i.e. i64 %”arg.allocsize”</p></li>
+<li><p><strong>usm_type</strong> (<cite>llvmlite.ir.values.Argument</cite>) – An LLVM Argument object
+specifying the type of the usm allocator. The constant value
+should match the values in
+<code class="docutils literal notranslate"><span class="pre">dpctl's</span></code> <code class="docutils literal notranslate"><span class="pre">libsyclinterface::DPCTLSyclUSMType</span></code> enum,
+i.e. i64 %”arg.usm_type”.</p></li>
+<li><p><strong>queue_ref</strong> (<cite>llvmlite.ir.values.Argument</cite>) – An LLVM argument value storing
+the pointer to the address of the queue object, the object can be
+<cite>dpctl.SyclQueue()</cite>, i.e. i8* %”arg.queue”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A pointer to the <cite>MemInfo</cite></dt><dd><p>is returned from the <cite>DPEXRT_MemInfo_alloc</cite> C function call.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ret (<cite>llvmlite.ir.instructions.CallInstr</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked">
+<span class="sig-name descname"><span class="pre">meminfo_fill_unchecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meminfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked" title="Link to this definition">#</a></dt>
+<dd><p>Fills an allocated <cite>MemInfo</cite> with the value specified.</p>
+<p>The result of the call is checked and if it is <cite>NULL</cite>, i.e. the fill
+operation failed, then a <cite>MemoryError</cite> is raised. If the fill operation
+is succeeded then a pointer to the <cite>MemInfo</cite> is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>builder</strong> (<cite>llvmlite.ir.builder.IRBuilder</cite>) – LLVM IR builder.</p></li>
+<li><p><strong>meminfo</strong> (<cite>llvmlite.ir.instructions.LoadInstr</cite>) – LLVM uint64 value
+specifying the size in bytes for the data payload.</p></li>
+<li><p><strong>itemsize</strong> (<cite>llvmlite.ir.values.Constant</cite>) – An LLVM Constant value
+specifying the size of the each data item allocated by the
+usm allocator.</p></li>
+<li><p><strong>dest_is_float</strong> (<cite>llvmlite.ir.values.Constant</cite>) – An LLVM Constant
+value specifying if the destination array type is floating
+point.</p></li>
+<li><p><strong>value_is_float</strong> (<cite>llvmlite.ir.values.Constant</cite>) – An LLVM Constant
+value specifying if the input value is a floating point.</p></li>
+<li><p><strong>value</strong> (<cite>llvmlite.ir.values.Constant</cite>) – An LLVM Constant value
+specifying if the input value that will be used to fill
+the array.</p></li>
+<li><p><strong>queue_ref</strong> (<cite>llvmlite.ir.instructions.ExtractValue</cite>) – An LLVM ExtractValue
+instruction object to extract the pointer to the queue from the
+DpctlSyclQueue type, i.e. %”.74” = extractvalue {i8*, i8*} %”.73”, 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A pointer to the <cite>MemInfo</cite></dt><dd><p>is returned from the <cite>DPEXRT_MemInfo_fill</cite> C function call.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ret (<cite>llvmlite.ir.instructions.CallInstr</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python">
+<span class="sig-name descname"><span class="pre">arraystruct_from_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python" title="Link to this definition">#</a></dt>
+<dd><p>Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function
+defined in the _DPREXRT_python Python extension.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python">
+<span class="sig-name descname"><span class="pre">queuestruct_from_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python" title="Link to this definition">#</a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_queue_from_python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python">
+<span class="sig-name descname"><span class="pre">queuestruct_to_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python" title="Link to this definition">#</a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_queue_to_python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python">
+<span class="sig-name descname"><span class="pre">eventstruct_from_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python" title="Link to this definition">#</a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_event_from_python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python">
+<span class="sig-name descname"><span class="pre">eventstruct_to_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python" title="Link to this definition">#</a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_event_to_python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init">
+<span class="sig-name descname"><span class="pre">eventstruct_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init" title="Link to this definition">#</a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_event_init</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref">
+<span class="sig-name descname"><span class="pre">usm_ndarray_to_python_acqref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aryty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtypeptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref" title="Link to this definition">#</a></dt>
+<dd><p>Boxes a DpnpNdArray native object into a Python dpnp.ndarray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pyapi</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>aryty</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>ary</strong> (<em>_type_</em>) – _description_</p></li>
+<li><p><strong>dtypeptr</strong> (<em>_type_</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string">
+<span class="sig-name descname"><span class="pre">get_queue_from_filter_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string" title="Link to this definition">#</a></dt>
+<dd><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+from a given filter string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<em>llvmlite.ir.values.FormattedConstant</em>) – An LLVM ArrayType
+storing a const string for a DPC++ filter selector string.</p>
+</dd>
+</dl>
+<p>Returns: A DPCTLSyclQueueRef pointer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.submit_range">
+<span class="sig-name descname"><span class="pre">submit_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depevents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndepevents</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_range" title="Link to this definition">#</a></dt>
+<dd><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+from a given filter string.</p>
+<p>Returns: A DPCTLSyclQueueRef pointer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange">
+<span class="sig-name descname"><span class="pre">submit_ndrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depevents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndepevents</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange" title="Link to this definition">#</a></dt>
+<dd><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+from a given filter string.</p>
+<p>Returns: A LLVM IR call inst.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release">
+<span class="sig-name descname"><span class="pre">acquire_meminfo_and_schedule_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release" title="Link to this definition">#</a></dt>
+<dd><p>Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.</p>
+<p>DPCTLSyclEventRef
+DPEXRT_nrt_acquire_meminfo_and_schedule_release(</p>
+<blockquote>
+<div><p>NRT_api_functions <a href="#id1"><span class="problematic" id="id2">*</span></a>nrt,
+DPCTLSyclQueueRef QRef,
+NRT_MemInfo <a href="#id3"><span class="problematic" id="id4">**</span></a>meminfo_array,
+size_t meminfo_array_size,
+DPCTLSyclEventRef <a href="#id5"><span class="problematic" id="id6">*</span></a>depERefs,
+size_t nDepERefs,
+int <a href="#id7"><span class="problematic" id="id8">*</span></a>status,</p>
+</div></blockquote>
+<p>);</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel">
+<span class="sig-name descname"><span class="pre">build_or_get_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel" title="Link to this definition">#</a></dt>
+<dd><p>Inserts LLVM IR to call build_or_get_kernel.</p>
+<p>DPCTLSyclKernelRef
+DPEXRT_build_or_get_kernel(</p>
+<blockquote>
+<div><p>const DPCTLSyclContextRef ctx,
+const DPCTLSyclDeviceRef dev,
+size_t il_hash,
+const char <a href="#id9"><span class="problematic" id="id10">*</span></a>il,
+size_t il_length,
+const char <a href="#id11"><span class="problematic" id="id12">*</span></a>compile_opts,
+const char <a href="#id13"><span class="problematic" id="id14">*</span></a>kernel_name,</p>
+</div></blockquote>
+<p>);</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size">
+<span class="sig-name descname"><span class="pre">kernel_cache_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size" title="Link to this definition">#</a></dt>
+<dd><p>Inserts LLVM IR to call kernel_cache_size.</p>
+<p>size_t DPEXRT_kernel_cache_size();</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2020-2024, Intel Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/IntelPython/numba-dpex" aria-label="GitHub"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">numba_dpex.core.runtime.context</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext"><code class="docutils literal notranslate"><span class="pre">DpexRTContext</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_alloc()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_fill()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_alloc_unchecked()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_fill_unchecked()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.arraystruct_from_python()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.queuestruct_from_python()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.queuestruct_to_python()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.eventstruct_from_python()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.eventstruct_to_python()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.eventstruct_init()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.usm_ndarray_to_python_acqref()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.get_queue_from_filter_string()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_range"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.submit_range()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.submit_ndrange()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.acquire_meminfo_and_schedule_release()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.build_or_get_kernel()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.kernel_cache_size()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -1,0 +1,74 @@
+
+:orphan:
+
+numba_dpex.core.types.usm_ndarray_type
+======================================
+
+.. py:module:: numba_dpex.core.types.usm_ndarray_type
+
+.. autoapi-nested-parse::
+
+   A type class to represent dpctl.tensor.usm_ndarray type in Numba
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`USMNdArray <numba_dpex.core.types.usm_ndarray_type.USMNdArray>`
+     - A type class to represent dpctl.tensor.usm_ndarray.
+
+
+
+
+Classes
+-------
+
+.. py:class:: USMNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+
+   Bases: :py:obj:`numba.core.types.npytypes.Array`
+
+   A type class to represent dpctl.tensor.usm_ndarray.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`copy <numba_dpex.core.types.usm_ndarray_type.USMNdArray.copy>`\ (dtype, ndim, layout, readonly, addrspace, device, usm_type)
+        - \-
+      * - :py:obj:`unify <numba_dpex.core.types.usm_ndarray_type.USMNdArray.unify>`\ (typingctx, other)
+        - Unify this with the *other* USMNdArray.
+      * - :py:obj:`can_convert_to <numba_dpex.core.types.usm_ndarray_type.USMNdArray.can_convert_to>`\ (typingctx, other)
+        - Convert this USMNdArray to the *other*.
+
+
+   .. rubric:: Members
+
+   .. py:method:: copy(dtype=None, ndim=None, layout=None, readonly=None, addrspace=None, device=None, usm_type=None)
+
+
+   .. py:method:: unify(typingctx, other)
+
+      Unify this with the *other* USMNdArray.
+
+
+   .. py:method:: can_convert_to(typingctx, other)
+
+      Convert this USMNdArray to the *other*.
+
+
+
+
+
+
+

@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
@@ -278,19 +278,19 @@ and each work item in the <code class="docutils literal notranslate"><span class
 essential to writing a range kernel in KAPI.</p>
 <div class="literal-block-wrapper docutils container" id="ex-kernel-declaration-vector-sum">
 <div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> A KAPI range kernel</span><a class="headerlink" href="#ex-kernel-declaration-vector-sum" title="Link to this code">#</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+<span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">testing</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
+
 
 <span class="c1"># Data parallel kernel implementing vector sum</span>
 <span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">kernel_vector_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <p><a class="reference internal" href="#ex-kernel-declaration-vector-sum"><span class="std std-ref">EXAMPLE: A KAPI range kernel</span></a> shows an example of a range kernel.
 Every range kernel requires its first argument to be an <code class="docutils literal notranslate"><span class="pre">Item</span></code> and
-needs to be launched via <a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a>
+needs to be launched via <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code>
 by passing an instance a <code class="docutils literal notranslate"><span class="pre">Range</span></code> object.</p>
 <p>Do note that a <code class="docutils literal notranslate"><span class="pre">Range</span></code> object only controls the creation of work items, the
 distribution of work and data over a <code class="docutils literal notranslate"><span class="pre">Range</span></code> still needs to be defined by the

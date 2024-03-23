@@ -1,0 +1,65 @@
+
+:orphan:
+
+numba_dpex.core.parfors.reduction_helper
+========================================
+
+.. py:module:: numba_dpex.core.parfors.reduction_helper
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ReductionHelper <numba_dpex.core.parfors.reduction_helper.ReductionHelper>`
+     - The class to define and allocate reduction intermediate variables.
+   * - :py:obj:`ReductionKernelVariables <numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables>`
+     - The parfor body and the main function body share ir.Var nodes.
+
+
+
+
+Classes
+-------
+
+.. py:class:: ReductionHelper
+
+   The class to define and allocate reduction intermediate variables.
+
+
+
+
+.. py:class:: ReductionKernelVariables(lowerer, parfor_node, typemap, parfor_outputs, reductionHelperList)
+
+   The parfor body and the main function body share ir.Var nodes.
+   We have to do some replacements of Var names in the parfor body
+   to make them legal parameter names. If we don't copy then the
+   Vars in the main function also would incorrectly change their name.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`copy_final_sum_to_host <numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host>`\ (parfor_kernel)
+        - \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: copy_final_sum_to_host(parfor_kernel)
+
+
+
+
+
+
+

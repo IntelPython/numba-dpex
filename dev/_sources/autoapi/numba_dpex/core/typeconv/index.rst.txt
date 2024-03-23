@@ -1,0 +1,40 @@
+
+numba_dpex.core.typeconv
+========================
+
+.. py:module:: numba_dpex.core.typeconv
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`to_usm_ndarray <numba_dpex.core.typeconv.to_usm_ndarray>`\ (suai_attrs, addrspace)
+     - Converts an array-like object that has the _sycl_usm_array_interface__
+
+
+
+
+Functions
+---------
+.. py:function:: to_usm_ndarray(suai_attrs, addrspace=address_space.GLOBAL)
+
+   Converts an array-like object that has the _sycl_usm_array_interface__
+   attribute to numba_dpex.types.UsmNdArray.
+
+   :param suai_attrs: The extracted SUAI information for an array-like object.
+   :param addrspace: Address space this array is allocated in.
+
+   Returns: The Numba type for SUAI array.
+
+   :raises NotImplementedError: If the dtype of the passed array is not supported.
+
+
+
+
+

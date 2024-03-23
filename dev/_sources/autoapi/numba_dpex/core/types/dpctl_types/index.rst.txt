@@ -1,0 +1,124 @@
+
+:orphan:
+
+numba_dpex.core.types.dpctl_types
+=================================
+
+.. py:module:: numba_dpex.core.types.dpctl_types
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpctlSyclQueue <numba_dpex.core.types.dpctl_types.DpctlSyclQueue>`
+     - A Numba type to represent a dpctl.SyclQueue PyObject.
+   * - :py:obj:`DpctlSyclEvent <numba_dpex.core.types.dpctl_types.DpctlSyclEvent>`
+     - A Numba type to represent a dpctl.SyclEvent PyObject.
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`unbox_sycl_queue <numba_dpex.core.types.dpctl_types.unbox_sycl_queue>`\ (typ, obj, c)
+     - Convert a SyclQueue object to a native structure.
+   * - :py:obj:`box_sycl_queue <numba_dpex.core.types.dpctl_types.box_sycl_queue>`\ (typ, val, c)
+     - Boxes a NativeValue representation of DpctlSyclQueue type into a
+   * - :py:obj:`unbox_sycl_event <numba_dpex.core.types.dpctl_types.unbox_sycl_event>`\ (typ, obj, c)
+     - Convert a SyclEvent object to a native structure.
+   * - :py:obj:`box_sycl_event <numba_dpex.core.types.dpctl_types.box_sycl_event>`\ (typ, val, c)
+     - Boxes a NativeValue representation of DpctlSyclEvent type into a
+
+
+
+Classes
+-------
+
+.. py:class:: DpctlSyclQueue(sycl_queue)
+
+   Bases: :py:obj:`numba.types.Type`
+
+   A Numba type to represent a dpctl.SyclQueue PyObject.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`rand_digit_str <numba_dpex.core.types.dpctl_types.DpctlSyclQueue.rand_digit_str>`\ (n)
+        - \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: rand_digit_str(n)
+
+
+
+
+.. py:class:: DpctlSyclEvent
+
+   Bases: :py:obj:`numba.types.Type`
+
+   A Numba type to represent a dpctl.SyclEvent PyObject.
+
+
+
+
+Functions
+---------
+.. py:function:: unbox_sycl_queue(typ, obj, c)
+
+   Convert a SyclQueue object to a native structure.
+
+
+.. py:function:: box_sycl_queue(typ, val, c)
+
+   Boxes a NativeValue representation of DpctlSyclQueue type into a
+   dpctl.SyclQueue PyObject
+
+   At this point numba-dpex does not support creating a dpctl.SyclQueue inside
+   a dpjit decorated function. For this reason, boxing is only returns the
+   original parent object stored in DpctlSyclQueue's data model.
+
+   :param typ: The representation of the DpnpNdArray type.
+   :param val: A native representation of a Numba DpnpNdArray type object.
+   :param c: The boxing context.
+
+   Returns: A Pyobject for a dpnp.ndarray boxed from the Numba native value.
+
+
+.. py:function:: unbox_sycl_event(typ, obj, c)
+
+   Convert a SyclEvent object to a native structure.
+
+
+.. py:function:: box_sycl_event(typ, val, c)
+
+   Boxes a NativeValue representation of DpctlSyclEvent type into a
+   dpctl.SyclEvent PyObject
+
+   At this point numba-dpex does not support creating a dpctl.SyclEvent inside
+   a dpjit decorated function. For this reason, boxing is only returns the
+   original parent object stored in DpctlSyclEvent's data model.
+
+   :param typ: The representation of the dpctl.SyclEvent type.
+   :param val: A native representation of a Numba DpctlSyclEvent type object.
+   :param c: The boxing context.
+
+   Returns: A Pyobject for a dpctl.SyclEvent boxed from the Numba native value.
+
+
+
+
+

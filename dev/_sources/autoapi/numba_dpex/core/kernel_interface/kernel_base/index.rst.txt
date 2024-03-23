@@ -1,0 +1,63 @@
+
+:orphan:
+
+numba_dpex.core.kernel_interface.kernel_base
+============================================
+
+.. py:module:: numba_dpex.core.kernel_interface.kernel_base
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`KernelInterface <numba_dpex.core.kernel_interface.kernel_base.KernelInterface>`
+     - An interface for compute kernel that was generated either from a
+
+
+
+
+Classes
+-------
+
+.. py:class:: KernelInterface
+
+   An interface for compute kernel that was generated either from a
+   Python function object or as a Numba IR FunctionType object.
+
+   :param metaclass: The interface is derived from abc.ABCMeta.
+   :type metaclass: optional
+
+   :raises NotImplementedError: The interface does not implement any of the
+   :raises methods and subclasses are required to implement them.:
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`compile <numba_dpex.core.kernel_interface.kernel_base.KernelInterface.compile>`\ (target_ctx, typing_ctx, args, debug, compile_flags)
+        - :summarylabel:`abc` Abstract method to compile a Kernel instance.
+
+
+   .. rubric:: Members
+
+   .. py:method:: compile(target_ctx, typing_ctx, args, debug, compile_flags)
+      :abstractmethod:
+
+      Abstract method to compile a Kernel instance.
+
+
+
+
+
+
+

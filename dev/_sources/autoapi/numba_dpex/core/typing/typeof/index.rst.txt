@@ -1,0 +1,112 @@
+
+:orphan:
+
+numba_dpex.core.typing.typeof
+=============================
+
+.. py:module:: numba_dpex.core.typing.typeof
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`typeof_usm_ndarray <numba_dpex.core.typing.typeof.typeof_usm_ndarray>`\ (val, c)
+     - Registers the type inference implementation function for
+   * - :py:obj:`typeof_dpnp_ndarray <numba_dpex.core.typing.typeof.typeof_dpnp_ndarray>`\ (val, c)
+     - Registers the type inference implementation function for dpnp.ndarray.
+   * - :py:obj:`typeof_dpctl_sycl_queue <numba_dpex.core.typing.typeof.typeof_dpctl_sycl_queue>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_dpctl_sycl_event <numba_dpex.core.typing.typeof.typeof_dpctl_sycl_event>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_range <numba_dpex.core.typing.typeof.typeof_range>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_ndrange <numba_dpex.core.typing.typeof.typeof_ndrange>`\ (val, c)
+     - Registers the type inference implementation function for a
+
+
+
+
+Functions
+---------
+.. py:function:: typeof_usm_ndarray(val, c)
+
+   Registers the type inference implementation function for
+   dpctl.tensor.usm_ndarray
+
+   :param val: A Python object that should be an instance of a
+   :param dpctl.tensor.usm_ndarray:
+   :param c: Unused argument used to be consistent with Numba API.
+
+   :raises ValueError: If an unsupported dtype encountered or val has
+   :raises no ``usm_type`` or sycl_device attribute.:
+
+   Returns: The Numba type corresponding to dpctl.tensor.usm_ndarray
+
+
+.. py:function:: typeof_dpnp_ndarray(val, c)
+
+   Registers the type inference implementation function for dpnp.ndarray.
+
+   :param val: A Python object that should be an instance of a
+   :param dpnp.ndarray:
+   :param c: Unused argument used to be consistent with Numba API.
+
+   :raises ValueError: If an unsupported dtype encountered or val has
+   :raises no ``usm_type`` or sycl_device attribute.:
+
+   Returns: The Numba type corresponding to dpnp.ndarray
+
+
+.. py:function:: typeof_dpctl_sycl_queue(val, c)
+
+   Registers the type inference implementation function for a
+   dpctl.SyclQueue PyObject.
+
+   :param val: An instance of dpctl.SyclQueue.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
+
+
+.. py:function:: typeof_dpctl_sycl_event(val, c)
+
+   Registers the type inference implementation function for a
+   dpctl.SyclEvent PyObject.
+
+   :param val: An instance of dpctl.SyclEvent.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclEvent instance.
+
+
+.. py:function:: typeof_range(val, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.Range PyObject.
+
+   :param val: An instance of numba_dpex.Range.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.range_types.RangeType instance.
+
+
+.. py:function:: typeof_ndrange(val, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.NdRange PyObject.
+
+   :param val: An instance of numba_dpex.Range.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.range_types.RangeType instance.
+
+
+
+
+

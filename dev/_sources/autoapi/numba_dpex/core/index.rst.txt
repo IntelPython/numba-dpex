@@ -1,0 +1,347 @@
+
+numba_dpex.core
+===============
+
+.. py:module:: numba_dpex.core
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   boxing/index.rst
+   datamodel/index.rst
+   kernel_interface/index.rst
+   parfors/index.rst
+   passes/index.rst
+   pipelines/index.rst
+   runtime/index.rst
+   targets/index.rst
+   typeconv/index.rst
+   types/index.rst
+   typing/index.rst
+   utils/index.rst
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`Array <numba_dpex.core.Array>`
+     - An array type for use inside our compiler pipeline.
+   * - :py:obj:`DpctlSyclQueue <numba_dpex.core.DpctlSyclQueue>`
+     - A Numba type to represent a dpctl.SyclQueue PyObject.
+   * - :py:obj:`DpctlSyclEvent <numba_dpex.core.DpctlSyclEvent>`
+     - A Numba type to represent a dpctl.SyclEvent PyObject.
+   * - :py:obj:`DpnpNdArray <numba_dpex.core.DpnpNdArray>`
+     - The Numba type to represent an dpnp.ndarray. The type has the same
+   * - :py:obj:`IntEnumLiteral <numba_dpex.core.IntEnumLiteral>`
+     - A Literal type for IntEnum objects. The type contains the original Python
+   * - :py:obj:`NdRangeType <numba_dpex.core.NdRangeType>`
+     - Numba-dpex type corresponding to
+   * - :py:obj:`RangeType <numba_dpex.core.RangeType>`
+     - Numba-dpex type corresponding to
+   * - :py:obj:`USMNdArray <numba_dpex.core.USMNdArray>`
+     - A type class to represent dpctl.tensor.usm_ndarray.
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`none <numba_dpex.core.none>`
+     - \-
+   * - :py:obj:`uint32 <numba_dpex.core.uint32>`
+     - \-
+   * - :py:obj:`uint64 <numba_dpex.core.uint64>`
+     - \-
+   * - :py:obj:`int32 <numba_dpex.core.int32>`
+     - \-
+   * - :py:obj:`int64 <numba_dpex.core.int64>`
+     - \-
+   * - :py:obj:`float32 <numba_dpex.core.float32>`
+     - \-
+   * - :py:obj:`float64 <numba_dpex.core.float64>`
+     - \-
+   * - :py:obj:`b1 <numba_dpex.core.b1>`
+     - \-
+   * - :py:obj:`i4 <numba_dpex.core.i4>`
+     - \-
+   * - :py:obj:`i8 <numba_dpex.core.i8>`
+     - \-
+   * - :py:obj:`u4 <numba_dpex.core.u4>`
+     - \-
+   * - :py:obj:`u8 <numba_dpex.core.u8>`
+     - \-
+   * - :py:obj:`f4 <numba_dpex.core.f4>`
+     - \-
+   * - :py:obj:`f8 <numba_dpex.core.f8>`
+     - \-
+   * - :py:obj:`float_ <numba_dpex.core.float_>`
+     - \-
+   * - :py:obj:`double <numba_dpex.core.double>`
+     - \-
+   * - :py:obj:`usm_ndarray <numba_dpex.core.usm_ndarray>`
+     - \-
+   * - :py:obj:`void <numba_dpex.core.void>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: Array(dtype, ndim, layout, readonly=False, name=None, aligned=True, addrspace=None)
+
+   Bases: :py:obj:`Array`
+
+   An array type for use inside our compiler pipeline.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`copy <numba_dpex.core.Array.copy>`\ (dtype, ndim, layout, readonly, addrspace)
+        - \-
+      * - :py:obj:`is_precise <numba_dpex.core.Array.is_precise>`\ ()
+        - Whether this type is precise, i.e. can be part of a successful
+
+
+   .. rubric:: Members
+
+   .. py:method:: copy(dtype=None, ndim=None, layout=None, readonly=None, addrspace=None)
+
+
+   .. py:method:: is_precise()
+
+      Whether this type is precise, i.e. can be part of a successful
+      type inference.  Default implementation returns True.
+
+
+
+
+.. py:class:: DpctlSyclQueue(sycl_queue)
+
+   Bases: :py:obj:`numba.types.Type`
+
+   A Numba type to represent a dpctl.SyclQueue PyObject.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`rand_digit_str <numba_dpex.core.DpctlSyclQueue.rand_digit_str>`\ (n)
+        - \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: rand_digit_str(n)
+
+
+
+
+.. py:class:: DpctlSyclEvent
+
+   Bases: :py:obj:`numba.types.Type`
+
+   A Numba type to represent a dpctl.SyclEvent PyObject.
+
+
+
+
+.. py:class:: DpnpNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+
+   Bases: :py:obj:`numba_dpex.core.types.usm_ndarray_type.USMNdArray`
+
+   The Numba type to represent an dpnp.ndarray. The type has the same
+   structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.
+
+
+
+
+.. py:class:: IntEnumLiteral(value)
+
+   Bases: :py:obj:`numba.core.types.Literal`, :py:obj:`numba.core.types.Integer`
+
+   A Literal type for IntEnum objects. The type contains the original Python
+   value of the IntEnum class in it.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`can_convert_to <numba_dpex.core.IntEnumLiteral.can_convert_to>`\ (typingctx, other)
+        - Check whether this type can be converted to the *other*.
+
+
+   .. rubric:: Members
+
+   .. py:method:: can_convert_to(typingctx, other) -> bool
+
+      Check whether this type can be converted to the *other*.
+      If successful, must return a string describing the conversion, e.g.
+      "exact", "promote", "unsafe", "safe"; otherwise None is returned.
+
+
+
+
+.. py:class:: NdRangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.NdRange`
+
+
+
+
+.. py:class:: RangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.Range`
+
+
+
+
+.. py:class:: USMNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+
+   Bases: :py:obj:`numba.core.types.npytypes.Array`
+
+   A type class to represent dpctl.tensor.usm_ndarray.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`copy <numba_dpex.core.USMNdArray.copy>`\ (dtype, ndim, layout, readonly, addrspace, device, usm_type)
+        - \-
+      * - :py:obj:`unify <numba_dpex.core.USMNdArray.unify>`\ (typingctx, other)
+        - Unify this with the *other* USMNdArray.
+      * - :py:obj:`can_convert_to <numba_dpex.core.USMNdArray.can_convert_to>`\ (typingctx, other)
+        - Convert this USMNdArray to the *other*.
+
+
+   .. rubric:: Members
+
+   .. py:method:: copy(dtype=None, ndim=None, layout=None, readonly=None, addrspace=None, device=None, usm_type=None)
+
+
+   .. py:method:: unify(typingctx, other)
+
+      Unify this with the *other* USMNdArray.
+
+
+   .. py:method:: can_convert_to(typingctx, other)
+
+      Convert this USMNdArray to the *other*.
+
+
+
+
+
+Attributes
+----------
+.. py:data:: none
+
+   
+
+.. py:data:: uint32
+
+   
+
+.. py:data:: uint64
+
+   
+
+.. py:data:: int32
+
+   
+
+.. py:data:: int64
+
+   
+
+.. py:data:: float32
+
+   
+
+.. py:data:: float64
+
+   
+
+.. py:data:: b1
+
+   
+
+.. py:data:: i4
+
+   
+
+.. py:data:: i8
+
+   
+
+.. py:data:: u4
+
+   
+
+.. py:data:: u8
+
+   
+
+.. py:data:: f4
+
+   
+
+.. py:data:: f8
+
+   
+
+.. py:data:: float_
+
+   
+
+.. py:data:: double
+
+   
+
+.. py:data:: usm_ndarray
+
+   
+
+.. py:data:: void
+
+   
+
+
+

@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
@@ -251,24 +251,8 @@
 <em>i.e.</em> functions that can be only invoked from a kernel and not from a host
 function. However, numba-dpex provides a special decorator
 <code class="docutils literal notranslate"><span class="pre">numba_dpex.func</span></code> specifically to implement device functions.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">func</span>
-<span class="k">def</span> <span class="nf">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
-</pre></div>
-</div>
 <p>To use a device function from an another device function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">func</span>
-<span class="k">def</span> <span class="nf">another_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">a_device_function</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>To use a device function from a kernel function <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">a_kernel_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">another_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</pre></div>
-</div>
 <p>Unlike a kernel function, a device function can return a value like normal
 functions.</p>
 <div class="admonition-todo admonition" id="id1">

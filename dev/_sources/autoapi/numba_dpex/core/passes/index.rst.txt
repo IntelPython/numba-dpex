@@ -1,0 +1,119 @@
+
+numba_dpex.core.passes
+======================
+
+.. py:module:: numba_dpex.core.passes
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ParforLegalizeCFDPass <numba_dpex.core.passes.ParforLegalizeCFDPass>`
+     - Base class for function passes
+   * - :py:obj:`DumpParforDiagnostics <numba_dpex.core.passes.DumpParforDiagnostics>`
+     - Base class for analysis passes (no modification made to state)
+   * - :py:obj:`NoPythonBackend <numba_dpex.core.passes.NoPythonBackend>`
+     - Base class for function passes
+
+
+
+
+Classes
+-------
+
+.. py:class:: ParforLegalizeCFDPass
+
+   Bases: :py:obj:`numba.core.compiler_machinery.FunctionPass`
+
+   Base class for function passes
+
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.passes.ParforLegalizeCFDPass.run_pass>`\ (state)
+        - Legalize CFD of parfor nodes.
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Legalize CFD of parfor nodes.
+
+
+
+
+.. py:class:: DumpParforDiagnostics
+
+   Bases: :py:obj:`numba.core.compiler_machinery.AnalysisPass`
+
+   Base class for analysis passes (no modification made to state)
+
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.passes.DumpParforDiagnostics.run_pass>`\ (state)
+        - Runs the pass itself. Must return True/False depending on whether
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Runs the pass itself. Must return True/False depending on whether
+      statement level modification took place.
+
+
+
+
+.. py:class:: NoPythonBackend
+
+   Bases: :py:obj:`numba.core.compiler_machinery.FunctionPass`
+
+   Base class for function passes
+
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.passes.NoPythonBackend.run_pass>`\ (state)
+        - Back-end: Generate LLVM IR from Numba IR, compile to machine code
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Back-end: Generate LLVM IR from Numba IR, compile to machine code
+
+
+
+
+
+
+
