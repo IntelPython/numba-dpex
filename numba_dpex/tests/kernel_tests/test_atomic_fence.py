@@ -5,7 +5,6 @@
 import dpnp
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 from numba_dpex.kernel_api import (
     AtomicRef,
     Item,
@@ -18,7 +17,7 @@ from numba_dpex.kernel_api import (
 def test_atomic_fence():
     """A test for atomic_fence function."""
 
-    @dpex_exp.kernel
+    @dpex.kernel
     def _kernel(item: Item, a, b):
         i = item.get_id(0)
 
@@ -39,6 +38,6 @@ def test_atomic_fence():
     a = dpnp.ones(N, dtype=dpnp.int64)
     b = dpnp.zeros(1, dtype=dpnp.int64)
 
-    dpex_exp.call_kernel(_kernel, dpex.Range(N), a, b)
+    dpex.call_kernel(_kernel, dpex.Range(N), a, b)
 
     assert a[0] == N + 1

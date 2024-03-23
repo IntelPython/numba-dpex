@@ -2,11 +2,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Demonstrates natural cubic spline implemented as an nd-range kernel.
+
+Refer: https://en.wikipedia.org/wiki/Spline_interpolation
+"""
+
 import dpnp as np
 from numba import float32
 from numpy.testing import assert_almost_equal
 
-import numba_dpex as ndpx
+import numba_dpex as dpex
+from numba_dpex import kernel_api as kapi
 
 # Interpolation domain
 XLO = 10.0
@@ -81,15 +87,15 @@ COEFFICIENTS = np.asarray(
 )
 
 
-@ndpx.kernel()
-def kernel_polynomial(x, y, coefficients):
-    c = ndpx.private.array(
+@dpex.kernel()
+def kernel_polynomial(nditem: kapi.NdItem, x, y, coefficients):
+    c = kapi.PrivateArray(
         4, dtype=float32
     )  # Coefficients of a polynomial of a given segment
-    z = ndpx.private.array(1, dtype=float32)  # Keep x[i] in private memory
+    z = kapi.PrivateArray(1, dtype=float32)  # Keep x[i] in private memory
 
-    gid = ndpx.get_global_id(0)
-    gr_id = ndpx.get_group_id(0)
+    gid = nditem.get_global_id(0)
+    gr_id = nditem.get_group().get_group_id(0)
 
     # Polynomial coefficients are fixed within a workgroup
     c[0] = coefficients[gr_id][0]
@@ -112,16 +118,20 @@ def main():
     xp = np.arange(XLO, XHI, (XHI - XLO) / N_POINTS)
     yp = np.empty(xp.shape)
 
-    print("Using device ...")
-    print(xp.device)
-    global_range = ndpx.Range(
+    print("Executing on device:")
+    xp.device.print_device_info()
+    global_range = kapi.Range(
         N_POINTS // N_POINTS_PER_WORK_ITEM,
     )
-    local_range = ndpx.Range(
+    local_range = kapi.Range(
         LOCAL_SIZE,
     )
-    kernel_polynomial[ndpx.NdRange(global_range, local_range)](
-        xp, yp, COEFFICIENTS
+    dpex.call_kernel(
+        kernel_polynomial,
+        dpex.NdRange(global_range, local_range),
+        xp,
+        yp,
+        COEFFICIENTS,
     )
 
     # Copy results back to the host

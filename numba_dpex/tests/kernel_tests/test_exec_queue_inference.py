@@ -7,12 +7,12 @@ import dpnp
 import pytest
 from numba.core import config
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex import Range
 from numba_dpex.core.exceptions import ExecutionQueueInferenceError
 
 
-@exp_dpex.kernel(
+@dpex.kernel(
     release_gil=False,
     no_compile=True,
     no_cpython_wrapper=True,
@@ -38,7 +38,7 @@ def test_successful_execution_queue_inference():
     config.CAPTURED_ERRORS = "new_style"
 
     try:
-        exp_dpex.call_kernel(add, r, a, b, c)
+        dpex.call_kernel(add, r, a, b, c)
     except:
         pytest.fail("Unexpected error when calling kernel")
 
@@ -65,7 +65,7 @@ def test_execution_queue_inference_error():
     config.CAPTURED_ERRORS = "new_style"
 
     with pytest.raises(ExecutionQueueInferenceError):
-        exp_dpex.call_kernel(add, r, a, b, c)
+        dpex.call_kernel(add, r, a, b, c)
 
     config.CAPTURED_ERRORS = current_captured_error_style
 
@@ -86,6 +86,6 @@ def test_error_when_no_array_args():
     config.CAPTURED_ERRORS = "new_style"
 
     with pytest.raises(ExecutionQueueInferenceError):
-        exp_dpex.call_kernel(add, r, a, b, c)
+        dpex.call_kernel(add, r, a, b, c)
 
     config.CAPTURED_ERRORS = current_captured_error_style

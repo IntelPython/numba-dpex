@@ -4,7 +4,7 @@
 
 import pytest
 
-from numba_dpex import experimental as dpex_exp
+from numba_dpex import kernel
 from numba_dpex.kernel_api import Item
 
 
@@ -15,4 +15,4 @@ def _kernel(item: Item, a, b, c):
 
 def test_compilation_mode_option_user_definition():
     with pytest.warns(UserWarning):
-        dpex_exp.kernel(_compilation_mode="kernel")(_kernel)
+        kernel(_compilation_mode="kernel")(_kernel)

@@ -8,7 +8,7 @@ import dpnp
 import numpy as np
 import pytest
 
-import numba_dpex.experimental as exp_dpex
+import numba_dpex as dpex
 from numba_dpex.kernel_api import Item, Range
 
 
@@ -34,7 +34,7 @@ def get_order(a):
         raise Exception("Unknown order/layout")
 
 
-@exp_dpex.kernel
+@dpex.kernel
 def change_values_1d(item: Item, x, v):
     """Assign values in a 1d dpnp.ndarray
 
@@ -57,7 +57,7 @@ def change_values_1d_func(a, p):
         a[i] = p
 
 
-@exp_dpex.kernel
+@dpex.kernel
 def change_values_2d(item: Item, x, v):
     """Assign values in a 2d dpnp.ndarray
 
@@ -82,7 +82,7 @@ def change_values_2d_func(a, p):
             a[i, j] = p
 
 
-@exp_dpex.kernel
+@dpex.kernel
 def change_values_3d(item: Item, x, v):
     """Assign values in a 3d dpnp.ndarray
 
@@ -122,7 +122,7 @@ def test_1d_strided_dpnp_array_in_kernel(s):
     u = dpnp.asarray(t)
 
     v = u[::s]
-    exp_dpex.call_kernel(change_values_1d, Range(v.shape[0]), v, k)
+    dpex.call_kernel(change_values_1d, Range(v.shape[0]), v, k)
 
     x = t[::s]
     change_values_1d_func(x, k)
@@ -148,7 +148,7 @@ def test_multievel_1d_strided_dpnp_array_in_kernel(s):
     v, x = u, t
     while v.shape[0] > 1:
         v = v[::s]
-        exp_dpex.call_kernel(change_values_1d, Range(v.shape[0]), v, k)
+        dpex.call_kernel(change_values_1d, Range(v.shape[0]), v, k)
 
         x = x[::s]
         change_values_1d_func(x, k)
@@ -177,7 +177,7 @@ def test_2d_strided_dpnp_array_in_kernel(s1, s2, order):
     assert get_order(u) == order
 
     v = u[::s1, ::s2]
-    exp_dpex.call_kernel(change_values_2d, Range(*v.shape), v, k)
+    dpex.call_kernel(change_values_2d, Range(*v.shape), v, k)
 
     x = t[::s1, ::s2]
     change_values_2d_func(x, k)
@@ -208,7 +208,7 @@ def test_multilevel_2d_strided_dpnp_array_in_kernel(s1, s2, order):
     v, x = u, t
     while v.shape[0] > 1 and v.shape[1] > 1:
         v = v[::s1, ::s2]
-        exp_dpex.call_kernel(change_values_2d, Range(*v.shape), v, k)
+        dpex.call_kernel(change_values_2d, Range(*v.shape), v, k)
 
         x = x[::s1, ::s2]
         change_values_2d_func(x, k)
@@ -238,7 +238,7 @@ def test_3d_strided_dpnp_array_in_kernel(s1, s2, s3, order):
     assert get_order(u) == order
 
     v = u[::s1, ::s2, ::s3]
-    exp_dpex.call_kernel(change_values_3d, Range(*v.shape), v, k)
+    dpex.call_kernel(change_values_3d, Range(*v.shape), v, k)
 
     x = t[::s1, ::s2, ::s3]
     change_values_3d_func(x, k)
@@ -270,7 +270,7 @@ def test_multilevel_3d_strided_dpnp_array_in_kernel(s1, s2, s3, order):
     v, x = u, t
     while v.shape[0] > 1 and v.shape[1] > 1 and v.shape[2] > 1:
         v = v[::s1, ::s2, ::s3]
-        exp_dpex.call_kernel(change_values_3d, Range(*v.shape), v, k)
+        dpex.call_kernel(change_values_3d, Range(*v.shape), v, k)
 
         x = x[::s1, ::s2, ::s3]
         change_values_3d_func(x, k)

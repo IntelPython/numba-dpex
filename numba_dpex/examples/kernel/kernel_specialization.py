@@ -2,6 +2,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Demonstrates signature specialization feature to pre-compile a kernel.
+
+As opposed to JIT compilation at first call, a ``kernel`` or ``device_func``
+decorated function with signature specialization gets compiled on module
+load and is cached in memory. The following examples demonstrate the feature for
+the numba_dpex.kernel decorator and presents usage scenarios and current
+limitations.
+"""
 import dpctl.tensor as dpt
 import numpy as np
 
@@ -11,34 +19,39 @@ from numba_dpex.core.exceptions import (
     InvalidKernelSpecializationError,
     MissingSpecializationError,
 )
-
-# Similar to Numba, numba-ndpx supports eager compilation of functions. The
-# following examples demonstrate the feature for numba_ndpx.kernel and presents
-# usage scenarios and current limitations.
+from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
 
 # ------------                 Example 1.                   ------------ #
 
-# Define type specializations using the numba_ndpx usm_ndarray data type.
+# Define type specializations using the numba_dpex usm_ndarray data type.
 i64arrty = usm_ndarray(1, "C", int64)
 f32arrty = usm_ndarray(1, "C", float32)
+# Type specialization for the index space id type
+itemty = ItemType(ndim=1)
 
 
 # specialize a kernel for the i64arrty
-@ndpx.kernel((i64arrty, i64arrty, i64arrty))
-def data_parallel_sum(a, b, c):
+specialized_kernel = ndpx.kernel((itemty, i64arrty, i64arrty, i64arrty))
+
+
+def data_parallel_sum(item, a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
     """
-    i = ndpx.get_global_id(0)
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
+
+# pre-compiled kernel
+pre_compiled_kernel = specialized_kernel(data_parallel_sum)
 
 # run the specialized kernel
 a = dpt.ones(1024, dtype=dpt.int64)
 b = dpt.ones(1024, dtype=dpt.int64)
 c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum[ndpx.Range(1024)](a, b, c)
+# Call the pre-compiled kernel
+ndpx.call_kernel(pre_compiled_kernel, ndpx.Range(1024), a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
@@ -52,21 +65,32 @@ assert np.array_equal(npc, npc_expected)
 
 
 # specialize a kernel for the i64arrty
-@ndpx.kernel([(i64arrty, i64arrty, i64arrty), (f32arrty, f32arrty, f32arrty)])
-def data_parallel_sum2(a, b, c):
+specialized_kernels_list = ndpx.kernel(
+    [
+        (itemty, i64arrty, i64arrty, i64arrty),
+        (itemty, f32arrty, f32arrty, f32arrty),
+    ]
+)
+
+
+def data_parallel_sum2(item, a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
     """
-    i = ndpx.get_global_id(0)
+    i = item.get_id(0)
     c[i] = a[i] + b[i]
 
+
+# Pre-compile both variants of the kernel
+pre_compiled_kernels = specialized_kernels_list(data_parallel_sum2)
 
 # run the i64 specialized kernel
 a = dpt.ones(1024, dtype=dpt.int64)
 b = dpt.ones(1024, dtype=dpt.int64)
 c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum2[ndpx.Range(1024)](a, b, c)
+# Compiler will type match the right variant and call it.
+ndpx.call_kernel(pre_compiled_kernels, ndpx.Range(1024), a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
@@ -77,41 +101,11 @@ a = dpt.ones(1024, dtype=dpt.float32)
 b = dpt.ones(1024, dtype=dpt.float32)
 c = dpt.zeros(1024, dtype=dpt.float32)
 
-data_parallel_sum2[ndpx.Range(1024)](a, b, c)
+ndpx.call_kernel(pre_compiled_kernels, ndpx.Range(1024), a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.float32)
 assert np.array_equal(npc, npc_expected)
-
-
-# ------------                 Example 3.                   ------------ #
-
-# A specialized kernel cannot be jit compiled. Calling a specialized kernel
-# with arguments having type different from the specialization will result in
-# an MissingSpecializationError.
-
-a = dpt.ones(1024, dtype=dpt.int32)
-b = dpt.ones(1024, dtype=dpt.int32)
-c = dpt.zeros(1024, dtype=dpt.int32)
-
-try:
-    data_parallel_sum[ndpx.Range(1024)](a, b, c)
-except MissingSpecializationError as mse:
-    print(mse)
-
-
-# ------------                 Example 4.                   ------------ #
-
-# Numba_ndpx does not support NumPy arrays as kernel arguments and all
-# array arguments should be inferable as a numba_ndpx.types.usm_ndarray. Trying
-# to eager compile with a NumPy array-based signature will lead to an
-# InvalidKernelSpecializationError
-
-try:
-    ndpx.kernel((int64[::1], int64[::1], int64[::1]))
-except InvalidKernelSpecializationError as e:
-    print("Dpex kernels cannot be specialized using NumPy arrays.")
-    print(e)
 
 
 # ------------                 Limitations                       ------------ #

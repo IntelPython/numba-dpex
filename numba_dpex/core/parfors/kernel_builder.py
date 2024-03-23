@@ -26,9 +26,10 @@ from numba.parfors import parfor
 
 import numba_dpex as dpex
 from numba_dpex.core import config
+from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 
 from ..descriptor import dpex_kernel_target
-from ..types import DpnpNdArray, USMNdArray
+from ..types import DpnpNdArray
 from ..utils.kernel_templates import RangeKernelTemplate
 
 
@@ -66,9 +67,7 @@ def _compile_kernel_parfor(
     sycl_queue, kernel_name, func_ir, argtypes, debug=False
 ):
     # Create a SPIRVKernel object
-    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
-        func_ir, kernel_name
-    )
+    kernel = SpirvKernel(func_ir, kernel_name)
 
     # compile the kernel
     kernel.compile(

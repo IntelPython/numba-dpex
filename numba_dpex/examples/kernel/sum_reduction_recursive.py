@@ -13,21 +13,20 @@ import dpctl.tensor as dpt
 from numba import int32
 
 import numba_dpex as ndpx
+from numba_dpex import kernel_api as kapi
 
 
 @ndpx.kernel
-def sum_reduction_kernel(A, input_size, partial_sums):
+def sum_reduction_kernel(nditem: kapi.NdItem, A, input_size, partial_sums, slm):
     local_id = ndpx.get_local_id(0)
     global_id = ndpx.get_global_id(0)
     group_size = ndpx.get_local_size(0)
     group_id = ndpx.get_group_id(0)
 
-    local_sums = ndpx.local.array(64, int32)
-
-    local_sums[local_id] = 0
+    slm[local_id] = 0
 
     if global_id < input_size:
-        local_sums[local_id] = A[global_id]
+        slm[local_id] = A[global_id]
 
     # Loop for computing local_sums : divide workgroup into 2 parts
     stride = group_size // 2
@@ -37,12 +36,12 @@ def sum_reduction_kernel(A, input_size, partial_sums):
 
         # Add elements 2 by 2 between local_id and local_id + stride
         if local_id < stride:
-            local_sums[local_id] += local_sums[local_id + stride]
+            slm[local_id] += slm[local_id + stride]
 
         stride >>= 1
 
     if local_id == 0:
-        partial_sums[group_id] = local_sums[0]
+        partial_sums[group_id] = slm[0]
 
 
 def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
@@ -60,12 +59,24 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
 
     gr = ndpx.Range(passed_size)
     lr = ndpx.Range(group_size)
-
-    sum_reduction_kernel[ndpx.NdRange(gr, lr)](Dinp, size, Dpartial_sums)
+    slm = kapi.LocalAccessor(64, Dinp.dtype)
+    ndpx.call_kernel(
+        sum_reduction_kernel,
+        ndpx.NdRange(gr, lr),
+        Dinp,
+        size,
+        Dpartial_sums,
+        slm,
+    )
 
     if nb_work_groups <= group_size:
-        sum_reduction_kernel[ndpx.NdRange(lr, lr)](
-            Dpartial_sums, nb_work_groups, Dinp
+        ndpx.call_kernel(
+            sum_reduction_kernel,
+            ndpx.NdRange(lr, lr),
+            Dpartial_sums,
+            nb_work_groups,
+            Dinp,
+            slm,
         )
         result = int(Dinp[0])
     else:

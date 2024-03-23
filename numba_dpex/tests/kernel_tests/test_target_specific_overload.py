@@ -5,7 +5,7 @@
 import dpnp
 from numba.core.extending import overload
 
-import numba_dpex.experimental as dpex_exp
+import numba_dpex as dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.experimental.target import (
     DPEX_KERNEL_EXP_TARGET_NAME,
@@ -26,7 +26,7 @@ def _ol_scalar_add(a, b):
     return ol_scalar_add_impl
 
 
-@dpex_exp.kernel
+@dpex.kernel
 def kernel_calling_overload(item: Item, a, b, c):
     i = item.get_id(0)
     c[i] = scalar_add(a[i], b[i])
@@ -36,7 +36,7 @@ a = dpnp.ones(10, dtype=dpnp.int64)
 b = dpnp.ones(10, dtype=dpnp.int64)
 c = dpnp.zeros(10, dtype=dpnp.int64)
 
-dpex_exp.call_kernel(kernel_calling_overload, Range(10), a, b, c)
+dpex.call_kernel(kernel_calling_overload, Range(10), a, b, c)
 
 
 def test_end_to_end_overload_execution():

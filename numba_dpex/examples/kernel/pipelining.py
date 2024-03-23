@@ -20,10 +20,9 @@ import dpnp
 import numpy as np
 
 import numba_dpex as dpex
-import numba_dpex.experimental as dpex_exp
 
 
-@dpex_exp.kernel
+@dpex.kernel
 def async_kernel(x):
     idx = dpex.get_global_id(0)
 
@@ -48,7 +47,7 @@ def run_serial(host_arr, n_itr):
 
         q.memcpy(_a_data, usm_host_data, usm_host_data.nbytes)
 
-        dpex_exp.call_kernel(
+        dpex.call_kernel(
             async_kernel,
             dpex.Range(len(_a)),
             _a,
@@ -85,7 +84,7 @@ def run_pipeline(host_arr, n_itr):
 
         e_a.wait()
 
-        _, e_a = dpex_exp.call_kernel_async(
+        _, e_a = dpex.call_kernel_async(
             async_kernel,
             dpex.Range(len(_a)),
             (e_a,),

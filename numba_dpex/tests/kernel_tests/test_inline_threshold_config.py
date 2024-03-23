@@ -5,7 +5,6 @@
 from numba.core import compiler
 
 import numba_dpex as dpex
-from numba_dpex import experimental as dpex_exp
 from numba_dpex.kernel_api import Item
 
 
@@ -18,7 +17,7 @@ def test_inline_threshold_set_using_config():
     oldConfig = dpex.config.INLINE_THRESHOLD
     dpex.config.INLINE_THRESHOLD = None
 
-    disp = dpex_exp.kernel(kernel_func)
+    disp = dpex.kernel(kernel_func)
     flags = compiler.Flags()
     disp.targetdescr.options.parse_as_flags(flags, disp.targetoptions)
 
@@ -39,7 +38,7 @@ def test_inline_threshold_set_using_decorator_option():
     Test setting the inline_threshold value using the kernel decorator flag
     """
 
-    disp = dpex_exp.kernel(inline_threshold=2)(kernel_func)
+    disp = dpex.kernel(inline_threshold=2)(kernel_func)
     flags = compiler.Flags()
     disp.targetdescr.options.parse_as_flags(flags, disp.targetoptions)
 
@@ -50,7 +49,7 @@ def test_inline_threshold_set_using_decorator_supersedes_config_option():
     oldConfig = dpex.config.INLINE_THRESHOLD
     dpex.config.INLINE_THRESHOLD = None
 
-    disp = dpex_exp.kernel(inline_threshold=3)(kernel_func)
+    disp = dpex.kernel(inline_threshold=3)(kernel_func)
     flags = compiler.Flags()
     disp.targetdescr.options.parse_as_flags(flags, disp.targetoptions)
 

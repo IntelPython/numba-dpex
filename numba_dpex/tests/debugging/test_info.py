@@ -24,7 +24,7 @@ pytestmark = skip_no_gdb
         (
             "simple_dpex_func.py:18",
             "simple_dpex_func.py",
-            r"18\s+i = ndpx\.get_global_id\(0\)",
+            r"18\s+i = item\.get_id\(0\)",
             [
                 (
                     "a_in_kernel",
@@ -47,18 +47,18 @@ pytestmark = skip_no_gdb
             ],
         ),
         (
-            "side-by-side.py:16",
+            "side-by-side.py:15",
             "side-by-side.py --api=numba",
-            r"16\s+param_c = param_a \+ numba\.float32\(10\)",
+            r"15\s+param_c = param_a \+ numba\.float32\(10\)",
             [
                 ("param_a", r"[0-9]+", r"type = float32", r"type = float32"),
                 ("param_b", r"[0-9]+", r"type = float32", r"type = float32"),
             ],
         ),
         (
-            "side-by-side.py:16",
+            "side-by-side.py:15",
             "side-by-side.py --api=numba-ndpx-kernel",
-            r"16\s+param_c = param_a \+ numba\.float32\(10\)",
+            r"15\s+param_c = param_a \+ numba\.float32\(10\)",
             [
                 ("param_a", r"[0-9]+", r"type = float32", r"type = float32"),
                 ("param_b", r"[0-9]+", r"type = float32", r"type = float32"),
@@ -100,7 +100,7 @@ def test_info_functions(app):
     app.breakpoint("simple_sum.py:12")
     app.run("simple_sum.py")
     app.expect_hit_breakpoint("simple_sum.py:12")
-    app.expect(r"12\s+i = ndpx.get_global_id\(0\)", with_eol=True)
+    app.expect(r"12\s+i = item.get_id\(0\)", with_eol=True)
 
     app.info_functions("data_parallel_sum")
 
@@ -117,7 +117,7 @@ def test_info_functions(app):
 def test_print_array_element(app, api):
     """Test access to array elements"""
 
-    app.breakpoint("side-by-side-2.py:17 if param_a == 5")
+    app.breakpoint("side-by-side-2.py:17", condition="param_a == 5")
     app.run(f"side-by-side-2.py --api={api}")
     app.expect_hit_breakpoint("side-by-side-2.py:17")
 
@@ -140,9 +140,9 @@ def test_print_array_element(app, api):
     ],
 )
 def test_assignment_to_variable(app, api, assign):
-    app.breakpoint("side-by-side-2.py:18", condition="param_a == 5")
+    app.breakpoint("side-by-side-2.py:17", condition="param_a == 5")
     app.run(f"side-by-side-2.py --api={api}")
-    app.expect_hit_breakpoint("side-by-side-2.py:18")
+    app.expect_hit_breakpoint("side-by-side-2.py:17")
 
     app.print("param_a", expected=5)
     if assign == "print":

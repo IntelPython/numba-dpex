@@ -281,7 +281,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
         types.uint64,
         types.voidptr,
     )
-    from numba_dpex.decorators import dpjit
+    from numba_dpex.core.decorators import dpjit
 
     op = dpjit(_call_usm_allocator)
     fnop = context.typing_context.resolve_value_type(op)
