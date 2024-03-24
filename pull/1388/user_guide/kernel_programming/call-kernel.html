@@ -252,7 +252,7 @@ is a type of a Numba* <a href="#id2"><span class="problematic" id="id3">`Dispatc
 Dispatcher objects a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object cannot be directly invoked from
 either CPython or another compiled Numba* <code class="docutils literal notranslate"><span class="pre">jit</span></code> function. To invoke a
 <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function, a programmer has to use the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code> function.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function.</p>
 <p>To invoke a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function requires three
 things: the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object, the <code class="docutils literal notranslate"><span class="pre">Range</span></code> or <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object
 over which the kernel is to be executed, and the list of arguments to be passed
@@ -274,15 +274,23 @@ caller.</p></li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Numba-dpex currently limits the maximum allowed range size to <code class="docutils literal notranslate"><span class="pre">2^31</span> <span class="pre">-1</span></code>.
-It is due to the capabilities of current OpenCL GPU backends that generally
-do not support more than 32-bit global range sizes. A kernel requesting more
-work-items than that will not execute and a
+<p>Programmers should note the following two things when defining the global or
+local range to launch a kernel.</p>
+<ul>
+<li><p>Numba-dpex currently limits the maximum allowed global range size to
+<code class="docutils literal notranslate"><span class="pre">2^31-1</span></code>. It is due to the capabilities of current OpenCL GPU backends
+that generally do not support more than 32-bit global range sizes. A
+kernel requesting a large global range than that will not execute and a
 <code class="docutils literal notranslate"><span class="pre">dpctl._sycl_queue.SyclKernelSubmitError</span></code> will get raised.</p>
-<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global ranges
-for GPU backends by wrapping the kernel in a new kernel that has each
-work-item perform multiple invocations of the original kernel in a 32-bit
-global range. Such a feature is not yet available in numba-dpex.</p>
+<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global
+ranges for GPU backends by wrapping the kernel in a new kernel that has
+each work-item perform multiple invocations of the original kernel in a
+32-bit global range. Such a feature is not yet available in numba-dpex.</p>
+</li>
+<li><p>When launching an nd-range kernel, if the number of work-items for a
+particular dimension of a wor-group exceeds the maximum device capability,
+it can result in undefined behavior.</p></li>
+</ul>
 <p>The maximum allowed work-items for a device can be queried programmatically
 as shown in <a class="reference internal" href="index.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a>.</p>
 <div class="literal-block-wrapper docutils container" id="ex-max-work-item">
@@ -343,7 +351,7 @@ used for asynchronous mode of kernel execution (refer
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Refer the API documentation for
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> for more details.</p>
 </div>
 </section>
 

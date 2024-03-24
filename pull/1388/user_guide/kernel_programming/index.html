@@ -261,7 +261,7 @@ written in numba-dpex.</p>
 <div class="literal-block-wrapper docutils container" id="ex-vecadd-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Vector addition using a range kernel</span><a class="headerlink" href="#ex-vecadd-kernel" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpnp</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex.experimental</span> <span class="k">as</span> <span class="nn">dpex</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span>
@@ -305,17 +305,17 @@ values can be of any Python numeric type. Array arguments are passed by
 reference, <em>i.e.</em>, changes to an array in a kernel are visible outside the
 kernel. Scalar values are always passed by value.</p></li>
 <li><p>At least one argument of a kernel should be an array. The requirement is so
-that the kernel launcher (<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code>) can
-determine the execution queue on which to launch the kernel. Refer
-the <a class="reference internal" href="#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
+that the kernel launcher (<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a>)
+can determine the execution queue on which to launch the kernel. Refer to the
+<a class="reference internal" href="#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
 </ul>
 <p>A range kernel has to be executed via the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> function by passing in
-an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer the
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function by passing in
+an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer to the
 <a class="reference internal" href="#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details on how to launch a range
 kernel.</p>
 <p>A range kernel is meant to express a basic <cite>parallel-for</cite> calculation that is
-ideally suited for embarrassingly parallel kernels such as elementwise
+ideally suited for embarrassingly parallel kernels such as element-wise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
 range kernel does not allow advanced features such as synchronization of
 work-items and fine-grained control over memory allocation on a device. For such
@@ -324,7 +324,7 @@ advanced features, an nd-range kernel should be used.</p>
 <p class="admonition-title">See also</p>
 <p>Refer API documentation for <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a>,
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a>,  and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> for more details.</p>
 </div>
 </section>
 <section id="writing-an-nd-range-kernel">
@@ -336,12 +336,12 @@ of locality within the kernel. To get around that limitation, kapi provides a
 second form of expressing a parallel kernel that is called an <em>nd-range</em> kernel.
 An nd-range kernel represents a data-parallel execution of the kernel by a set
 of explicitly defined groups of work-items. An individual group of work-items is
-called a <em>work-group</em>. <a class="reference internal" href="#ex-matmul-kernel"><span class="std std-ref">Example: Sliding window matrix multiplication as an nd-range kernel</span></a> demonstrates an nd-range kernel
+called a <em>work-group</em>. <a class="reference internal" href="writing-ndrange-kernel.html#ex-matmul-kernel"><span class="std std-ref">Example: Sliding window matrix multiplication as an nd-range kernel</span></a> demonstrates an nd-range kernel
 and some of the advanced features programmers can use in this type of kernel.</p>
 <div class="literal-block-wrapper docutils container" id="ex-matmul-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Sliding window matrix multiplication as an nd-range kernel</span><a class="headerlink" href="#ex-matmul-kernel" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex.experimental</span> <span class="k">as</span> <span class="nn">dpex_exp</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 4</span><span class="kn">import</span> <span class="nn">dpctl.tensor</span> <span class="k">as</span> <span class="nn">dpt</span>
 <span class="linenos"> 5</span>
@@ -350,7 +350,7 @@ and some of the advanced features programmers can use in this type of kernel.</p
 <span class="linenos"> 8</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 <span class="linenos"> 9</span>
 <span class="linenos">10</span>
-<span class="linenos">11</span><span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">kernel</span>
+<span class="linenos">11</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
 <span class="linenos">12</span><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
 <span class="linenos">13</span>    <span class="n">nditem</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">NdItem</span><span class="p">,</span>
 <span class="linenos">14</span>    <span class="n">X</span><span class="p">,</span>  <span class="c1"># IN READ-ONLY    (X_n_rows, n_cols)</span>
@@ -419,17 +419,38 @@ and some of the advanced features programmers can use in this type of kernel.</p
 <span class="linenos">77</span><span class="n">X_slm</span> <span class="o">=</span> <span class="n">kapi</span><span class="o">.</span><span class="n">LocalAccessor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">work_group_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 <span class="linenos">78</span><span class="n">Y_slm</span> <span class="o">=</span> <span class="n">kapi</span><span class="o">.</span><span class="n">LocalAccessor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">work_group_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 <span class="linenos">79</span>
-<span class="linenos">80</span><span class="n">dpex_exp</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">matmul</span><span class="p">,</span> <span class="n">kapi</span><span class="o">.</span><span class="n">NdRange</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X_slm</span><span class="p">,</span> <span class="n">Y_slm</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="linenos">80</span><span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">matmul</span><span class="p">,</span> <span class="n">kapi</span><span class="o">.</span><span class="n">NdRange</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X_slm</span><span class="p">,</span> <span class="n">Y_slm</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>When writing an nd-range kernel, a programmer
-defines a set of groups of work-items instead of a flat execution range</p>
-<p>An nd-range kernel needs to be launched with
-an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdRange</span></code></a> class and the first
+<p>When writing an nd-range kernel, a programmer defines a set of groups of
+work-items instead of a flat execution range.There are several semantic rules
+associated both with a work-group and the work-items in a work-group:</p>
+<ul class="simple">
+<li><p>Each work-group gets executed in an arbitrary order by the underlying
+runtime and programmers should not assume any implicit ordering.</p></li>
+<li><p>Work-items in different wok-groups cannot communicate with each other except
+via atomic operations on global memory.</p></li>
+<li><p>Work-items within a work-group share a common memory region called
+“shared local memory” (SLM). Depending on the device the SLM maybe mapped to a
+dedicated fast memory.</p></li>
+<li><p>Work-items in a work-group can synchronize using a
+<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.group_barrier" title="numba_dpex.kernel_api.group_barrier"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.group_barrier()</span></code></a> operation that can additionally
+guarantee memory consistency using a <em>work-group memory fence</em>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The SYCL language provides additional features for work-items in a
+work-group such as <em>group functions</em> that specify communication routines
+across work-items and also implement patterns such as reduction and scan.
+These features are not yet available in numba-dpex.</p>
+</div>
+<p>An nd-range kernel needs to be launched with an instance of the
+<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdRange</span></code></a> class and the first
 argument to an nd-range kernel has to be an instance of
-<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem</span></code></a>. An <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object defines a set of
-work-groups each with it own set of work-items.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem</span></code></a>. Apart from the need to provide an
+<code class="docutils literal notranslate"><span class="pre">`NdItem</span></code> parameter, the rest of the semantic rules that apply to a range
+kernel also apply to an nd-range kernel.</p>
 </section>
 <section id="launching-a-kernel">
 <span id="id2"></span><h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
@@ -438,7 +459,7 @@ is a type of a Numba* <a class="reference external" href="https://numba.readthed
 Dispatcher objects a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object cannot be directly invoked from
 either CPython or another compiled Numba* <code class="docutils literal notranslate"><span class="pre">jit</span></code> function. To invoke a
 <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function, a programmer has to use the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code> function.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function.</p>
 <p>To invoke a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function requires three
 things: the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object, the <code class="docutils literal notranslate"><span class="pre">Range</span></code> or <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object
 over which the kernel is to be executed, and the list of arguments to be passed
@@ -460,15 +481,23 @@ caller.</p></li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Numba-dpex currently limits the maximum allowed range size to <code class="docutils literal notranslate"><span class="pre">2^31</span> <span class="pre">-1</span></code>.
-It is due to the capabilities of current OpenCL GPU backends that generally
-do not support more than 32-bit global range sizes. A kernel requesting more
-work-items than that will not execute and a
+<p>Programmers should note the following two things when defining the global or
+local range to launch a kernel.</p>
+<ul>
+<li><p>Numba-dpex currently limits the maximum allowed global range size to
+<code class="docutils literal notranslate"><span class="pre">2^31-1</span></code>. It is due to the capabilities of current OpenCL GPU backends
+that generally do not support more than 32-bit global range sizes. A
+kernel requesting a large global range than that will not execute and a
 <code class="docutils literal notranslate"><span class="pre">dpctl._sycl_queue.SyclKernelSubmitError</span></code> will get raised.</p>
-<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global ranges
-for GPU backends by wrapping the kernel in a new kernel that has each
-work-item perform multiple invocations of the original kernel in a 32-bit
-global range. Such a feature is not yet available in numba-dpex.</p>
+<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global
+ranges for GPU backends by wrapping the kernel in a new kernel that has
+each work-item perform multiple invocations of the original kernel in a
+32-bit global range. Such a feature is not yet available in numba-dpex.</p>
+</li>
+<li><p>When launching an nd-range kernel, if the number of work-items for a
+particular dimension of a wor-group exceeds the maximum device capability,
+it can result in undefined behavior.</p></li>
+</ul>
 <p>The maximum allowed work-items for a device can be queried programmatically
 as shown in <a class="reference internal" href="#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a>.</p>
 <div class="literal-block-wrapper docutils container" id="ex-max-work-item">
@@ -529,29 +558,29 @@ used for asynchronous mode of kernel execution (refer
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Refer the API documentation for
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> for more details.</p>
 </div>
 </section>
 <section id="the-device-func-decorator">
 <h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
 <p>Numba-dpex provides a decorator to express auxiliary device-only functions that
 can be called from a kernel or another device function, but are not callable
-from the host. This decorator <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.device_func()</span></code> has no
-direct analogue in SYCL and primarily is provided to help programmers make their
-kapi applications modular. <a class="reference internal" href="#ex-device-func1"><span class="std std-ref">Example: Basic usage of device_func</span></a> shows a simple usage of the
-<code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator.</p>
+from the host. This decorator <a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html#numba_dpex.core.decorators.device_func" title="numba_dpex.core.decorators.device_func"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.decorators.device_func()</span></code></a> has
+no direct analogue in SYCL and primarily is provided to help programmers make
+their kapi applications modular. <a class="reference internal" href="#ex-device-func1"><span class="std std-ref">Example: Basic usage of device_func</span></a> shows a simple usage of
+the <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator.</p>
 <div class="literal-block-wrapper docutils container" id="ex-device-func1">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Basic usage of device_func</span><a class="headerlink" href="#ex-device-func1" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">experimental</span> <span class="k">as</span> <span class="n">dpex_exp</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="linenos"> 5</span>
 <span class="linenos"> 6</span><span class="c1"># Array size</span>
 <span class="linenos"> 7</span><span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="linenos"> 8</span>
 <span class="linenos"> 9</span>
-<span class="linenos">10</span><span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">device_func</span>
+<span class="linenos">10</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">device_func</span>
 <span class="linenos">11</span><span class="k">def</span> <span class="nf">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 <span class="linenos">12</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;A device callable function that can be invoked from a kernel or</span>
 <span class="linenos">13</span><span class="sd">    another device function.</span>
@@ -559,7 +588,7 @@ kapi applications modular. <a class="reference internal" href="#ex-device-func1"
 <span class="linenos">15</span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="linenos">16</span>
 <span class="linenos">17</span>
-<span class="linenos">18</span><span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">kernel</span>
+<span class="linenos">18</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
 <span class="linenos">19</span><span class="k">def</span> <span class="nf">a_kernel_function</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="linenos">20</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonstrates calling a device function from a kernel.&quot;&quot;&quot;</span>
 <span class="linenos">21</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -570,7 +599,7 @@ kapi applications modular. <a class="reference internal" href="#ex-device-func1"
 <span class="linenos">26</span><span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 <span class="linenos">27</span><span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 <span class="linenos">28</span>
-<span class="linenos">29</span><span class="n">dpex_exp</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">a_kernel_function</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="linenos">29</span><span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">a_kernel_function</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -578,27 +607,27 @@ kapi applications modular. <a class="reference internal" href="#ex-device-func1"
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Using kapi functionalities in a device_func</span><a class="headerlink" href="#ex-device-func2" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">experimental</span> <span class="k">as</span> <span class="n">dpex_exp</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="linenos"> 5</span>
 <span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">device_func</span>
-<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">increment_value</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<span class="linenos"> 7</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">device_func</span>
+<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">increment_value</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
 <span class="linenos"> 9</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonstrates the usage of group_barrier and NdItem usage in a</span>
 <span class="linenos">10</span><span class="sd">    device_func.</span>
 <span class="linenos">11</span><span class="sd">    &quot;&quot;&quot;</span>
 <span class="linenos">12</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">nd_item</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">13</span>
 <span class="linenos">14</span>    <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="linenos">15</span>    <span class="n">group_barrier</span><span class="p">(</span><span class="n">nd_item</span><span class="o">.</span><span class="n">get_group</span><span class="p">(),</span> <span class="n">MemoryScope</span><span class="o">.</span><span class="n">DEVICE</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="n">kapi</span><span class="o">.</span><span class="n">group_barrier</span><span class="p">(</span><span class="n">nd_item</span><span class="o">.</span><span class="n">get_group</span><span class="p">(),</span> <span class="n">kapi</span><span class="o">.</span><span class="n">MemoryScope</span><span class="o">.</span><span class="n">DEVICE</span><span class="p">)</span>
 <span class="linenos">16</span>
 <span class="linenos">17</span>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 <span class="linenos">18</span>        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
 <span class="linenos">19</span>            <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 <span class="linenos">20</span>
 <span class="linenos">21</span>
-<span class="linenos">22</span><span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">kernel</span>
-<span class="linenos">23</span><span class="k">def</span> <span class="nf">another_kernel</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<span class="linenos">22</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
+<span class="linenos">23</span><span class="k">def</span> <span class="nf">another_kernel</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
 <span class="linenos">24</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;The kernel does everything by calling a device_func.&quot;&quot;&quot;</span>
 <span class="linenos">25</span>    <span class="n">increment_value</span><span class="p">(</span><span class="n">nd_item</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
 <span class="linenos">26</span>
@@ -606,7 +635,7 @@ kapi applications modular. <a class="reference internal" href="#ex-device-func1"
 <span class="linenos">28</span><span class="n">N</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="linenos">29</span><span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 <span class="linenos">30</span>
-<span class="linenos">31</span><span class="n">dpex_exp</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">another_kernel</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">NdRange</span><span class="p">((</span><span class="n">N</span><span class="p">,),</span> <span class="p">(</span><span class="n">N</span><span class="p">,)),</span> <span class="n">b</span><span class="p">)</span>
+<span class="linenos">31</span><span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">another_kernel</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">NdRange</span><span class="p">((</span><span class="n">N</span><span class="p">,),</span> <span class="p">(</span><span class="n">N</span><span class="p">,)),</span> <span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

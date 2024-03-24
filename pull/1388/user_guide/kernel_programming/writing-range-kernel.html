@@ -253,7 +253,7 @@ written in numba-dpex.</p>
 <div class="literal-block-wrapper docutils container" id="ex-vecadd-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Vector addition using a range kernel</span><a class="headerlink" href="#ex-vecadd-kernel" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpnp</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex.experimental</span> <span class="k">as</span> <span class="nn">dpex</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span>
@@ -297,17 +297,17 @@ values can be of any Python numeric type. Array arguments are passed by
 reference, <em>i.e.</em>, changes to an array in a kernel are visible outside the
 kernel. Scalar values are always passed by value.</p></li>
 <li><p>At least one argument of a kernel should be an array. The requirement is so
-that the kernel launcher (<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code>) can
-determine the execution queue on which to launch the kernel. Refer
-the <a class="reference internal" href="index.html#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
+that the kernel launcher (<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a>)
+can determine the execution queue on which to launch the kernel. Refer to the
+<a class="reference internal" href="index.html#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
 </ul>
 <p>A range kernel has to be executed via the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> function by passing in
-an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer the
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function by passing in
+an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer to the
 <a class="reference internal" href="index.html#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details on how to launch a range
 kernel.</p>
 <p>A range kernel is meant to express a basic <cite>parallel-for</cite> calculation that is
-ideally suited for embarrassingly parallel kernels such as elementwise
+ideally suited for embarrassingly parallel kernels such as element-wise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
 range kernel does not allow advanced features such as synchronization of
 work-items and fine-grained control over memory allocation on a device. For such
@@ -316,7 +316,7 @@ advanced features, an nd-range kernel should be used.</p>
 <p class="admonition-title">See also</p>
 <p>Refer API documentation for <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a>,
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a>,  and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> for more details.</p>
 </div>
 
         </article>

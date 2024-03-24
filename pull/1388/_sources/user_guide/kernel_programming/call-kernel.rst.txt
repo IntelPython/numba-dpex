@@ -8,7 +8,7 @@ is a type of a Numba* `Dispatcher`_ object. However, unlike regular Numba*
 Dispatcher objects a ``KernelDispatcher`` object cannot be directly invoked from
 either CPython or another compiled Numba* ``jit`` function. To invoke a
 ``kernel`` decorated function, a programmer has to use the
-:func:`numba_dpex.experimental.call_kernel` function.
+:func:`numba_dpex.core.kernel_launcher.call_kernel` function.
 
 To invoke a ``KernelDispatcher`` the ``call_kernel`` function requires three
 things: the ``KernelDispatcher`` object, the ``Range`` or ``NdRange`` object
@@ -31,17 +31,23 @@ to the compiled kernel. Once called with the necessary  arguments, the
   caller.
 
 .. important::
+    Programmers should note the following two things when defining the global or
+    local range to launch a kernel.
 
-    Numba-dpex currently limits the maximum allowed range size to ``2^31 -1``.
-    It is due to the capabilities of current OpenCL GPU backends that generally
-    do not support more than 32-bit global range sizes. A kernel requesting more
-    work-items than that will not execute and a
-    ``dpctl._sycl_queue.SyclKernelSubmitError`` will get raised.
+    * Numba-dpex currently limits the maximum allowed global range size to
+      ``2^31-1``. It is due to the capabilities of current OpenCL GPU backends
+      that generally do not support more than 32-bit global range sizes. A
+      kernel requesting a large global range than that will not execute and a
+      ``dpctl._sycl_queue.SyclKernelSubmitError`` will get raised.
 
-    The Intel dpcpp SYCL compiler does handle greater than 32-bit global ranges
-    for GPU backends by wrapping the kernel in a new kernel that has each
-    work-item perform multiple invocations of the original kernel in a 32-bit
-    global range. Such a feature is not yet available in numba-dpex.
+      The Intel dpcpp SYCL compiler does handle greater than 32-bit global
+      ranges for GPU backends by wrapping the kernel in a new kernel that has
+      each work-item perform multiple invocations of the original kernel in a
+      32-bit global range. Such a feature is not yet available in numba-dpex.
+
+    * When launching an nd-range kernel, if the number of work-items for a
+      particular dimension of a wor-group exceeds the maximum device capability,
+      it can result in undefined behavior.
 
     The maximum allowed work-items for a device can be queried programmatically
     as shown in :ref:`ex_max_work_item`.
@@ -108,4 +114,4 @@ used for asynchronous mode of kernel execution (refer
 .. seealso::
 
     Refer the API documentation for
-    :func:`numba_dpex.experimental.launcher.call_kernel` for more details.
+    :func:`numba_dpex.core.kernel_launcher.call_kernel` for more details.

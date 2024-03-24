@@ -11,7 +11,7 @@ written in numba-dpex.
     :emphasize-lines: 9,17
 
     import dpnp
-    import numba_dpex.experimental as dpex
+    import numba_dpex as dpex
     from numba_dpex import kernel_api as kapi
 
 
@@ -58,18 +58,18 @@ kernel:
   kernel. Scalar values are always passed by value.
 
 * At least one argument of a kernel should be an array. The requirement is so
-  that the kernel launcher (:func:`numba_dpex.experimental.call_kernel`) can
-  determine the execution queue on which to launch the kernel. Refer
-  the :ref:`launching-a-kernel` section for more details.
+  that the kernel launcher (:func:`numba_dpex.core.kernel_launcher.call_kernel`)
+  can determine the execution queue on which to launch the kernel. Refer to the
+  :ref:`launching-a-kernel` section for more details.
 
 A range kernel has to be executed via the
-:py:func:`numba_dpex.experimental.launcher.call_kernel` function by passing in
-an instance of the :class:`numba_dpex.kernel_api.Range` class. Refer the
+:py:func:`numba_dpex.core.kernel_launcher.call_kernel` function by passing in
+an instance of the :class:`numba_dpex.kernel_api.Range` class. Refer to the
 :ref:`launching-a-kernel` section for more details on how to launch a range
 kernel.
 
 A range kernel is meant to express a basic `parallel-for` calculation that is
-ideally suited for embarrassingly parallel kernels such as elementwise
+ideally suited for embarrassingly parallel kernels such as element-wise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
 range kernel does not allow advanced features such as synchronization of
 work-items and fine-grained control over memory allocation on a device. For such
@@ -78,4 +78,4 @@ advanced features, an nd-range kernel should be used.
 .. seealso::
     Refer API documentation for :class:`numba_dpex.kernel_api.Range`,
     :class:`numba_dpex.kernel_api.Item`,  and
-    :func:`numba_dpex.experimental.launcher.call_kernel` for more details.
+    :func:`numba_dpex.core.kernel_launcher.call_kernel` for more details.
