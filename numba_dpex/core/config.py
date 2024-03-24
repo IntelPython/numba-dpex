@@ -78,15 +78,6 @@ DEBUG_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER", int, 0)
 # https://intel.github.io/llvm-docs/clang/ClangCommandLineReference.html#opencl-options
 BUILD_KERNEL_OPTIONS = _readenv("NUMBA_DPEX_BUILD_KERNEL_OPTIONS", str, "")
 
-# Flag to enable caching, set NUMBA_DPEX_ENABLE_CACHE=0 to turn it off.
-ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
-# To specify the default cache size, 20 by default.
-CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 20)
-# Enable debugging of cahcing mechanism, set 1 to turn it on.
-DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
-
-# Unused flags
-TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(
     "NUMBA_DPEX_TESTING_SKIP_NO_DEBUGGING", int, 1
 )
