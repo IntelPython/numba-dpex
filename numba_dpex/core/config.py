@@ -85,19 +85,12 @@ CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 20)
 # Enable debugging of cahcing mechanism, set 1 to turn it on.
 DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
 
-# Flag to turn on the ConstantSizeStaticLocalMemoryPass in the kernel pipeline.
-# The pass is turned off by default.
-STATIC_LOCAL_MEM_PASS = _readenv("NUMBA_DPEX_STATIC_LOCAL_MEM_PASS", int, 0)
-
 # Unused flags
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(
     "NUMBA_DPEX_TESTING_SKIP_NO_DEBUGGING", int, 1
 )
 TESTING_LOG_DEBUGGING = _readenv("NUMBA_DPEX_TESTING_LOG_DEBUGGING", int, DEBUG)
-# Flag to turn on the ConstantSizeStaticLocalMemoryPass in the kernel pipeline.
-# The pass is turned off by default.
-STATIC_LOCAL_MEM_PASS = _readenv("NUMBA_DPEX_STATIC_LOCAL_MEM_PASS", int, 0)
 
 DPEX_OPT = _readenv("NUMBA_DPEX_OPT", int, 2)
 
