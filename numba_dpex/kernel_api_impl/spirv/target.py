@@ -11,20 +11,17 @@ from functools import cached_property
 import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
-from numba import typeof
 from numba.core import cgutils, funcdesc
 from numba.core import types as nb_types
 from numba.core import typing, utils
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.target_extension import GPU, target_registry
-from numba.core.types import Array as NpArrayType
 from numba.core.types.scalars import IntEnumClass
 from numba.core.typing import cmathdecl, enumdecl, npydecl
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
-from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
-from numba_dpex.core.types import IntEnumLiteral, USMNdArray
+from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
@@ -101,41 +98,6 @@ class SPIRVTypingContext(typing.BaseContext):
         else:
             retty = super().resolve_getattr(typ, attr)
         return retty
-
-    def resolve_argument_type(self, val):
-        """Return the Numba type of a Python value used as a function argument.
-
-        Overrides the implementation of ``numba.core.typing.BaseContext`` to
-        handle the special case of ``numba.core.types.npytypes.Array``. Whenever
-        a NumPy ndarray argument is encountered as an argument to a ``kernel``
-        function, it is converted to a ``numba_dpex.core.types.Array`` type.
-
-        Args:
-            val : A Python value that is passed as an argument to a ``kernel``
-                  function.
-
-        Returns: The Numba type corresponding to the Python value.
-
-        Raises:
-            ValueError: If the type of the Python value is not supported.
-
-        """
-        try:
-            numba_type = typeof(val)
-
-            if isinstance(numba_type, NpArrayType) and not isinstance(
-                numba_type, USMNdArray
-            ):
-                raise UnsupportedKernelArgumentError(
-                    type=str(type(val)), value=val
-                )
-
-        except ValueError as err:
-            raise UnsupportedKernelArgumentError(
-                type=str(type(val)), value=val
-            ) from err
-
-        return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
