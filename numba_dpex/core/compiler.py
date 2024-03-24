@@ -42,7 +42,7 @@ def compile_with_dpex(
 
     Raises:
         KernelHasReturnValueError: If the compiled function returns a
-        non-void value.
+            non-void value.
     """
     # First compilation will trigger the initialization of the backend.
     typingctx = typing_context
@@ -60,18 +60,7 @@ def compile_with_dpex(
         flags.debuginfo = debug
 
     # Run compilation pipeline
-    if isinstance(pyfunc, FunctionType):
-        cres = compiler.compile_extra(
-            typingctx=typingctx,
-            targetctx=targetctx,
-            func=pyfunc,
-            args=args,
-            return_type=return_type,
-            flags=flags,
-            locals={},
-            pipeline_class=KernelCompiler,
-        )
-    elif isinstance(pyfunc, ir.FunctionIR):
+    if isinstance(pyfunc, ir.FunctionIR):
         cres = compiler.compile_ir(
             typingctx=typingctx,
             targetctx=targetctx,
