@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
@@ -352,7 +352,7 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Item" title="Link to this definition">#</a></dt>
 <dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
-<a class="reference internal" href="../index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>.</p>
+<a class="reference internal" href="../../core/boxing/index.html#id3" title="numba_dpex.core.boxing.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
@@ -430,7 +430,7 @@ Original implementation could be found at <code class="docutils literal notransl
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item" title="numba_dpex.kernel_api.index_space_ids.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item" title="numba_dpex.kernel_api.index_space_ids.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.NdItem" title="Link to this definition">#</a></dt>
 <dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
-<a class="reference internal" href="../index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
+<a class="reference internal" href="../../core/boxing/index.html#id0" title="numba_dpex.core.boxing.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
 <table class="summarytable docutils align-default" id="id6">

@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
@@ -252,7 +252,7 @@ is a type of a Numba* <a href="#id2"><span class="problematic" id="id3">`Dispatc
 Dispatcher objects a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object cannot be directly invoked from
 either CPython or another compiled Numba* <code class="docutils literal notranslate"><span class="pre">jit</span></code> function. To invoke a
 <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function, a programmer has to use the
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.call_kernel" title="numba_dpex.experimental.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code></a> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code> function.</p>
 <p>To invoke a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function requires three
 things: the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object, the <code class="docutils literal notranslate"><span class="pre">Range</span></code> or <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object
 over which the kernel is to be executed, and the list of arguments to be passed
@@ -272,6 +272,69 @@ kernel arguments. (TODO: Refer compute follows data.)</p></li>
 <li><p>Waits for the execution completion, before returning control back to the
 caller.</p></li>
 </ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Numba-dpex currently limits the maximum allowed range size to <code class="docutils literal notranslate"><span class="pre">2^31</span> <span class="pre">-1</span></code>.
+It is due to the capabilities of current OpenCL GPU backends that generally
+do not support more than 32-bit global range sizes. A kernel requesting more
+work-items than that will not execute and a
+<code class="docutils literal notranslate"><span class="pre">dpctl._sycl_queue.SyclKernelSubmitError</span></code> will get raised.</p>
+<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global ranges
+for GPU backends by wrapping the kernel in a new kernel that has each
+work-item perform multiple invocations of the original kernel in a 32-bit
+global range. Such a feature is not yet available in numba-dpex.</p>
+<p>The maximum allowed work-items for a device can be queried programmatically
+as shown in <a class="reference internal" href="index.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="ex-max-work-item">
+<div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Query maximum number of work-items for a device</span><a class="headerlink" href="#ex-max-work-item" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">math</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="n">d</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span><span class="n">d</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="n">max_num_work_items</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos"> 8</span>    <span class="n">d</span><span class="o">.</span><span class="n">max_work_group_size</span>
+<span class="linenos"> 9</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">10</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">11</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">12</span><span class="p">)</span>
+<span class="linenos">13</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="n">cpud</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="linenos">16</span><span class="n">cpud</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">max_num_work_items_cpu</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">19</span>    <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_group_size</span>
+<span class="linenos">20</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">21</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">22</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">23</span><span class="p">)</span>
+<span class="linenos">24</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The output for <a class="reference internal" href="index.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a> on a system with an Intel Gen9 integrated
+graphics processor and a 9th Generation Coffee Lake CPU is shown in
+<a class="reference internal" href="index.html#ex-max-work-item-output"><span class="std std-ref">OUTPUT: Query maximum number of work-items for a device</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="ex-max-work-item-output">
+<div class="code-block-caption"><span class="caption-text"><strong>OUTPUT:</strong> Query maximum number of work-items for a device</span><a class="headerlink" href="#ex-max-work-item-output" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>UHD<span class="w"> </span>Graphics<span class="w"> </span><span class="m">630</span><span class="w"> </span><span class="o">[</span>0x3e98<span class="o">]</span>
+<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">1</span>.3.24595
+<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
+<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>level_zero:gpu:0
+
+<span class="m">4294967296</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^32<span class="o">)</span>
+<span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Core<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>i7-9700<span class="w"> </span>CPU<span class="w"> </span>@<span class="w"> </span><span class="m">3</span>.00GHz
+<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">2023</span>.16.12.0.12_195853.xmain-hotfix
+<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
+<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>opencl:cpu:0
+
+<span class="m">4503599627370496</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^52<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function can be invoked both from CPython and from another
 Numba* compiled function. Note that the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function supports only
 synchronous execution of kernel and the <code class="docutils literal notranslate"><span class="pre">call_kernel_async</span></code> function should be
@@ -280,7 +343,7 @@ used for asynchronous mode of kernel execution (refer
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Refer the API documentation for
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a> for more details.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
 </div>
 </section>
 

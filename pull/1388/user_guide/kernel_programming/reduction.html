@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
@@ -256,110 +256,11 @@ section provides two approaches for writing a reduction kernel as a
 <p>This example demonstrates a summation reduction on a one-dimensional array.</p>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
 <p>In this example, to reduce the array we invoke the kernel multiple times.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="c1"># sum two element</span>
-    <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
-    <span class="c1"># store the sum to be used in nex iteration</span>
-    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Size of A should be power of two.&quot;&quot;&quot;</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="c1"># max size will require half the size of A to store sum</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-    <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">global_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">global_size</span>
-        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
 </section>
 <section id="example-2">
 <h2>Example 2<a class="headerlink" href="#example-2" title="Link to this heading">#</a></h2>
 <p>Full example can be found at
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">):</span>
-    <span class="n">local_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">global_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">group_size</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">group_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_group_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="n">local_sums</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">int32</span><span class="p">)</span>
-
-    <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">global_id</span> <span class="o">&lt;</span> <span class="n">input_size</span><span class="p">:</span>
-        <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">global_id</span><span class="p">]</span>
-
-    <span class="c1"># Loop for computing local_sums : divide workgroup into 2 parts</span>
-    <span class="n">stride</span> <span class="o">=</span> <span class="n">group_size</span> <span class="o">//</span> <span class="mi">2</span>
-    <span class="k">while</span> <span class="n">stride</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># Waiting for each 2x2 addition into given workgroup</span>
-        <span class="n">ndpx</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">ndpx</span><span class="o">.</span><span class="n">LOCAL_MEM_FENCE</span><span class="p">)</span>
-
-        <span class="c1"># Add elements 2 by 2 between local_id and local_id + stride</span>
-        <span class="k">if</span> <span class="n">local_id</span> <span class="o">&lt;</span> <span class="n">stride</span><span class="p">:</span>
-            <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
-
-        <span class="n">stride</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
-
-    <span class="k">if</span> <span class="n">local_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">partial_sums</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_sums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_recursive_reduction</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dinp</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">passed_size</span> <span class="o">=</span> <span class="n">size</span>
-
-    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="n">group_size</span>
-        <span class="k">if</span> <span class="n">size</span> <span class="o">%</span> <span class="n">group_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">passed_size</span> <span class="o">=</span> <span class="n">nb_work_groups</span> <span class="o">*</span> <span class="n">group_size</span>
-
-    <span class="n">gr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">passed_size</span><span class="p">)</span>
-    <span class="n">lr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">group_size</span><span class="p">)</span>
-
-    <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span><span class="n">Dinp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">nb_work_groups</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
-        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span>
-            <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">Dinp</span>
-        <span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Dinp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
-            <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">Dinp</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-    <span class="n">global_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="n">work_group_size</span> <span class="o">=</span> <span class="mi">64</span>
-    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">global_size</span> <span class="o">//</span> <span class="n">work_group_size</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">global_size</span> <span class="o">%</span> <span class="n">work_group_size</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">partial_sums</span> <span class="o">=</span> <span class="n">dpt</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
-        <span class="n">global_size</span><span class="p">,</span> <span class="n">work_group_size</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">partial_sums</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Numba-dpex does not yet provide any analogue to the <code class="docutils literal notranslate"><span class="pre">numba.cuda.reduce</span></code>

@@ -195,8 +195,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/decorators/index.html">numba_dpex.experimental.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html">numba_dpex.experimental.launcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../experimental/index.html">Experimental Features</a></li>
@@ -255,7 +255,7 @@ the concepts needed to write data-parallel kernels in numba-dpex.</p>
 <h3>Writing a <em>range</em> kernel<a class="headerlink" href="#writing-a-range-kernel" title="Link to this heading">#</a></h3>
 <p>A <em>range</em> kernel represents the simplest form of parallelism that can be
 expressed in numba-dpex using kapi. Such a kernel represents a data-parallel
-execution over a set of work items with each work item representing a logical
+execution over a set of work-items with each work-item representing a logical
 thread of execution. <a class="reference internal" href="writing-range-kernel.html#ex-vecadd-kernel"><span class="std std-ref">Example: Vector addition using a range kernel</span></a> shows an example of a range kernel
 written in numba-dpex.</p>
 <div class="literal-block-wrapper docutils container" id="ex-vecadd-kernel">
@@ -281,75 +281,18 @@ written in numba-dpex.</p>
 </div>
 </div>
 <p>The highlighted lines in the example demonstrate the definition of the execution
-range on <strong>line 17</strong> and extraction of every work items’ <em>id</em> or index position
+range on <strong>line 17</strong> and extraction of every work-items’ <em>id</em> or index position
 via the <code class="docutils literal notranslate"><span class="pre">item.get_id</span></code> call on <strong>line 10</strong>. An execution range comprising of
-1024 work items is defined when calling the kernel and each work item then
-executes a single addition. Note that the array sizes for the input and output
-arguments are equal to the size of the execution range. For very large arrays,
-the design will not scale as there is usually an upper bound for the range size
-depending on device. For most current Intel GPU devices, the maximum range size
-is 2^32 and a kernel requesting more work items than that bound will not
-execute. As such, programmers need to consider the size of the data and the
-access patterns for their kernels before scheduling a range kernel. The maximum
-number of work items can be queried programmatically as shown in
-<a class="reference internal" href="writing-range-kernel.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a>.</p>
-<div class="literal-block-wrapper docutils container" id="ex-max-work-item">
-<div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Query maximum number of work items for a device</span><a class="headerlink" href="#ex-max-work-item" title="Link to this code">#</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">math</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="n">d</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
-<span class="linenos"> 5</span><span class="n">d</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
-<span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="n">max_num_work_items</span> <span class="o">=</span> <span class="p">(</span>
-<span class="linenos"> 8</span>    <span class="n">d</span><span class="o">.</span><span class="n">max_work_group_size</span>
-<span class="linenos"> 9</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">10</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">11</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">12</span><span class="p">)</span>
-<span class="linenos">13</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span><span class="n">cpud</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-<span class="linenos">16</span><span class="n">cpud</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span><span class="n">max_num_work_items_cpu</span> <span class="o">=</span> <span class="p">(</span>
-<span class="linenos">19</span>    <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_group_size</span>
-<span class="linenos">20</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">21</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">22</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="linenos">23</span><span class="p">)</span>
-<span class="linenos">24</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>The output for <a class="reference internal" href="writing-range-kernel.html#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work items for a device</span></a> on a system with an Intel Gen9 integrated
-graphics processor and a 9th Generation Coffee Lake CPU is shown in
-<a class="reference internal" href="writing-range-kernel.html#ex-max-work-item-output"><span class="std std-ref">OUTPUT: Query maximum number of work items for a device</span></a>.</p>
-<div class="literal-block-wrapper docutils container" id="ex-max-work-item-output">
-<div class="code-block-caption"><span class="caption-text"><strong>OUTPUT:</strong> Query maximum number of work items for a device</span><a class="headerlink" href="#ex-max-work-item-output" title="Link to this code">#</a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>UHD<span class="w"> </span>Graphics<span class="w"> </span><span class="m">630</span><span class="w"> </span><span class="o">[</span>0x3e98<span class="o">]</span>
-<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">1</span>.3.24595
-<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
-<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>level_zero:gpu:0
-
-<span class="m">4294967296</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^32<span class="o">)</span>
-<span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Core<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>i7-9700<span class="w"> </span>CPU<span class="w"> </span>@<span class="w"> </span><span class="m">3</span>.00GHz
-<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">2023</span>.16.12.0.12_195853.xmain-hotfix
-<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
-<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>opencl:cpu:0
-
-<span class="m">4503599627370496</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^52<span class="o">)</span>
-</pre></div>
-</div>
-</div>
+1024 work-items is defined when calling the kernel and each work-item then
+executes a single addition.</p>
 <p>There are a few semantic rules that have to be adhered to when writing a range
 kernel:</p>
 <ul>
 <li><p>Analogous to the API of SYCL a range kernel can execute only over a 1-, 2-, or
-a 3-dimensional set of work items.</p></li>
+a 3-dimensional set of work-items.</p></li>
 <li><p>Every range kernel requires its first argument to be an instance of the
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a> class. The <code class="docutils literal notranslate"><span class="pre">Item</span></code> object is an
-abstraction encapsulating the index position (id) of a single work item in the
+abstraction encapsulating the index position (id) of a single work-item in the
 global execution range. The id will be a 1-, 2-, or a 3-tuple depending
 the dimensionality of the execution range.</p></li>
 <li><p>A range kernel cannot return any value.</p>
@@ -362,38 +305,38 @@ values can be of any Python numeric type. Array arguments are passed by
 reference, <em>i.e.</em>, changes to an array in a kernel are visible outside the
 kernel. Scalar values are always passed by value.</p></li>
 <li><p>At least one argument of a kernel should be an array. The requirement is so
-that the kernel launcher (<a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.call_kernel" title="numba_dpex.experimental.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code></a>) can
+that the kernel launcher (<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code>) can
 determine the execution queue on which to launch the kernel. Refer
 the <a class="reference internal" href="#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
 </ul>
 <p>A range kernel has to be executed via the
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a> function by passing in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> function by passing in
 an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer the
 <a class="reference internal" href="#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details on how to launch a range
 kernel.</p>
 <p>A range kernel is meant to express a basic <cite>parallel-for</cite> calculation that is
 ideally suited for embarrassingly parallel kernels such as elementwise
 computations over n-dimensional arrays (ndarrays). The API for expressing a
-range kernel does not allow advanced features such as synchronization of work
-items and fine-grained control over memory allocation on a device. For such
+range kernel does not allow advanced features such as synchronization of
+work-items and fine-grained control over memory allocation on a device. For such
 advanced features, an nd-range kernel should be used.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Refer API documentation for <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a>,
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a>,  and
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a> for more details.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
 </div>
 </section>
 <section id="writing-an-nd-range-kernel">
 <h3>Writing an <em>nd-range</em> kernel<a class="headerlink" href="#writing-an-nd-range-kernel" title="Link to this heading">#</a></h3>
-<p>In a range kernel, the kernel execution is scheduled over a set of work items
-without any explicit grouping of the work items. The basic form of parallelism
+<p>In a range kernel, the kernel execution is scheduled over a set of work-items
+without any explicit grouping of the work-items. The basic form of parallelism
 that can be expressed using a range kernel does not allow expressing any notion
 of locality within the kernel. To get around that limitation, kapi provides a
 second form of expressing a parallel kernel that is called an <em>nd-range</em> kernel.
 An nd-range kernel represents a data-parallel execution of the kernel by a set
-of explicitly defined groups of work items. An individual group of work items is
-called a <em>work group</em>. <a class="reference internal" href="#ex-matmul-kernel"><span class="std std-ref">Example: Sliding window matrix multiplication as an nd-range kernel</span></a> demonstrates an nd-range kernel
+of explicitly defined groups of work-items. An individual group of work-items is
+called a <em>work-group</em>. <a class="reference internal" href="#ex-matmul-kernel"><span class="std std-ref">Example: Sliding window matrix multiplication as an nd-range kernel</span></a> demonstrates an nd-range kernel
 and some of the advanced features programmers can use in this type of kernel.</p>
 <div class="literal-block-wrapper docutils container" id="ex-matmul-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Sliding window matrix multiplication as an nd-range kernel</span><a class="headerlink" href="#ex-matmul-kernel" title="Link to this code">#</a></div>
@@ -481,18 +424,119 @@ and some of the advanced features programmers can use in this type of kernel.</p
 </div>
 </div>
 <p>When writing an nd-range kernel, a programmer
-defines a set of groups of work items instead of a flat execution range</p>
+defines a set of groups of work-items instead of a flat execution range</p>
 <p>An nd-range kernel needs to be launched with
 an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdRange</span></code></a> class and the first
 argument to an nd-range kernel has to be an instance of
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem</span></code></a>. An <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object defines a set of
-work groups each with it own set of work items.</p>
+work-groups each with it own set of work-items.</p>
+</section>
+<section id="launching-a-kernel">
+<span id="id2"></span><h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated kapi function produces a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object that
+is a type of a Numba* <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/jit-compilation.html#dispatcher-objects">Dispatcher</a> object. However, unlike regular Numba*
+Dispatcher objects a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object cannot be directly invoked from
+either CPython or another compiled Numba* <code class="docutils literal notranslate"><span class="pre">jit</span></code> function. To invoke a
+<code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function, a programmer has to use the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code> function.</p>
+<p>To invoke a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function requires three
+things: the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object, the <code class="docutils literal notranslate"><span class="pre">Range</span></code> or <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object
+over which the kernel is to be executed, and the list of arguments to be passed
+to the compiled kernel. Once called with the necessary  arguments, the
+<code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function does the following main things:</p>
+<ul class="simple">
+<li><p>Compiles the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object specializing it for the provided
+argument types.</p></li>
+<li><dl class="simple">
+<dt><a class="reference external" href="https://numba.readthedocs.io/en/stable/extending/interval-example.html#boxing-and-unboxing">Unboxes</a>  the kernel arguments by converting CPython objects into Numba* or</dt><dd><p>numba-dpex objects.</p>
+</dd>
+</dl>
+</li>
+<li><p>Infer the execution queue on which to submit the kernel from the provided
+kernel arguments. (TODO: Refer compute follows data.)</p></li>
+<li><p>Submits the kernel to the execution queue.</p></li>
+<li><p>Waits for the execution completion, before returning control back to the
+caller.</p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Numba-dpex currently limits the maximum allowed range size to <code class="docutils literal notranslate"><span class="pre">2^31</span> <span class="pre">-1</span></code>.
+It is due to the capabilities of current OpenCL GPU backends that generally
+do not support more than 32-bit global range sizes. A kernel requesting more
+work-items than that will not execute and a
+<code class="docutils literal notranslate"><span class="pre">dpctl._sycl_queue.SyclKernelSubmitError</span></code> will get raised.</p>
+<p>The Intel dpcpp SYCL compiler does handle greater than 32-bit global ranges
+for GPU backends by wrapping the kernel in a new kernel that has each
+work-item perform multiple invocations of the original kernel in a 32-bit
+global range. Such a feature is not yet available in numba-dpex.</p>
+<p>The maximum allowed work-items for a device can be queried programmatically
+as shown in <a class="reference internal" href="#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="ex-max-work-item">
+<div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Query maximum number of work-items for a device</span><a class="headerlink" href="#ex-max-work-item" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">math</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="n">d</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span><span class="n">d</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="n">max_num_work_items</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos"> 8</span>    <span class="n">d</span><span class="o">.</span><span class="n">max_work_group_size</span>
+<span class="linenos"> 9</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">10</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">11</span>    <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">12</span><span class="p">)</span>
+<span class="linenos">13</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="n">cpud</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="linenos">16</span><span class="n">cpud</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">max_num_work_items_cpu</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">19</span>    <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_group_size</span>
+<span class="linenos">20</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes1d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">21</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes2d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">22</span>    <span class="o">*</span> <span class="n">cpud</span><span class="o">.</span><span class="n">max_work_item_sizes3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">23</span><span class="p">)</span>
+<span class="linenos">24</span><span class="nb">print</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(2^</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_num_work_items_cpu</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The output for <a class="reference internal" href="#ex-max-work-item"><span class="std std-ref">Example: Query maximum number of work-items for a device</span></a> on a system with an Intel Gen9 integrated
+graphics processor and a 9th Generation Coffee Lake CPU is shown in
+<a class="reference internal" href="#ex-max-work-item-output"><span class="std std-ref">OUTPUT: Query maximum number of work-items for a device</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="ex-max-work-item-output">
+<div class="code-block-caption"><span class="caption-text"><strong>OUTPUT:</strong> Query maximum number of work-items for a device</span><a class="headerlink" href="#ex-max-work-item-output" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>UHD<span class="w"> </span>Graphics<span class="w"> </span><span class="m">630</span><span class="w"> </span><span class="o">[</span>0x3e98<span class="o">]</span>
+<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">1</span>.3.24595
+<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
+<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>level_zero:gpu:0
+
+<span class="m">4294967296</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^32<span class="o">)</span>
+<span class="w">    </span>Name<span class="w">            </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Core<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>i7-9700<span class="w"> </span>CPU<span class="w"> </span>@<span class="w"> </span><span class="m">3</span>.00GHz
+<span class="w">    </span>Driver<span class="w"> </span>version<span class="w">  </span><span class="m">2023</span>.16.12.0.12_195853.xmain-hotfix
+<span class="w">    </span>Vendor<span class="w">          </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>Corporation
+<span class="w">    </span>Filter<span class="w"> </span>string<span class="w">   </span>opencl:cpu:0
+
+<span class="m">4503599627370496</span><span class="w"> </span><span class="o">(</span><span class="m">2</span>^52<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function can be invoked both from CPython and from another
+Numba* compiled function. Note that the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function supports only
+synchronous execution of kernel and the <code class="docutils literal notranslate"><span class="pre">call_kernel_async</span></code> function should be
+used for asynchronous mode of kernel execution (refer
+<a class="reference internal" href="#launching-an-async-kernel"><span class="std std-ref">Async kernel execution</span></a>).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Refer the API documentation for
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code> for more details.</p>
+</div>
 </section>
 <section id="the-device-func-decorator">
 <h3>The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator<a class="headerlink" href="#the-device-func-decorator" title="Link to this heading">#</a></h3>
 <p>Numba-dpex provides a decorator to express auxiliary device-only functions that
 can be called from a kernel or another device function, but are not callable
-from the host. This decorator <a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.device_func" title="numba_dpex.experimental.device_func"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.device_func()</span></code></a> has no
+from the host. This decorator <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.device_func()</span></code> has no
 direct analogue in SYCL and primarily is provided to help programmers make their
 kapi applications modular. <a class="reference internal" href="#ex-device-func1"><span class="std std-ref">Example: Basic usage of device_func</span></a> shows a simple usage of the
 <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator.</p>
@@ -572,8 +616,86 @@ value. All kapi functionality can be used in a <code class="docutils literal not
 function and at compilation stage numba-dpex will attempt to inline a
 <code class="docutils literal notranslate"><span class="pre">device_func</span></code> into the kernel where it is used.</p>
 </section>
-<section id="supported-mathematical-operations">
-<h3>Supported mathematical operations<a class="headerlink" href="#supported-mathematical-operations" title="Link to this heading">#</a></h3>
+<section id="supported-types-of-kernel-argument">
+<h3>Supported types of kernel argument<a class="headerlink" href="#supported-types-of-kernel-argument" title="Link to this heading">#</a></h3>
+<p>A kapi kernel function can have both array and scalar arguments. At least one of
+the argument to every kernel function has to be an array. The requirement is
+enforced so that a execution queue can be inferred at the kernel launch stage.
+An array type argument is passed as a reference to the kernel and all scalar
+arguments are passed by value.</p>
+<section id="supported-array-types">
+<h4>Supported array types<a class="headerlink" href="#supported-array-types" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/dpctl/usm_ndarray.html#dpctl.tensor.usm_ndarray">dpctl.tensor.usm_ndarray</a> : A SYCL-based Python Array API complaint tensor.</p></li>
+<li><p><a class="reference external" href="https://intelpython.github.io/dpnp/reference/ndarray.html">dpnp.ndarray</a> :  A <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> type container that supports SYCL USM memory allocation.</p></li>
+</ul>
+</section>
+<section id="scalar-types">
+<h4>Scalar types<a class="headerlink" href="#scalar-types" title="Link to this heading">#</a></h4>
+<p>Scalar values can be passed to a kernel function either using the default Python
+scalar type or as explicit NumPy or dpnp data type objects.
+<a class="reference internal" href="#ex-scalar-kernel-arg-ty"><span class="std std-ref">Example: Ways of defining a scalar kernel argument</span></a> shows the two possible ways of defining a scalar
+type. In both scenarios, numba-dpex depends on the default Numba* type inferring
+algorithm to determine the LLVM IR type of a Python object that represents a
+scalar value. At the kernel submission stage the LLVM IR type is reinterpreted
+as a C++11 type to interoperate with the underlying SYCL runtime.</p>
+<div class="literal-block-wrapper docutils container" id="ex-scalar-kernel-arg-ty">
+<div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Ways of defining a scalar kernel argument</span><a class="headerlink" href="#ex-scalar-kernel-arg-ty" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="ex-scalar-kernel-arg-ty-output">
+<div class="code-block-caption"><span class="caption-text"><strong>Output:</strong> Ways of defining a scalar kernel argument</span><a class="headerlink" href="#ex-scalar-kernel-arg-ty-output" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;class<span class="w"> </span><span class="s1">&#39;int&#39;</span>&gt;
+&lt;class<span class="w"> </span><span class="s1">&#39;numpy.int32&#39;</span>&gt;
+</pre></div>
+</div>
+</div>
+<p>The following scalar types are currently supported as arguments of a numba-dpex
+kernel function:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">complex</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.int32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.uint32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.uint32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code></p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Numba* type inferring algorithm by default infers a native Python
+scalar type to be a 64-bit value. The algorithm is defined that way to be
+consistent with the default CPython behavior. The default inferred 64-bit
+type can cause compilation failures on platforms that do not have native
+64-bit floating point support. Another potential fallout of the default
+64-bit type inference can be when a narrower width type is required by a
+specific kernel. To avoid these issues, users are advised to always use a
+dpnp/numpy type object to explicitly define the type of a scalar value.</p>
+</div>
+</section>
+<section id="dlpack-support">
+<h4>DLPack support<a class="headerlink" href="#dlpack-support" title="Link to this heading">#</a></h4>
+<p>At this time direct support for the <a class="reference external" href="https://dmlc.github.io/dlpack/latest/">DLPack</a> protocol is has not been added to
+numba-dpex. To interoperate numba_dpex with other SYCL USM based libraries,
+users should first convert their input tensor or ndarray object into either of
+the two supported array types, both of which support DLPack.</p>
+</section>
+</section>
+</section>
+<section id="supported-python-features">
+<h2>Supported Python features<a class="headerlink" href="#supported-python-features" title="Link to this heading">#</a></h2>
+<section id="mathematical-operations">
+<h3>Mathematical operations<a class="headerlink" href="#mathematical-operations" title="Link to this heading">#</a></h3>
 <p>Scalar mathematical functions from the Python <a class="reference external" href="https://docs.python.org/3/library/math.html">math</a> module and the <a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a>
 library can be used inside a kernel function. During compilation the
 mathematical functions get compiled into device-specific intrinsic instructions.</p>
@@ -1142,11 +1264,11 @@ updates.</p>
 </table>
 </div>
 </section>
-<section id="supported-python-operators">
-<h3>Supported Python operators<a class="headerlink" href="#supported-python-operators" title="Link to this heading">#</a></h3>
+<section id="operators">
+<h3>Operators<a class="headerlink" href="#operators" title="Link to this heading">#</a></h3>
 </section>
-<section id="supported-general-python-features">
-<h3>Supported general Python features<a class="headerlink" href="#supported-general-python-features" title="Link to this heading">#</a></h3>
+<section id="general-python-features">
+<h3>General Python features<a class="headerlink" href="#general-python-features" title="Link to this heading">#</a></h3>
 <p>A kapi function when run in the purely interpreted mode by the CPython
 interpreter is a regular Python function, and as such in theory any Python
 feature can be used in the body of the function. In practice, to be
@@ -1195,119 +1317,6 @@ to their usage in a kapi function.</p>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">assert</span></code> statement</p></li>
 </ul>
 </section>
-</section>
-<section id="supported-types-of-kernel-argument">
-<h3>Supported types of kernel argument<a class="headerlink" href="#supported-types-of-kernel-argument" title="Link to this heading">#</a></h3>
-<p>A kapi kernel function can have both array and scalar arguments. At least one of
-the argument to every kernel function has to be an array. The requirement is
-enforced so that a execution queue can be inferred at the kernel launch stage.
-An array type argument is passed as a reference to the kernel and all scalar
-arguments are passed by value.</p>
-<section id="supported-array-types">
-<h4>Supported array types<a class="headerlink" href="#supported-array-types" title="Link to this heading">#</a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/dpctl/usm_ndarray.html#dpctl.tensor.usm_ndarray">dpctl.tensor.usm_ndarray</a> : A SYCL-based Python Array API complaint tensor.</p></li>
-<li><p><a class="reference external" href="https://intelpython.github.io/dpnp/reference/ndarray.html">dpnp.ndarray</a> :  A <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> type container that supports SYCL USM memory allocation.</p></li>
-</ul>
-</section>
-<section id="scalar-types">
-<h4>Scalar types<a class="headerlink" href="#scalar-types" title="Link to this heading">#</a></h4>
-<p>Scalar values can be passed to a kernel function either using the default Python
-scalar type or as explicit NumPy or dpnp data type objects.
-<a class="reference internal" href="#ex-scalar-kernel-arg-ty"><span class="std std-ref">Example: Ways of defining a scalar kernel argument</span></a> shows the two possible ways of defining a scalar
-type. In both scenarios, numba-dpex depends on the default Numba* type inferring
-algorithm to determine the LLVM IR type of a Python object that represents a
-scalar value. At the kernel submission stage the LLVM IR type is reinterpreted
-as a C++11 type to interoperate with the underlying SYCL runtime.</p>
-<div class="literal-block-wrapper docutils container" id="ex-scalar-kernel-arg-ty">
-<div class="code-block-caption"><span class="caption-text"><strong>Example:</strong> Ways of defining a scalar kernel argument</span><a class="headerlink" href="#ex-scalar-kernel-arg-ty" title="Link to this code">#</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
-
-<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="ex-scalar-kernel-arg-ty-output">
-<div class="code-block-caption"><span class="caption-text"><strong>Output:</strong> Ways of defining a scalar kernel argument</span><a class="headerlink" href="#ex-scalar-kernel-arg-ty-output" title="Link to this code">#</a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;class<span class="w"> </span><span class="s1">&#39;int&#39;</span>&gt;
-&lt;class<span class="w"> </span><span class="s1">&#39;numpy.int32&#39;</span>&gt;
-</pre></div>
-</div>
-</div>
-<p>The following scalar types are currently supported as arguments of a numba-dpex
-kernel function:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">complex</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.int32</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.uint32</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.uint32</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code></p></li>
-</ul>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The Numba* type inferring algorithm by default infers a native Python
-scalar type to be a 64-bit value. The algorithm is defined that way to be
-consistent with the default CPython behavior. The default inferred 64-bit
-type can cause compilation failures on platforms that do not have native
-64-bit floating point support. Another potential fallout of the default
-64-bit type inference can be when a narrower width type is required by a
-specific kernel. To avoid these issues, users are advised to always use a
-dpnp/numpy type object to explicitly define the type of a scalar value.</p>
-</div>
-</section>
-<section id="dlpack-support">
-<h4>DLPack support<a class="headerlink" href="#dlpack-support" title="Link to this heading">#</a></h4>
-<p>At this time direct support for the <a class="reference external" href="https://dmlc.github.io/dlpack/latest/">DLPack</a> protocol is has not been added to
-numba-dpex. To interoperate numba_dpex with other SYCL USM based libraries,
-users should first convert their input tensor or ndarray object into either of
-the two supported array types, both of which support DLPack.</p>
-</section>
-</section>
-<section id="launching-a-kernel">
-<span id="id2"></span><h3>Launching a kernel<a class="headerlink" href="#launching-a-kernel" title="Link to this heading">#</a></h3>
-<p>A <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated kapi function produces a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object that
-is a type of a Numba* <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/jit-compilation.html#dispatcher-objects">Dispatcher</a> object. However, unlike regular Numba*
-Dispatcher objects a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object cannot be directly invoked from
-either CPython or another compiled Numba* <code class="docutils literal notranslate"><span class="pre">jit</span></code> function. To invoke a
-<code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function, a programmer has to use the
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/index.html#numba_dpex.experimental.call_kernel" title="numba_dpex.experimental.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code></a> function.</p>
-<p>To invoke a <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function requires three
-things: the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object, the <code class="docutils literal notranslate"><span class="pre">Range</span></code> or <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> object
-over which the kernel is to be executed, and the list of arguments to be passed
-to the compiled kernel. Once called with the necessary  arguments, the
-<code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function does the following main things:</p>
-<ul class="simple">
-<li><p>Compiles the <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object specializing it for the provided
-argument types.</p></li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://numba.readthedocs.io/en/stable/extending/interval-example.html#boxing-and-unboxing">Unboxes</a>  the kernel arguments by converting CPython objects into Numba* or</dt><dd><p>numba-dpex objects.</p>
-</dd>
-</dl>
-</li>
-<li><p>Infer the execution queue on which to submit the kernel from the provided
-kernel arguments. (TODO: Refer compute follows data.)</p></li>
-<li><p>Submits the kernel to the execution queue.</p></li>
-<li><p>Waits for the execution completion, before returning control back to the
-caller.</p></li>
-</ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function can be invoked both from CPython and from another
-Numba* compiled function. Note that the <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> function supports only
-synchronous execution of kernel and the <code class="docutils literal notranslate"><span class="pre">call_kernel_async</span></code> function should be
-used for asynchronous mode of kernel execution (refer
-<a class="reference internal" href="#launching-an-async-kernel"><span class="std std-ref">Async kernel execution</span></a>).</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Refer the API documentation for
-<a class="reference internal" href="../../autoapi/numba_dpex/experimental/launcher/index.html#numba_dpex.experimental.launcher.call_kernel" title="numba_dpex.experimental.launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.launcher.call_kernel()</span></code></a> for more details.</p>
-</div>
 </section>
 </section>
 <section id="advanced-concepts">
@@ -1395,22 +1404,25 @@ used for asynchronous mode of kernel execution (refer
 <li><a class="reference internal" href="#core-concepts">Core concepts</a><ul>
 <li><a class="reference internal" href="#writing-a-range-kernel">Writing a <em>range</em> kernel</a></li>
 <li><a class="reference internal" href="#writing-an-nd-range-kernel">Writing an <em>nd-range</em> kernel</a></li>
+<li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
 <li><a class="reference internal" href="#the-device-func-decorator">The <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator</a></li>
-<li><a class="reference internal" href="#supported-mathematical-operations">Supported mathematical operations</a></li>
-<li><a class="reference internal" href="#supported-python-operators">Supported Python operators</a></li>
-<li><a class="reference internal" href="#supported-general-python-features">Supported general Python features</a><ul>
-<li><a class="reference internal" href="#built-in-types">Built-in types</a></li>
-<li><a class="reference internal" href="#built-in-functions">Built-in functions</a></li>
-<li><a class="reference internal" href="#unsupported-constructs">Unsupported Constructs</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#supported-types-of-kernel-argument">Supported types of kernel argument</a><ul>
 <li><a class="reference internal" href="#supported-array-types">Supported array types</a></li>
 <li><a class="reference internal" href="#scalar-types">Scalar types</a></li>
 <li><a class="reference internal" href="#dlpack-support">DLPack support</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#launching-a-kernel">Launching a kernel</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#supported-python-features">Supported Python features</a><ul>
+<li><a class="reference internal" href="#mathematical-operations">Mathematical operations</a></li>
+<li><a class="reference internal" href="#operators">Operators</a></li>
+<li><a class="reference internal" href="#general-python-features">General Python features</a><ul>
+<li><a class="reference internal" href="#built-in-types">Built-in types</a></li>
+<li><a class="reference internal" href="#built-in-functions">Built-in functions</a></li>
+<li><a class="reference internal" href="#unsupported-constructs">Unsupported Constructs</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced-concepts">Advanced concepts</a><ul>

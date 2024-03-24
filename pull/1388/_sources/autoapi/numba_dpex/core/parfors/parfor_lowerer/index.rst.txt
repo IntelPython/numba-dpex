@@ -1,0 +1,105 @@
+
+:orphan:
+
+numba_dpex.core.parfors.parfor_lowerer
+======================================
+
+.. py:module:: numba_dpex.core.parfors.parfor_lowerer
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ParforLowerImpl <numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl>`
+     - Provides a custom lowerer for parfor nodes that generates a SYCL kernel
+   * - :py:obj:`ParforLowerFactory <numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory>`
+     - A pseudo-factory class that maps a device filter string to a lowering
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`keep_alive_kernels <numba_dpex.core.parfors.parfor_lowerer.keep_alive_kernels>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: ParforLowerImpl
+
+   Provides a custom lowerer for parfor nodes that generates a SYCL kernel
+   for a parfor and submits it to a queue.
+
+
+
+
+.. py:class:: ParforLowerFactory
+
+   A pseudo-factory class that maps a device filter string to a lowering
+   function.
+
+   Each Parfor instruction can have an optional "lowerer" attribute. The
+   lowerer attribute determines how the parfor instruction should be lowered
+   to LLVM IR. In addition, the lower attribute decides which parfor
+   instructions can be fused together.
+
+   The factory class maintains a dictionary mapping every device
+   type (filter string) encountered so far to a lowerer function for that
+   device type. At this point numba-dpex does not generate device-specific code
+   and the lowerer used is same for all device types. However, as a different
+   ParforLowerImpl instance is returned for every parfor instruction that has
+   a distinct compute-follows-data inferred device it prevents illegal
+   parfor fusion.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`device_to_lowerer_map <numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.device_to_lowerer_map>`
+        - \-
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_lowerer <numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.get_lowerer>`\ (device)
+        - :summarylabel:`class` \-
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: device_to_lowerer_map
+
+      
+
+   .. py:method:: get_lowerer(device)
+      :classmethod:
+
+
+
+
+
+Attributes
+----------
+.. py:data:: keep_alive_kernels
+   :value: []
+
+   
+
+
+

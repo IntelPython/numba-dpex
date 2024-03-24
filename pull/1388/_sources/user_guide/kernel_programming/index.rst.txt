@@ -35,14 +35,14 @@ Writing a *range* kernel
 Writing an *nd-range* kernel
 ============================
 
-In a range kernel, the kernel execution is scheduled over a set of work items
-without any explicit grouping of the work items. The basic form of parallelism
+In a range kernel, the kernel execution is scheduled over a set of work-items
+without any explicit grouping of the work-items. The basic form of parallelism
 that can be expressed using a range kernel does not allow expressing any notion
 of locality within the kernel. To get around that limitation, kapi provides a
 second form of expressing a parallel kernel that is called an *nd-range* kernel.
 An nd-range kernel represents a data-parallel execution of the kernel by a set
-of explicitly defined groups of work items. An individual group of work items is
-called a *work group*. :ref:`ex_matmul_kernel` demonstrates an nd-range kernel
+of explicitly defined groups of work-items. An individual group of work-items is
+called a *work-group*. :ref:`ex_matmul_kernel` demonstrates an nd-range kernel
 and some of the advanced features programmers can use in this type of kernel.
 
 .. code-block:: python
@@ -133,32 +133,24 @@ and some of the advanced features programmers can use in this type of kernel.
 
 
 When writing an nd-range kernel, a programmer
-defines a set of groups of work items instead of a flat execution range
+defines a set of groups of work-items instead of a flat execution range
 
 An nd-range kernel needs to be launched with
 an instance of the :py:class:`numba_dpex.kernel_api.NdRange` class and the first
 argument to an nd-range kernel has to be an instance of
 :py:class:`numba_dpex.kernel_api.NdItem`. An ``NdRange`` object defines a set of
-work groups each with it own set of work items.
+work-groups each with it own set of work-items.
 
+.. Launching a kernel
+.. ==================
+
+.. include:: ./call-kernel.rst
 
 The ``device_func`` decorator
 =============================
 
 .. include:: ./device-functions.rst
 
-Supported mathematical operations
-=================================
-
-.. include:: ./math-functions.rst
-
-Supported Python operators
-==========================
-
-Supported general Python features
-=================================
-
-.. include:: ./supported-python-features.rst
 
 Supported types of kernel argument
 ==================================
@@ -236,10 +228,22 @@ users should first convert their input tensor or ndarray object into either of
 the two supported array types, both of which support DLPack.
 
 
-.. Launching a kernel
-.. ==================
+Supported Python features
+*************************
 
-.. include:: ./call-kernel.rst
+Mathematical operations
+=======================
+
+.. include:: ./math-functions.rst
+
+Operators
+=========
+
+General Python features
+=======================
+
+.. include:: ./supported-python-features.rst
+
 
 Advanced concepts
 *****************

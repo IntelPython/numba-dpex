@@ -1,0 +1,178 @@
+
+:orphan:
+
+numba_dpex.core.descriptor
+==========================
+
+.. py:module:: numba_dpex.core.descriptor
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpexTargetOptions <numba_dpex.core.descriptor.DpexTargetOptions>`
+     - Target options maps user options from decorators to the
+   * - :py:obj:`DpexKernelTarget <numba_dpex.core.descriptor.DpexKernelTarget>`
+     - Implements a target descriptor for numba_dpex.kernel decorated functions.
+   * - :py:obj:`DpexTarget <numba_dpex.core.descriptor.DpexTarget>`
+     - Implements a target descriptor for numba_dpex.dpjit decorated functions.
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`dpex_kernel_target <numba_dpex.core.descriptor.dpex_kernel_target>`
+     - \-
+   * - :py:obj:`dpex_target <numba_dpex.core.descriptor.dpex_target>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: DpexTargetOptions
+
+   Bases: :py:obj:`numba.core.cpu.CPUTargetOptions`
+
+   Target options maps user options from decorators to the
+   ``numba.core.compiler.Flags`` used by lowering and target context.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`experimental <numba_dpex.core.descriptor.DpexTargetOptions.experimental>`
+        - \-
+      * - :py:obj:`release_gil <numba_dpex.core.descriptor.DpexTargetOptions.release_gil>`
+        - \-
+      * - :py:obj:`no_compile <numba_dpex.core.descriptor.DpexTargetOptions.no_compile>`
+        - \-
+      * - :py:obj:`use_mlir <numba_dpex.core.descriptor.DpexTargetOptions.use_mlir>`
+        - \-
+      * - :py:obj:`inline_threshold <numba_dpex.core.descriptor.DpexTargetOptions.inline_threshold>`
+        - \-
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`finalize <numba_dpex.core.descriptor.DpexTargetOptions.finalize>`\ (flags, options)
+        - Subclasses can override this method to make target specific
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: experimental
+
+      
+
+   .. py:attribute:: release_gil
+
+      
+
+   .. py:attribute:: no_compile
+
+      
+
+   .. py:attribute:: use_mlir
+
+      
+
+   .. py:attribute:: inline_threshold
+
+      
+
+   .. py:method:: finalize(flags, options)
+
+      Subclasses can override this method to make target specific
+      customizations of default flags.
+
+      :param flags:
+      :type flags: Flags
+      :param options:
+      :type options: dict
+
+
+
+
+.. py:class:: DpexKernelTarget(target_name)
+
+   Bases: :py:obj:`numba.core.descriptors.TargetDescriptor`
+
+   Implements a target descriptor for numba_dpex.kernel decorated functions.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`options <numba_dpex.core.descriptor.DpexKernelTarget.options>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: options
+
+      
+
+
+
+.. py:class:: DpexTarget(target_name)
+
+   Bases: :py:obj:`numba.core.descriptors.TargetDescriptor`
+
+   Implements a target descriptor for numba_dpex.dpjit decorated functions.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`options <numba_dpex.core.descriptor.DpexTarget.options>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: options
+
+      
+
+
+
+
+Attributes
+----------
+.. py:data:: dpex_kernel_target
+
+   
+
+.. py:data:: dpex_target
+
+   
+
+
+

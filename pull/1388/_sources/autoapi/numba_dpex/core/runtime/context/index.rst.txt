@@ -1,0 +1,286 @@
+
+:orphan:
+
+numba_dpex.core.runtime.context
+===============================
+
+.. py:module:: numba_dpex.core.runtime.context
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpexRTContext <numba_dpex.core.runtime.context.DpexRTContext>`
+     - An object providing access to DPEXRT API in the lowering pass.
+
+
+
+
+Classes
+-------
+
+.. py:class:: DpexRTContext(context)
+
+   Bases: :py:obj:`object`
+
+   An object providing access to DPEXRT API in the lowering pass.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`meminfo_alloc <numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc>`\ (builder, size, usm_type, queue_ref)
+        - Wrapper to call :func:`~context.DpexRTContext.meminfo_alloc_unchecked`
+      * - :py:obj:`meminfo_fill <numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill>`\ (builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)
+        - Wrapper to call :func:`~context.DpexRTContext.meminfo_fill_unchecked`
+      * - :py:obj:`meminfo_alloc_unchecked <numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked>`\ (builder, size, usm_type, queue_ref)
+        - Allocate a new MemInfo with a data payload of `size` bytes.
+      * - :py:obj:`meminfo_fill_unchecked <numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked>`\ (builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)
+        - Fills an allocated `MemInfo` with the value specified.
+      * - :py:obj:`arraystruct_from_python <numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python>`\ (pyapi, obj, ptr)
+        - Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function
+      * - :py:obj:`queuestruct_from_python <numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python>`\ (pyapi, obj, ptr)
+        - Calls the c function DPEXRT_sycl_queue_from_python
+      * - :py:obj:`queuestruct_to_python <numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python>`\ (pyapi, val)
+        - Calls the c function DPEXRT_sycl_queue_to_python
+      * - :py:obj:`eventstruct_from_python <numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python>`\ (pyapi, obj, ptr)
+        - Calls the c function DPEXRT_sycl_event_from_python
+      * - :py:obj:`eventstruct_to_python <numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python>`\ (pyapi, val)
+        - Calls the c function DPEXRT_sycl_event_to_python
+      * - :py:obj:`eventstruct_init <numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init>`\ (pyapi, event, struct)
+        - Calls the c function DPEXRT_sycl_event_init
+      * - :py:obj:`usm_ndarray_to_python_acqref <numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref>`\ (pyapi, aryty, ary, dtypeptr)
+        - Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
+      * - :py:obj:`get_queue_from_filter_string <numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string>`\ (builder, device)
+        - Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      * - :py:obj:`submit_range <numba_dpex.core.runtime.context.DpexRTContext.submit_range>`\ (builder, kref, qref, args, argtys, nargs, range, nrange, depevents, ndepevents)
+        - Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      * - :py:obj:`submit_ndrange <numba_dpex.core.runtime.context.DpexRTContext.submit_ndrange>`\ (builder, kref, qref, args, argtys, nargs, grange, lrange, ndims, depevents, ndepevents)
+        - Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      * - :py:obj:`acquire_meminfo_and_schedule_release <numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release>`\ (builder, args)
+        - Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
+      * - :py:obj:`build_or_get_kernel <numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel>`\ (builder, args)
+        - Inserts LLVM IR to call build_or_get_kernel.
+      * - :py:obj:`kernel_cache_size <numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size>`\ (builder)
+        - Inserts LLVM IR to call kernel_cache_size.
+
+
+   .. rubric:: Members
+
+   .. py:method:: meminfo_alloc(builder, size, usm_type, queue_ref)
+
+      Wrapper to call :func:`~context.DpexRTContext.meminfo_alloc_unchecked`
+      with null checking of the returned value.
+
+
+   .. py:method:: meminfo_fill(builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)
+
+      Wrapper to call :func:`~context.DpexRTContext.meminfo_fill_unchecked`
+      with null checking of the returned value.
+
+
+   .. py:method:: meminfo_alloc_unchecked(builder, size, usm_type, queue_ref)
+
+      Allocate a new MemInfo with a data payload of `size` bytes.
+
+      The result of the call is checked and if it is NULL, i.e. allocation
+      failed, then a MemoryError is raised. If the allocation succeeded then
+      a pointer to the MemInfo is returned.
+
+      :param builder: LLVM IR builder.
+      :type builder: `llvmlite.ir.builder.IRBuilder`
+      :param size: LLVM uint64 value specifying
+                   the size in bytes for the data payload, i.e. i64 %"arg.allocsize"
+      :type size: `llvmlite.ir.values.Argument`
+      :param usm_type: An LLVM Argument object
+                       specifying the type of the usm allocator. The constant value
+                       should match the values in
+                       ``dpctl's`` ``libsyclinterface::DPCTLSyclUSMType`` enum,
+                       i.e. i64 %"arg.usm_type".
+      :type usm_type: `llvmlite.ir.values.Argument`
+      :param queue_ref: An LLVM argument value storing
+                        the pointer to the address of the queue object, the object can be
+                        `dpctl.SyclQueue()`, i.e. i8* %"arg.queue".
+      :type queue_ref: `llvmlite.ir.values.Argument`
+
+      :returns:
+
+                A pointer to the `MemInfo`
+                    is returned from the `DPEXRT_MemInfo_alloc` C function call.
+      :rtype: ret (`llvmlite.ir.instructions.CallInstr`)
+
+
+   .. py:method:: meminfo_fill_unchecked(builder, meminfo, itemsize, dest_is_float, value_is_float, value, queue_ref)
+
+      Fills an allocated `MemInfo` with the value specified.
+
+      The result of the call is checked and if it is `NULL`, i.e. the fill
+      operation failed, then a `MemoryError` is raised. If the fill operation
+      is succeeded then a pointer to the `MemInfo` is returned.
+
+      :param builder: LLVM IR builder.
+      :type builder: `llvmlite.ir.builder.IRBuilder`
+      :param meminfo: LLVM uint64 value
+                      specifying the size in bytes for the data payload.
+      :type meminfo: `llvmlite.ir.instructions.LoadInstr`
+      :param itemsize: An LLVM Constant value
+                       specifying the size of the each data item allocated by the
+                       usm allocator.
+      :type itemsize: `llvmlite.ir.values.Constant`
+      :param dest_is_float: An LLVM Constant
+                            value specifying if the destination array type is floating
+                            point.
+      :type dest_is_float: `llvmlite.ir.values.Constant`
+      :param value_is_float: An LLVM Constant
+                             value specifying if the input value is a floating point.
+      :type value_is_float: `llvmlite.ir.values.Constant`
+      :param value: An LLVM Constant value
+                    specifying if the input value that will be used to fill
+                    the array.
+      :type value: `llvmlite.ir.values.Constant`
+      :param queue_ref: An LLVM ExtractValue
+                        instruction object to extract the pointer to the queue from the
+                        DpctlSyclQueue type, i.e. %".74" = extractvalue {i8*, i8*} %".73", 1.
+      :type queue_ref: `llvmlite.ir.instructions.ExtractValue`
+
+      :returns:
+
+                A pointer to the `MemInfo`
+                    is returned from the `DPEXRT_MemInfo_fill` C function call.
+      :rtype: ret (`llvmlite.ir.instructions.CallInstr`)
+
+
+   .. py:method:: arraystruct_from_python(pyapi, obj, ptr)
+
+      Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function
+      defined in the _DPREXRT_python Python extension.
+
+
+
+   .. py:method:: queuestruct_from_python(pyapi, obj, ptr)
+
+      Calls the c function DPEXRT_sycl_queue_from_python
+
+
+   .. py:method:: queuestruct_to_python(pyapi, val)
+
+      Calls the c function DPEXRT_sycl_queue_to_python
+
+
+   .. py:method:: eventstruct_from_python(pyapi, obj, ptr)
+
+      Calls the c function DPEXRT_sycl_event_from_python
+
+
+   .. py:method:: eventstruct_to_python(pyapi, val)
+
+      Calls the c function DPEXRT_sycl_event_to_python
+
+
+   .. py:method:: eventstruct_init(pyapi, event, struct)
+
+      Calls the c function DPEXRT_sycl_event_init
+
+
+   .. py:method:: usm_ndarray_to_python_acqref(pyapi, aryty, ary, dtypeptr)
+
+      Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
+
+      :param pyapi: _description_
+      :type pyapi: _type_
+      :param aryty: _description_
+      :type aryty: _type_
+      :param ary: _description_
+      :type ary: _type_
+      :param dtypeptr: _description_
+      :type dtypeptr: _type_
+
+      :returns: _description_
+      :rtype: _type_
+
+
+   .. py:method:: get_queue_from_filter_string(builder, device)
+
+      Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      from a given filter string.
+
+      :param device: An LLVM ArrayType
+                     storing a const string for a DPC++ filter selector string.
+      :type device: llvmlite.ir.values.FormattedConstant
+
+      Returns: A DPCTLSyclQueueRef pointer.
+
+
+   .. py:method:: submit_range(builder, kref, qref, args, argtys, nargs, range, nrange, depevents, ndepevents)
+
+      Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      from a given filter string.
+
+      Returns: A DPCTLSyclQueueRef pointer.
+
+
+   .. py:method:: submit_ndrange(builder, kref, qref, args, argtys, nargs, grange, lrange, ndims, depevents, ndepevents)
+
+      Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+      from a given filter string.
+
+      Returns: A LLVM IR call inst.
+
+
+   .. py:method:: acquire_meminfo_and_schedule_release(builder: llvmlite.ir.IRBuilder, args)
+
+      Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
+
+      DPCTLSyclEventRef
+      DPEXRT_nrt_acquire_meminfo_and_schedule_release(
+          NRT_api_functions *nrt,
+          DPCTLSyclQueueRef QRef,
+          NRT_MemInfo **meminfo_array,
+          size_t meminfo_array_size,
+          DPCTLSyclEventRef *depERefs,
+          size_t nDepERefs,
+          int *status,
+      );
+
+
+
+   .. py:method:: build_or_get_kernel(builder: llvmlite.ir.IRBuilder, args)
+
+      Inserts LLVM IR to call build_or_get_kernel.
+
+      DPCTLSyclKernelRef
+      DPEXRT_build_or_get_kernel(
+          const DPCTLSyclContextRef ctx,
+          const DPCTLSyclDeviceRef dev,
+          size_t il_hash,
+          const char *il,
+          size_t il_length,
+          const char *compile_opts,
+          const char *kernel_name,
+      );
+
+
+
+   .. py:method:: kernel_cache_size(builder: llvmlite.ir.IRBuilder)
+
+      Inserts LLVM IR to call kernel_cache_size.
+
+      size_t DPEXRT_kernel_cache_size();
+
+
+
+
+
+
+
+

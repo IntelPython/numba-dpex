@@ -1,9 +1,0 @@
-
-:orphan:
-
-numba_dpex.experimental._kernel_dpcpp_spirv_overloads
-=====================================================
-
-.. py:module:: numba_dpex.experimental._kernel_dpcpp_spirv_overloads
-
-

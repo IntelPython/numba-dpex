@@ -1,0 +1,82 @@
+
+:orphan:
+
+numba_dpex.core.pipelines.dpjit_compiler
+========================================
+
+.. py:module:: numba_dpex.core.pipelines.dpjit_compiler
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpjitCompiler <numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler>`
+     - Dpex's compiler pipeline to offload parfor nodes into SYCL kernels.
+   * - :py:obj:`DpjitCompilerMlir <numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir>`
+     - Dpex's compiler pipeline to offload parfor nodes into SYCL kernels.
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`get_compiler <numba_dpex.core.pipelines.dpjit_compiler.get_compiler>`\ (use_mlir)
+     - \-
+
+
+
+Classes
+-------
+
+.. py:class:: DpjitCompiler(typingctx, targetctx, library, args, return_type, flags, locals)
+
+   Bases: :py:obj:`numba.core.compiler.CompilerBase`
+
+   Dpex's compiler pipeline to offload parfor nodes into SYCL kernels.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`define_pipelines <numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines>`\ ()
+        - Child classes override this to customize the pipelines in use.
+
+
+   .. rubric:: Members
+
+   .. py:method:: define_pipelines()
+
+      Child classes override this to customize the pipelines in use.
+
+
+
+
+
+.. py:class:: DpjitCompilerMlir(typingctx, targetctx, library, args, return_type, flags, locals)
+
+   Bases: :py:obj:`DpjitCompiler`
+
+   Dpex's compiler pipeline to offload parfor nodes into SYCL kernels.
+
+
+
+
+Functions
+---------
+.. py:function:: get_compiler(use_mlir)
+
+
+
+
+
