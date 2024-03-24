@@ -134,6 +134,8 @@ Mathematical operations
 Operators
 =========
 
+.. include:: ./operators.rst
+
 General Python features
 =======================
 
