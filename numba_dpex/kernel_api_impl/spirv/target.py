@@ -24,10 +24,8 @@ from numba.core.typing import cmathdecl, enumdecl, npydecl
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
-from numba_dpex.core.typeconv import to_usm_ndarray
 from numba_dpex.core.types import IntEnumLiteral, USMNdArray
 from numba_dpex.core.typing import dpnpdecl
-from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 from numba_dpex.utils import address_space, calling_conv
@@ -132,18 +130,10 @@ class SPIRVTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-        except ValueError:
-            # When an array-like kernel argument is not recognized by
-            # numba-dpex, this additional check sees if the array-like object
-            # implements the __sycl_usm_array_interface__ protocol. For such
-            # cases, we treat the object as an UsmNdArray type.
-            try:
-                suai_attrs = get_info_from_suai(val)
-                return to_usm_ndarray(suai_attrs)
-            except Exception as err:
-                raise UnsupportedKernelArgumentError(
-                    type=str(type(val)), value=val
-                ) from err
+        except ValueError as err:
+            raise UnsupportedKernelArgumentError(
+                type=str(type(val)), value=val
+            ) from err
 
         return super().resolve_argument_type(val)
 
