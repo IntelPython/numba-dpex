@@ -37,7 +37,7 @@ to the compiled kernel. Once called with the necessary  arguments, the
     * Numba-dpex currently limits the maximum allowed global range size to
       ``2^31-1``. It is due to the capabilities of current OpenCL GPU backends
       that generally do not support more than 32-bit global range sizes. A
-      kernel requesting a large global range than that will not execute and a
+      kernel requesting a larger global range than that will not execute and a
       ``dpctl._sycl_queue.SyclKernelSubmitError`` will get raised.
 
       The Intel dpcpp SYCL compiler does handle greater than 32-bit global
@@ -46,8 +46,8 @@ to the compiled kernel. Once called with the necessary  arguments, the
       32-bit global range. Such a feature is not yet available in numba-dpex.
 
     * When launching an nd-range kernel, if the number of work-items for a
-      particular dimension of a wor-group exceeds the maximum device capability,
-      it can result in undefined behavior.
+      particular dimension of a work-group exceeds the maximum device
+      capability, it can result in undefined behavior.
 
     The maximum allowed work-items for a device can be queried programmatically
     as shown in :ref:`ex_max_work_item`.
