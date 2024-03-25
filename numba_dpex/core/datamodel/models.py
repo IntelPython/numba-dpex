@@ -4,7 +4,7 @@
 
 from llvmlite import ir as llvmir
 from numba.core import datamodel, types
-from numba.core.datamodel.models import PrimitiveModel, StructModel
+from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
 from numba_dpex.core.exceptions import UnreachableError
@@ -26,6 +26,7 @@ from ..types import (
     DpctlSyclQueue,
     DpnpNdArray,
     IntEnumLiteral,
+    KernelDispatcherType,
     NdRangeType,
     RangeType,
     USMNdArray,
@@ -406,3 +407,6 @@ register_model(DpctlMDLocalAccessorType)(DpctlMDLocalAccessorModel)
 
 # Register the LocalAccessorType type
 register_model(LocalAccessorType)(LocalAccessorModel)
+
+# Register the KernelDispatcherType type
+register_model(KernelDispatcherType)(OpaqueModel)

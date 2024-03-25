@@ -6,12 +6,9 @@
 numba_dpex.experimental module.
 """
 
-from numba.core.datamodel import DataModelManager, models
-from numba.core.extending import register_model
+from numba.core.datamodel import DataModelManager
 
 import numba_dpex.core.datamodel.models as dpex_core_models
-
-from .types import KernelDispatcherType
 
 
 def _init_exp_data_model_manager() -> DataModelManager:
@@ -33,4 +30,3 @@ def _init_exp_data_model_manager() -> DataModelManager:
 exp_dmm = _init_exp_data_model_manager()
 
 # Register any new type that should go into numba.core.datamodel.default_manager
-register_model(KernelDispatcherType)(models.OpaqueModel)
