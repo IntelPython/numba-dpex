@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pre-commit-config.json
+
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
@@ -47,6 +49,11 @@ repos:
         args: ["-i"]
         exclude: "numba_dpex/dpnp_iface"
         types_or: [c++, c]
+-   repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.12.0
+    hooks:
+    -   id: pretty-format-toml
+        args: [--autofix]
 -   repo: local
     hooks:
     - id: pylint

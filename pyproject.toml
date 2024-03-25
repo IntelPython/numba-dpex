@@ -1,79 +1,83 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=42",
+  "scikit-build>=0.13",
+  "cmake>=3.18",
+  "ninja",
+  "numba>=0.58",
+  "versioneer-518"
+]
+
 [tool.black]
 exclude = "versioneer.py|numba_dpex/_version.py"
 line-length = 80
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-line_length = 80
-skip = ["versioneer.py", "numba_dpex/_version.py"]
-
-[tool.coverage.run]
-branch = true
-source = [
-    "numba_dpex"
-]
-omit = [
-    "numba_dpex/tests/*",
-    "numba_dpex/_version.py",
-]
-concurrency = [
-    "multiprocessing",
-]
-parallel = true
-
 [tool.coverage.report]
-precision = 2
-omit = [
-    "numba_dpex/tests/*",
-    "numba_dpex/_version.py",
-]
 exclude_lines = [
   "pragma: no cover",
   "raise NotImplementedError",
   "if config.DEBUG:",
   "@register_jitable",
-  "def dpnp_impl",
+  "def dpnp_impl"
+]
+omit = [
+  "numba_dpex/tests/*",
+  "numba_dpex/_version.py"
+]
+precision = 2
+
+[tool.coverage.run]
+branch = true
+concurrency = [
+  "multiprocessing"
+]
+omit = [
+  "numba_dpex/tests/*",
+  "numba_dpex/_version.py"
+]
+parallel = true
+source = [
+  "numba_dpex"
 ]
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "numba_dpex/_version.py"
-versionfile_build = "numba_dpex/_version.py"
-parentdir_prefix = ""
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 80
+multi_line_output = 3
+skip = ["versioneer.py", "numba_dpex/_version.py"]
+use_parentheses = true
 
 [tool.pylint]
 disable = [
-    "fixme"
+  "fixme"
 ]
-
-[build-system]
-requires = [
-    "setuptools>=42",
-    "scikit-build>=0.13",
-    "cmake>=3.18",
-    "ninja",
-    "numba>=0.58",
-    "versioneer-518"
-]
-build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-minversion = "6.0"
-norecursedirs= [
-    ".*", "*.egg*", "build", "dist", "conda-recipe",
-]
-xfail_strict = true
 addopts = [
-    "--disable-warnings",
-    "--strict",
-    "--durations=20",
-    "-ra -vv",
+  "--disable-warnings",
+  "--strict",
+  "--durations=20",
+  "-ra -vv"
+]
+minversion = "6.0"
+norecursedirs = [
+  ".*",
+  "*.egg*",
+  "build",
+  "dist",
+  "conda-recipe"
 ]
 testpaths = [
-    "numba_dpex/tests"
+  "numba_dpex/tests"
 ]
+xfail_strict = true
+
+[tool.versioneer]
+VCS = "git"
+parentdir_prefix = ""
+style = "pep440"
+versionfile_build = "numba_dpex/_version.py"
+versionfile_source = "numba_dpex/_version.py"
