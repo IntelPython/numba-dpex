@@ -108,7 +108,7 @@ def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
                         gidx,
                     ),
                 ),
-                *modified_kernel_args
+                *modified_kernel_args,
             )
 
 
