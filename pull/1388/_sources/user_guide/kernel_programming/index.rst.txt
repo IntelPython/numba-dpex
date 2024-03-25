@@ -59,7 +59,7 @@ arguments are passed by value.
 Supported array types
 ---------------------
 - `dpctl.tensor.usm_ndarray`_ : A SYCL-based Python Array API complaint tensor.
-- `dpnp.ndarray`_ :  A ``numpy.ndarray`` type container that supports SYCL USM memory allocation.
+- `dpnp.ndarray`_ :  A ``numpy.ndarray``-like array container that supports SYCL USM memory allocation.
 
 Scalar types
 ------------
