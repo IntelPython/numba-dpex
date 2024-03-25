@@ -36,6 +36,8 @@ Overview
      - Numba-dpex type corresponding to
    * - :py:obj:`RangeType <numba_dpex.core.types.RangeType>`
      - Numba-dpex type corresponding to
+   * - :py:obj:`KernelDispatcherType <numba_dpex.core.types.KernelDispatcherType>`
+     - The type of KernelDispatcher dispatchers
    * - :py:obj:`USMNdArray <numba_dpex.core.types.USMNdArray>`
      - A type class to represent dpctl.tensor.usm_ndarray.
 
@@ -213,6 +215,33 @@ Classes
 
    Numba-dpex type corresponding to
    :class:`numba_dpex.kernel_api.ranges.Range`
+
+
+
+
+.. py:class:: KernelDispatcherType(dispatcher)
+
+   Bases: :py:obj:`numba.core.types.Dispatcher`
+
+   The type of KernelDispatcher dispatchers
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.KernelDispatcherType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
 
 
 

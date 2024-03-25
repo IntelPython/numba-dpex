@@ -42,6 +42,8 @@ Overview
      - The Numba type to represent an dpnp.ndarray. The type has the same
    * - :py:obj:`IntEnumLiteral <numba_dpex.core.IntEnumLiteral>`
      - A Literal type for IntEnum objects. The type contains the original Python
+   * - :py:obj:`KernelDispatcherType <numba_dpex.core.KernelDispatcherType>`
+     - The type of KernelDispatcher dispatchers
    * - :py:obj:`NdRangeType <numba_dpex.core.NdRangeType>`
      - Numba-dpex type corresponding to
    * - :py:obj:`RangeType <numba_dpex.core.RangeType>`
@@ -203,6 +205,33 @@ Classes
       Check whether this type can be converted to the *other*.
       If successful, must return a string describing the conversion, e.g.
       "exact", "promote", "unsafe", "safe"; otherwise None is returned.
+
+
+
+
+.. py:class:: KernelDispatcherType(dispatcher)
+
+   Bases: :py:obj:`numba.core.types.Dispatcher`
+
+   The type of KernelDispatcher dispatchers
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.KernelDispatcherType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
 
 
 
