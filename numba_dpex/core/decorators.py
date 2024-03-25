@@ -12,8 +12,6 @@ from numba.core.target_extension import (
     target_registry,
 )
 
-from numba_dpex.core import config
-from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
@@ -333,11 +331,8 @@ def dpjit(*args, **kws):
         warn("pipeline class is set for dpjit and is ignored", RuntimeWarning)
         del kws["pipeline_class"]
 
-    use_mlir = kws.pop("use_mlir", bool(config.USE_MLIR))
-
     kws.update({"nopython": True})
     kws.update({"parallel": True})
-    kws.update({"pipeline_class": get_compiler(use_mlir)})
 
     kws.update({"_target": DPEX_TARGET_NAME})
 

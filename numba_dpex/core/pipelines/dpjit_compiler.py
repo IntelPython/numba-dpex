@@ -37,8 +37,6 @@ class _DpjitPassBuilder(object):
     execution.
     """
 
-    _use_mlir = False
-
     @staticmethod
     def define_typed_pipeline(state, name="dpex_dpjit_typed"):
         """Returns the typed part of the nopython pipeline"""
@@ -72,15 +70,6 @@ class _DpjitPassBuilder(object):
     ):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
-
-        flags = state.flags
-        if cls._use_mlir or hasattr(flags, "use_mlir") and flags.use_mlir:
-            from numba_mlir.mlir.passes import MlirReplaceParfors
-
-            pm.add_pass(
-                MlirReplaceParfors,
-                "Lower parfor using MLIR pipeline",
-            )
 
         # legalize
         pm.add_pass(
@@ -118,10 +107,6 @@ class _DpjitPassBuilder(object):
         return pm
 
 
-class _DpjitPassBuilderMlir(_DpjitPassBuilder):
-    _use_mlir = True
-
-
 class DpjitCompiler(CompilerBase):
     """Dpex's compiler pipeline to offload parfor nodes into SYCL kernels."""
 
@@ -138,11 +123,3 @@ class DpjitCompiler(CompilerBase):
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             raise UnsupportedCompilationModeError()
         return pms
-
-
-class DpjitCompilerMlir(DpjitCompiler):
-    _pass_builder = _DpjitPassBuilderMlir
-
-
-def get_compiler(use_mlir):
-    return DpjitCompilerMlir if use_mlir else DpjitCompiler
