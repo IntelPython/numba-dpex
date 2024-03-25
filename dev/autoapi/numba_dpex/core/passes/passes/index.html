@@ -253,16 +253,13 @@
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass" title="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstantSizeStaticLocalMemoryPass</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="numba_dpex.core.passes.passes.NoPythonBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a></p></td>
 <td><p>Base class for function passes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="numba_dpex.core.passes.passes.NoPythonBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a></p></td>
-<td><p>Base class for function passes</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics" title="numba_dpex.core.passes.passes.DumpParforDiagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DumpParforDiagnostics</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics" title="numba_dpex.core.passes.passes.DumpParforDiagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DumpParforDiagnostics</span></code></a></p></td>
 <td><p>Base class for analysis passes (no modification made to state)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualNameDisambiguationLowering</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualNameDisambiguationLowering</span></code></a></p></td>
 <td><p>Qualified name disambiguation lowering pass</p></td>
 </tr>
 </tbody>
@@ -272,39 +269,14 @@
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ConstantSizeStaticLocalMemoryPass</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NoPythonBackend</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
 <p>Base class for function passes</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass" title="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
-<td><p>Preprocessing for data-parallel computations.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass" title="Link to this definition">#</a></dt>
-<dd><p>Preprocessing for data-parallel computations.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NoPythonBackend</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
-<p>Base class for function passes</p>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
-<table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass" title="numba_dpex.core.passes.passes.NoPythonBackend.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
 <td><p>Back-end: Generate LLVM IR from Numba IR, compile to machine code</p></td>
@@ -327,9 +299,9 @@
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.AnalysisPass</span></code></p>
 <p>Base class for analysis passes (no modification made to state)</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
-<table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass" title="numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
 <td><p>Runs the pass itself. Must return True/False depending on whether</p></td>
@@ -371,9 +343,9 @@ Therefore, we utilize <cite>unique_name</cite> to resolve the ambiguity.</p>
 </dd>
 </dl>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
-<table class="summarytable docutils align-default" id="id5">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
+<table class="summarytable docutils align-default" id="id4">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
 <td><p>Runs the pass itself. Must return True/False depending on whether</p></td>
@@ -437,10 +409,6 @@ statement level modification took place.</p>
 <li><a class="reference internal" href="#">numba_dpex.core.passes.passes</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass"><code class="docutils literal notranslate"><span class="pre">ConstantSizeStaticLocalMemoryPass</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass"><code class="docutils literal notranslate"><span class="pre">ConstantSizeStaticLocalMemoryPass.run_pass()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend"><code class="docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass"><code class="docutils literal notranslate"><span class="pre">NoPythonBackend.run_pass()</span></code></a></li>
 </ul>

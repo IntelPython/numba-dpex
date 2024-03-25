@@ -19,7 +19,6 @@ Subpackages
    pipelines/index.rst
    runtime/index.rst
    targets/index.rst
-   typeconv/index.rst
    types/index.rst
    typing/index.rst
    utils/index.rst

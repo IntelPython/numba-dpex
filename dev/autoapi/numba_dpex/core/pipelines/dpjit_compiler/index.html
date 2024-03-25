@@ -256,19 +256,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler" title="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpjitCompiler</span></code></a></p></td>
 <td><p>Dpex’s compiler pipeline to offload parfor nodes into SYCL kernels.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir" title="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpjitCompilerMlir</span></code></a></p></td>
-<td><p>Dpex’s compiler pipeline to offload parfor nodes into SYCL kernels.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
-<table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.get_compiler" title="numba_dpex.core.pipelines.dpjit_compiler.get_compiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_compiler</span></code></a>(use_mlir)</p></td>
-<td><p>-</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -281,9 +268,9 @@
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler.CompilerBase</span></code></p>
 <p>Dpex’s compiler pipeline to offload parfor nodes into SYCL kernels.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
-<table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines" title="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_pipelines</span></code></a>()</p></td>
 <td><p>Child classes override this to customize the pipelines in use.</p></td>
@@ -299,21 +286,6 @@
 </dd></dl>
 
 </dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpjitCompilerMlir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler" title="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpjitCompiler</span></code></a></p>
-<p>Dpex’s compiler pipeline to offload parfor nodes into SYCL kernels.</p>
-</dd></dl>
-
-</section>
-<section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.pipelines.dpjit_compiler.get_compiler">
-<span class="sig-name descname"><span class="pre">get_compiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_mlir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.dpjit_compiler.get_compiler" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 </section>
 </section>
@@ -365,11 +337,6 @@
 <li><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines"><code class="docutils literal notranslate"><span class="pre">DpjitCompiler.define_pipelines()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompilerMlir"><code class="docutils literal notranslate"><span class="pre">DpjitCompilerMlir</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#functions">Functions</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.pipelines.dpjit_compiler.get_compiler"><code class="docutils literal notranslate"><span class="pre">get_compiler()</span></code></a></li>
 </ul>
 </li>
 </ul>

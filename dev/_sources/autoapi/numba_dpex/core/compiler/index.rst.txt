@@ -38,7 +38,7 @@ Functions
    :rtype: cres
 
    :raises KernelHasReturnValueError: If the compiled function returns a
-   :raises non-void value.:
+       non-void value.
 
 
 

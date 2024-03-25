@@ -15,8 +15,6 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`ConstantSizeStaticLocalMemoryPass <numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass>`
-     - Base class for function passes
    * - :py:obj:`NoPythonBackend <numba_dpex.core.passes.passes.NoPythonBackend>`
      - Base class for function passes
    * - :py:obj:`DumpParforDiagnostics <numba_dpex.core.passes.passes.DumpParforDiagnostics>`
@@ -29,35 +27,6 @@ Overview
 
 Classes
 -------
-
-.. py:class:: ConstantSizeStaticLocalMemoryPass
-
-   Bases: :py:obj:`numba.core.compiler_machinery.FunctionPass`
-
-   Base class for function passes
-
-
-
-   .. rubric:: Overview
-
-
-   .. list-table:: Methods
-      :header-rows: 0
-      :widths: auto
-      :class: summarytable
-
-      * - :py:obj:`run_pass <numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass>`\ (state)
-        - Preprocessing for data-parallel computations.
-
-
-   .. rubric:: Members
-
-   .. py:method:: run_pass(state)
-
-      Preprocessing for data-parallel computations.
-
-
-
 
 .. py:class:: NoPythonBackend
 
