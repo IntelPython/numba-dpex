@@ -7,6 +7,7 @@ from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
 from .kernel_api.literal_intenum import IntEnumLiteral
 from .kernel_api.ranges import NdRangeType, RangeType
+from .kernel_dispatcher_type import KernelDispatcherType
 from .numba_types_short_names import (
     b1,
     bool_,
@@ -38,6 +39,7 @@ __all__ = [
     "DpctlSyclEvent",
     "DpnpNdArray",
     "IntEnumLiteral",
+    "KernelDispatcherType",
     "NdRangeType",
     "RangeType",
     "USMNdArray",
