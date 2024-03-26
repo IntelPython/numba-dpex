@@ -8,8 +8,8 @@ from types import FunctionType
 from numba.core import ir
 
 from numba_dpex.core import config
-from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
+from numba_dpex.core.parfors.compiler import compile_numba_ir_with_dpex
 from numba_dpex.kernel_api_impl.spirv import spirv_generator
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
@@ -122,7 +122,7 @@ class SpirvKernel(KernelInterface):
         self._target_context = target_ctx
         self._typing_context = typing_ctx
 
-        cres = compile_with_dpex(
+        cres = compile_numba_ir_with_dpex(
             self._func,
             self._pyfunc_name,
             args=args,

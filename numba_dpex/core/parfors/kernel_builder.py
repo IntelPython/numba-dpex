@@ -24,13 +24,13 @@ from numba.core.ir_utils import (
 from numba.core.typing import signature
 from numba.parfors import parfor
 
-import numba_dpex as dpex
 from numba_dpex.core import config
-from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
+from numba_dpex.kernel_api_impl.spirv import spirv_generator
 
 from ..descriptor import dpex_kernel_target
 from ..types import DpnpNdArray
 from ..utils.kernel_templates import RangeKernelTemplate
+from .compiler import compile_numba_ir_with_dpex
 
 
 class ParforKernel:
@@ -66,16 +66,28 @@ def _print_body(body_dict):
 def _compile_kernel_parfor(
     sycl_queue, kernel_name, func_ir, argtypes, debug=False
 ):
-    # Create a SPIRVKernel object
-    kernel = SpirvKernel(func_ir, kernel_name)
 
-    # compile the kernel
-    kernel.compile(
+    cres = compile_numba_ir_with_dpex(
+        pyfunc=func_ir,
+        pyfunc_name=kernel_name,
         args=argtypes,
-        typing_ctx=dpex_kernel_target.typing_context,
-        target_ctx=dpex_kernel_target.target_context,
+        return_type=None,
         debug=debug,
-        compile_flags=None,
+        is_kernel=True,
+        typing_context=dpex_kernel_target.typing_context,
+        target_context=dpex_kernel_target.target_context,
+        extra_compile_flags=None,
+    )
+    cres.library.inline_threshold = config.INLINE_THRESHOLD
+    cres.library._optimize_final_module()
+    func = cres.library.get_function(cres.fndesc.llvm_func_name)
+    kernel = dpex_kernel_target.target_context.prepare_spir_kernel(
+        func, cres.signature.args
+    )
+    spirv_module = spirv_generator.llvm_to_spirv(
+        dpex_kernel_target.target_context,
+        kernel.module.__str__(),
+        kernel.module.as_bitcode(),
     )
 
     dpctl_create_program_from_spirv_flags = []
@@ -83,14 +95,14 @@ def _compile_kernel_parfor(
         # if debug is ON we need to pass additional flags to igc.
         dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
 
-    # create a program
+    # create a sycl::kernel_bundle
     kernel_bundle = dpctl_prog.create_program_from_spirv(
         sycl_queue,
-        kernel.device_driver_ir_module,
+        spirv_module,
         " ".join(dpctl_create_program_from_spirv_flags),
     )
-    #  create a kernel
-    sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+    #  create a sycl::kernel
+    sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.name)
 
     return sycl_kernel
 
