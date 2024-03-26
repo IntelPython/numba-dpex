@@ -138,45 +138,32 @@ class SPIRVTargetContext(BaseContext):
 
     implement_powi_as_math_call = True
 
-    def _gen_arg_addrspace_md(self, fn):
-        """Generate kernel_arg_addr_space metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        codes = []
+    def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
+        super().__init__(typingctx, target)
 
-        for a in fnty.args:
-            if cgutils.is_pointer(a):
-                codes.append(address_space.GLOBAL)
-            else:
-                codes.append(address_space.PRIVATE)
+    def init(self):
+        """Called by the super().__init__ constructor to initalize the child
+        class.
+        """
+        # pylint: disable=import-outside-toplevel
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
 
-        consts = [llvmir.Constant(llvmir.IntType(32), x) for x in codes]
-        name = llvmir.MetaDataString(mod, "kernel_arg_addr_space")
-        return mod.add_metadata([name] + consts)
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
+        self._target_data = ll.create_target_data(
+            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
+        )
 
-    def _gen_arg_type(self, fn):
-        """Generate kernel_arg_type metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_type")
-        return mod.add_metadata([name] + consts)
+        # Override data model manager to SPIR model
+        self.data_model_manager = _init_data_model_manager()
+        self.extra_compile_options = {}
 
-    def _gen_arg_type_qual(self, fn):
-        """Generate kernel_arg_type_qual metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, "") for _ in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_type_qual")
-        return mod.add_metadata([name] + consts)
+        _lazy_init_dpnp_db()
 
-    def _gen_arg_base_type(self, fn):
-        """Generate kernel_arg_base_type metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_base_type")
-        return mod.add_metadata([name] + consts)
+        # we need to import it after, because before init it is None and
+        # variable is passed by value
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
+
+        self.ufunc_db = _dpnp_ufunc_db
 
     def _finalize_kernel_wrapper_module(self, fn):
         """Add metadata and calling convention to the wrapper function.
@@ -232,33 +219,6 @@ class SPIRVTargetContext(BaseContext):
         wrapper = module.get_function(wrapper.name)
         module.get_function(func.name).linkage = "internal"
         return wrapper
-
-    def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
-        super().__init__(typingctx, target)
-
-    def init(self):
-        """Called by the super().__init__ constructor to initalize the child
-        class.
-        """
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
-
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
-        self._target_data = ll.create_target_data(
-            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
-        )
-
-        # Override data model manager to SPIR model
-        self.data_model_manager = _init_data_model_manager()
-        self.extra_compile_options = {}
-
-        _lazy_init_dpnp_db()
-
-        # we need to import it after, because before init it is None and
-        # variable is passed by value
-        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
-
-        self.ufunc_db = _dpnp_ufunc_db
 
     def get_getattr(self, typ, attr):
         """
