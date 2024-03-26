@@ -8,7 +8,7 @@ call numba_dpex.kernel decorated function.
 import hashlib
 from collections import namedtuple
 from contextlib import ExitStack
-from typing import Tuple
+from typing import List, Tuple
 
 import numba.core.event as ev
 from llvmlite.binding.value import ValueRef
@@ -57,7 +57,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
     """
 
     def check_queue_equivalence_of_args(
-        self, py_func_name: str, args: [types.Type, ...]
+        self, py_func_name: str, args: List[types.Type]
     ):
         """Evaluates if all USMNdArray arguments passed to a kernel function
         has the same DpctlSyclQueue type.
@@ -139,7 +139,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
                 unsupported_argnum_list=unsupported_argnum_list,
             )
 
-    def check_arguments(self, py_func_name: str, args: [types.Type, ...]):
+    def check_arguments(self, py_func_name: str, args: List[types.Type]):
         """Checks arguments and queue of the input arguments.
 
         Raises:
