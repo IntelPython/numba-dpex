@@ -5,12 +5,3 @@ numba_dpex.core.utils
 .. py:module:: numba_dpex.core.utils
 
 
-Subpackages
------------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 3
-
-   kernel_templates/index.rst
-
-

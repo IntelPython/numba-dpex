@@ -1,8 +1,10 @@
 
-numba_dpex.core.utils.kernel_templates
-======================================
+:orphan:
 
-.. py:module:: numba_dpex.core.utils.kernel_templates
+numba_dpex.core.parfors.kernel_templates.range_kernel_template
+==============================================================
+
+.. py:module:: numba_dpex.core.parfors.kernel_templates.range_kernel_template
 
 
 Overview
@@ -13,7 +15,7 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`RangeKernelTemplate <numba_dpex.core.utils.kernel_templates.RangeKernelTemplate>`
+   * - :py:obj:`RangeKernelTemplate <numba_dpex.core.parfors.kernel_templates.range_kernel_template.RangeKernelTemplate>`
      - A template class to generate a numba_dpex.kernel decorated function
 
 
@@ -36,9 +38,9 @@ Classes
       :widths: auto
       :class: summarytable
 
-      * - :py:obj:`dump_kernel_string <numba_dpex.core.utils.kernel_templates.RangeKernelTemplate.dump_kernel_string>`\ ()
+      * - :py:obj:`dump_kernel_string <numba_dpex.core.parfors.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_string>`\ ()
         - Helper to print the kernel function string.
-      * - :py:obj:`dump_kernel_ir <numba_dpex.core.utils.kernel_templates.RangeKernelTemplate.dump_kernel_ir>`\ ()
+      * - :py:obj:`dump_kernel_ir <numba_dpex.core.parfors.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_ir>`\ ()
         - Helper to dump the Numba IR for the RangeKernelTemplate.
 
 

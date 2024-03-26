@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.utils.kernel_templates.kernel_template_iface - numba-dpex documentation</title>
+        <title>numba_dpex.core.parfors.kernel_templates.reduction_template - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -245,16 +245,19 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.core.utils.kernel_templates.kernel_template_iface">
-<span id="numba-dpex-core-utils-kernel-templates-kernel-template-iface"></span><h1>numba_dpex.core.utils.kernel_templates.kernel_template_iface<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_templates.kernel_template_iface" title="Link to this heading">#</a></h1>
+          <section id="module-numba_dpex.core.parfors.kernel_templates.reduction_template">
+<span id="numba-dpex-core-parfors-kernel-templates-reduction-template"></span><h1>numba_dpex.core.parfors.kernel_templates.reduction_template<a class="headerlink" href="#module-numba_dpex.core.parfors.kernel_templates.reduction_template" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelTemplateInterface</span></code></a></p></td>
-<td><p>-</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate" title="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TreeReduceIntermediateKernelTemplate</span></code></a></p></td>
+<td><p>The class to build reduction main kernel_txt template and</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate" title="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RemainderReduceIntermediateKernelTemplate</span></code></a></p></td>
+<td><p>The class to build reduction remainder kernel_txt template and</p></td>
 </tr>
 </tbody>
 </table>
@@ -263,32 +266,74 @@
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelTemplateInterface</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="Link to this definition">#</a></dt>
-<dd><p class="rubric">Overview</p>
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TreeReduceIntermediateKernelTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_group_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../kernel_template_iface/index.html#numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface</span></code></a></p>
+<p>The class to build reduction main kernel_txt template and
+compiled Numba functionIR.</p>
+<p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string" title="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_string</span></code></a>()</p></td>
-<td><p><span class="summarylabel">abc</span> -</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string" title="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_string</span></code></a>()</p></td>
+<td><p>Helper to print the kernel function string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir" title="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_ir</span></code></a>()</p></td>
-<td><p><span class="summarylabel">abc</span> -</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir" title="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_ir</span></code></a>()</p></td>
+<td><p>Helper to dump the Numba IR for a</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="rubric">Members</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string">
+<span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string" title="Link to this definition">#</a></dt>
+<dd><p>Helper to print the kernel function string.</p>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir">
+<span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir" title="Link to this definition">#</a></dt>
+<dd><p>Helper to dump the Numba IR for a
+TreeReduceIntermediateKernelTemplate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RemainderReduceIntermediateKernelTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legal_loop_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size_mod_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_sum_size_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_sum_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_sum_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../kernel_template_iface/index.html#numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface</span></code></a></p>
+<p>The class to build reduction remainder kernel_txt template and
+compiled Numba functionIR.</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string" title="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_string</span></code></a>()</p></td>
+<td><p>Helper to print the kernel function string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir" title="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_kernel_ir</span></code></a>()</p></td>
+<td><p>Helper to dump the Numba IR for the</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string">
+<span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string" title="Link to this definition">#</a></dt>
+<dd><p>Helper to print the kernel function string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir">
+<span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir" title="Link to this definition">#</a></dt>
+<dd><p>Helper to dump the Numba IR for the
+RemainderReduceIntermediateKernelTemplate.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -335,12 +380,17 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.utils.kernel_templates.kernel_template_iface</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.core.parfors.kernel_templates.reduction_template</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="docutils literal notranslate"><span class="pre">KernelTemplateInterface</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string"><code class="docutils literal notranslate"><span class="pre">KernelTemplateInterface.dump_kernel_string()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir"><code class="docutils literal notranslate"><span class="pre">KernelTemplateInterface.dump_kernel_ir()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate"><code class="docutils literal notranslate"><span class="pre">TreeReduceIntermediateKernelTemplate</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string"><code class="docutils literal notranslate"><span class="pre">TreeReduceIntermediateKernelTemplate.dump_kernel_string()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir"><code class="docutils literal notranslate"><span class="pre">TreeReduceIntermediateKernelTemplate.dump_kernel_ir()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate"><code class="docutils literal notranslate"><span class="pre">RemainderReduceIntermediateKernelTemplate</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string"><code class="docutils literal notranslate"><span class="pre">RemainderReduceIntermediateKernelTemplate.dump_kernel_string()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir"><code class="docutils literal notranslate"><span class="pre">RemainderReduceIntermediateKernelTemplate.dump_kernel_ir()</span></code></a></li>
 </ul>
 </li>
 </ul>

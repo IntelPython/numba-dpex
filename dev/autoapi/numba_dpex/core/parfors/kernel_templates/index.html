@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.kernel_interface.spirv_kernel - numba-dpex documentation</title>
+        <title>numba_dpex.core.parfors.kernel_templates - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -145,7 +145,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -239,76 +239,20 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.core.kernel_interface.spirv_kernel">
-<span id="numba-dpex-core-kernel-interface-spirv-kernel"></span><h1>numba_dpex.core.kernel_interface.spirv_kernel<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.spirv_kernel" title="Link to this heading">#</a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
-<table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel" title="numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpirvKernel</span></code></a></p></td>
-<td><p>An interface for compute kernel that was generated either from a</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpirvKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../kernel_base/index.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface" title="numba_dpex.core.kernel_interface.kernel_base.KernelInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_interface.kernel_base.KernelInterface</span></code></a></p>
-<p>An interface for compute kernel that was generated either from a
-Python function object or as a Numba IR FunctionType object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>metaclass</strong> (<em>optional</em>) – The interface is derived from abc.ABCMeta.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>NotImplementedError</strong> – The interface does not implement any of the</p></li>
-<li><p><strong>methods and subclasses are required to implement them.</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
-<table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile" title="numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compile</span></code></a>(target_ctx, typing_ctx, args, debug, compile_flags)</p></td>
-<td><p>Compiles a kernel using numba_dpex.core.compiler.Compiler.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile">
-<span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing_ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_flags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile" title="Link to this definition">#</a></dt>
-<dd><p>Compiles a kernel using numba_dpex.core.compiler.Compiler.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>debug</strong> (<em>_type_</em>) – _description_</p></li>
-<li><p><strong>compile_flags</strong> (<em>_type_</em>) – _description_</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
+          <section id="module-numba_dpex.core.parfors.kernel_templates">
+<span id="numba-dpex-core-parfors-kernel-templates"></span><h1>numba_dpex.core.parfors.kernel_templates<a class="headerlink" href="#module-numba_dpex.core.parfors.kernel_templates" title="Link to this heading">#</a></h1>
+<p>Provides string templates for numba_dpex.kernel decorated functions.</p>
+<p>During lowering of a parfor node using the SPIRVKernelTarget, the node is
+first converted into a kernel function. The module provides a set of templates
+to generate the basic stub of a kernel function. The string template is
+compiled down to Numba IR using the Numba compiler front end and then the
+necessary body of the kernel function is inserted directly as Numba IR.</p>
 </section>
 
         </article>
@@ -339,34 +283,8 @@ Python function object or as a Numba IR FunctionType object.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.kernel_interface.spirv_kernel</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel"><code class="docutils literal notranslate"><span class="pre">SpirvKernel</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile"><code class="docutils literal notranslate"><span class="pre">SpirvKernel.compile()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
