@@ -29,8 +29,8 @@ from numba_dpex.kernel_api_impl.spirv import spirv_generator
 
 from ..descriptor import dpex_kernel_target
 from ..types import DpnpNdArray
-from ..utils.kernel_templates import RangeKernelTemplate
 from .compiler import compile_numba_ir_with_dpex
+from .kernel_templates.range_kernel_template import RangeKernelTemplate
 
 
 class ParforKernel:
