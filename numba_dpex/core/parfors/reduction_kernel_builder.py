@@ -21,16 +21,16 @@ from numba.core.typing import signature
 
 from numba_dpex.core.types import DpctlSyclQueue
 
-from ..utils.kernel_templates.reduction_template import (
-    RemainderReduceIntermediateKernelTemplate,
-    TreeReduceIntermediateKernelTemplate,
-)
 from .kernel_builder import _print_body  # saved for debug
 from .kernel_builder import (
     ParforKernel,
     _compile_kernel_parfor,
     _to_scalar_from_0d,
     update_sentinel,
+)
+from .kernel_templates.reduction_template import (
+    RemainderReduceIntermediateKernelTemplate,
+    TreeReduceIntermediateKernelTemplate,
 )
 
 

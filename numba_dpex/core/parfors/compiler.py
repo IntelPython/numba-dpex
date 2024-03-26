@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from types import FunctionType
-
 from numba.core import compiler, ir
 from numba.core import types as numba_types
 from numba.core.compiler_lock import global_compiler_lock
@@ -17,7 +15,7 @@ from numba_dpex.core.pipelines.kernel_compiler import KernelCompiler
 
 
 @global_compiler_lock
-def compile_with_dpex(
+def compile_numba_ir_with_dpex(
     pyfunc,
     pyfunc_name,
     args,
