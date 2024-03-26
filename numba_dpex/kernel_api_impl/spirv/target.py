@@ -28,6 +28,7 @@ from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 from numba_dpex.utils import address_space, calling_conv
 
 from . import codegen
+from .overloads._registry import registry as spirv_registry
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -137,6 +138,7 @@ class SPIRVTargetContext(BaseContext):
     """
 
     implement_powi_as_math_call = True
+    allow_dynamic_globals = True
 
     def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
         super().__init__(typingctx, target)
@@ -295,9 +297,6 @@ class SPIRVTargetContext(BaseContext):
         # pylint: disable=import-outside-toplevel
         from numba_dpex import printimpl
         from numba_dpex.dpnp_iface import dpnpimpl
-        from numba_dpex.experimental._kernel_dpcpp_spirv_overloads._registry import (
-            registry as spirv_registry,
-        )
         from numba_dpex.ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)

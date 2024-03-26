@@ -7,18 +7,15 @@ from numba.core.extending import overload
 
 import numba_dpex as dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
-from numba_dpex.experimental.target import (
-    DPEX_KERNEL_EXP_TARGET_NAME,
-    dpex_exp_kernel_target,
-)
 from numba_dpex.kernel_api import Item, Range
+from numba_dpex.kernel_api_impl.spirv.target import SPIRV_TARGET_NAME
 
 
 def scalar_add(a, b):
     return a + b
 
 
-@overload(scalar_add, target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload(scalar_add, target=SPIRV_TARGET_NAME)
 def _ol_scalar_add(a, b):
     def ol_scalar_add_impl(a, b):
         return a + b
@@ -61,8 +58,5 @@ def test_overload_registration():
         return found_key
 
     assert check_for_overload_registration(
-        dpex_exp_kernel_target.target_context, "_ol_scalar_add"
-    )
-    assert not check_for_overload_registration(
         dpex_kernel_target.target_context, "_ol_scalar_add"
     )

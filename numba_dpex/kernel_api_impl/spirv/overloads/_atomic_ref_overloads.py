@@ -13,6 +13,7 @@ from numba.extending import intrinsic, overload, overload_method
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.types.kernel_api.atomic_ref import AtomicRefType
 from numba_dpex.kernel_api import (
     AddressSpace,
     AtomicRef,
@@ -22,8 +23,7 @@ from numba_dpex.kernel_api import (
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.kernel_api_impl.spirv.target import CC_SPIR_FUNC
 
-from ...core.types.kernel_api.atomic_ref import AtomicRefType
-from ..target import DPEX_KERNEL_EXP_TARGET_NAME
+from ..target import SPIRV_TARGET_NAME
 from ._spv_atomic_inst_helper import (
     get_atomic_inst_name,
     get_memory_semantics_mask,
@@ -151,7 +151,7 @@ def _intrinsic_helper(
     return sig, gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_add")
 
@@ -170,7 +170,7 @@ def _atomic_sub_float_wrapper(gen_fn):
     return gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_sub(ty_context, ty_atomic_ref, ty_val):
     if ty_atomic_ref.dtype in (types.float32, types.float64):
         # dpcpp does not support ``__spirv_AtomicFSubEXT``. fetch_sub
@@ -184,32 +184,32 @@ def _intrinsic_fetch_sub(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_sub")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_min(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_min")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_max(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_max")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_and(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_and")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_or(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_or")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_fetch_xor(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_xor")
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_atomic_ref_ctor(
     ty_context, ref, ty_index, ty_retty_ref  # pylint: disable=unused-argument
 ):
@@ -242,7 +242,7 @@ def _intrinsic_atomic_ref_ctor(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_load(
     ty_context, ty_atomic_ref  # pylint: disable=unused-argument
 ):
@@ -304,7 +304,7 @@ def _intrinsic_load(
     return sig, _intrinsic_load_gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_store(
     ty_context, ty_atomic_ref, ty_val
 ):  # pylint: disable=unused-argument
@@ -363,7 +363,7 @@ def _intrinsic_store(
     return sig, _intrinsic_store_gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_exchange(
     ty_context, ty_atomic_ref, ty_val  # pylint: disable=unused-argument
 ):
@@ -429,7 +429,7 @@ def _intrinsic_exchange(
     return sig, _intrinsic_exchange_gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_compare_exchange(
     ty_context,  # pylint: disable=unused-argument
     ty_atomic_ref,
@@ -569,7 +569,7 @@ def _check_if_supported_ref(ref):
 @overload(
     AtomicRef,
     prefer_literal=True,
-    target=DPEX_KERNEL_EXP_TARGET_NAME,
+    target=SPIRV_TARGET_NAME,
 )
 def ol_atomic_ref(
     ref,
@@ -669,7 +669,7 @@ def ol_atomic_ref(
     return ol_atomic_ref_ctor_impl
 
 
-@overload_method(AtomicRefType, "fetch_add", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_add", target=SPIRV_TARGET_NAME)
 def ol_fetch_add(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_add`.
 
@@ -693,7 +693,7 @@ def ol_fetch_add(atomic_ref, val):
     return ol_fetch_add_impl
 
 
-@overload_method(AtomicRefType, "fetch_sub", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_sub", target=SPIRV_TARGET_NAME)
 def ol_fetch_sub(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_sub`.
 
@@ -717,7 +717,7 @@ def ol_fetch_sub(atomic_ref, val):
     return ol_fetch_sub_impl
 
 
-@overload_method(AtomicRefType, "fetch_min", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_min", target=SPIRV_TARGET_NAME)
 def ol_fetch_min(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_min`.
 
@@ -741,7 +741,7 @@ def ol_fetch_min(atomic_ref, val):
     return ol_fetch_min_impl
 
 
-@overload_method(AtomicRefType, "fetch_max", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_max", target=SPIRV_TARGET_NAME)
 def ol_fetch_max(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_max`.
 
@@ -765,7 +765,7 @@ def ol_fetch_max(atomic_ref, val):
     return ol_fetch_max_impl
 
 
-@overload_method(AtomicRefType, "fetch_and", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_and", target=SPIRV_TARGET_NAME)
 def ol_fetch_and(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_and`.
 
@@ -794,7 +794,7 @@ def ol_fetch_and(atomic_ref, val):
     return ol_fetch_and_impl
 
 
-@overload_method(AtomicRefType, "fetch_or", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_or", target=SPIRV_TARGET_NAME)
 def ol_fetch_or(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_or`.
 
@@ -823,7 +823,7 @@ def ol_fetch_or(atomic_ref, val):
     return ol_fetch_or_impl
 
 
-@overload_method(AtomicRefType, "fetch_xor", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "fetch_xor", target=SPIRV_TARGET_NAME)
 def ol_fetch_xor(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_xor`.
 
@@ -852,7 +852,7 @@ def ol_fetch_xor(atomic_ref, val):
     return ol_fetch_xor_impl
 
 
-@overload_method(AtomicRefType, "load", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "load", target=SPIRV_TARGET_NAME)
 def ol_load(atomic_ref):  # pylint: disable=unused-argument
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.load`.
 
@@ -868,7 +868,7 @@ def ol_load(atomic_ref):  # pylint: disable=unused-argument
     return ol_load_impl
 
 
-@overload_method(AtomicRefType, "store", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "store", target=SPIRV_TARGET_NAME)
 def ol_store(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.store`.
 
@@ -893,7 +893,7 @@ def ol_store(atomic_ref, val):
     return ol_store_impl
 
 
-@overload_method(AtomicRefType, "exchange", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(AtomicRefType, "exchange", target=SPIRV_TARGET_NAME)
 def ol_exchange(atomic_ref, val):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.exchange`.
 
@@ -921,7 +921,7 @@ def ol_exchange(atomic_ref, val):
 @overload_method(
     AtomicRefType,
     "compare_exchange",
-    target=DPEX_KERNEL_EXP_TARGET_NAME,
+    target=SPIRV_TARGET_NAME,
 )
 def ol_compare_exchange(
     atomic_ref,
