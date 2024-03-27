@@ -2,105 +2,165 @@
 .. include:: ./../../ext_links.txt
 
 Kernel Programming
-==================
+##################
 
-The tutorial covers the most important features of the KAPI kernel programming
-API and introduces the concepts needed to express data-parallel kernels in
-numba-dpex.
+The tutorial covers the numba-dpex kernel programming API (kapi) and introduces
+the concepts needed to write data-parallel kernels in numba-dpex.
 
 
-Preliminary concepts
---------------------
+.. Preliminary concepts
+.. --------------------
 
-Data parallelism
-++++++++++++++++
+.. Data parallelism
+.. ++++++++++++++++
 
-Single Program Multiple Data
-++++++++++++++++++++++++++++
+.. Single Program Multiple Data
+.. ++++++++++++++++++++++++++++
 
-Range v/s Nd-Range Kernels
-++++++++++++++++++++++++++
+.. Range v/s Nd-Range Kernels
+.. ++++++++++++++++++++++++++
 
-Work items and Work groups
-++++++++++++++++++++++++++
+.. Work items and Work groups
+.. ++++++++++++++++++++++++++
 
-Basic concepts
---------------
-
+Core concepts
+*************
 
 Writing a *range* kernel
-++++++++++++++++++++++++
+========================
 
-A *range* kernel represents the simplest form of parallelism that can be
-expressed in KAPI. A range kernel represents a data-parallel execution of the
-same function by a set of work items. In KAPI, an instance of the
-:py:class:`numba_dpex.kernel_api.Range` class represents the set of work items
-and each work item in the ``Range`` is represented by an instance of the
-:py:class:`numba_dpex.kernel_api.Item` class. As such these two classes are
-essential to writing a range kernel in KAPI.
-
-.. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
-   :language: python
-   :lines: 8-9, 11-15
-   :caption: **EXAMPLE:** A KAPI range kernel
-   :name: ex_kernel_declaration_vector_sum
-
-:ref:`ex_kernel_declaration_vector_sum` shows an example of a range kernel.
-Every range kernel requires its first argument to be an ``Item`` and
-needs to be launched via :py:func:`numba_dpex.experimental.launcher.call_kernel`
-by passing an instance a ``Range`` object.
-
-Do note that a ``Range`` object only controls the creation of work items, the
-distribution of work and data over a ``Range`` still needs to be defined by the
-user-written function. In the example, each work item access a single element of
-each of the three array and performs a single addition operation. It is possible
-to write the kernel differently so that each work item accesses multiple data
-elements or conditionally performs different amount of work. The data access
-patterns in a work item can have performance implications and programmers should
-refer a more topical material such as the `oneAPI GPU optimization guide`_ to
-learn more.
-
-A range kernel is meant to express a basic `parallel-for` calculation that is
-ideally suited for embarrassingly parallel kernels such as elementwise
-computations over ndarrays. The API for expressing a range kernel does not
-allow advanced features such as synchronization of work items and fine-grained
-control over memory allocation on a device.
+.. include:: ./writing-range-kernel.rst
 
 Writing an *nd-range* kernel
-++++++++++++++++++++++++++++
+============================
+
+.. include:: ./writing-ndrange-kernel.rst
+
+.. Launching a kernel
+.. ==================
+
+.. include:: ./call-kernel.rst
 
 The ``device_func`` decorator
-+++++++++++++++++++++++++++++
+=============================
 
-Supported mathematical operations
-+++++++++++++++++++++++++++++++++
+.. include:: ./device-functions.rst
 
-Supported Python operators
-++++++++++++++++++++++++++
 
-Supported kernel arguments
-++++++++++++++++++++++++++
+Supported types of kernel argument
+==================================
 
-Launching a kernel
-++++++++++++++++++
+A kapi kernel function can have both array and scalar arguments. At least one of
+the argument to every kernel function has to be an array. The requirement is
+enforced so that a execution queue can be inferred at the kernel launch stage.
+An array type argument is passed as a reference to the kernel and all scalar
+arguments are passed by value.
 
-Advanced topics
----------------
+Supported array types
+---------------------
+- `dpctl.tensor.usm_ndarray`_ : A SYCL-based Python Array API complaint tensor.
+- `dpnp.ndarray`_ :  A ``numpy.ndarray``-like array container that supports SYCL USM memory allocation.
+
+Scalar types
+------------
+
+Scalar values can be passed to a kernel function either using the default Python
+scalar type or as explicit NumPy or dpnp data type objects.
+:ref:`ex_scalar_kernel_arg_ty` shows the two possible ways of defining a scalar
+type. In both scenarios, numba-dpex depends on the default Numba* type inferring
+algorithm to determine the LLVM IR type of a Python object that represents a
+scalar value. At the kernel submission stage the LLVM IR type is reinterpreted
+as a C++11 type to interoperate with the underlying SYCL runtime.
+
+.. code-block:: python
+    :caption: **Example:** Ways of defining a scalar kernel argument
+    :name: ex_scalar_kernel_arg_ty
+
+    import dpnp
+
+    a = 1
+    b = dpnp.dtype("int32").type(1)
+
+    print(type(a))
+    print(type(b))
+
+.. code-block:: bash
+    :caption: **Output:** Ways of defining a scalar kernel argument
+    :name: ex_scalar_kernel_arg_ty_output
+
+    <class 'int'>
+    <class 'numpy.int32'>
+
+The following scalar types are currently supported as arguments of a numba-dpex
+kernel function:
+
+- ``int``
+- ``float``
+- ``complex``
+- ``numpy.int32``
+- ``numpy.uint32``
+- ``numpy.int64``
+- ``numpy.uint32``
+- ``numpy.float32``
+- ``numpy.float64``
+
+.. important::
+
+    The Numba* type inferring algorithm by default infers a native Python
+    scalar type to be a 64-bit value. The algorithm is defined that way to be
+    consistent with the default CPython behavior. The default inferred 64-bit
+    type can cause compilation failures on platforms that do not have native
+    64-bit floating point support. Another potential fallout of the default
+    64-bit type inference can be when a narrower width type is required by a
+    specific kernel. To avoid these issues, users are advised to always use a
+    dpnp/numpy type object to explicitly define the type of a scalar value.
+
+DLPack support
+--------------
+At this time direct support for the `DLPack`_ protocol is has not been added to
+numba-dpex. To interoperate numba_dpex with other SYCL USM based libraries,
+users should first convert their input tensor or ndarray object into either of
+the two supported array types, both of which support DLPack.
+
+
+Supported Python features
+*************************
+
+Mathematical operations
+=======================
+
+.. include:: ./math-functions.rst
+
+Operators
+=========
+
+.. include:: ./operators.rst
+
+General Python features
+=======================
+
+.. include:: ./supported-python-features.rst
+
+
+Advanced concepts
+*****************
 
 Local memory allocation
-+++++++++++++++++++++++
+=======================
 
 Private memory allocation
-+++++++++++++++++++++++++
+=========================
 
 Group barrier synchronization
-+++++++++++++++++++++++++++++
+=============================
 
 Atomic operations
-+++++++++++++++++
+=================
 
-Async kernel execution
-++++++++++++++++++++++
+.. Async kernel execution
+.. ======================
+
+.. include:: ./call-kernel-async.rst
 
 Specializing a kernel or a device_func
-++++++++++++++++++++++++++++++++++++++
+======================================
