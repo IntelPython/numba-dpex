@@ -96,6 +96,10 @@ class DpexKernelTarget(TargetDescriptor):
         """
         return self._toplevel_typing_context
 
+    @property
+    def target_name(self):
+        return self._target_name
+
 
 class DpexTarget(TargetDescriptor):
     """

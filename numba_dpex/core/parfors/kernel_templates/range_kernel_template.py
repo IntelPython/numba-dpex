@@ -63,7 +63,7 @@ class RangeKernelTemplate:
 
         # Create the dpex kernel function.
         kernel_txt += "def " + self._kernel_name
-        kernel_txt += "(" + (", ".join(self._kernel_params)) + "):\n"
+        kernel_txt += "(item, " + (", ".join(self._kernel_params)) + "):\n"
         global_id_dim = 0
         for_loop_dim = self._kernel_rank
         global_id_dim = self._kernel_rank
@@ -71,7 +71,7 @@ class RangeKernelTemplate:
         for dim in range(global_id_dim):
             dimstr = str(dim)
             kernel_txt += (
-                f"    {self._ivar_names[dim]} = dpex.get_global_id({dimstr})\n"
+                f"    {self._ivar_names[dim]} = item.get_id({dimstr})\n"
             )
 
         for dim in range(global_id_dim, for_loop_dim):
