@@ -12,20 +12,37 @@ REM of distutils (from late copies of CPython) that is enabled by default.
 REM It breaks build for Windows, so use distutils from "stdlib" as before.
 REM @TODO: remove the setting, once transition to build backend on Windows
 REM to cmake is complete.
+REM UPD: Seems to work fine with setuptools 69, so we need to set minimal
+REM requirements before removing it.
 SET "SETUPTOOLS_USE_DISTUTILS=stdlib"
 
 set "CC=icx"
 set "CXX=icx"
 
-set "SKBUILD_ARGS=-G Ninja --"
-set "SKBUILD_ARGS=%SKBUILD_ARGS% -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+set "CMAKE_GENERATOR=Ninja"
+:: Make CMake verbose
+set "VERBOSE=1"
 
-%PYTHON% setup.py install --single-version-externally-managed --record=record.txt %SKBUILD_ARGS%
+%PYTHON% -m build -w -n -x
+if %ERRORLEVEL% neq 0 exit 1
 
-rem Build wheel package
+:: `pip install dist\numpy*.whl` does not work on windows,
+:: so use a loop; there's only one wheel in dist/ anyway
+for /f %%f in ('dir /b /S .\dist') do (
+    %PYTHON% -m wheel tags --remove --build %GIT_DESCRIBE_NUMBER% %%f
+    if %ERRORLEVEL% neq 0 exit 1
+)
+
+:: wheel file was renamed
+for /f %%f in ('dir /b /S .\dist') do (
+    %PYTHON% -m pip install %%f
+    if %ERRORLEVEL% neq 0 exit 1
+)
+
+:: Copy wheel package
 if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
-    %PYTHON% setup.py bdist_wheel --build-number %GIT_DESCRIBE_NUMBER% %SKBUILD_ARGS%
-    if errorlevel 1 exit 1
-    copy dist\numba_dpex*.whl %WHEELS_OUTPUT_FOLDER%
-    if errorlevel 1 exit 1
+    for /f %%f in ('dir /b /S .\dist') do (
+        copy %%f %WHEELS_OUTPUT_FOLDER%
+        if %ERRORLEVEL% neq 0 exit 1
+    )
 )

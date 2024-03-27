@@ -41,6 +41,8 @@ requirements:
         # - dpcpp-llvm-spirv >={{ required_compiler_version }}
         - dpcpp-llvm-spirv >=2023.0
         - wheel >=0.43
+        - pip >=24.0
+        - python-build >=1.1
         - versioneer==0.29
         # versioneer dependency
         - tomli # [py<311]
