@@ -1,7 +1,0 @@
-
-numba_dpex.core.utils
-=====================
-
-.. py:module:: numba_dpex.core.utils
-
-
