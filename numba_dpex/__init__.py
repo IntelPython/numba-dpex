@@ -18,6 +18,7 @@ from numba import __version__ as numba_version
 
 from .kernel_api_impl.spirv import target as spirv_kernel_target
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
+from .register_kernel_api_overloads import init_kernel_api_spirv_overloads
 
 
 def load_dpctl_sycl_interface():
@@ -136,11 +137,16 @@ from numba_dpex._version import get_versions  # noqa E402
 __version__ = get_versions()["version"]
 del get_versions
 
+# Initialize the kernel_api SPIRV overloads
+init_kernel_api_spirv_overloads()
+
 __all__ = types.__all__ + [
     "call_kernel",
+    "call_kernel_async",
     "device_func",
     "dpjit",
     "kernel",
+    "prange",
     "Range",
     "NdRange",
 ]

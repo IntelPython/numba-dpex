@@ -13,9 +13,11 @@ from numba.core.target_extension import (
 )
 
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
-from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
-from numba_dpex.kernel_api_impl.spirv.target import CompilationMode
+from numba_dpex.kernel_api_impl.spirv.target import (
+    SPIRV_TARGET_NAME,
+    CompilationMode,
+)
 
 
 def _parse_func_or_sig(signature_or_function):
@@ -154,7 +156,7 @@ def kernel(function_or_signature=None, **options):
 
     # dispatcher is a type:
     # <class 'numba_dpex.experimental.kernel_dispatcher.KernelDispatcher'>
-    dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+    dispatcher = resolve_dispatcher_from_str(SPIRV_TARGET_NAME)
     if "_compilation_mode" in options:
         user_compilation_mode = options["_compilation_mode"]
         warn(
@@ -280,7 +282,7 @@ def device_func(function_or_signature=None, **options):
 
         dpex_exp.call_kernel(another_kernel, dpex.NdRange((N,), (N,)), b)
     """
-    dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+    dispatcher = resolve_dispatcher_from_str(SPIRV_TARGET_NAME)
 
     if "_compilation_mode" in options:
         user_compilation_mode = options["_compilation_mode"]
@@ -342,4 +344,4 @@ def dpjit(*args, **kws):
 # add it to the decorator registry, this is so e.g. @overload can look up a
 # JIT function to do the compilation work.
 jit_registry[target_registry[DPEX_TARGET_NAME]] = dpjit
-jit_registry[target_registry[DPEX_KERNEL_EXP_TARGET_NAME]] = device_func
+jit_registry[target_registry[SPIRV_TARGET_NAME]] = device_func

@@ -5,11 +5,34 @@
 import dpctl
 import dpnp
 import pytest
+from numba.core import types
 from numba.core.errors import TypingError
+from numba.extending import intrinsic
 
 import numba_dpex as dpex
-from numba_dpex.experimental import testing
+from numba_dpex import dpjit
+from numba_dpex.core.runtime.context import DpexRTContext
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.kernel_api import Item, Range
+
+
+@intrinsic(target=DPEX_TARGET_NAME)
+def _kernel_cache_size(
+    typingctx,  # pylint: disable=W0613
+):
+    sig = types.int64()
+
+    def codegen(ctx, builder, sig, llargs):  # pylint: disable=W0613
+        dpexrt = DpexRTContext(ctx)
+        return dpexrt.kernel_cache_size(builder)
+
+    return sig, codegen
+
+
+@dpjit
+def kernel_cache_size() -> int:
+    """Returns kernel cache size."""
+    return _kernel_cache_size()  # pylint: disable=E1120
 
 
 @dpex.kernel(
@@ -106,8 +129,8 @@ def test_async_dependent_add():
 
 def test_async_add_from_cache():
     test_async_add()  # compile
-    old_size = testing.kernel_cache_size()
+    old_size = kernel_cache_size()
     test_async_add()  # use from cache
-    new_size = testing.kernel_cache_size()
+    new_size = kernel_cache_size()
 
     assert new_size == old_size

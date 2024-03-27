@@ -19,7 +19,7 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
 from numba_dpex.kernel_api import Group, Item, NdItem
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
-from ..target import DPEX_KERNEL_EXP_TARGET_NAME
+from ..target import SPIRV_TARGET_NAME
 
 
 def spirv_name(name: str):
@@ -93,7 +93,7 @@ def _intrinsic_spirv_global_index_const(
     return sig, _intrinsic_spirv_global_index_const_gen
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_global_invocation_id(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -103,7 +103,7 @@ def _intrinsic_spirv_global_invocation_id(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_local_invocation_id(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -113,7 +113,7 @@ def _intrinsic_spirv_local_invocation_id(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_global_size(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -123,7 +123,7 @@ def _intrinsic_spirv_global_size(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_workgroup_size(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -133,7 +133,7 @@ def _intrinsic_spirv_workgroup_size(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_workgroup_id(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -143,7 +143,7 @@ def _intrinsic_spirv_workgroup_id(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_spirv_numworkgroups(
     ty_context, ty_dim  # pylint: disable=unused-argument
 ):
@@ -209,15 +209,13 @@ def register_index_const_methods():
 
         ol_index_func = generate_index_overload(_type, _intrinsic)
 
-        overload_method(_type, method, target=DPEX_KERNEL_EXP_TARGET_NAME)(
-            ol_index_func
-        )
+        overload_method(_type, method, target=SPIRV_TARGET_NAME)(ol_index_func)
 
 
 register_index_const_methods()
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_get_group(
     ty_context, ty_nd_item: NdItemType  # pylint: disable=unused-argument
 ):
@@ -240,7 +238,7 @@ def _intrinsic_get_group(
     return sig, _intrinsic_get_group_gen
 
 
-@overload_method(NdItemType, "get_group", target=DPEX_KERNEL_EXP_TARGET_NAME)
+@overload_method(NdItemType, "get_group", target=SPIRV_TARGET_NAME)
 def ol_nd_item_get_group(nd_item):
     """SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
 
@@ -265,11 +263,9 @@ def ol_nd_item_get_group(nd_item):
     return ol_nd_item_get_group_impl
 
 
-@overload_attribute(GroupType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME)
-@overload_attribute(ItemType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME)
-@overload_attribute(
-    NdItemType, "dimensions", target=DPEX_KERNEL_EXP_TARGET_NAME
-)
+@overload_attribute(GroupType, "dimensions", target=SPIRV_TARGET_NAME)
+@overload_attribute(ItemType, "dimensions", target=SPIRV_TARGET_NAME)
+@overload_attribute(NdItemType, "dimensions", target=SPIRV_TARGET_NAME)
 def ol_nd_item_dimensions(item):
     """
     SPIR-V overload for :meth:`numba_dpex.kernel_api.<generic_item>.dimensions`.
@@ -304,7 +300,7 @@ def register_jitable_method(type_, method):
     Same as register_jitable, but for methods with no arguments.
     """
     overloaded_method = _generate_method_overload(method)
-    overload_method(type_, method.__name__, target=DPEX_KERNEL_EXP_TARGET_NAME)(
+    overload_method(type_, method.__name__, target=SPIRV_TARGET_NAME)(
         overloaded_method
     )
 

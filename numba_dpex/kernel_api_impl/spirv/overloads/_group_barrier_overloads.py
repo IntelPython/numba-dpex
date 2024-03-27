@@ -13,9 +13,9 @@ from numba.core.errors import TypingError
 from numba.extending import intrinsic, overload
 
 from numba_dpex.core.types.kernel_api.index_space_ids import GroupType
-from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api import group_barrier
 from numba_dpex.kernel_api.memory_enums import MemoryOrder, MemoryScope
+from numba_dpex.kernel_api_impl.spirv.target import SPIRV_TARGET_NAME
 
 from ._spv_atomic_inst_helper import get_memory_semantics_mask, get_scope
 from .spv_fn_declarations import (
@@ -69,7 +69,7 @@ def _intrinsic_barrier(
 @overload(
     group_barrier,
     prefer_literal=True,
-    target=DPEX_KERNEL_EXP_TARGET_NAME,
+    target=SPIRV_TARGET_NAME,
 )
 def ol_group_barrier(group, fence_scope=MemoryScope.WORK_GROUP):
     """SPIR-V overload for

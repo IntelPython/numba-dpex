@@ -12,7 +12,7 @@ from numba.extending import intrinsic, overload
 
 from numba_dpex.kernel_api import atomic_fence
 
-from ..target import DPEX_KERNEL_EXP_TARGET_NAME
+from ..target import SPIRV_TARGET_NAME
 from ._spv_atomic_inst_helper import get_memory_semantics_mask, get_scope
 from .spv_fn_declarations import (
     _SUPPORT_CONVERGENT,
@@ -20,7 +20,7 @@ from .spv_fn_declarations import (
 )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+@intrinsic(target=SPIRV_TARGET_NAME)
 def _intrinsic_atomic_fence(
     ty_context, ty_spirv_mem_sem_mask, ty_spirv_scope
 ):  # pylint: disable=unused-argument
@@ -55,7 +55,7 @@ def _intrinsic_atomic_fence(
 @overload(
     atomic_fence,
     prefer_literal=True,
-    target=DPEX_KERNEL_EXP_TARGET_NAME,
+    target=SPIRV_TARGET_NAME,
 )
 def ol_atomic_fence(memory_order, memory_scope):
     """SPIR-V overload for
