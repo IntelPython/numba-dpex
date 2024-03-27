@@ -9,6 +9,46 @@ requires = [
   "versioneer-518"
 ]
 
+[project]
+authors = [{name = "Intel Corporation"}]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: GPU",
+  "Environment :: Plugins",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development :: Compilers",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux"
+]
+description = "An extension for Numba to add data-parallel offload capability"
+dynamic = ["version"]
+keywords = [
+  "sycl",
+  "python3",
+  "numba",
+  "numpy",
+  "intel",
+  "mkl",
+  "oneapi",
+  "gpu",
+  "dpcpp"
+]
+license = {text = "Apache 2.0"}
+name = "numba-dpex"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+
+[project.urls]
+Changelog = "https://github.com/IntelPython/numba-dpex/blob/main/CHANGELOG.md"
+Documentation = "https://intelpython.github.io/numba-dpex/"
+Homepage = "https://github.com/IntelPython/numba-dpex"
+Issues = "https://github.com/IntelPython/numba-dpex/issues"
+Repository = "https://github.com/IntelPython/numba-dpex.git"
+
 [tool.black]
 exclude = "versioneer.py|numba_dpex/_version.py"
 line-length = 80

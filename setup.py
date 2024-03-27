@@ -59,28 +59,7 @@ with open("README.md", "r") as f:
 
 # Main setup
 setup(
-    name="numba-dpex",
     version=__version__,
-    description="An extension for Numba to add data-parallel offload capability",
-    long_description=__readme__,
-    long_description_content_type="text/markdown",
-    license="Apache 2.0",
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Environment :: GPU",
-        "Environment :: Plugins",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Topic :: Software Development :: Compilers",
-    ],
-    keywords="sycl python3 numba numpy intel mkl oneapi gpu dpcpp",
-    platforms=["Linux", "Windows"],
-    author="Intel Corporation",
-    url="https://github.com/IntelPython/numba-dpex",
-    install_requires=["numba >={0:s}".format("0.58"), "dpctl", "packaging"],
     packages=find_packages("."),
     include_package_data=True,
     zip_safe=False,
