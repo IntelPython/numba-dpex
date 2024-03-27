@@ -5,10 +5,9 @@
 
 import re
 
+import versioneer
 from setuptools import find_packages
 from skbuild import setup
-
-import versioneer
 
 """Top level setup.py file. Uses scikit-build.
 

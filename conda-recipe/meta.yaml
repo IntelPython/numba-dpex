@@ -41,6 +41,9 @@ requirements:
         # - dpcpp-llvm-spirv >={{ required_compiler_version }}
         - dpcpp-llvm-spirv >=2023.0
         - wheel >=0.43
+        - versioneer==0.29
+        # versioneer dependency
+        - tomli # [py<311]
     run:
         - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
         - {{ pin_compatible('intel-cmplr-lib-rt', min_pin='x.x', max_pin='x') }}

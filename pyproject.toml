@@ -9,7 +9,9 @@ requires = [
   "numba>=0.59.0",
   "dpctl>=0.16.1",
   "numpy>=1.24.0",
-  "wheel"
+  "wheel",
+  # WARNING: check with doc how to upgrade
+  "versioneer[toml]==0.29"
 ]
 
 [project]
@@ -65,7 +67,7 @@ Issues = "https://github.com/IntelPython/numba-dpex/issues"
 Repository = "https://github.com/IntelPython/numba-dpex.git"
 
 [tool.black]
-exclude = "versioneer.py|numba_dpex/_version.py"
+exclude = "numba_dpex/_version.py"
 line-length = 80
 
 [tool.coverage.report]
@@ -102,7 +104,7 @@ force_grid_wrap = 0
 include_trailing_comma = true
 line_length = 80
 multi_line_output = 3
-skip = ["versioneer.py", "numba_dpex/_version.py"]
+skip = ["numba_dpex/_version.py"]
 use_parentheses = true
 
 [tool.pylint]
