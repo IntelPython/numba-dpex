@@ -242,10 +242,10 @@ jobs:
           export ONEAPI_ROOT=/tmp/gdb
           ./${{ env.GDB_INSTALLER }} -a -s --eula accept --install-dir $ONEAPI_ROOT
           source $ONEAPI_ROOT/debugger/latest/env/vars.sh
-          # We match only major and minor version because latest gdb is not
-          # often available.
-          gdb_version=$(echo "$GDB_INSTALLER" | grep -oP '\d+\.\d+' | head -n 1)
-          icpx_version=$(conda list dpcpp-cpp-rt | tail -n 1 | awk '{print $2}' | grep -oP '\d+\.\d+')
+          # We match only major version because latest gdb is not often
+          # available.
+          gdb_version=$(echo "$GDB_INSTALLER" | grep -oP '\d+' | head -n 1)
+          icpx_version=$(conda list dpcpp-cpp-rt | tail -n 1 | awk '{print $2}' | grep -oP '\d+' | head -n 1)
           if [ "$gdb_version" != "$icpx_version" ]; then
             echo "Error: GDB version ($gdb_version) does not match icpx version ($icpx_version)"
             exit 1
