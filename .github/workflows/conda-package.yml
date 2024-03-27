@@ -49,21 +49,18 @@ jobs:
       - name: Checkout ${{ env.PACKAGE_NAME }} repo
         uses: actions/checkout@v4
         with:
+          # We need tags to build proper version
           fetch-depth: 0
 
       - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v3
+        uses: ./.github/actions/setup-miniconda
         with:
-          python-version: ${{ inputs.python-version }}
-          miniforge-variant: Mambaforge
-          miniforge-version: latest
+          python-version: ${{ matrix.python }}
           activate-environment: "build"
           channels: ${{ env.CHANNELS }}
           channel-priority: "disabled"
-          run-post: false
-
-      - name: Disable defautls
-        run: conda config --remove channels defaults
+          dependencies: "conda-build"
+          environment-file: environment/conda-package-build.yml
 
       - name: Store conda paths as envs
         run: |
@@ -71,12 +68,8 @@ jobs:
           echo "WHEELS_OUTPUT_FOLDER=$GITHUB_WORKSPACE${{ runner.os == 'Linux' && '/' || '\\' }}" >> $GITHUB_ENV
           echo "WHEELS_NAME=$PACKAGE_NAME" | tr "-" "_" >> $GITHUB_ENV
 
-      # boa is an extention to conda so we can use mamba resolver in conda build
-      - name: Install conda-build
-        run: mamba install boa
-
       - name: Build conda package
-        run: conda mambabuild --no-test --python ${{ matrix.python }} conda-recipe
+        run: conda build --no-test --python ${{ matrix.python }} conda-recipe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -107,28 +100,32 @@ jobs:
         python: ['3.9', '3.10', '3.11']
         os: [ubuntu-20.04, ubuntu-latest, windows-latest]
         experimental: [false]
-        use_mlir: [false]
         scope: ['tests', 'examples', 'gdb']
         exclude:
           - os: windows-latest
             scope: 'gdb'
 
-    continue-on-error: ${{ matrix.experimental || matrix.use_mlir }}
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
+      - name: Checkout setup config
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/actions
+            environment
+            pyproject.toml
+          sparse-checkout-cone-mode: false
+
       - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v3
+        uses: ./.github/actions/setup-miniconda
         with:
           python-version: ${{ matrix.python }}
-          miniforge-variant: Mambaforge
-          miniforge-version: latest
           activate-environment: "test"
           channels: ${{ env.CHANNELS }}
           channel-priority: "disabled"
-          run-post: false
-
-      - name: Disable defautls
-        run: conda config --remove channels defaults
+          dependencies: "conda-index;pytest-cov;conda-tree"
+          environment-file: environment/conda-package-test.yml
 
       - name: Store conda paths as envs
         shell: bash -l {0}
@@ -153,10 +150,6 @@ jobs:
           mkdir -p ${EXTRACTED_PKG_PATH}
           tar -xvf ${PKG_PATH_IN_CHANNEL}${PACKAGE_NAME}-*.tar.bz2 -C ${EXTRACTED_PKG_PATH} --force-local
 
-      - name: Install conda build
-        run: |
-          mamba install conda-build conda-index
-
       - name: Create conda channel
         # Note conda index (instead of python -m conda_index) may find legacy
         # conda-build index.
@@ -165,7 +158,7 @@ jobs:
 
       - name: Test conda channel
         run: |
-          mamba search ${{ env.PACKAGE_NAME }} -c ${{ env.CHANNEL_PATH }} --override-channels --info --json > ${{ env.VER_JSON_PATH }}
+          conda search ${{ env.PACKAGE_NAME }} -c ${{ env.CHANNEL_PATH }} --override-channels --info --json > ${{ env.VER_JSON_PATH }}
           cat ${{ env.VER_JSON_PATH }}
 
       - name: Collect dependencies
@@ -176,14 +169,8 @@ jobs:
 
       # We want to make sure that all dependecies install automatically.
       # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
-      # TODO: remove pytest dependency directly, once resolved:
-      # https://github.com/pytest-dev/pytest/issues/12036
-      - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov pytest=8.0.1 conda-tree -c ${{ env.CHANNEL_PATH }}
-
-      - name: Install numba-mlir
-        if: matrix.use_mlir
-        run: mamba install numba-mlir -c dppy/label/dev -c conda-forge -c intel
+      - name: Install built package
+        run: conda install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt -c ${{ env.CHANNEL_PATH }}
 
       - name: Setup OpenCL CPU device
         if: runner.os == 'Windows'
@@ -191,13 +178,6 @@ jobs:
         run: |
           $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
           &$script_path
-
-      - name: Checkout setup config
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            pyproject.toml
-          sparse-checkout-cone-mode: false
 
       - name: List installed packages
         run: conda list
@@ -210,9 +190,7 @@ jobs:
         run: conda-tree depends -t numba-dpex
 
       - name: Smoke test
-        env:
-          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
-        run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
+        run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform(verbosity=2)"
 
       - name: Smoke test - test import with no default device
         env:
@@ -221,8 +199,6 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.scope == 'tests' }}
-        env:
-          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv -k "not test_1d_strided_dpnp_array_in_kernel[2]"
 
@@ -232,7 +208,6 @@ jobs:
         # and are possibly due to some driver/opencl compiler bug.
         if: ${{ matrix.scope == 'tests' }}
         env:
-          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
           # Disabling device driver optimization to prevent catching bugs
           # from driver compiler.
           ONEAPI_DEVICE_SELECTOR: "opencl:cpu"
@@ -297,6 +272,13 @@ jobs:
     continue-on-error: false
 
     steps:
+      - name: Checkout setup config
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/actions
+            environment
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -308,18 +290,13 @@ jobs:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python }}
 
       - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v3
+        uses: ./.github/actions/setup-miniconda
         with:
           python-version: ${{ matrix.python }}
-          miniforge-variant: Mambaforge
-          miniforge-version: latest
           activate-environment: "anaconda"
-          channels: ${{ env.CHANNELS }}
           channel-priority: "disabled"
-          run-post: false
-
-      - name: Install anaconda-client
-        run: mamba install anaconda-client
+          dependencies: "anaconda-client"
+          environment-file: environment/conda-package-anaconda.yml
 
       - name: Upload
         run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -342,21 +319,26 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: conda-incubator/setup-miniconda@v3
+      - name: Checkout setup config
+        uses: actions/checkout@v4
         with:
-          run-post: false
-          channel-priority: "disabled"
-          channels: conda-forge
-          python-version: '3.11'
+          sparse-checkout: |
+            .github/actions
+            environment
 
-      - name: Install anaconda-client
-        run: conda install anaconda-client
+      - name: Setup miniconda
+        uses: ./.github/actions/setup-miniconda
+        with:
+          python-version: '3.11'
+          activate-environment: "anaconda"
+          channel-priority: "disabled"
+          dependencies: "anaconda-client"
+          environment-file: environment/conda-package-anaconda.yml
 
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           repository: IntelPython/devops-tools
-          fetch-depth: 0
 
       - name: Cleanup old packages
         run: |
