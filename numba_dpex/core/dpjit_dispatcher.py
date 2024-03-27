@@ -9,7 +9,6 @@ from numba.core.target_extension import (
     target_registry,
 )
 
-from numba_dpex import numba_sem_version
 from numba_dpex.core.pipelines import dpjit_compiler
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 
@@ -58,21 +57,12 @@ class DpjitDispatcher(dispatcher.Dispatcher):
         targetoptions={},
         pipeline_class=dpjit_compiler.DpjitCompiler,
     ):
-        if numba_sem_version < (0, 59, 0):
-            super().__init__(
-                py_func=py_func,
-                locals=locals,
-                impl_kind="direct",
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
-        else:
-            super().__init__(
-                py_func=py_func,
-                locals=locals,
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
+        super().__init__(
+            py_func=py_func,
+            locals=locals,
+            targetoptions=targetoptions,
+            pipeline_class=pipeline_class,
+        )
         self._compiler = _DpjitCompiler(
             py_func,
             self.targetdescr,
