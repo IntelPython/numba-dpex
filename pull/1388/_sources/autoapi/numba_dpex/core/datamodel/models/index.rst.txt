@@ -31,6 +31,14 @@ Overview
      - The numba_dpex data model for a numba_dpex.kernel_api.Range PyObject.
    * - :py:obj:`NdRangeModel <numba_dpex.core.datamodel.models.NdRangeModel>`
      - The numba_dpex data model for a numba_dpex.kernel_api.NdRange PyObject.
+   * - :py:obj:`AtomicRefModel <numba_dpex.core.datamodel.models.AtomicRefModel>`
+     - Data model for AtomicRefType.
+   * - :py:obj:`EmptyStructModel <numba_dpex.core.datamodel.models.EmptyStructModel>`
+     - Data model that does not take space. Intended to be used with types that
+   * - :py:obj:`DpctlMDLocalAccessorModel <numba_dpex.core.datamodel.models.DpctlMDLocalAccessorModel>`
+     - Data model to represent DpctlMDLocalAccessorType.
+   * - :py:obj:`LocalAccessorModel <numba_dpex.core.datamodel.models.LocalAccessorModel>`
+     - Data model for the LocalAccessor type when used in a host-only function.
 
 
 .. list-table:: Function
@@ -168,6 +176,48 @@ Classes
    Bases: :py:obj:`numba.core.datamodel.models.StructModel`
 
    The numba_dpex data model for a numba_dpex.kernel_api.NdRange PyObject.
+
+
+
+
+.. py:class:: AtomicRefModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Data model for AtomicRefType.
+
+
+
+
+.. py:class:: EmptyStructModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Data model that does not take space. Intended to be used with types that
+   are presented only at typing stage and not represented physically.
+
+
+
+
+.. py:class:: DpctlMDLocalAccessorModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Data model to represent DpctlMDLocalAccessorType.
+
+   Must be the same structure as
+   dpctl/syclinterface/dpctl_sycl_queue_interface.h::MDLocalAccessor.
+
+   Structure intended to be used only on host side of the kernel call.
+
+
+
+
+.. py:class:: LocalAccessorModel(dmm, fe_type)
+
+   Bases: :py:obj:`numba.core.datamodel.models.StructModel`
+
+   Data model for the LocalAccessor type when used in a host-only function.
 
 
 

@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.passes.passes - numba-dpex documentation</title>
+        <title>numba_dpex.core.parfors.kernel_templates - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -145,7 +145,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -239,131 +239,20 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.core.passes.passes">
-<span id="numba-dpex-core-passes-passes"></span><h1>numba_dpex.core.passes.passes<a class="headerlink" href="#module-numba_dpex.core.passes.passes" title="Link to this heading">#</a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
-<table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="numba_dpex.core.passes.passes.NoPythonBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a></p></td>
-<td><p>Base class for function passes</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics" title="numba_dpex.core.passes.passes.DumpParforDiagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DumpParforDiagnostics</span></code></a></p></td>
-<td><p>Base class for analysis passes (no modification made to state)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualNameDisambiguationLowering</span></code></a></p></td>
-<td><p>Qualified name disambiguation lowering pass</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NoPythonBackend</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
-<p>Base class for function passes</p>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
-<table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass" title="numba_dpex.core.passes.passes.NoPythonBackend.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
-<td><p>Back-end: Generate LLVM IR from Numba IR, compile to machine code</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass" title="Link to this definition">#</a></dt>
-<dd><p>Back-end: Generate LLVM IR from Numba IR, compile to machine code</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DumpParforDiagnostics</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.AnalysisPass</span></code></p>
-<p>Base class for analysis passes (no modification made to state)</p>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
-<table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass" title="numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
-<td><p>Runs the pass itself. Must return True/False depending on whether</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass" title="Link to this definition">#</a></dt>
-<dd><p>Runs the pass itself. Must return True/False depending on whether
-statement level modification took place.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QualNameDisambiguationLowering</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.typed_passes.NativeLowering</span></code></p>
-<p>Qualified name disambiguation lowering pass</p>
-<p>If there are multiple &#64;func decorated functions exist inside
-another &#64;func decorated block, the numba compiler machinery
-creates same qualified names for different compiled function.
-Therefore, we utilize <cite>unique_name</cite> to resolve the ambiguity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>NativeLowering</strong> (<em>CompilerPass</em>) – Superclass from which this</p></li>
-<li><p><strong>inherited.</strong> (<em>class has been</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if <cite>run_pass()</cite> of the superclass is successful.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
-<table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
-<td><p>Runs the pass itself. Must return True/False depending on whether</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass" title="Link to this definition">#</a></dt>
-<dd><p>Runs the pass itself. Must return True/False depending on whether
-statement level modification took place.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
+          <section id="module-numba_dpex.core.parfors.kernel_templates">
+<span id="numba-dpex-core-parfors-kernel-templates"></span><h1>numba_dpex.core.parfors.kernel_templates<a class="headerlink" href="#module-numba_dpex.core.parfors.kernel_templates" title="Link to this heading">#</a></h1>
+<p>Provides string templates for numba_dpex.kernel decorated functions.</p>
+<p>During lowering of a parfor node using the SPIRVKernelTarget, the node is
+first converted into a kernel function. The module provides a set of templates
+to generate the basic stub of a kernel function. The string template is
+compiled down to Numba IR using the Numba compiler front end and then the
+necessary body of the kernel function is inserted directly as Numba IR.</p>
 </section>
 
         </article>
@@ -394,42 +283,8 @@ statement level modification took place.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.passes.passes</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend"><code class="docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass"><code class="docutils literal notranslate"><span class="pre">NoPythonBackend.run_pass()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics"><code class="docutils literal notranslate"><span class="pre">DumpParforDiagnostics</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass"><code class="docutils literal notranslate"><span class="pre">DumpParforDiagnostics.run_pass()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering"><code class="docutils literal notranslate"><span class="pre">QualNameDisambiguationLowering</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass"><code class="docutils literal notranslate"><span class="pre">QualNameDisambiguationLowering.run_pass()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

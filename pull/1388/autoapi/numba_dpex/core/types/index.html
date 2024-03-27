@@ -282,7 +282,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.types.RangeType" title="numba_dpex.core.types.RangeType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RangeType</span></code></a></p></td>
 <td><p>Numba-dpex type corresponding to</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.types.USMNdArray" title="numba_dpex.core.types.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.types.KernelDispatcherType" title="numba_dpex.core.types.KernelDispatcherType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelDispatcherType</span></code></a></p></td>
+<td><p>The type of KernelDispatcher dispatchers</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.types.USMNdArray" title="numba_dpex.core.types.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p></td>
 <td><p>A type class to represent dpctl.tensor.usm_ndarray.</p></td>
 </tr>
 </tbody>
@@ -470,14 +473,38 @@ If successful, must return a string describing the conversion, e.g.
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.types.KernelDispatcherType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelDispatcherType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.KernelDispatcherType" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.Dispatcher</span></code></p>
+<p>The type of KernelDispatcher dispatchers</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
+<table class="summarytable docutils align-default" id="id6">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.types.KernelDispatcherType.cast_python_value" title="numba_dpex.core.types.KernelDispatcherType.cast_python_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cast_python_value</span></code></a>(args)</p></td>
+<td><p><span class="summarylabel">abc</span> -</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.types.KernelDispatcherType.cast_python_value">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast_python_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.KernelDispatcherType.cast_python_value" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.types.USMNdArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">USMNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">address_space.GLOBAL</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.USMNdArray" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.npytypes.Array</span></code></p>
 <p>A type class to represent dpctl.tensor.usm_ndarray.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
-<table class="summarytable docutils align-default" id="id6">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id7">
+<table class="summarytable docutils align-default" id="id7">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.types.USMNdArray.copy" title="numba_dpex.core.types.USMNdArray.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(dtype, ndim, layout, readonly, addrspace, device, usm_type)</p></td>
 <td><p>-</p></td>
@@ -668,6 +695,10 @@ If successful, must return a string describing the conversion, e.g.
 </li>
 <li><a class="reference internal" href="#numba_dpex.core.types.NdRangeType"><code class="docutils literal notranslate"><span class="pre">NdRangeType</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.core.types.RangeType"><code class="docutils literal notranslate"><span class="pre">RangeType</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.types.KernelDispatcherType"><code class="docutils literal notranslate"><span class="pre">KernelDispatcherType</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.types.KernelDispatcherType.cast_python_value"><code class="docutils literal notranslate"><span class="pre">KernelDispatcherType.cast_python_value()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#numba_dpex.core.types.USMNdArray"><code class="docutils literal notranslate"><span class="pre">USMNdArray</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.core.types.USMNdArray.copy"><code class="docutils literal notranslate"><span class="pre">USMNdArray.copy()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.core.types.USMNdArray.unify"><code class="docutils literal notranslate"><span class="pre">USMNdArray.unify()</span></code></a></li>

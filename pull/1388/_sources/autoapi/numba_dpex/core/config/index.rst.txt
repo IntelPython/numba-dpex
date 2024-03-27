@@ -47,26 +47,6 @@ Attributes
 
    
 
-.. py:data:: ENABLE_CACHE
-
-   
-
-.. py:data:: CACHE_SIZE
-
-   
-
-.. py:data:: DEBUG_CACHE
-
-   
-
-.. py:data:: STATIC_LOCAL_MEM_PASS
-
-   
-
-.. py:data:: TESTING_SKIP_NO_DPNP
-
-   
-
 .. py:data:: TESTING_SKIP_NO_DEBUGGING
 
    
@@ -75,19 +55,11 @@ Attributes
 
    
 
-.. py:data:: STATIC_LOCAL_MEM_PASS
-
-   
-
 .. py:data:: DPEX_OPT
 
    
 
 .. py:data:: INLINE_THRESHOLD
-
-   
-
-.. py:data:: USE_MLIR
 
    
 
