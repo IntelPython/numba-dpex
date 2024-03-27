@@ -51,18 +51,18 @@ def to_cmake_format(version: str):
 # Get the project version
 __version__ = versioneer.get_version()
 
-
-# Set project auxilary data like readme and licence files
-with open("README.md", "r") as f:
-    __readme__ = "".join(line for line in f.readlines()[12:35])
-
-
 # Main setup
 setup(
     version=__version__,
+    # https://github.com/pypa/pip/issues/11221
+    url="https://github.com/IntelPython/numba-dpex",
+    # Must be passed vis setup.py:
+    # https://github.com/scikit-build/scikit-build/issues/864
+    # TODO: switch to pyproject toml after switching to scikit-build-core
     packages=find_packages("."),
+    # Needs for examples.
+    # TODO: change to false once move examples out of package.
     include_package_data=True,
-    zip_safe=False,
     cmake_args=[
         "-DNUMBA_DPEX_VERSION:STRING={0:s}".format(
             to_cmake_format(str(__version__))

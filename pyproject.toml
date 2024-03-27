@@ -1,12 +1,15 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=42",
-  "scikit-build>=0.13",
-  "cmake>=3.18",
-  "ninja",
-  "numba>=0.58",
-  "versioneer-518"
+  # TODO: keep in sync with [project.dependencies] and /conda-recipe/meta.yaml
+  "setuptools>=63.0.0",
+  "scikit-build>=0.17.0",
+  "ninja>=1.11.1; platform_system!='Windows'",
+  "cmake>=3.29.0",
+  "numba>=0.59.0",
+  "dpctl>=0.16.1",
+  "numpy>=1.24.0",
+  "wheel"
 ]
 
 [project]
@@ -23,6 +26,18 @@ classifiers = [
   "Topic :: Software Development :: Compilers",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux"
+]
+dependencies = [
+  # TODO: keep in sync with [build-system.requires] and /conda-recipe/meta.yaml
+  # This restrictions are for dependabot, actual restrictions are set with
+  # conda.
+  # TODO: populate it during build process
+  "numba>=0.59.0",
+  "llvmlite>=0.42.0",
+  "dpctl>=0.16.1",
+  "dpnp>=0.14.0",
+  "numpy>=1.24.0",
+  "dpcpp_llvm_spirv>=2024.0"
 ]
 description = "An extension for Numba to add data-parallel offload capability"
 dynamic = ["version"]
