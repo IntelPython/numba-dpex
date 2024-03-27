@@ -1,0 +1,49 @@
+Name, Supported signature
+``math.isnan``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.isinf``,``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.ceil``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.floor``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.trunc``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.fabs``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.sqrt``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.exp``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.expm1``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.log``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.log10``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.log1p``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.sin``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.cos``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.tan``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.asin``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.acos``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.atan``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.sinh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.cosh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.tanh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.asinh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.acosh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.atanh``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.exp2``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.log2``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.erf``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.erfc``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.gamma``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.lgamma``, ``types.float32(types.float32)``; ``types.float64(types.float64)``
+``math.copysign``, "``types.float32(types.float32, types.float32)``; ``types.float64(types.float64, types.float64)``"
+``math.atan2``, "``types.float32(types.float32, types.float32)``; ``types.float64(types.float64, types.float64)``"
+``math.pow``, "``types.float32(types.float32, types.float32)``; ``types.float64(types.float64, types.float64)``"
+``math.fmod``, "``types.float32(types.float32, types.float32)``; ``types.float64(types.float64, types.float64)``"
+``math.ldexp``, "``types.float32(types.float32, types.int32)``;
+``types.float32(types.float32, types.int64)``;
+``types.float64(types.float64, types.int32)``;
+``types.float64(types.float64, types.int64)``"
+``math.hypot``, "``types.float32(types.float32, types.int32)``;
+``types.float32(types.float32, types.int64)``;
+``types.float64(types.float64, types.int32)``;
+``types.float64(types.float64, types.int64)``"
+``math.frexp``, Not supported
+``math.ldexp``, Not supported
+``math.trunc``, Not supported
+``math.modf``, Not supported
+``math.factorial``, Not supported
+``math.fsum``, Not supported
