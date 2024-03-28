@@ -124,7 +124,7 @@ jobs:
           activate-environment: "test"
           channels: ${{ env.CHANNELS }}
           channel-priority: "disabled"
-          dependencies: "conda-index;pytest-cov;conda-tree"
+          dependencies: "conda-index;pytest-cov;pexpect;conda-tree"
           environment-file: environment/conda-package-test.yml
 
       - name: Store conda paths as envs
@@ -229,13 +229,12 @@ jobs:
       - name: Run gdb tests
         if: ${{ matrix.scope == 'gdb' }}
         env:
-          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/72038301-92f9-4db2-8fe0-db1fe9e9bca9/l_dpcpp_dbg_p_2024.0.1.9_offline.sh
-          GDB_INSTALLER: l_dpcpp_dbg_p_2024.0.1.9_offline.sh
+          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/fc87666c-d626-47bc-a861-a1578d2ecbd3/l_dpcpp_dbg_p_2024.1.0.439_offline.sh
+          GDB_INSTALLER: l_dpcpp_dbg_p_2024.1.0.439_offline.sh
           # To read gdb communication in case test fails to determine what the
           # issue is
           NUMBA_DPEX_TESTING_LOG_DEBUGGING: 1
         run: |
-          conda install pexpect
           wget -nc -q ${{ env.GDB_URL }}
           chmod +x ${{ env.GDB_INSTALLER }}
           mkdir /tmp/gdb
