@@ -26,7 +26,7 @@ from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
-from numba_dpex import config, numba_sem_version
+from numba_dpex import config
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
@@ -322,22 +322,12 @@ class SPIRVKernelDispatcher(Dispatcher):
 
         self._kernel_name = pyfunc.__name__
 
-        if numba_sem_version < (0, 59, 0):
-            # pylint: disable=unexpected-keyword-arg
-            super().__init__(
-                py_func=pyfunc,
-                locals=local_vars_to_numba_types,
-                impl_kind="direct",
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
-        else:
-            super().__init__(
-                py_func=pyfunc,
-                locals=local_vars_to_numba_types,
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
+        super().__init__(
+            py_func=pyfunc,
+            locals=local_vars_to_numba_types,
+            targetoptions=targetoptions,
+            pipeline_class=pipeline_class,
+        )
         self._compiler = _SPIRVKernelCompiler(
             pyfunc,
             self.targetdescr,
