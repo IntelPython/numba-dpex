@@ -26,7 +26,7 @@ def _kernel1(nd_item: NdItem, a, slm):
     slm[j] = 0
 
     for m in range(100):
-        slm[j] += i * m
+        slm[j] += a.dtype.type(i) * a.dtype.type(m)
 
     a[i] = slm[j]
 
@@ -40,7 +40,7 @@ def _kernel2(nd_item: NdItem, a, slm):
     slm[j] = 0
 
     for m in range(100):
-        slm[j] += i * m
+        slm[j] += a.dtype.type(i) * a.dtype.type(m)
 
     a[i] = slm[j]
 
@@ -58,7 +58,7 @@ def _kernel3(nd_item: NdItem, a, slm):
     slm[j] = 0
 
     for m in range(100):
-        slm[j] += i * m
+        slm[j] += a.dtype.type(i) * a.dtype.type(m)
 
     a[i] = slm[j]
 
