@@ -1,0 +1,55 @@
+
+:orphan:
+
+numba_dpex.kernel_api.barrier
+=============================
+
+.. py:module:: numba_dpex.kernel_api.barrier
+
+.. autoapi-nested-parse::
+
+   Python functions that simulate SYCL's group_barrier function.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`group_barrier <numba_dpex.kernel_api.barrier.group_barrier>`\ (group, fence_scope)
+     - Performs a barrier operation across all work-items in a work group.
+
+
+
+
+Functions
+---------
+.. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
+
+   Performs a barrier operation across all work-items in a work group.
+
+   The function is modeled after the ``sycl::group_barrier`` function. It
+   synchronizes work within a group of work items. All the work-items
+   of the group must execute the barrier call before any work-item
+   continues execution beyond the barrier.
+
+   The ``group_barrier`` performs mem-fence operations ensuring that memory
+   accesses issued before the barrier are not re-ordered with those issued
+   after the barrier: all work-items in group G execute a release fence prior
+   to synchronizing at the barrier, all work-items in group G execute an
+   acquire fence afterwards, and there is an implicit synchronization of these
+   fences as if provided by an explicit atomic operation on an atomic object.
+
+   :param fence_scope: scope of any memory consistency
+   :type fence_scope: optional
+   :param operations that are performed by the barrier.:
+
+
+
+
+

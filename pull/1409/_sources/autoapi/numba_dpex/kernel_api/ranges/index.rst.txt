@@ -1,0 +1,142 @@
+
+:orphan:
+
+numba_dpex.kernel_api.ranges
+============================
+
+.. py:module:: numba_dpex.kernel_api.ranges
+
+.. autoapi-nested-parse::
+
+   Defines types to define the range of execution of a kernel. The types are
+   designed along the lines of classes defined in the SYCL 2020 spec section 4.9.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`Range <numba_dpex.kernel_api.ranges.Range>`
+     - A data structure to encapsulate a single kernel launch parameter.
+   * - :py:obj:`NdRange <numba_dpex.kernel_api.ranges.NdRange>`
+     - A class to encapsulate all kernel launch parameters.
+
+
+
+
+Classes
+-------
+
+.. py:class:: Range
+
+   Bases: :py:obj:`tuple`
+
+   A data structure to encapsulate a single kernel launch parameter.
+
+   The range is an abstraction that describes the number of elements
+   in each dimension of buffers and index spaces. It can contain
+   1, 2, or 3 numbers, depending on the dimensionality of the
+   object it describes.
+
+   This is just a wrapper class on top of a 3-tuple. The kernel launch
+   parameter is consisted of three int's. This class basically mimics
+   the behavior of `sycl::range`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get <numba_dpex.kernel_api.ranges.Range.get>`\ (index)
+        - Returns the range of a single dimension.
+      * - :py:obj:`size <numba_dpex.kernel_api.ranges.Range.size>`\ ()
+        - Returns the size of a range.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get(index)
+
+      Returns the range of a single dimension.
+
+      :param index: The index of the dimension, i.e. [0,2]
+      :type index: int
+
+      :returns: The range of the dimension indexed by `index`.
+      :rtype: int
+
+
+   .. py:method:: size()
+
+      Returns the size of a range.
+
+      Returns the size of a range by multiplying
+      the range of the individual dimensions.
+
+      :returns: The size of a range.
+      :rtype: int
+
+
+
+
+.. py:class:: NdRange(global_size, local_size)
+
+   A class to encapsulate all kernel launch parameters.
+
+   The NdRange defines the index space for a work group as well as
+   the global index space. It is passed to parallel_for to execute
+   a kernel on a set of work items.
+
+   This class basically contains two Range object, one for the global_range
+   and the other for the local_range. The global_range parameter contains
+   the global index space and the local_range parameter contains the index
+   space of a work group. This class mimics the behavior of `sycl::nd_range`
+   class.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_global_range <numba_dpex.kernel_api.ranges.NdRange.get_global_range>`\ ()
+        - Returns a Range defining the index space.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.ranges.NdRange.get_local_range>`\ ()
+        - Returns a Range defining the index space of a work group.
+
+
+   .. rubric:: Members
+
+   .. py:method:: get_global_range()
+
+      Returns a Range defining the index space.
+
+      :returns: A `Range` object defining the index space.
+      :rtype: Range
+
+
+   .. py:method:: get_local_range()
+
+      Returns a Range defining the index space of a work group.
+
+      :returns: A `Range` object to specify index space of a work group.
+      :rtype: Range
+
+
+
+
+
+
+

@@ -1,0 +1,145 @@
+
+:orphan:
+
+numba_dpex.core.utils.kernel_flattened_args_builder
+===================================================
+
+.. py:module:: numba_dpex.core.utils.kernel_flattened_args_builder
+
+.. autoapi-nested-parse::
+
+   Provides helpers to populate the list of kernel arguments that will
+   be passed to a DPCTLQueue_Submit function call by a KernelLaunchIRBuilder
+   object.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`KernelArg <numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg>`
+     - Stores the llvm IR value and the dpctl typeid for a kernel argument.
+   * - :py:obj:`KernelFlattenedArgsBuilder <numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder>`
+     - Helper to generate the flattened list of kernel arguments to be
+
+
+
+
+Classes
+-------
+
+.. py:class:: KernelArg
+
+   Bases: :py:obj:`NamedTuple`
+
+   Stores the llvm IR value and the dpctl typeid for a kernel argument.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`llvm_val <numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val>`
+        - \-
+      * - :py:obj:`typeid <numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.typeid>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: llvm_val
+      :type: llvmlite.ir.Instruction
+
+      
+
+   .. py:attribute:: typeid
+      :type: int
+
+      
+
+
+
+.. py:class:: KernelFlattenedArgsBuilder(context: numba.core.cpu.CPUContext, builder: llvmlite.ir.IRBuilder, kernel_dmm)
+
+   Helper to generate the flattened list of kernel arguments to be
+   passed to a DPCTLQueue_Submit function.
+
+   **Note** Two separate data models are used when building a flattened
+   kernel argument for the following reason:
+
+   Different numba-dpex targets can use different data models for the same
+   data type that may have different number of attributes and a different
+   type for each attribute.
+
+   In the case the DpnpNdArray type, two separate data models are used for
+   the CPUTarget and for the SPIRVTarget. The SPIRVTarget does not have the
+   ``parent``, ``meminfo`` and ``sycl_queue`` attributes that are present
+   in the data model used by the CPUTarget. The SPIRVTarget's data model
+   for DpnpNdArray also requires an explicit address space qualifier for
+   the ``data`` attribute.
+
+   When generating the LLVM IR for the host-side control code for executing
+   a SPIR-V kernel, the kernel arguments are represented using the
+   CPUTarget's data model for each argument's type. However, the actual
+   kernel function generated as a SPIR-V binary by the SPIRVTarget uses its
+   own data model manager to build the flattened kernel function argument
+   list. For this reason, when building the flattened argument list for a
+   kernel launch call the host data model is used to extract the
+   required attributes and then the kernel data model is used to get the
+   correct type for the attribute.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`add_argument <numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument>`\ (arg_type, arg_packed_llvm_val)
+        - Add flattened representation of a kernel argument.
+      * - :py:obj:`get_kernel_arg_list <numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.get_kernel_arg_list>`\ ()
+        - Returns a list of KernelArg objects representing a flattened kernel
+      * - :py:obj:`print_kernel_arg_list <numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.print_kernel_arg_list>`\ ()
+        - Prints out the kernel argument list in a human readable format.
+
+
+   .. rubric:: Members
+
+   .. py:method:: add_argument(arg_type, arg_packed_llvm_val)
+
+      Add flattened representation of a kernel argument.
+
+
+   .. py:method:: get_kernel_arg_list() -> list[KernelArg]
+
+      Returns a list of KernelArg objects representing a flattened kernel
+      argument.
+
+      :returns: List of flattened KernelArg objects
+      :rtype: list[KernelArg]
+
+
+   .. py:method:: print_kernel_arg_list() -> None
+
+      Prints out the kernel argument list in a human readable format.
+
+      :param args_list: List of kernel arguments to be printed
+      :type args_list: list[KernelArg]
+
+
+
+
+
+
+

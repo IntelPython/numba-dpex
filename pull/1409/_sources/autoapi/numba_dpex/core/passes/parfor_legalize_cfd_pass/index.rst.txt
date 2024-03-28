@@ -1,0 +1,122 @@
+
+:orphan:
+
+numba_dpex.core.passes.parfor_legalize_cfd_pass
+===============================================
+
+.. py:module:: numba_dpex.core.passes.parfor_legalize_cfd_pass
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ParforLegalizeCFDPassImpl <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl>`
+     - Legalizes the compute-follows-data based device attribute for parfor
+   * - :py:obj:`ParforLegalizeCFDPass <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass>`
+     - Base class for function passes
+
+
+
+
+Classes
+-------
+
+.. py:class:: ParforLegalizeCFDPassImpl(state)
+
+   Legalizes the compute-follows-data based device attribute for parfor
+   nodes.
+
+   DpnpNdArray array-expressions populate the type of the left-hand-side (LHS)
+   of each expression as a default DpnpNdArray instance derived from the
+   __array_ufunc__ method of DpnpNdArray class. The pass fixes the LHS type by
+   properly applying compute follows data programming model. The pass first
+   checks if the right-hand-side (RHS) DpnpNdArray arguments are on the same
+   device, else raising a ExecutionQueueInferenceError. Once the RHS has
+   been validated, the LHS type is updated.
+
+   The pass also updated the usm_type of the LHS based on a USM type
+   propagation rule: device > shared > host. Thus, if the usm_type attribute of
+   the RHS arrays are "device" and "shared" respectively, the LHS array's
+   usm_type attribute will be "device".
+
+   Once the pass has identified a parfor with DpnpNdArrays and legalized it,
+   the "lowerer" attribute of the parfor is set to
+   ``numba_dpex.core.passes.parfor_lowering_pass._lower_parfor_as_kernel`` so
+   that the parfor node is lowered using Dpex's lowerer.
+
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`inputUsmTypeStrToInt <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.inputUsmTypeStrToInt>`
+        - \-
+      * - :py:obj:`inputUsmTypeIntToStr <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.inputUsmTypeIntToStr>`
+        - \-
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.run>`\ ()
+        - \-
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: inputUsmTypeStrToInt
+
+      
+
+   .. py:attribute:: inputUsmTypeIntToStr
+
+      
+
+   .. py:method:: run()
+
+
+
+
+.. py:class:: ParforLegalizeCFDPass
+
+   Bases: :py:obj:`numba.core.compiler_machinery.FunctionPass`
+
+   Base class for function passes
+
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass.run_pass>`\ (state)
+        - Legalize CFD of parfor nodes.
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Legalize CFD of parfor nodes.
+
+
+
+
+
+
+

@@ -1,0 +1,65 @@
+
+:orphan:
+
+numba_dpex.core.types.kernel_api.atomic_ref
+===========================================
+
+.. py:module:: numba_dpex.core.types.kernel_api.atomic_ref
+
+.. autoapi-nested-parse::
+
+   Collection of numba-dpex typing classes for kernel_api Python classes.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`AtomicRefType <numba_dpex.core.types.kernel_api.atomic_ref.AtomicRefType>`
+     - numba-dpex internal type to represent a Python object of
+
+
+
+
+Classes
+-------
+
+.. py:class:: AtomicRefType(dtype: numba.core.types.Type, memory_order: int, memory_scope: int, address_space: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   numba-dpex internal type to represent a Python object of
+   :class:`numba_dpex.kernel_api.AtomicRef`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.kernel_api.atomic_ref.AtomicRefType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` The helper function is not overloaded and using it on the
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
+
+      The helper function is not overloaded and using it on the
+      AtomicRefType throws a NotImplementedError.
+
+
+
+
+
+
+

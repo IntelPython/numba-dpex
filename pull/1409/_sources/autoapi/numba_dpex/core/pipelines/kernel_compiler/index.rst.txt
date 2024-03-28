@@ -1,0 +1,58 @@
+
+:orphan:
+
+numba_dpex.core.pipelines.kernel_compiler
+=========================================
+
+.. py:module:: numba_dpex.core.pipelines.kernel_compiler
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`KernelCompiler <numba_dpex.core.pipelines.kernel_compiler.KernelCompiler>`
+     - Dpex's kernel compilation pipeline.
+
+
+
+
+Classes
+-------
+
+.. py:class:: KernelCompiler(typingctx, targetctx, library, args, return_type, flags, locals)
+
+   Bases: :py:obj:`numba.core.compiler.CompilerBase`
+
+   Dpex's kernel compilation pipeline.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`define_pipelines <numba_dpex.core.pipelines.kernel_compiler.KernelCompiler.define_pipelines>`\ ()
+        - Child classes override this to customize the pipelines in use.
+
+
+   .. rubric:: Members
+
+   .. py:method:: define_pipelines()
+
+      Child classes override this to customize the pipelines in use.
+
+
+
+
+
+
+
+

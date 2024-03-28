@@ -1,0 +1,46 @@
+
+:orphan:
+
+numba_dpex.kernel_api.local_accessor
+====================================
+
+.. py:module:: numba_dpex.kernel_api.local_accessor
+
+.. autoapi-nested-parse::
+
+   Implements a Python analogue to SYCL's local_accessor class. The class is
+   intended to be used in pure Python code when prototyping a kernel function
+   and to be passed to an actual kernel function for local memory allocation.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`LocalAccessor <numba_dpex.kernel_api.local_accessor.LocalAccessor>`
+     - The ``LocalAccessor`` class is analogous to SYCL's ``local_accessor``
+
+
+
+
+Classes
+-------
+
+.. py:class:: LocalAccessor(shape, dtype)
+
+   The ``LocalAccessor`` class is analogous to SYCL's ``local_accessor``
+   class. The class acts a s proxy to allocating device local memory and
+   accessing that memory from within a :func:`numba_dpex.kernel` decorated
+   function.
+
+
+
+
+
+
+
