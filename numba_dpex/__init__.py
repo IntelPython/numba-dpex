@@ -50,38 +50,9 @@ def load_dpctl_sycl_interface():
         raise ImportError
 
 
-def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
-    """Parse sem version into tuple of three integers. If there is a suffix like
-    rc1, dev0 - it will be ignored."""
-    return tuple(
-        map(
-            int,
-            re.sub(
-                "([0-9]+\\.[0-9]+\\.[0-9]+).*",
-                "\\g<1>",
-                version_string,
-            ).split(".")[:3],
-        )
-    )
-
-
-numba_sem_version = parse_sem_version(numba_version)
-if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
-    logging.warning(
-        "numba_dpex needs at least numba 0.58.0 but no more than 0.59.0, using "
-        f"numba={numba_version} may cause unexpected behavior"
-    )
-
 # Monkey patches
 patch_is_ufunc.patch()
 patch_arrayexpr_tree_to_ir.patch()
-
-dpctl_sem_version = parse_sem_version(dpctl.__version__)
-if dpctl_sem_version < (0, 14):
-    logging.warning(
-        "numba_dpex needs dpctl 0.14 or greater, using "
-        f"dpctl={dpctl_sem_version} may cause unexpected behavior"
-    )
 
 from numba import prange  # noqa E402
 

@@ -15,17 +15,21 @@ export ICPXCFG
 export CC=icx
 export CXX=icpx
 
+export CMAKE_GENERATOR=Ninja
+# Make CMake verbose
+export VERBOSE=1
+
 # new llvm-spirv location
 # starting from dpcpp_impl_linux-64=2022.0.0=intel_3610
 export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 
-SKBUILD_ARGS=(-G Ninja -- -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
+# -wnx flags mean: --wheel --no-isolation --skip-dependency-check
+${PYTHON} -m build -w -n -x
+${PYTHON} -m wheel tags --remove --build "$GIT_DESCRIBE_NUMBER" \
+    --platform-tag manylinux2014_x86_64 dist/numba_dpex*.whl
+${PYTHON} -m pip install dist/numba_dpex*.whl
 
-${PYTHON} setup.py install --single-version-externally-managed --record=record.txt "${SKBUILD_ARGS[@]}"
-
-# Build wheel package
-WHEELS_BUILD_ARGS=(-p manylinux2014_x86_64 --build-number "$GIT_DESCRIBE_NUMBER")
+# Copy wheel package
 if [[ -v WHEELS_OUTPUT_FOLDER ]]; then
-    $PYTHON setup.py bdist_wheel "${WHEELS_BUILD_ARGS[@]}" "${SKBUILD_ARGS[@]}"
     cp dist/numba_dpex*.whl "${WHEELS_OUTPUT_FOLDER[@]}"
 fi

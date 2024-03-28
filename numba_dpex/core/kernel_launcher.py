@@ -279,7 +279,7 @@ def call_kernel_async(
     kernel_fn,
     index_space,
     dependent_events: list[dpctl.SyclEvent],
-    *kernel_args
+    *kernel_args,
 ) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
     """Compiles and asynchronously executes a kernel function.
 
