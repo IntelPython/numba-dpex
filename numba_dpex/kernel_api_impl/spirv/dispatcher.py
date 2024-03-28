@@ -8,7 +8,7 @@ call numba_dpex.kernel decorated function.
 import hashlib
 from collections import namedtuple
 from contextlib import ExitStack
-from typing import Tuple
+from typing import List, Tuple
 
 import numba.core.event as ev
 from llvmlite.binding.value import ValueRef
@@ -27,6 +27,7 @@ from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, numba_sem_version
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     InvalidKernelSpecializationError,
@@ -36,16 +37,14 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import kernel_launcher as kl
-from numba_dpex.experimental.target import (
-    DPEX_KERNEL_EXP_TARGET_NAME,
-    dpex_exp_kernel_target,
-)
 from numba_dpex.kernel_api_impl.spirv import spirv_generator
 from numba_dpex.kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
 from numba_dpex.kernel_api_impl.spirv.target import (
     CompilationMode,
     SPIRVTargetContext,
 )
+
+from .target import SPIRV_TARGET_NAME
 
 _SPIRVKernelCompileResult = namedtuple(
     "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
@@ -58,7 +57,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
     """
 
     def check_queue_equivalence_of_args(
-        self, py_func_name: str, args: [types.Type, ...]
+        self, py_func_name: str, args: List[types.Type]
     ):
         """Evaluates if all USMNdArray arguments passed to a kernel function
         has the same DpctlSyclQueue type.
@@ -140,7 +139,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
                 unsupported_argnum_list=unsupported_argnum_list,
             )
 
-    def check_arguments(self, py_func_name: str, args: [types.Type, ...]):
+    def check_arguments(self, py_func_name: str, args: List[types.Type]):
         """Checks arguments and queue of the input arguments.
 
         Raises:
@@ -242,7 +241,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
             pass
 
         try:
-            with target_override(DPEX_KERNEL_EXP_TARGET_NAME):
+            with target_override(SPIRV_TARGET_NAME):
                 cres: CompileResult = self._compile_core(args, return_type)
 
             if (
@@ -302,7 +301,7 @@ class SPIRVKernelDispatcher(Dispatcher):
 
     """
 
-    targetdescr = dpex_exp_kernel_target
+    targetdescr = dpex_kernel_target
     _fold_args = False
 
     def __init__(
@@ -479,5 +478,5 @@ class SPIRVKernelDispatcher(Dispatcher):
         raise NotImplementedError
 
 
-_dpex_target = target_registry[DPEX_KERNEL_EXP_TARGET_NAME]
+_dpex_target = target_registry[SPIRV_TARGET_NAME]
 dispatcher_registry[_dpex_target] = SPIRVKernelDispatcher
