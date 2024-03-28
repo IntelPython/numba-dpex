@@ -7,6 +7,7 @@
 
 from inspect import signature
 from itertools import product
+from typing import Union
 
 from .index_space_ids import Group, Item, NdItem
 from .local_accessor import LocalAccessor, _LocalAccessorMock
@@ -112,17 +113,26 @@ def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
             )
 
 
-def call_kernel(kernel_fn, index_range, *kernel_args):
+def call_kernel(kernel_fn, index_range: Union[Range, NdRange], *kernel_args):
     """Mocks the launching of a kernel function over either a Range or NdRange.
 
+    .. important::
+        The function is meant to be used only during prototyping a kernel_api
+        function in Python. To launch a JIT compiled kernel, the
+        :func:`numba_dpex.core.kernel_launcher.call_kernel` function should be
+        used.
+
     Args:
-        kernel_fn : A callable function object
-        index_range (numba_dpex.Range): An instance of a Range object
+        kernel_fn : A callable function object written using
+            :py:mod:`numba_dpex.kernel_api`.
+        index_range (Range|NdRange): An instance of a Range or an NdRange object
+        kernel_args (List): The expanded list of actual arguments with which to
+            launch the kernel execution.
 
     Raises:
-        ValueError: If the first positional argument is not callable
+        ValueError: If the first positional argument is not callable.
         ValueError: If the second positional argument is not a Range or an
-        Ndrange object
+            Ndrange object
     """
     if not callable(kernel_fn):
         raise ValueError(

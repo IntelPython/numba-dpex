@@ -5,9 +5,13 @@
 # coding: utf-8
 # Configuration file for the Sphinx documentation builder.
 
-import numba_dpex
-
 # -- Project information -----------------------------------------------------
+
+import sys
+
+sys.path.append(".")
+
+from sycl_spec_links import sycl_ext_links  # noqa E402
 
 project = "numba-dpex"
 copyright = "2020-2024, Intel Corporation"
@@ -45,6 +49,8 @@ templates_path = []
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+extlinks = {}
+extlinks.update(sycl_ext_links)
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -72,14 +78,7 @@ googleanalytics_enabled = True
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
 
-html_sidebars = {
-    # "**": [
-    #     "globaltoc.html",
-    #     "sourcelink.html",
-    #     "searchbox.html",
-    #     "relations.html",
-    # ],
-}
+html_sidebars = {}
 
 html_show_sourcelink = False
 
@@ -88,28 +87,8 @@ todo_include_todos = True
 todo_link_only = True
 
 # -- InterSphinx configuration: looks for objects in external projects -----
-# Add here external classes you want to link from Intel SDC documentation
-# Each entry of the dictionary has the following format:
-#      'class name': ('link to object.inv file for that class', None)
-# intersphinx_mapping = {
-#    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
-#    'python': ('http://docs.python.org/2', None),
-#    'numpy': ('http://docs.scipy.org/doc/numpy', None)
-# }
 intersphinx_mapping = {}
 
-# -- Napoleon extension configuration (Numpy and Google docstring options) -------
-# napoleon_google_docstring = True
-# napoleon_numpy_docstring = True
-# napoleon_include_init_with_doc = True
-# napoleon_include_private_with_doc = True
-# napoleon_include_special_with_doc = True
-# napoleon_use_admonition_for_examples = False
-# napoleon_use_admonition_for_notes = False
-# napoleon_use_admonition_for_references = False
-# napoleon_use_ivar = False
-# napoleon_use_param = True
-# napoleon_use_rtype = True
 
 # -- Prepend module name to an object name or not -----------------------------------
 add_module_names = False

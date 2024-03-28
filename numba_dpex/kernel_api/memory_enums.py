@@ -11,21 +11,11 @@ from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 class MemoryOrder(FlagEnum):
     """
-    An enumeration of the supported ``sycl::memory_order`` values.
+    Analogue of :sycl_memory_order:`sycl::memory_order <>` enumeration.
 
     The integer values of the enums is kept consistent with the corresponding
     implementation in dpcpp.
 
-    =====================   ============
-    Order                   Enum value
-    =====================   ============
-    RELAXED                 0
-    ACQUIRE                 1
-    CONSUME_UNSUPPORTED     2
-    RELEASE                 3
-    ACQ_REL                 4
-    SEQ_CST                 5
-    =====================   ============
     """
 
     RELAXED = 0
@@ -38,19 +28,11 @@ class MemoryOrder(FlagEnum):
 
 class MemoryScope(FlagEnum):
     """
-    An enumeration of the supported ``sycl::memory_scope`` values.
+    Analogue of :sycl_memory_scope:`sycl::memory_scope <>` enumeration.
 
-    For more details please refer to SYCL 2020 specification, section 3.8.3.2
+    The integer values of the enums is kept consistent with the corresponding
+    implementation in dpcpp.
 
-    ===============  ============
-    Memory Scope     Enum value
-    ===============  ============
-    WORK_ITEM        0
-    SUB_GROUP        1
-    WORK_GROUP       2
-    DEVICE           3
-    SYSTEM           4
-    ===============  ============
     """
 
     WORK_ITEM = 0
@@ -61,17 +43,10 @@ class MemoryScope(FlagEnum):
 
 
 class AddressSpace(FlagEnum):
-    """An enumeration of the supported address space values.
+    """Analogue of :sycl_addr_space:`SYCL address space classes <>`.
 
-    ==================   ============
-    Address space        Value
-    ==================   ============
-    PRIVATE              0
-    GLOBAL               1
-    CONSTANT             2
-    LOCAL                3
-    GENERIC              4
-    ==================   ============
+    The integer values of the enums is kept consistent with the corresponding
+    implementation in dpcpp.
     """
 
     PRIVATE = 0
