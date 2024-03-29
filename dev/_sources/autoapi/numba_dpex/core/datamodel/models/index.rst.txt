@@ -57,6 +57,8 @@ Overview
 
    * - :py:obj:`dpex_data_model_manager <numba_dpex.core.datamodel.models.dpex_data_model_manager>`
      - \-
+   * - :py:obj:`dpjit_data_model_manager <numba_dpex.core.datamodel.models.dpjit_data_model_manager>`
+     - \-
 
 
 Classes
@@ -233,6 +235,10 @@ Functions
 Attributes
 ----------
 .. py:data:: dpex_data_model_manager
+
+   
+
+.. py:data:: dpjit_data_model_manager
 
    
 
