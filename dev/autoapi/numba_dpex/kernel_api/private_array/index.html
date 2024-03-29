@@ -257,7 +257,7 @@ kernel function.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.private_array.PrivateArray" title="numba_dpex.kernel_api.private_array.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
-<td><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used</p></td>
+<td><p>An array that gets allocated on the private memory of a work-item.</p></td>
 </tr>
 </tbody>
 </table>
@@ -268,8 +268,11 @@ kernel function.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.private_array.PrivateArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PrivateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.private_array.PrivateArray" title="Link to this definition">#</a></dt>
-<dd><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used
-inside kernel work item.</p>
+<dd><p>An array that gets allocated on the private memory of a work-item.</p>
+<p>The class should be used to allocate small arrays on the private
+per-work-item memory for fast accesses inside a kernel. It is similar in
+intent to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_parallel_for_hierarchical_invoke">sycl::private_memory</a> class but is
+not a direct analogue.</p>
 </dd></dl>
 
 </section>

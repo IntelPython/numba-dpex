@@ -256,10 +256,10 @@ designed along the lines of classes defined in the SYCL 2020 spec section 4.9.</
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
-<td><p>A data structure to encapsulate a single kernel launch parameter.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
-<td><p>A class to encapsulate all kernel launch parameters.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p></td>
 </tr>
 </tbody>
 </table>
@@ -271,7 +271,7 @@ designed along the lines of classes defined in the SYCL 2020 spec section 4.9.</
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>A data structure to encapsulate a single kernel launch parameter.</p>
+<p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p>
 <p>The range is an abstraction that describes the number of elements
 in each dimension of buffers and index spaces. It can contain
 1, 2, or 3 numbers, depending on the dimensionality of the
@@ -332,7 +332,7 @@ the range of the individual dimensions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.NdRange">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.NdRange" title="Link to this definition">#</a></dt>
-<dd><p>A class to encapsulate all kernel launch parameters.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p>
 <p>The NdRange defines the index space for a work group as well as
 the global index space. It is passed to parallel_for to execute
 a kernel on a set of work items.</p>

@@ -265,20 +265,30 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.launcher.call_kernel">
-<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.launcher.call_kernel" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">numba_dpex.kernel_api.ranges.NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.launcher.call_kernel" title="Link to this definition">#</a></dt>
 <dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The function is meant to be used only during prototyping a kernel_api
+function in Python. To launch a JIT compiled kernel, the
+<a class="reference internal" href="../../core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function should be
+used.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel_fn</strong> – A callable function object</p></li>
-<li><p><strong>index_range</strong> (<em>numba_dpex.Range</em>) – An instance of a Range object</p></li>
+<li><p><strong>kernel_fn</strong> – A callable function object written using
+<a class="reference internal" href="../index.html#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a>.</p></li>
+<li><p><strong>index_range</strong> (<a class="reference internal" href="../../core/boxing/index.html#id3" title="numba_dpex.core.boxing.Range"><em>Range</em></a><em>|</em><a class="reference internal" href="../../core/boxing/index.html#id0" title="numba_dpex.core.boxing.NdRange"><em>NdRange</em></a>) – An instance of a Range or an NdRange object</p></li>
+<li><p><strong>kernel_args</strong> (<em>List</em>) – The expanded list of actual arguments with which to
+launch the kernel execution.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – If the first positional argument is not callable</p></li>
-<li><p><strong>ValueError</strong> – If the second positional argument is not a Range or an</p></li>
-<li><p><strong>Ndrange object</strong> – </p></li>
+<li><p><strong>ValueError</strong> – If the first positional argument is not callable.</p></li>
+<li><p><strong>ValueError</strong> – If the second positional argument is not a Range or an
+Ndrange object</p></li>
 </ul>
 </dd>
 </dl>

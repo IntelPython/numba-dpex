@@ -23,7 +23,7 @@ Overview
    :class: summarytable
 
    * - :py:obj:`PrivateArray <numba_dpex.kernel_api.private_array.PrivateArray>`
-     - The ``PrivateArray`` class is an simple version of array intended to be used
+     - An array that gets allocated on the private memory of a work-item.
 
 
 
@@ -33,8 +33,12 @@ Classes
 
 .. py:class:: PrivateArray(shape, dtype, fill_zeros=False)
 
-   The ``PrivateArray`` class is an simple version of array intended to be used
-   inside kernel work item.
+   An array that gets allocated on the private memory of a work-item.
+
+   The class should be used to allocate small arrays on the private
+   per-work-item memory for fast accesses inside a kernel. It is similar in
+   intent to the :sycl_private_memory:`sycl::private_memory <>` class but is
+   not a direct analogue.
 
 
 

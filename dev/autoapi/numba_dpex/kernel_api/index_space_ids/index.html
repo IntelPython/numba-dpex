@@ -257,13 +257,13 @@ compiled.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Group</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::group</span></code> type.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item" title="numba_dpex.kernel_api.index_space_ids.Item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Item</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.NdItem" title="numba_dpex.kernel_api.index_space_ids.NdItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdItem</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p></td>
 </tr>
 </tbody>
 </table>
@@ -274,26 +274,31 @@ compiled.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::group</span></code> type.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
+<p>Represents a particular work-group within a parallel execution and
+provides API to extract various properties of the work-group. An instance
+of the class is not user-constructible. Users should use
+<a class="reference internal" href="../index.html#numba_dpex.kernel_api.NdItem.get_group" title="numba_dpex.kernel_api.NdItem.get_group"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem.get_group()</span></code></a> to access the Group to which
+a work-item belongs.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
 <table class="summarytable docutils align-default" id="id4">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_id" title="numba_dpex.kernel_api.index_space_ids.Group.get_group_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_id</span></code></a>(dim)</p></td>
-<td><p>Returns the index of the work-group within the global nd-range for</p></td>
+<td><p>Returns a specific coordinate of the multi-dimensional index of a group.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id" title="numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_linear_id</span></code></a>()</p></td>
 <td><p>Returns a linearized version of the work-group index.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_range" title="numba_dpex.kernel_api.index_space_ids.Group.get_group_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_range</span></code></a>(dim)</p></td>
-<td><p>Returns a the extent of the range representing the number of groups</p></td>
+<td><p>Returns the extent of the range of groups in an nd-range for given dimension.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range" title="numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_linear_range</span></code></a>()</p></td>
-<td><p>Return the total number of work-groups in the nd_range.</p></td>
+<td><p>Returns the total number of work-groups in the nd_range.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_local_range" title="numba_dpex.kernel_api.index_space_ids.Group.get_local_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_range</span></code></a>(dim)</p></td>
-<td><p>Returns the extent of the SYCL range representing all dimensions</p></td>
+<td><p>Returns the extent of the range of work-items in a work-group for given dimension.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range" title="numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_linear_range</span></code></a>()</p></td>
 <td><p>Return the total number of work-items in the work-group.</p></td>
@@ -305,44 +310,108 @@ compiled.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_group_id">
 <span class="sig-name descname"><span class="pre">get_group_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_id" title="Link to this definition">#</a></dt>
-<dd><p>Returns the index of the work-group within the global nd-range for
-specified dimension.</p>
+<dd><p>Returns a specific coordinate of the multi-dimensional index of a group.</p>
 <p>Since the work-items in a work-group have a defined position within the
 global nd-range, the returned group id can be used along with the local
 id to uniquely identify the work-item in the global nd-range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The coordinate for the <code class="docutils literal notranslate"><span class="pre">dim</span></code> dimension for the group’s
+multi-dimensional index within an nd-range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the <code class="docutils literal notranslate"><span class="pre">dim</span></code> argument is not in the (1..3) interval.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id">
 <span class="sig-name descname"><span class="pre">get_group_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_id" title="Link to this definition">#</a></dt>
 <dd><p>Returns a linearized version of the work-group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The linearized index for the group’s position within an
+nd-range.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_group_range">
 <span class="sig-name descname"><span class="pre">get_group_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_range" title="Link to this definition">#</a></dt>
-<dd><p>Returns a the extent of the range representing the number of groups
-in the nd-range for a specified dimension.</p>
+<dd><p>Returns the extent of the range of groups in an nd-range for given dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extent of group range for the specified dimension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range">
 <span class="sig-name descname"><span class="pre">get_group_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_group_linear_range" title="Link to this definition">#</a></dt>
-<dd><p>Return the total number of work-groups in the nd_range.</p>
+<dd><p>Returns the total number of work-groups in the nd_range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the number of groups in a parallel execution of an
+nd-range kernel.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_local_range">
 <span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_local_range" title="Link to this definition">#</a></dt>
-<dd><p>Returns the extent of the SYCL range representing all dimensions
-of the local range for a specified dimension. This local range may
-have been provided by the programmer, or chosen by the SYCL runtime.</p>
+<dd><p>Returns the extent of the range of work-items in a work-group for given dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extent of the local work-item range for the specified
+dimension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range">
 <span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Group.get_local_linear_range" title="Link to this definition">#</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the linearized size of the local range inside an
+nd-range.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -350,16 +419,16 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Item">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Item" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p>
-<p>Identifies an instance of the function object executing at each point in an
-<a class="reference internal" href="../../core/boxing/index.html#id3" title="numba_dpex.core.boxing.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
+<p>Identifies the work-item in a parallel execution of a kernel launched with
+the <a class="reference internal" href="../../core/boxing/index.html#id3" title="numba_dpex.core.boxing.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> index-space class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_id" title="numba_dpex.kernel_api.index_space_ids.Item.get_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linear_id</span></code></a>()</p></td>
-<td><p>Get the linear id associated with this item for all dimensions.</p></td>
+<td><p>Returns the linear id associated with this item for all dimensions.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item.get_id" title="numba_dpex.kernel_api.index_space_ids.Item.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>(idx)</p></td>
 <td><p>Get the id for a specific dimension.</p></td>
@@ -377,11 +446,10 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.Item.get_linear_id">
 <span class="sig-name descname"><span class="pre">get_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.Item.get_linear_id" title="Link to this definition">#</a></dt>
-<dd><p>Get the linear id associated with this item for all dimensions.
-Original implementation could be found at <code class="docutils literal notranslate"><span class="pre">sycl::item_base</span></code> class.</p>
+<dd><p>Returns the linear id associated with this item for all dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The linear id.</p>
+<dd class="field-odd"><p>The linear id of the work item in the global range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
@@ -428,7 +496,7 @@ Original implementation could be found at <code class="docutils literal notransl
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.index_space_ids.NdItem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item" title="numba_dpex.kernel_api.index_space_ids.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Item" title="numba_dpex.kernel_api.index_space_ids.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.index_space_ids.NdItem" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
 <a class="reference internal" href="../../core/boxing/index.html#id0" title="numba_dpex.core.boxing.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>

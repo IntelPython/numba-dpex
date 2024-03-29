@@ -258,37 +258,37 @@ numba_dpex.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicRef</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> class.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Group</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::group</span></code> type.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Item</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdItem</span></code></a></p></td>
-<td><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.LocalAccessor" title="numba_dpex.kernel_api.LocalAccessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></p></td>
-<td><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code></p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace" title="numba_dpex.kernel_api.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
-<td><p>An enumeration of the supported address space values.</p></td>
+<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
-<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p></td>
+<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
-<td><p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p></td>
+<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
-<td><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used</p></td>
+<td><p>An array that gets allocated on the private memory of a work-item.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
-<td><p>A class to encapsulate all kernel launch parameters.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
-<td><p>A data structure to encapsulate a single kernel launch parameter.</p></td>
+<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p></td>
 </tr>
 </tbody>
 </table>
@@ -298,10 +298,10 @@ numba_dpex.</p>
 <caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.atomic_fence" title="numba_dpex.kernel_api.atomic_fence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_fence</span></code></a>(memory_order, memory_scope)</p></td>
-<td><p>The function for performing memory fence across all work-items.</p></td>
+<td><p>Performs a memory fence operations across all work-items.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.group_barrier" title="numba_dpex.kernel_api.group_barrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_barrier</span></code></a>(group, fence_scope)</p></td>
-<td><p>Performs a barrier operation across all work-items in a work group.</p></td>
+<td><p>Performs a barrier operation across all work-items in a work-group.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.call_kernel" title="numba_dpex.kernel_api.call_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call_kernel</span></code></a>(kernel_fn, index_range, *kernel_args)</p></td>
 <td><p>Mocks the launching of a kernel function over either a Range or NdRange.</p></td>
@@ -315,7 +315,7 @@ numba_dpex.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomicRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryOrder.RELAXED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.DEVICE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_ref</span></code> class.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p>
 <p>An atomic reference is a view into a data container that can be then updated
 atomically using any of the <code class="docutils literal notranslate"><span class="pre">fetch_*</span></code> member functions of the class.</p>
 <p class="rubric">Overview</p>
@@ -528,26 +528,31 @@ the AtomicRef.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::group</span></code> type.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
+<p>Represents a particular work-group within a parallel execution and
+provides API to extract various properties of the work-group. An instance
+of the class is not user-constructible. Users should use
+<a class="reference internal" href="#numba_dpex.kernel_api.NdItem.get_group" title="numba_dpex.kernel_api.NdItem.get_group"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem.get_group()</span></code></a> to access the Group to which
+a work-item belongs.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
 <table class="summarytable docutils align-default" id="id4">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_group_id" title="numba_dpex.kernel_api.Group.get_group_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_id</span></code></a>(dim)</p></td>
-<td><p>Returns the index of the work-group within the global nd-range for</p></td>
+<td><p>Returns a specific coordinate of the multi-dimensional index of a group.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_group_linear_id" title="numba_dpex.kernel_api.Group.get_group_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_linear_id</span></code></a>()</p></td>
 <td><p>Returns a linearized version of the work-group index.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_group_range" title="numba_dpex.kernel_api.Group.get_group_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_range</span></code></a>(dim)</p></td>
-<td><p>Returns a the extent of the range representing the number of groups</p></td>
+<td><p>Returns the extent of the range of groups in an nd-range for given dimension.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_group_linear_range" title="numba_dpex.kernel_api.Group.get_group_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_linear_range</span></code></a>()</p></td>
-<td><p>Return the total number of work-groups in the nd_range.</p></td>
+<td><p>Returns the total number of work-groups in the nd_range.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_local_range" title="numba_dpex.kernel_api.Group.get_local_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_range</span></code></a>(dim)</p></td>
-<td><p>Returns the extent of the SYCL range representing all dimensions</p></td>
+<td><p>Returns the extent of the range of work-items in a work-group for given dimension.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_local_linear_range" title="numba_dpex.kernel_api.Group.get_local_linear_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_linear_range</span></code></a>()</p></td>
 <td><p>Return the total number of work-items in the work-group.</p></td>
@@ -559,44 +564,108 @@ the AtomicRef.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_id">
 <span class="sig-name descname"><span class="pre">get_group_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_id" title="Link to this definition">#</a></dt>
-<dd><p>Returns the index of the work-group within the global nd-range for
-specified dimension.</p>
+<dd><p>Returns a specific coordinate of the multi-dimensional index of a group.</p>
 <p>Since the work-items in a work-group have a defined position within the
 global nd-range, the returned group id can be used along with the local
 id to uniquely identify the work-item in the global nd-range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The coordinate for the <code class="docutils literal notranslate"><span class="pre">dim</span></code> dimension for the group’s
+multi-dimensional index within an nd-range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the <code class="docutils literal notranslate"><span class="pre">dim</span></code> argument is not in the (1..3) interval.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_linear_id">
 <span class="sig-name descname"><span class="pre">get_group_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_id" title="Link to this definition">#</a></dt>
 <dd><p>Returns a linearized version of the work-group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The linearized index for the group’s position within an
+nd-range.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_range">
 <span class="sig-name descname"><span class="pre">get_group_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_range" title="Link to this definition">#</a></dt>
-<dd><p>Returns a the extent of the range representing the number of groups
-in the nd-range for a specified dimension.</p>
+<dd><p>Returns the extent of the range of groups in an nd-range for given dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extent of group range for the specified dimension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_linear_range">
 <span class="sig-name descname"><span class="pre">get_group_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_range" title="Link to this definition">#</a></dt>
-<dd><p>Return the total number of work-groups in the nd_range.</p>
+<dd><p>Returns the total number of work-groups in the nd_range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the number of groups in a parallel execution of an
+nd-range kernel.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_local_range">
 <span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_range" title="Link to this definition">#</a></dt>
-<dd><p>Returns the extent of the SYCL range representing all dimensions
-of the local range for a specified dimension. This local range may
-have been provided by the programmer, or chosen by the SYCL runtime.</p>
+<dd><p>Returns the extent of the range of work-items in a work-group for given dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – An integral value between (1..3) for which the group
+index is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extent of the local work-item range for the specified
+dimension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_local_linear_range">
 <span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_linear_range" title="Link to this definition">#</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the linearized size of the local range inside an
+nd-range.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -604,16 +673,16 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::item</span></code> class.</p>
-<p>Identifies an instance of the function object executing at each point in an
-<a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a>.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
+<p>Identifies the work-item in a parallel execution of a kernel launched with
+the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> index-space class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
 <caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item.get_linear_id" title="numba_dpex.kernel_api.Item.get_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linear_id</span></code></a>()</p></td>
-<td><p>Get the linear id associated with this item for all dimensions.</p></td>
+<td><p>Returns the linear id associated with this item for all dimensions.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item.get_id" title="numba_dpex.kernel_api.Item.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>(idx)</p></td>
 <td><p>Get the id for a specific dimension.</p></td>
@@ -631,11 +700,10 @@ have been provided by the programmer, or chosen by the SYCL runtime.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item.get_linear_id">
 <span class="sig-name descname"><span class="pre">get_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_linear_id" title="Link to this definition">#</a></dt>
-<dd><p>Get the linear id associated with this item for all dimensions.
-Original implementation could be found at <code class="docutils literal notranslate"><span class="pre">sycl::item_base</span></code> class.</p>
+<dd><p>Returns the linear id associated with this item for all dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The linear id.</p>
+<dd class="field-odd"><p>The linear id of the work item in the global range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
@@ -682,7 +750,7 @@ Original implementation could be found at <code class="docutils literal notransl
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem" title="Link to this definition">#</a></dt>
-<dd><p>Analogue to the <code class="docutils literal notranslate"><span class="pre">sycl::nd_item</span></code> class.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
 <a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>
@@ -834,8 +902,8 @@ dimensions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.LocalAccessor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.LocalAccessor" title="Link to this definition">#</a></dt>
-<dd><p>The <code class="docutils literal notranslate"><span class="pre">LocalAccessor</span></code> class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">local_accessor</span></code>
-class. The class acts a s proxy to allocating device local memory and
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p>
+<p>The class acts as a proxy to allocating device local memory and
 accessing that memory from within a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated
 function.</p>
 </dd></dl>
@@ -844,33 +912,9 @@ function.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of the supported address space values.</p>
-<div class="table-wrapper docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Address space</p></th>
-<th class="head"><p>Value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>PRIVATE</p></td>
-<td><p>0</p></td>
-</tr>
-<tr class="row-odd"><td><p>GLOBAL</p></td>
-<td><p>1</p></td>
-</tr>
-<tr class="row-even"><td><p>CONSTANT</p></td>
-<td><p>2</p></td>
-</tr>
-<tr class="row-odd"><td><p>LOCAL</p></td>
-<td><p>3</p></td>
-</tr>
-<tr class="row-even"><td><p>GENERIC</p></td>
-<td><p>4</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p>
+<p>The integer values of the enums is kept consistent with the corresponding
+implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id7">
 <table class="summarytable docutils align-default" id="id7">
@@ -926,38 +970,9 @@ function.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_order</span></code> values.</p>
+<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
-<div class="table-wrapper docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Order</p></th>
-<th class="head"><p>Enum value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>RELAXED</p></td>
-<td><p>0</p></td>
-</tr>
-<tr class="row-odd"><td><p>ACQUIRE</p></td>
-<td><p>1</p></td>
-</tr>
-<tr class="row-even"><td><p>CONSUME_UNSUPPORTED</p></td>
-<td><p>2</p></td>
-</tr>
-<tr class="row-odd"><td><p>RELEASE</p></td>
-<td><p>3</p></td>
-</tr>
-<tr class="row-even"><td><p>ACQ_REL</p></td>
-<td><p>4</p></td>
-</tr>
-<tr class="row-odd"><td><p>SEQ_CST</p></td>
-<td><p>5</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id8">
 <table class="summarytable docutils align-default" id="id8">
@@ -1021,34 +1036,9 @@ implementation in dpcpp.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>An enumeration of the supported <code class="docutils literal notranslate"><span class="pre">sycl::memory_scope</span></code> values.</p>
-<p>For more details please refer to SYCL 2020 specification, section 3.8.3.2</p>
-<div class="table-wrapper docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Memory Scope</p></th>
-<th class="head"><p>Enum value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>WORK_ITEM</p></td>
-<td><p>0</p></td>
-</tr>
-<tr class="row-odd"><td><p>SUB_GROUP</p></td>
-<td><p>1</p></td>
-</tr>
-<tr class="row-even"><td><p>WORK_GROUP</p></td>
-<td><p>2</p></td>
-</tr>
-<tr class="row-odd"><td><p>DEVICE</p></td>
-<td><p>3</p></td>
-</tr>
-<tr class="row-even"><td><p>SYSTEM</p></td>
-<td><p>4</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p>
+<p>The integer values of the enums is kept consistent with the corresponding
+implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id9">
 <table class="summarytable docutils align-default" id="id9">
@@ -1103,14 +1093,17 @@ implementation in dpcpp.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.PrivateArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PrivateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.PrivateArray" title="Link to this definition">#</a></dt>
-<dd><p>The <code class="docutils literal notranslate"><span class="pre">PrivateArray</span></code> class is an simple version of array intended to be used
-inside kernel work item.</p>
+<dd><p>An array that gets allocated on the private memory of a work-item.</p>
+<p>The class should be used to allocate small arrays on the private
+per-work-item memory for fast accesses inside a kernel. It is similar in
+intent to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_parallel_for_hierarchical_invoke">sycl::private_memory</a> class but is
+not a direct analogue.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange" title="Link to this definition">#</a></dt>
-<dd><p>A class to encapsulate all kernel launch parameters.</p>
+<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p>
 <p>The NdRange defines the index space for a work group as well as
 the global index space. It is passed to parallel_for to execute
 a kernel on a set of work items.</p>
@@ -1168,7 +1161,7 @@ class.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Range">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.Range" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>A data structure to encapsulate a single kernel launch parameter.</p>
+<p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p>
 <p>The range is an abstraction that describes the number of elements
 in each dimension of buffers and index spaces. It can contain
 1, 2, or 3 numbers, depending on the dimensionality of the
@@ -1231,59 +1224,87 @@ the range of the individual dimensions.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.atomic_fence">
-<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">#</a></dt>
-<dd><p>The function for performing memory fence across all work-items.
-Modeled after <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function.
-It provides control over re-ordering of memory load
-and store operations. The <code class="docutils literal notranslate"><span class="pre">atomic_fence</span></code> function acts as a
-fence across all work-items and devices specified by a
-memory_scope argument.</p>
-<p>Args:
-memory_order: The memory synchronization order.</p>
-<p>memory_scope: The set of work-items and devices to which
-the memory ordering constraints apply.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.group_barrier">
-<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">numba_dpex.kernel_api.index_space_ids.Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">#</a></dt>
-<dd><p>Performs a barrier operation across all work-items in a work group.</p>
-<p>The function is modeled after the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
-synchronizes work within a group of work items. All the work-items
-of the group must execute the barrier call before any work-item
-continues execution beyond the barrier.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">group_barrier</span></code> performs mem-fence operations ensuring that memory
-accesses issued before the barrier are not re-ordered with those issued
-after the barrier: all work-items in group G execute a release fence prior
-to synchronizing at the barrier, all work-items in group G execute an
-acquire fence afterwards, and there is an implicit synchronization of these
-fences as if provided by an explicit atomic operation on an atomic object.</p>
+<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">#</a></dt>
+<dd><p>Performs a memory fence operations across all work-items.</p>
+<p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function and
+controls the order of memory accesses (loads and stores) by individual
+work-items.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The function is a no-op during CPython execution and only available in
+JIT compiled mode of execution.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fence_scope</strong> (<em>optional</em>) – scope of any memory consistency</p></li>
-<li><p><strong>barrier.</strong> (<em>operations that are performed by the</em>) – </p></li>
+<li><p><strong>memory_order</strong> (<a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><em>MemoryOrder</em></a>) – The memory synchronization order.</p></li>
+<li><p><strong>memory_scope</strong> (<a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><em>MemoryScope</em></a>) – The set of work-items and devices to which
+the memory ordering constraints apply.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.call_kernel">
-<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">#</a></dt>
-<dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.group_barrier">
+<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">numba_dpex.kernel_api.index_space_ids.Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryScope</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">#</a></dt>
+<dd><p>Performs a barrier operation across all work-items in a work-group.</p>
+<p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
+synchronizes work within a group of work-items. All the work-items
+of the group must execute the barrier call before any work-item
+continues execution beyond the barrier.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">group_barrier</span></code> performs a memory fence operation ensuring that memory
+accesses issued before the barrier are not re-ordered with those issued
+after the barrier. All work-items in group G execute a release fence prior
+to synchronizing at the barrier, all work-items in group G execute an
+acquire fence afterwards, and there is an implicit synchronization of these
+fences as if provided by an explicit atomic operation on an atomic object.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The function is not implemented yet for pure CPython execution and is
+only supported in JIT compiled mode of execution.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel_fn</strong> – A callable function object</p></li>
-<li><p><strong>index_range</strong> (<em>numba_dpex.Range</em>) – An instance of a Range object</p></li>
+<li><p><strong>group</strong> (<a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><em>Group</em></a>) – Indicates the work-group inside which the barrier is to
+be executed.</p></li>
+<li><p><strong>fence_scope</strong> (<a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><em>MemoryScope</em></a><em>) </em><em>(</em><em>optional</em>) – scope of any memory
+consistency operations that are performed by the barrier.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – When the function is called directly from Python.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.kernel_api.call_kernel">
+<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">numba_dpex.kernel_api.ranges.NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">#</a></dt>
+<dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The function is meant to be used only during prototyping a kernel_api
+function in Python. To launch a JIT compiled kernel, the
+<a class="reference internal" href="../core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function should be
+used.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kernel_fn</strong> – A callable function object written using
+<a class="reference internal" href="#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a>.</p></li>
+<li><p><strong>index_range</strong> (<a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a><em>|</em><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><em>NdRange</em></a>) – An instance of a Range or an NdRange object</p></li>
+<li><p><strong>kernel_args</strong> (<em>List</em>) – The expanded list of actual arguments with which to
+launch the kernel execution.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – If the first positional argument is not callable</p></li>
-<li><p><strong>ValueError</strong> – If the second positional argument is not a Range or an</p></li>
-<li><p><strong>Ndrange object</strong> – </p></li>
+<li><p><strong>ValueError</strong> – If the first positional argument is not callable.</p></li>
+<li><p><strong>ValueError</strong> – If the second positional argument is not a Range or an
+Ndrange object</p></li>
 </ul>
 </dd>
 </dl>

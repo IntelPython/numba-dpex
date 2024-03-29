@@ -22,7 +22,7 @@ Overview
    :class: summarytable
 
    * - :py:obj:`AtomicRef <numba_dpex.kernel_api.atomic_ref.AtomicRef>`
-     - Analogue to the ``sycl::atomic_ref`` class.
+     - Analogue to the :sycl_atomic_ref:`sycl::atomic_ref <>` class.
 
 
 
@@ -32,7 +32,7 @@ Classes
 
 .. py:class:: AtomicRef(ref, index, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=None)
 
-   Analogue to the ``sycl::atomic_ref`` class.
+   Analogue to the :sycl_atomic_ref:`sycl::atomic_ref <>` class.
 
    An atomic reference is a view into a data container that can be then updated
    atomically using any of the ``fetch_*`` member functions of the class.
