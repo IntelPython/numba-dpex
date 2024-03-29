@@ -5,7 +5,6 @@
 from contextlib import ExitStack
 
 from numba.core import cgutils, types
-from numba.core.datamodel import default_manager
 from numba.core.errors import NumbaNotImplementedError
 from numba.extending import NativeValue, box, unbox
 from numba.np import numpy_support

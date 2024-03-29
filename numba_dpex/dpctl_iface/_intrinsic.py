@@ -5,7 +5,6 @@
 import dpctl
 from llvmlite.ir import IRBuilder
 from numba import types
-from numba.core.datamodel import default_manager
 from numba.extending import intrinsic, overload, overload_method
 
 import numba_dpex.dpctl_iface.libsyclinterface_bindings as sycl
@@ -45,7 +44,7 @@ def sycl_event_wait(typingctx, ty_event: dpex_types.DpctlSyclEvent):
 
     # defines the custom code generation
     def codegen(context, builder, signature, args):
-        sycl_event_dm = default_manager.lookup(ty_event)
+        sycl_event_dm = context.data_model_manager.lookup(ty_event)
         event_ref = builder.extract_value(
             args[0],
             sycl_event_dm.get_field_position("event_ref"),

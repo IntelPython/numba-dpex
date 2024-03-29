@@ -5,7 +5,6 @@
 from llvmlite import ir as llvmir
 from numba.core import datamodel, types
 from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
-from numba.core.extending import register_model
 
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.types.kernel_api.atomic_ref import AtomicRefType
@@ -316,7 +315,7 @@ class LocalAccessorModel(StructModel):
         super().__init__(dmm, fe_type, members)
 
 
-def _init_data_model_manager() -> datamodel.DataModelManager:
+def _init_kernel_data_model_manager() -> datamodel.DataModelManager:
     """Initializes a data model manager used by the SPRIVTarget.
 
     SPIRV kernel functions for certain types of devices require an explicit
@@ -370,43 +369,50 @@ def _init_data_model_manager() -> datamodel.DataModelManager:
     return dmm
 
 
-dpex_data_model_manager = _init_data_model_manager()
+def _init_dpjit_data_model_manager() -> datamodel.DataModelManager:
+    # TODO: copy manager
+    dmm = datamodel.default_manager
+
+    # Register the USMNdArray type to USMArrayHostModel in numba's default data
+    # model manager
+    dmm.register(USMNdArray, USMArrayHostModel)
+
+    # Register the DpnpNdArray type to USMArrayHostModel in numba's default data
+    # model manager
+    dmm.register(DpnpNdArray, USMArrayHostModel)
+
+    # Register the DpctlSyclQueue type
+    dmm.register(DpctlSyclQueue, SyclQueueModel)
+
+    # Register the DpctlSyclEvent type
+    dmm.register(DpctlSyclEvent, SyclEventModel)
+
+    # Register the RangeType type
+    dmm.register(RangeType, RangeModel)
+
+    # Register the NdRangeType type
+    dmm.register(NdRangeType, NdRangeModel)
+
+    # Register the GroupType type
+    dmm.register(GroupType, EmptyStructModel)
+
+    # Register the ItemType type
+    dmm.register(ItemType, EmptyStructModel)
+
+    # Register the NdItemType type
+    dmm.register(NdItemType, EmptyStructModel)
+
+    # Register the MDLocalAccessorType type
+    dmm.register(DpctlMDLocalAccessorType, DpctlMDLocalAccessorModel)
+
+    # Register the LocalAccessorType type
+    dmm.register(LocalAccessorType, LocalAccessorModel)
+
+    # Register the KernelDispatcherType type
+    dmm.register(KernelDispatcherType, OpaqueModel)
+
+    return dmm
 
 
-# Register the USMNdArray type to USMArrayDeviceModel in numba's default data
-# model manager
-register_model(USMNdArray)(USMArrayHostModel)
-
-# Register the DpnpNdArray type to USMArrayHostModel in numba's default data
-# model manager
-register_model(DpnpNdArray)(USMArrayHostModel)
-
-# Register the DpctlSyclQueue type
-register_model(DpctlSyclQueue)(SyclQueueModel)
-
-# Register the DpctlSyclEvent type
-register_model(DpctlSyclEvent)(SyclEventModel)
-
-# Register the RangeType type
-register_model(RangeType)(RangeModel)
-
-# Register the NdRangeType type
-register_model(NdRangeType)(NdRangeModel)
-
-# Register the GroupType type
-register_model(GroupType)(EmptyStructModel)
-
-# Register the ItemType type
-register_model(ItemType)(EmptyStructModel)
-
-# Register the NdItemType type
-register_model(NdItemType)(EmptyStructModel)
-
-# Register the MDLocalAccessorType type
-register_model(DpctlMDLocalAccessorType)(DpctlMDLocalAccessorModel)
-
-# Register the LocalAccessorType type
-register_model(LocalAccessorType)(LocalAccessorModel)
-
-# Register the KernelDispatcherType type
-register_model(KernelDispatcherType)(OpaqueModel)
+dpex_data_model_manager = _init_kernel_data_model_manager()
+dpjit_data_model_manager = _init_dpjit_data_model_manager()
