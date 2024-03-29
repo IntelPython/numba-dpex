@@ -81,10 +81,6 @@ def _fill_ufunc_db_with_dpnp_ufuncs(ufunc_db):
             op.types = npop.types
             op.is_dpnp_ufunc = True
             cp = copy.copy(_ufunc_db[npop])
-            if "'divide'" in str(npop):
-                # TODO: why do we need to do it only for divide?
-                # https://github.com/IntelPython/numba-dpex/issues/1270
-                ufunc_db.update({npop: cp})
             ufunc_db.update({op: cp})
             for key in list(ufunc_db[op].keys()):
                 if (

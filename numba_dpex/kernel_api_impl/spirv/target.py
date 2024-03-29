@@ -18,7 +18,7 @@ from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types.scalars import IntEnumClass
-from numba.core.typing import cmathdecl, enumdecl, npydecl
+from numba.core.typing import cmathdecl, enumdecl
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.types import IntEnumLiteral
@@ -108,8 +108,6 @@ class SPIRVTypingContext(typing.BaseContext):
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
-        # TODO: https://github.com/IntelPython/numba-dpex/issues/1270
-        self.install_registry(npydecl.registry)
         self.install_registry(dpnpdecl.registry)
         self.install_registry(enumdecl.registry)
 
