@@ -11,9 +11,12 @@ import numpy as np
 
 
 class PrivateArray:
-    """
-    The ``PrivateArray`` class is an simple version of array intended to be used
-    inside kernel work item.
+    """An array that gets allocated on the private memory of a work-item.
+
+    The class should be used to allocate small arrays on the private
+    per-work-item memory for fast accesses inside a kernel. It is similar in
+    intent to the :sycl_private_memory:`sycl::private_memory <>` class but is
+    not a direct analogue.
     """
 
     def __init__(self, shape, dtype, fill_zeros=False) -> None:

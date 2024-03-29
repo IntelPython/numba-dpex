@@ -11,7 +11,15 @@ from .ranges import Range
 
 
 class Group:
-    """Analogue to the ``sycl::group`` type."""
+    # pylint: disable=line-too-long
+    """Analogue to the :sycl_group:`sycl::group <>` class.
+
+    Represents a particular work-group within a parallel execution and
+    provides API to extract various properties of the work-group. An instance
+    of the class is not user-constructible. Users should use
+    :func:`numba_dpex.kernel_api.NdItem.get_group` to access the Group to which
+    a work-item belongs.
+    """
 
     def __init__(
         self,
@@ -27,12 +35,20 @@ class Group:
         self._leader = False
 
     def get_group_id(self, dim):
-        """Returns the index of the work-group within the global nd-range for
-        specified dimension.
+        """Returns a specific coordinate of the multi-dimensional index of a group.
 
         Since the work-items in a work-group have a defined position within the
         global nd-range, the returned group id can be used along with the local
         id to uniquely identify the work-item in the global nd-range.
+
+        Args:
+            dim (int): An integral value between (1..3) for which the group
+                index is returned.
+        Returns:
+            int: The coordinate for the ``dim`` dimension for the group's
+            multi-dimensional index within an nd-range.
+        Raises:
+            ValueError: If the ``dim`` argument is not in the (1..3) interval.
         """
         if dim > len(self._index) - 1:
             raise ValueError(
@@ -41,7 +57,12 @@ class Group:
         return self._index[dim]
 
     def get_group_linear_id(self):
-        """Returns a linearized version of the work-group index."""
+        """Returns a linearized version of the work-group index.
+
+        Returns:
+            int: The linearized index for the group's position within an
+            nd-range.
+        """
         if self.dimensions == 1:
             return self.get_group_id(0)
         if self.dimensions == 2:
@@ -59,13 +80,23 @@ class Group:
         )
 
     def get_group_range(self, dim):
-        """Returns a the extent of the range representing the number of groups
-        in the nd-range for a specified dimension.
+        """Returns the extent of the range of groups in an nd-range for given dimension.
+
+        Args:
+            dim (int): An integral value between (1..3) for which the group
+                index is returned.
+        Returns:
+            int: The extent of group range for the specified dimension.
         """
         return self._group_range[dim]
 
     def get_group_linear_range(self):
-        """Return the total number of work-groups in the nd_range."""
+        """Returns the total number of work-groups in the nd_range.
+
+        Returns:
+            int: Returns the number of groups in a parallel execution of an
+            nd-range kernel.
+        """
         num_wg = 1
         for i in range(self.dimensions):
             num_wg *= self.get_group_range(i)
@@ -73,14 +104,24 @@ class Group:
         return num_wg
 
     def get_local_range(self, dim):
-        """Returns the extent of the SYCL range representing all dimensions
-        of the local range for a specified dimension. This local range may
-        have been provided by the programmer, or chosen by the SYCL runtime.
+        """Returns the extent of the range of work-items in a work-group for given dimension.
+
+        Args:
+            dim (int): An integral value between (1..3) for which the group
+                index is returned.
+        Returns:
+            int: The extent of the local work-item range for the specified
+            dimension.
         """
         return self._local_range[dim]
 
     def get_local_linear_range(self):
-        """Return the total number of work-items in the work-group."""
+        """Return the total number of work-items in the work-group.
+
+        Returns:
+            int: Returns the linearized size of the local range inside an
+            nd-range.
+        """
         num_wi = 1
         for i in range(self.dimensions):
             num_wi *= self.get_local_range(i)
@@ -89,15 +130,12 @@ class Group:
 
     @property
     def leader(self):
-        """Return true for exactly one work-item in the work-group, if the
-        calling work-item is the leader of the work-group, and false for all
-        other work-items in the work-group.
+        """Return true if the caller work-item is the leader of the work-group.
 
         The leader of the work-group is determined during construction of the
         work-group, and is invariant for the lifetime of the work-group. The
         leader of the work-group is guaranteed to be the work-item with a
         local id of 0.
-
 
         Returns:
             bool: If the work item is the designated leader of the
@@ -106,7 +144,8 @@ class Group:
 
     @property
     def dimensions(self) -> int:
-        """Returns the rank of a Group object.
+        """Returns the dimensionality of the range to which the work-group belongs.
+
         Returns:
             int: Number of dimensions in the Group object
         """
@@ -119,10 +158,10 @@ class Group:
 
 
 class Item:
-    """Analogue to the ``sycl::item`` class.
+    """Analogue to the :sycl_item:`sycl::item <>` class.
 
-    Identifies an instance of the function object executing at each point in an
-    :class:`.Range`.
+    Identifies the work-item in a parallel execution of a kernel launched with
+    the :class:`.Range` index-space class.
     """
 
     def __init__(self, extent: Range, index: list):
@@ -130,11 +169,10 @@ class Item:
         self._index = index
 
     def get_linear_id(self):
-        """Get the linear id associated with this item for all dimensions.
-        Original implementation could be found at ``sycl::item_base`` class.
+        """Returns the linear id associated with this item for all dimensions.
 
         Returns:
-            int: The linear id.
+            int: The linear id of the work item in the global range.
         """
         if self.dimensions == 1:
             return self.get_id(0)
@@ -181,7 +219,7 @@ class Item:
 
 
 class NdItem:
-    """Analogue to the ``sycl::nd_item`` class.
+    """Analogue to the :sycl_nditem:`sycl::nd_item <>` class.
 
     Identifies an instance of the function object executing at each point in an
     :class:`.NdRange`.

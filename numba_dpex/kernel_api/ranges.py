@@ -15,7 +15,7 @@ from numba_dpex.core.exceptions import (
 
 
 class Range(tuple):
-    """A data structure to encapsulate a single kernel launch parameter.
+    """Analogue to the :sycl_range:`sycl::range <>` class.
 
     The range is an abstraction that describes the number of elements
     in each dimension of buffers and index spaces. It can contain
@@ -131,7 +131,7 @@ class Range(tuple):
 
 
 class NdRange:
-    """A class to encapsulate all kernel launch parameters.
+    """Analogue to the :sycl_ndrange:`sycl::nd_range <>` class.
 
     The NdRange defines the index space for a work group as well as
     the global index space. It is passed to parallel_for to execute

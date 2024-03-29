@@ -10,9 +10,9 @@ import numpy
 
 
 class LocalAccessor:
-    """
-    The ``LocalAccessor`` class is analogous to SYCL's ``local_accessor``
-    class. The class acts a s proxy to allocating device local memory and
+    """Analogue to the :sycl_local_accessor:`sycl::local_accessor <>` class.
+
+    The class acts as a proxy to allocating device local memory and
     accessing that memory from within a :func:`numba_dpex.kernel` decorated
     function.
     """

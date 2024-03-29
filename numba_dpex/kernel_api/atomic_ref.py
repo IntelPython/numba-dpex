@@ -10,7 +10,7 @@ from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 
 
 class AtomicRef:
-    """Analogue to the ``sycl::atomic_ref`` class.
+    """Analogue to the :sycl_atomic_ref:`sycl::atomic_ref <>` class.
 
     An atomic reference is a view into a data container that can be then updated
     atomically using any of the ``fetch_*`` member functions of the class.
