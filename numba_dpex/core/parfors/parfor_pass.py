@@ -13,6 +13,7 @@ import math
 import operator
 import warnings
 
+import dpnp
 from numba.core import config, errors, ir, types, typing
 from numba.core.compiler_machinery import register_pass
 from numba.core.ir_utils import (
@@ -41,6 +42,8 @@ from numba.parfors.parfor import (
     signature,
 )
 from numba.stencils.stencilparfor import StencilPass
+
+from numba_dpex.core.typing import dpnpdecl
 
 
 class ConvertDPNPPass(ConvertNumpyPass):
@@ -293,6 +296,39 @@ def _ufunc_to_parfor_instr(
     return el_typ
 
 
+def get_dpnp_ufunc_typ(func):
+    """get type of the incoming function from builtin registry"""
+    for k, v in dpnpdecl.registry.globals:
+        if k == func:
+            return v
+    raise RuntimeError("type for func ", func, " not found")
+
+
+def _gen_dpnp_divide(arg1, arg2, out_ir, typemap):
+    """generate np.divide() instead of / for array_expr to get numpy error model
+    like inf for division by zero (test_division_by_zero).
+    """
+    scope = arg1.scope
+    loc = arg1.loc
+    g_np_var = ir.Var(scope, mk_unique_var("$np_g_var"), loc)
+    typemap[g_np_var.name] = types.misc.Module(dpnp)
+    g_np = ir.Global("dpnp", dpnp, loc)
+    g_np_assign = ir.Assign(g_np, g_np_var, loc)
+    # attr call: div_attr = getattr(g_np_var, divide)
+    div_attr_call = ir.Expr.getattr(g_np_var, "divide", loc)
+    attr_var = ir.Var(scope, mk_unique_var("$div_attr"), loc)
+    func_var_typ = get_dpnp_ufunc_typ(dpnp.divide)
+    typemap[attr_var.name] = func_var_typ
+    attr_assign = ir.Assign(div_attr_call, attr_var, loc)
+    # divide call:  div_attr(arg1, arg2)
+    div_call = ir.Expr.call(attr_var, [arg1, arg2], (), loc)
+    func_typ = func_var_typ.get_call_type(
+        typing.Context(), [typemap[arg1.name], typemap[arg2.name]], {}
+    )
+    out_ir.extend([g_np_assign, attr_assign])
+    return func_typ, div_call
+
+
 def _arrayexpr_tree_to_ir(
     func_ir,
     typingctx,
@@ -343,7 +379,8 @@ def _arrayexpr_tree_to_ir(
                 )
                 ir_expr = ir.Expr.binop(op, arg_vars[0], arg_vars[1], loc)
                 if op == operator.truediv:
-                    func_typ, ir_expr = parfor._gen_np_divide(
+                    # NUMBA_DPEX: is_dpnp_func check was added
+                    func_typ, ir_expr = _gen_dpnp_divide(
                         arg_vars[0], arg_vars[1], out_ir, typemap
                     )
             else:
