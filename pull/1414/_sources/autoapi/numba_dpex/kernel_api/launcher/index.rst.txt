@@ -29,7 +29,7 @@ Overview
 
 Functions
 ---------
-.. py:function:: call_kernel(kernel_fn, index_range: numba_dpex.kernel_api.ranges.Range | numba_dpex.kernel_api.ranges.NdRange, *kernel_args)
+.. py:function:: call_kernel(kernel_fn, index_range: Union[numba_dpex.kernel_api.ranges.Range, numba_dpex.kernel_api.ranges.NdRange], *kernel_args)
 
    Mocks the launching of a kernel function over either a Range or NdRange.
 

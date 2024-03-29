@@ -395,6 +395,8 @@
 </li>
         <li><a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED">CONSUME_UNSUPPORTED (MemoryOrder attribute)</a>, <a href="autoapi/numba_dpex/kernel_api/memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder.CONSUME_UNSUPPORTED">[1]</a>
 </li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#numba_dpex.core.parfors.parfor_pass.ConvertDPNPPass">ConvertDPNPPass (class in numba_dpex.core.parfors.parfor_pass)</a>
+</li>
         <li><a href="autoapi/numba_dpex/core/index.html#numba_dpex.core.Array.copy">copy() (Array method)</a>, <a href="autoapi/numba_dpex/core/types/array_type/index.html#numba_dpex.core.types.array_type.Array.copy">[1]</a>, <a href="autoapi/numba_dpex/core/types/index.html#numba_dpex.core.types.Array.copy">[2]</a>
 
         <ul>
@@ -667,6 +669,8 @@
         <li><a href="autoapi/numba_dpex/core/datamodel/models/index.html#numba_dpex.core.datamodel.models.GenericPointerModel">GenericPointerModel (class in numba_dpex.core.datamodel.models)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/boxing/index.html#id4">get() (Range method)</a>, <a href="autoapi/numba_dpex/core/boxing/index.html#numba_dpex.core.boxing.Range.get">[1]</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range.get">[2]</a>, <a href="autoapi/numba_dpex/kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range.get">[3]</a>
+</li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ">get_dpnp_ufunc_typ() (in module numba_dpex.core.parfors.parfor_pass)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/datamodel/models/index.html#numba_dpex.core.datamodel.models.get_flattened_member_count">get_flattened_member_count() (in module numba_dpex.core.datamodel.models)</a>
 </li>
@@ -1022,6 +1026,8 @@
 </li>
           <li><a href="autoapi/numba_dpex/core/parfors/parfor_lowerer/index.html#module-numba_dpex.core.parfors.parfor_lowerer">numba_dpex.core.parfors.parfor_lowerer</a>
 </li>
+          <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#module-numba_dpex.core.parfors.parfor_pass">numba_dpex.core.parfors.parfor_pass</a>
+</li>
           <li><a href="autoapi/numba_dpex/core/parfors/reduction_helper/index.html#module-numba_dpex.core.parfors.reduction_helper">numba_dpex.core.parfors.reduction_helper</a>
 </li>
           <li><a href="autoapi/numba_dpex/core/parfors/reduction_kernel_builder/index.html#module-numba_dpex.core.parfors.reduction_kernel_builder">numba_dpex.core.parfors.reduction_kernel_builder</a>
@@ -1346,6 +1352,13 @@
 </li>
         </ul></li>
         <li>
+    numba_dpex.core.parfors.parfor_pass
+
+        <ul>
+          <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#module-numba_dpex.core.parfors.parfor_pass">module</a>
+</li>
+        </ul></li>
+        <li>
     numba_dpex.core.parfors.reduction_helper
 
         <ul>
@@ -1373,6 +1386,8 @@
           <li><a href="autoapi/numba_dpex/core/passes/dufunc_inliner/index.html#module-numba_dpex.core.passes.dufunc_inliner">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     numba_dpex.core.passes.parfor_legalize_cfd_pass
 
@@ -1380,8 +1395,6 @@
           <li><a href="autoapi/numba_dpex/core/passes/parfor_legalize_cfd_pass/index.html#module-numba_dpex.core.passes.parfor_legalize_cfd_pass">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     numba_dpex.core.passes.passes
 
@@ -1694,6 +1707,8 @@
 </li>
         <li><a href="autoapi/numba_dpex/core/parfors/parfor_lowerer/index.html#numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl">ParforLowerImpl (class in numba_dpex.core.parfors.parfor_lowerer)</a>
 </li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#numba_dpex.core.parfors.parfor_pass.ParforPass">ParforPass (class in numba_dpex.core.parfors.parfor_pass)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/kernel_interface/arrayobj/index.html#numba_dpex.core.kernel_interface.arrayobj.populate_array">populate_array() (in module numba_dpex.core.kernel_interface.arrayobj)</a>
@@ -1762,10 +1777,10 @@
         </ul></li>
         <li><a href="autoapi/numba_dpex/core/parfors/reduction_helper/index.html#numba_dpex.core.parfors.reduction_helper.ReductionHelper">ReductionHelper (class in numba_dpex.core.parfors.reduction_helper)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/parfors/reduction_helper/index.html#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables">ReductionKernelVariables (class in numba_dpex.core.parfors.reduction_helper)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/lowering/index.html#numba_dpex.core.lowering.registry">registry (in module numba_dpex.core.lowering)</a>
 
         <ul>
@@ -1788,6 +1803,8 @@
           <li><a href="autoapi/numba_dpex/core/passes/index.html#numba_dpex.core.passes.NoPythonBackend.run_pass">(NoPythonBackend method)</a>, <a href="autoapi/numba_dpex/core/passes/passes/index.html#numba_dpex.core.passes.passes.NoPythonBackend.run_pass">[1]</a>
 </li>
           <li><a href="autoapi/numba_dpex/core/passes/index.html#numba_dpex.core.passes.ParforLegalizeCFDPass.run_pass">(ParforLegalizeCFDPass method)</a>, <a href="autoapi/numba_dpex/core/passes/parfor_legalize_cfd_pass/index.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass.run_pass">[1]</a>
+</li>
+          <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#numba_dpex.core.parfors.parfor_pass.ParforPass.run_pass">(ParforPass method)</a>
 </li>
           <li><a href="autoapi/numba_dpex/core/passes/passes/index.html#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass">(QualNameDisambiguationLowering method)</a>
 </li>
