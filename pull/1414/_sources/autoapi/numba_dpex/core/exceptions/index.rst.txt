@@ -1,0 +1,22 @@
+
+:orphan:
+
+numba_dpex.core.exceptions
+==========================
+
+.. py:module:: numba_dpex.core.exceptions
+
+.. autoapi-nested-parse::
+
+   The module defines the custom error classes used in numba_dpex.
+
+
+
+Overview
+--------
+
+
+
+
+
+

@@ -1,0 +1,557 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="numba_dpex.core.kernel_launcher" href="../kernel_launcher/index.html" /><link rel="prev" title="numba_dpex.kernel_api" href="../../kernel_api/index.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.decorators - numba-dpex documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programming_model.html">Programming Model</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/kernel_programming/index.html">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../kernel_api/index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../useful_links.html">Useful links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribution_guide.html">Contribution Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-numba_dpex.core.decorators">
+<span id="numba-dpex-core-decorators"></span><h1>numba_dpex.core.decorators<a class="headerlink" href="#module-numba_dpex.core.decorators" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.decorators.kernel" title="numba_dpex.core.decorators.kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel</span></code></a>(function_or_signature, **options)</p></td>
+<td><p>A decorator to compile a function written using <a class="reference internal" href="../../kernel_api/index.html#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.decorators.device_func" title="numba_dpex.core.decorators.device_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">device_func</span></code></a>(function_or_signature, **options)</p></td>
+<td><p>Compiles a device-callable function that can be only invoked from a kernel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.decorators.dpjit" title="numba_dpex.core.decorators.dpjit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dpjit</span></code></a>(*args, **kws)</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.decorators.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_or_signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.decorators.kernel" title="Link to this definition">#</a></dt>
+<dd><p>A decorator to compile a function written using <a class="reference internal" href="../../kernel_api/index.html#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorator triggers the compilation of a function written
+using the data-parallel kernel programming API exposed by
+<a class="reference internal" href="../../kernel_api/index.html#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a>. Such a function is conceptually
+equivalent to a kernel function written in the C++ SYCL eDSL. The
+decorator will compile the function based on the types of the arguments
+to a SPIR-V binary that can be executed either on OpenCL CPU, GPU
+devices or Intel Level Zero GPU devices.</p>
+<p>Any function to be compilable using the kernel decorator should
+adhere to the following semantic rules:</p>
+<ul class="simple">
+<li><p>The first argument to the function should be either an instance of the
+<a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a> class or an instance of the
+<a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem</span></code></a>.</p></li>
+<li><p>The function should not return any value.</p></li>
+<li><p>The function should have at least one array type argument that can
+either be an instance of <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> or an instance of
+<code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature_or_function</strong> (<em>optional</em>) – An optional signature or list of
+signatures for which a function is to be compiled. Passing in a
+signature “specializes” the decorated function and no other versions
+of the function will be compiled. A function can also be
+directly passed instead of a signature and the signature will get
+inferred from the function. The actual compilation happens on every
+invocation of the <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code>
+function where the decorated function is passed in as an argument
+along with the argument values for the decorated function.</p></li>
+<li><p><strong>options</strong> (<em>optional</em>) – <ul>
+<li><p><strong>debug</strong> (bool): Whether the compilation should happen in debug
+mode. <em>(Default = False)</em></p></li>
+<li><p><strong>inline_threshold</strong> (int): Specifies the level of inlining that
+the compiler should attempt. <em>(Default = 2)</em></p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api_impl.spirv.dispatcher.KernelDispatcher</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object compiles the decorated function when
+passed in to <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.call_kernel()</span></code>.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<ol class="arabic simple">
+<li><p>Decorate a function and pass it to <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code> for compilation and
+execution.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
+
+
+<span class="c1"># Data parallel kernel implementing vector sum</span>
+<span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">vecadd</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">vecadd</span><span class="p">,</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Specializes a kernel and then compiles it directly before executing it
+via <code class="docutils literal notranslate"><span class="pre">call_kernel</span></code>. The kernel is specialized to expect a 1-D
+<code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> with either <code class="docutils literal notranslate"><span class="pre">float32</span></code> type elements or <code class="docutils literal notranslate"><span class="pre">int64</span></code> type
+elements.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">DpnpNdArray</span><span class="p">,</span> <span class="n">float32</span><span class="p">,</span> <span class="n">int64</span>
+<span class="kn">from</span> <span class="nn">numba_dpex.core.types.kernel_api.index_space_ids</span> <span class="kn">import</span> <span class="n">ItemType</span>
+
+<span class="n">i64arrty</span> <span class="o">=</span> <span class="n">DpnpNdArray</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int64</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">f32arrty</span> <span class="o">=</span> <span class="n">DpnpNdArray</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">item_ty</span> <span class="o">=</span> <span class="n">ItemType</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">specialized_kernel</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="n">item_ty</span><span class="p">,</span> <span class="n">i64arrty</span><span class="p">,</span> <span class="n">i64arrty</span><span class="p">,</span> <span class="n">i64arrty</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">item_ty</span><span class="p">,</span> <span class="n">f32arrty</span><span class="p">,</span> <span class="n">f32arrty</span><span class="p">,</span> <span class="n">f32arrty</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">vecadd</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+<span class="c1"># Compile all specializations for vecadd</span>
+<span class="n">precompiled_kernels</span> <span class="o">=</span> <span class="n">specialized_kernel</span><span class="p">(</span><span class="n">vecadd</span><span class="p">)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># Call a specific pre-compiled version of vecadd</span>
+<span class="n">dpex</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">precompiled_kernels</span><span class="p">,</span> <span class="n">kapi</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.decorators.device_func">
+<span class="sig-name descname"><span class="pre">device_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_or_signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.decorators.device_func" title="Link to this definition">#</a></dt>
+<dd><p>Compiles a device-callable function that can be only invoked from a kernel.</p>
+<p>The decorator is used to  express auxiliary device-only functions that can
+be called from a kernel or another device function, but are not callable
+from the host. This decorator <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.experimental.device_func()</span></code>
+has no direct analogue in SYCL and primarily is provided to help programmers
+make their kapi applications modular.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorated function does not require the first argument to
+be a <a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a> object or a
+<a class="reference internal" href="../../kernel_api/index.html#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.NdItem</span></code></a> object, and unlike a <code class="docutils literal notranslate"><span class="pre">kernel</span></code>
+decorated function is allowed to return any value.
+All <a class="reference internal" href="../../kernel_api/index.html#module-numba_dpex.kernel_api" title="numba_dpex.kernel_api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a> functionality can be used in a
+<code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorated function.</p>
+<p>The decorator is also used to compile overloads in the <code class="docutils literal notranslate"><span class="pre">DpexKernelTarget</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorated function is not compiled down to device binary
+and instead is compiled down to LLVM IR. Final compilation to binary happens
+when the function is invoked from a <code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function. The
+compilation happens this was to allow a <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorated function
+to be internally linked into the kernel module at the LLVM level, leading to
+more optimization opportunities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature_or_function</strong> (<em>optional</em>) – An optional signature or list of
+signatures for which a function is to be compiled. Passing in a
+signature “specializes” the decorated function and no other versions
+of the function will be compiled. A function can also be
+directly passed instead of a signature and the signature will get
+inferred from the function. The actual compilation happens on every
+invocation of the decorated function from another <code class="docutils literal notranslate"><span class="pre">device_func</span></code> or
+<code class="docutils literal notranslate"><span class="pre">kernel</span></code> decorated function.</p></li>
+<li><p><strong>options</strong> (<em>optional</em>) – <ul>
+<li><p><strong>debug</strong> (bool): Whether the compilation should happen in debug
+mode. <em>(Default = False)</em></p></li>
+<li><p><strong>inline_threshold</strong> (int): Specifies the level of inlining that
+the compiler should attempt. <em>(Default = 2)</em></p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api_impl.spirv.dispatcher.KernelDispatcher</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code> object compiles the decorated function when
+it is called from another function.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">experimental</span> <span class="k">as</span> <span class="n">dpex_exp</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">kernel_api</span> <span class="k">as</span> <span class="n">kapi</span>
+
+
+<span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">device_func</span>
+<span class="k">def</span> <span class="nf">increment_value</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">nd_item</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">group_barrier</span><span class="p">(</span><span class="n">nd_item</span><span class="o">.</span><span class="n">get_group</span><span class="p">(),</span> <span class="n">MemoryScope</span><span class="o">.</span><span class="n">DEVICE</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+
+<span class="nd">@dpex_exp</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">another_kernel</span><span class="p">(</span><span class="n">nd_item</span><span class="p">:</span> <span class="n">NdItem</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="n">increment_value</span><span class="p">(</span><span class="n">nd_item</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dpnp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+<span class="n">dpex_exp</span><span class="o">.</span><span class="n">call_kernel</span><span class="p">(</span><span class="n">another_kernel</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">NdRange</span><span class="p">((</span><span class="n">N</span><span class="p">,),</span> <span class="p">(</span><span class="n">N</span><span class="p">,)),</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.decorators.dpjit">
+<span class="sig-name descname"><span class="pre">dpjit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.decorators.dpjit" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../kernel_launcher/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">numba_dpex.core.kernel_launcher</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../../kernel_api/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">numba_dpex.kernel_api</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2020-2024, Intel Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/IntelPython/numba-dpex" aria-label="GitHub"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">numba_dpex.core.decorators</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.decorators.kernel"><code class="docutils literal notranslate"><span class="pre">kernel()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.decorators.device_func"><code class="docutils literal notranslate"><span class="pre">device_func()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.decorators.dpjit"><code class="docutils literal notranslate"><span class="pre">dpjit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -1,0 +1,99 @@
+
+:orphan:
+
+numba_dpex.core.types.kernel_api.local_accessor
+===============================================
+
+.. py:module:: numba_dpex.core.types.kernel_api.local_accessor
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpctlMDLocalAccessorType <numba_dpex.core.types.kernel_api.local_accessor.DpctlMDLocalAccessorType>`
+     - numba-dpex internal type to represent a dpctl SyclInterface type
+   * - :py:obj:`LocalAccessorType <numba_dpex.core.types.kernel_api.local_accessor.LocalAccessorType>`
+     - numba-dpex internal type to represent a Python object of
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`unbox_local_accessor <numba_dpex.core.types.kernel_api.local_accessor.unbox_local_accessor>`\ (typ, obj, c)
+     - Unboxes a Python LocalAccessor PyObject* into a numba-dpex internal
+
+
+
+Classes
+-------
+
+.. py:class:: DpctlMDLocalAccessorType
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   numba-dpex internal type to represent a dpctl SyclInterface type
+   `MDLocalAccessorTy`.
+
+
+
+
+.. py:class:: LocalAccessorType(ndim, dtype)
+
+   Bases: :py:obj:`numba_dpex.core.types.USMNdArray`
+
+   numba-dpex internal type to represent a Python object of
+   :class:`numba_dpex.experimental.kernel_iface.LocalAccessor`.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.kernel_api.local_accessor.LocalAccessorType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` The helper function is not overloaded and using it on the
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
+
+      The helper function is not overloaded and using it on the
+      LocalAccessorType throws a NotImplementedError.
+
+
+
+
+Functions
+---------
+.. py:function:: unbox_local_accessor(typ, obj, c)
+
+   Unboxes a Python LocalAccessor PyObject* into a numba-dpex internal
+   representation.
+
+   A LocalAccessor object is represented internally in numba-dpex with the
+   same data model as a numpy.ndarray. It is done as a LocalAccessor object
+   serves only as a placeholder type when passed to ``call_kernel`` and the
+   data buffer should never be accessed inside a host-side compiled function
+   such as ``call_kernel``.
+
+   When a LocalAccessor object is passed as an argument to a kernel function
+   it uses the USMArrayDeviceModel. Doing so allows numba-dpex to correctly
+   generate the kernel signature passing in a pointer in the local address
+   space.
+
+
+
+
+

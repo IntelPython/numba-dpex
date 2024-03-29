@@ -1,0 +1,70 @@
+
+:orphan:
+
+numba_dpex.kernel_api.flag_enum
+===============================
+
+.. py:module:: numba_dpex.kernel_api.flag_enum
+
+.. autoapi-nested-parse::
+
+   Provides a FlagEnum class to help distinguish IntEnum types that numba_dpex
+   intends to use as Integer literal types inside the compiler type inferring
+   infrastructure.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`FlagEnum <numba_dpex.kernel_api.flag_enum.FlagEnum>`
+     - Helper class to distinguish IntEnum types that numba_dpex should consider
+
+
+
+
+Classes
+-------
+
+.. py:class:: FlagEnum
+
+   Bases: :py:obj:`enum.IntEnum`
+
+   Helper class to distinguish IntEnum types that numba_dpex should consider
+   as Numba Literal types.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`basetype <numba_dpex.kernel_api.flag_enum.FlagEnum.basetype>`\ ()
+        - :summarylabel:`class` Returns an dummy int object that helps numba_dpex infer the type of
+
+
+   .. rubric:: Members
+
+   .. py:method:: basetype() -> int
+      :classmethod:
+
+      Returns an dummy int object that helps numba_dpex infer the type of
+      an instance of a FlagEnum class.
+
+      :returns: Dummy int value
+      :rtype: int
+
+
+
+
+
+
+

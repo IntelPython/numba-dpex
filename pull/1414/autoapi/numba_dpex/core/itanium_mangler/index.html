@@ -1,0 +1,550 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.itanium_mangler - numba-dpex documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programming_model.html">Programming Model</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/kernel_programming/index.html">Kernel Programming</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Debugging with Intel® Distribution for GDB*</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../user_guide/debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Supported Features</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../user_guide/debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../user_guide/debugging/common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../kernel_api/index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../useful_links.html">Useful links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribution_guide.html">Contribution Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-numba_dpex.core.itanium_mangler">
+<span id="numba-dpex-core-itanium-mangler"></span><h1>numba_dpex.core.itanium_mangler<a class="headerlink" href="#module-numba_dpex.core.itanium_mangler" title="Link to this heading">#</a></h1>
+<p>Itanium CXX ABI Mangler</p>
+<p>Reference: <a class="reference external" href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html">https://itanium-cxx-abi.github.io/cxx-abi/abi.html</a></p>
+<p>The basics of the mangling scheme.</p>
+<p>We are hijacking the CXX mangling scheme for our use.  We map Python modules
+into CXX namespace.  A <cite>module1.submodule2.foo</cite> is mapped to
+<cite>module1::submodule2::foo</cite>.   For parameterized numba types, we treat them as
+templated types; for example, <cite>array(int64, 1d, C)</cite> becomes an
+<cite>array&lt;int64, 1, C&gt;</cite>.</p>
+<p>All mangled names are prefixed with “_Z”.  It is followed by the name of the
+entity.  A name contains one or more identifiers.  Each identifier is encoded
+as “&lt;num of char&gt;&lt;name&gt;”.   If the name is namespaced and, therefore,
+has multiple identifiers, the entire name is encoded as “N&lt;name&gt;E”.</p>
+<p>For functions, arguments types follow.  There are condensed encodings for basic
+built-in types; e.g. “i” for int, “f” for float.  For other types, the
+previously mentioned name encoding should be used.</p>
+<p>For templated types, the template parameters are encoded immediately after the
+name.  If it is namespaced, it should be within the ‘N’ ‘E’ marker.  Template
+parameters are encoded in “I&lt;params&gt;E”, where each parameter is encoded using
+the mentioned name encoding scheme.  Template parameters can contain literal
+values like the ‘1’ in the array type shown earlier.  There is special encoding
+scheme for them to avoid leading digits.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value" title="numba_dpex.core.itanium_mangler.mangle_type_or_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_type_or_value</span></code></a>(typ)</p></td>
+<td><p>Mangle type parameter and arbitrary value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_ext" title="numba_dpex.core.itanium_mangler.mangle_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_ext</span></code></a>(ident, argtys, *None, abi_tags)</p></td>
+<td><p>Mangle identifier with Numba type objects and abi-tags.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_abi_tag" title="numba_dpex.core.itanium_mangler.mangle_abi_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_abi_tag</span></code></a>(abi_tag)</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_identifier" title="numba_dpex.core.itanium_mangler.mangle_identifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_identifier</span></code></a>(ident, template_params, *None, abi_tags, uid)</p></td>
+<td><p>Mangle the identifier with optional template parameters and abi_tags.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_c" title="numba_dpex.core.itanium_mangler.mangle_type_c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_type_c</span></code></a>(typ)</p></td>
+<td><p>Mangle C type name</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value_numba" title="numba_dpex.core.itanium_mangler.mangle_type_or_value_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_type_or_value_numba</span></code></a>(typ)</p></td>
+<td><p>Mangle type parameter and arbitrary value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_templated_ident" title="numba_dpex.core.itanium_mangler.mangle_templated_ident"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_templated_ident</span></code></a>(identifier, parameters)</p></td>
+<td><p>Mangle templated identifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_args_c" title="numba_dpex.core.itanium_mangler.mangle_args_c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_args_c</span></code></a>(argtys)</p></td>
+<td><p>Mangle sequence of C type names</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_args" title="numba_dpex.core.itanium_mangler.mangle_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_args</span></code></a>(argtys)</p></td>
+<td><p>Mangle sequence of Numba type objects and arbitrary values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_c" title="numba_dpex.core.itanium_mangler.mangle_c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_c</span></code></a>(ident, argtys)</p></td>
+<td><p>Mangle identifier with C type names</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle" title="numba_dpex.core.itanium_mangler.mangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle</span></code></a>(ident, argtys, *None, abi_tags, uid)</p></td>
+<td><p>Mangle identifier with Numba type objects and abi-tags.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.prepend_namespace" title="numba_dpex.core.itanium_mangler.prepend_namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend_namespace</span></code></a>(mangled, ns)</p></td>
+<td><p>Prepend namespace to mangled name.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.PREFIX" title="numba_dpex.core.itanium_mangler.PREFIX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PREFIX</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.C2CODE" title="numba_dpex.core.itanium_mangler.C2CODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">C2CODE</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.N2C" title="numba_dpex.core.itanium_mangler.N2C"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N2C</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type" title="numba_dpex.core.itanium_mangler.mangle_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_type</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_value" title="numba_dpex.core.itanium_mangler.mangle_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_value</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_type_or_value">
+<span class="sig-name descname"><span class="pre">mangle_type_or_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value" title="Link to this definition">#</a></dt>
+<dd><p>Mangle type parameter and arbitrary value.</p>
+<p>This function extends Numba’s <cite>magle_type_or_value()</cite> to
+support numba.types.CPointer type, e.g. an <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">*</span></code> argument will be
+mangled to “Pi”.
+Mangling of extended qualifiers is supported only
+for address space qualifiers. In which case, the mangling
+follows the rule defined in Section 5.1.5.1 of the <code class="docutils literal notranslate"><span class="pre">Itanium</span> <span class="pre">ABI</span>
+<span class="pre">&lt;https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangle.qualified-type&gt;``_.</span>
+<span class="pre">For</span> <span class="pre">example,</span> <span class="pre">an</span> <span class="pre">``int</span> <span class="pre">global</span> <span class="pre">*</span></code> argument will be mangeled to “PU3AS1i”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typ</strong> (<em>numba.types</em><em>, </em><em>int</em><em>, </em><em>str</em>) – Type to mangle</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mangled name of the type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_ext">
+<span class="sig-name descname"><span class="pre">mangle_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_ext" title="Link to this definition">#</a></dt>
+<dd><p>Mangle identifier with Numba type objects and abi-tags.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_abi_tag">
+<span class="sig-name descname"><span class="pre">mangle_abi_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abi_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_abi_tag" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_identifier">
+<span class="sig-name descname"><span class="pre">mangle_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_identifier" title="Link to this definition">#</a></dt>
+<dd><p>Mangle the identifier with optional template parameters and abi_tags.</p>
+<p>Note:</p>
+<p>This treats ‘.’ as ‘::’ in C++.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_type_c">
+<span class="sig-name descname"><span class="pre">mangle_type_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_type_c" title="Link to this definition">#</a></dt>
+<dd><p>Mangle C type name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typ</strong> (<em>str</em>) – C type name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_type_or_value_numba">
+<span class="sig-name descname"><span class="pre">mangle_type_or_value_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value_numba" title="Link to this definition">#</a></dt>
+<dd><p>Mangle type parameter and arbitrary value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_templated_ident">
+<span class="sig-name descname"><span class="pre">mangle_templated_ident</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_templated_ident" title="Link to this definition">#</a></dt>
+<dd><p>Mangle templated identifier.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_args_c">
+<span class="sig-name descname"><span class="pre">mangle_args_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_args_c" title="Link to this definition">#</a></dt>
+<dd><p>Mangle sequence of C type names</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_args">
+<span class="sig-name descname"><span class="pre">mangle_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_args" title="Link to this definition">#</a></dt>
+<dd><p>Mangle sequence of Numba type objects and arbitrary values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_c">
+<span class="sig-name descname"><span class="pre">mangle_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_c" title="Link to this definition">#</a></dt>
+<dd><p>Mangle identifier with C type names</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle">
+<span class="sig-name descname"><span class="pre">mangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle" title="Link to this definition">#</a></dt>
+<dd><p>Mangle identifier with Numba type objects and abi-tags.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.prepend_namespace">
+<span class="sig-name descname"><span class="pre">prepend_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mangled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.prepend_namespace" title="Link to this definition">#</a></dt>
+<dd><p>Prepend namespace to mangled name.</p>
+</dd></dl>
+
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.PREFIX">
+<span class="sig-name descname"><span class="pre">PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_Z'</span></em><a class="headerlink" href="#numba_dpex.core.itanium_mangler.PREFIX" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.C2CODE">
+<span class="sig-name descname"><span class="pre">C2CODE</span></span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.C2CODE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.N2C">
+<span class="sig-name descname"><span class="pre">N2C</span></span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.N2C" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_type">
+<span class="sig-name descname"><span class="pre">mangle_type</span></span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_type" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="numba_dpex.core.itanium_mangler.mangle_value">
+<span class="sig-name descname"><span class="pre">mangle_value</span></span><a class="headerlink" href="#numba_dpex.core.itanium_mangler.mangle_value" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2020-2024, Intel Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/IntelPython/numba-dpex" aria-label="GitHub"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">numba_dpex.core.itanium_mangler</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value"><code class="docutils literal notranslate"><span class="pre">mangle_type_or_value()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_ext"><code class="docutils literal notranslate"><span class="pre">mangle_ext()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_abi_tag"><code class="docutils literal notranslate"><span class="pre">mangle_abi_tag()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_identifier"><code class="docutils literal notranslate"><span class="pre">mangle_identifier()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_c"><code class="docutils literal notranslate"><span class="pre">mangle_type_c()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type_or_value_numba"><code class="docutils literal notranslate"><span class="pre">mangle_type_or_value_numba()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_templated_ident"><code class="docutils literal notranslate"><span class="pre">mangle_templated_ident()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_args_c"><code class="docutils literal notranslate"><span class="pre">mangle_args_c()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_args"><code class="docutils literal notranslate"><span class="pre">mangle_args()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_c"><code class="docutils literal notranslate"><span class="pre">mangle_c()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle"><code class="docutils literal notranslate"><span class="pre">mangle()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.prepend_namespace"><code class="docutils literal notranslate"><span class="pre">prepend_namespace()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#attributes">Attributes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.PREFIX"><code class="docutils literal notranslate"><span class="pre">PREFIX</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.C2CODE"><code class="docutils literal notranslate"><span class="pre">C2CODE</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.N2C"><code class="docutils literal notranslate"><span class="pre">N2C</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_type"><code class="docutils literal notranslate"><span class="pre">mangle_type</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.itanium_mangler.mangle_value"><code class="docutils literal notranslate"><span class="pre">mangle_value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>
