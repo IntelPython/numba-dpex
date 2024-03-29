@@ -24,10 +24,6 @@ project(_dpexrt_python
     DESCRIPTION "A Python C extension for numba-dpex runtime."
 )
 
-# Help conda build find path from both host and build env.
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
-
 # Get numba include path
 if(NOT DEFINED Numba_INCLUDE_DIRS)
     execute_process(
@@ -78,22 +74,11 @@ endif()
 set(SKBUILD_MODULE_PATH ${SKBUILD_PATH}/resources/cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SKBUILD_MODULE_PATH})
 
-# Check CMAKE_MODULE_PATH
-message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
-
 # Add packages
 find_package(Python 3.9 REQUIRED
   COMPONENTS Interpreter Development.Module NumPy)
 find_package(Dpctl REQUIRED)
 find_package(IntelSYCL REQUIRED)
-
-# Includes
-include(GNUInstallDirs)
-include_directories(${Python_INCLUDE_DIRS})
-include_directories(${Python_NumPy_INCLUDE_DIRS})
-include_directories(${Numba_INCLUDE_DIRS})
-include_directories(${Dpctl_INCLUDE_DIRS})
-include_directories(.)
 
 # Source files, *.c
 file(GLOB_RECURSE DPEXRT_SOURCES CONFIGURE_DEPENDS "*.c")
@@ -109,7 +94,20 @@ python_add_library(${PROJECT_NAME} MODULE ${SOURCES})
 # Add SYCL to target, this must come after python_add_library()
 add_sycl_to_target(TARGET ${PROJECT_NAME} SOURCES ${KERNEL_SOURCES})
 
-# Link the DPCTLSyclInterface library to target
+# Add source headers
+target_include_directories(${PROJECT_NAME} PRIVATE .)
+
+# Add Numba Runtime headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${Numba_INCLUDE_DIRS})
+
+# Link numpy
+target_link_libraries(${PROJECT_NAME} PRIVATE Python::NumPy)
+
+# TODO: switch to CMake, once dpctl supports it.
+# Include DPCTL libraray
+target_include_directories(${PROJECT_NAME} PRIVATE ${Dpctl_INCLUDE_DIRS})
+# Linking target binary with DPCTLSyclInterface.so/.dll so the symbols could
+# be found during runtime.
 target_link_libraries(${PROJECT_NAME} PRIVATE DPCTLSyclInterface)
 
 # Install

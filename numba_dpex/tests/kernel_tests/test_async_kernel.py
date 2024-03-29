@@ -63,8 +63,8 @@ def test_async_add():
         c,
     )
 
-    assert type(host_ref) == dpctl.SyclEvent
-    assert type(event_ref) == dpctl.SyclEvent
+    assert isinstance(host_ref, dpctl.SyclEvent)
+    assert isinstance(event_ref, dpctl.SyclEvent)
     assert host_ref is not None
     assert event_ref is not None
 

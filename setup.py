@@ -5,10 +5,9 @@
 
 import re
 
+import versioneer
 from setuptools import find_packages
 from skbuild import setup
-
-import versioneer
 
 """Top level setup.py file. Uses scikit-build.
 
@@ -51,39 +50,18 @@ def to_cmake_format(version: str):
 # Get the project version
 __version__ = versioneer.get_version()
 
-
-# Set project auxilary data like readme and licence files
-with open("README.md", "r") as f:
-    __readme__ = "".join(line for line in f.readlines()[12:35])
-
-
 # Main setup
 setup(
-    name="numba-dpex",
     version=__version__,
-    description="An extension for Numba to add data-parallel offload capability",
-    long_description=__readme__,
-    long_description_content_type="text/markdown",
-    license="Apache 2.0",
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Environment :: GPU",
-        "Environment :: Plugins",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Topic :: Software Development :: Compilers",
-    ],
-    keywords="sycl python3 numba numpy intel mkl oneapi gpu dpcpp",
-    platforms=["Linux", "Windows"],
-    author="Intel Corporation",
+    # https://github.com/pypa/pip/issues/11221
     url="https://github.com/IntelPython/numba-dpex",
-    install_requires=["numba >={0:s}".format("0.58"), "dpctl", "packaging"],
+    # Must be passed vis setup.py:
+    # https://github.com/scikit-build/scikit-build/issues/864
+    # TODO: switch to pyproject toml after switching to scikit-build-core
     packages=find_packages("."),
+    # Needs for examples.
+    # TODO: change to false once move examples out of package.
     include_package_data=True,
-    zip_safe=False,
     cmake_args=[
         "-DNUMBA_DPEX_VERSION:STRING={0:s}".format(
             to_cmake_format(str(__version__))

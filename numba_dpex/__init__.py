@@ -67,22 +67,11 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
 
 
 numba_sem_version = parse_sem_version(numba_version)
-if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
-    logging.warning(
-        "numba_dpex needs at least numba 0.58.0 but no more than 0.59.0, using "
-        f"numba={numba_version} may cause unexpected behavior"
-    )
+dpctl_sem_version = parse_sem_version(dpctl.__version__)
 
 # Monkey patches
 patch_is_ufunc.patch()
 patch_arrayexpr_tree_to_ir.patch()
-
-dpctl_sem_version = parse_sem_version(dpctl.__version__)
-if dpctl_sem_version < (0, 14):
-    logging.warning(
-        "numba_dpex needs dpctl 0.14 or greater, using "
-        f"dpctl={dpctl_sem_version} may cause unexpected behavior"
-    )
 
 from numba import prange  # noqa E402
 

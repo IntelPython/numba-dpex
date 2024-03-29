@@ -1,7 +1,6 @@
 include MANIFEST.in
 include README.md setup.py LICENSE
 
-include versioneer.py
 include numba_dpex/_version.py
 
 recursive-include numba_dpex/examples *

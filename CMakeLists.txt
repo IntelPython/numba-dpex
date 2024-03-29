@@ -18,11 +18,13 @@ This ``CMakeLists.txt`` file will be used by ``setup.py``.
 
 cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR)
 
-message(STATUS "NUMBA_DPEX_VERSION=" "${NUMBA_DPEX_VERSION}")
-
 project(numba-dpex
-    DESCRIPTION "An extension for Numba to add data-parallel offload capability"
     VERSION ${NUMBA_DPEX_VERSION}
+    DESCRIPTION "An extension for Numba to add data-parallel offload capability"
 )
 
-add_subdirectory(numba_dpex)
+# Help conda build find path from both host and build env.
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
+
+add_subdirectory(numba_dpex/core/runtime)
