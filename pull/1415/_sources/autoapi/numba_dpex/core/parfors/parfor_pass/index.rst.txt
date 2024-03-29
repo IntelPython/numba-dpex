@@ -1,0 +1,98 @@
+
+
+:orphan:
+
+numba_dpex.core.parfors.parfor_pass
+===================================
+
+.. py:module:: numba_dpex.core.parfors.parfor_pass
+
+.. autoapi-nested-parse::
+
+   This module follows the logic of numba/parfors/parfor.py with changes required
+   to use it with dpnp instead of numpy.
+
+
+
+
+
+Overview
+--------
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ConvertDPNPPass <numba_dpex.core.parfors.parfor_pass.ConvertDPNPPass>`
+     - Convert supported Dpnp functions, as well as arrayexpr nodes, to
+   * - :py:obj:`ParforPass <numba_dpex.core.parfors.parfor_pass.ParforPass>`
+     - Based on the NumpyParforPass. Lot's of code was copy-pasted, with minor
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`get_dpnp_ufunc_typ <numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ>`\ (func)
+     - get type of the incoming function from builtin registry
+
+
+
+Classes
+-------
+
+.. py:class:: ConvertDPNPPass(pass_states)
+
+   Bases: :py:obj:`numba.parfors.parfor.ConvertNumpyPass`
+
+   Convert supported Dpnp functions, as well as arrayexpr nodes, to
+   parfor nodes.
+
+   Based on the ConvertNumpyPass. Lot's of code was copy-pasted, with minor
+   changes due to lack of extensibility of the original package.
+
+
+
+
+.. py:class:: ParforPass
+
+   Bases: :py:obj:`numba.core.typed_passes.ParforPass`
+
+   Based on the NumpyParforPass. Lot's of code was copy-pasted, with minor
+   changes due to lack of extensibility of the original package.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.parfors.parfor_pass.ParforPass.run_pass>`\ (state)
+        - Convert data-parallel computations into Parfor nodes.
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Convert data-parallel computations into Parfor nodes.
+
+      Exactly same as the original one, but with mock to _ParforPass.
+
+
+
+
+Functions
+---------
+.. py:function:: get_dpnp_ufunc_typ(func)
+
+   get type of the incoming function from builtin registry
+
+
+
+
+
