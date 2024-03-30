@@ -1,0 +1,119 @@
+
+:orphan:
+
+numba_dpex.core.types.kernel_api.index_space_ids
+================================================
+
+.. py:module:: numba_dpex.core.types.kernel_api.index_space_ids
+
+.. autoapi-nested-parse::
+
+   Defines numba types for Item and NdItem classes
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`GroupType <numba_dpex.core.types.kernel_api.index_space_ids.GroupType>`
+     - Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.Group`
+   * - :py:obj:`ItemType <numba_dpex.core.types.kernel_api.index_space_ids.ItemType>`
+     - Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.Item`
+   * - :py:obj:`NdItemType <numba_dpex.core.types.kernel_api.index_space_ids.NdItemType>`
+     - Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.NdItem`
+
+
+
+
+Classes
+-------
+
+.. py:class:: GroupType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.Group`
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.kernel_api.index_space_ids.GroupType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
+
+
+
+
+.. py:class:: ItemType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.Item`
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.kernel_api.index_space_ids.ItemType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
+
+
+
+
+.. py:class:: NdItemType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.NdItem`
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`cast_python_value <numba_dpex.core.types.kernel_api.index_space_ids.NdItemType.cast_python_value>`\ (args)
+        - :summarylabel:`abc` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: cast_python_value(args)
+      :abstractmethod:
+
+
+
+
+
+
+

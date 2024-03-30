@@ -1,0 +1,58 @@
+
+:orphan:
+
+numba_dpex.core.boxing.usm_ndarray
+==================================
+
+.. py:module:: numba_dpex.core.boxing.usm_ndarray
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`unbox_dpnp_nd_array <numba_dpex.core.boxing.usm_ndarray.unbox_dpnp_nd_array>`\ (typ, obj, c)
+     - Converts a dpctl.tensor.usm_ndarray/dpnp.ndarray object to a Numba-dpex
+   * - :py:obj:`box_array <numba_dpex.core.boxing.usm_ndarray.box_array>`\ (typ, val, c)
+     - Boxes a NativeValue representation of USMNdArray/DpnpNdArray type into a
+
+
+
+
+Functions
+---------
+.. py:function:: unbox_dpnp_nd_array(typ, obj, c)
+
+   Converts a dpctl.tensor.usm_ndarray/dpnp.ndarray object to a Numba-dpex
+   internal array structure.
+
+   :param typ: The Numba type of the PyObject
+   :param obj: The actual PyObject to be unboxed
+   :param c: The unboxing context
+
+   Returns: A NativeValue object representing an unboxed
+       dpctl.tensor.usm_ndarray/dpnp.ndarray
+
+
+.. py:function:: box_array(typ, val, c)
+
+   Boxes a NativeValue representation of USMNdArray/DpnpNdArray type into a
+   dpctl.tensor.usm_ndarray/dpnp.ndarray PyObject
+
+   :param typ: The representation of the USMNdArray/DpnpNdArray type.
+   :param val: A native representation of a Numba USMNdArray/DpnpNdArray type
+               object.
+   :param c: The boxing context.
+
+   Returns: A Pyobject for a dpctl.tensor.usm_ndarray/dpnp.ndarray boxed from
+       the Numba-dpex native value.
+
+
+
+
+
