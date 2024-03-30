@@ -20,7 +20,6 @@ from numba_dpex.core.types.kernel_api.local_accessor import (
 from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 
 from ..types import (
-    Array,
     DpctlSyclEvent,
     DpctlSyclQueue,
     DpnpNdArray,
@@ -335,7 +334,6 @@ def _init_kernel_data_model_manager() -> datamodel.DataModelManager:
     """
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
-    dmm.register(Array, USMArrayDeviceModel)
 
     # Register the USMNdArray type to USMArrayDeviceModel in numba_dpex's data
     # model manager. The dpex_data_model_manager is used by the DpexKernelTarget
