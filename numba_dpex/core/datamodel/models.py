@@ -17,7 +17,7 @@ from numba_dpex.core.types.kernel_api.local_accessor import (
     DpctlMDLocalAccessorType,
     LocalAccessorType,
 )
-from numba_dpex.utils import address_space
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 
 from ..types import (
     Array,
@@ -62,7 +62,7 @@ class GenericPointerModel(PrimitiveModel):
         adrsp = (
             fe_type.addrspace
             if fe_type.addrspace is not None
-            else address_space.GLOBAL
+            else address_space.GLOBAL.value
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)

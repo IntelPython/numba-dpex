@@ -24,9 +24,9 @@ from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
 from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.kernel_api.flag_enum import FlagEnum
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 from numba_dpex.kernel_api_impl.spirv.arrayobj import populate_array
 from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
-from numba_dpex.utils import address_space, calling_conv
 
 from . import codegen
 from .overloads._registry import registry as spirv_registry
@@ -367,7 +367,7 @@ class SPIRVTargetContext(BaseContext):
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
         ret = super().declare_function(module, fndesc)
-        ret.calling_convention = calling_conv.CC_SPIR_FUNC
+        ret.calling_convention = CC_SPIR_FUNC
         return ret
 
     def insert_const_string(self, mod, string):
@@ -392,7 +392,7 @@ class SPIRVTargetContext(BaseContext):
         if gv is None:
             # Not defined yet
             gv = cgutils.add_global_variable(
-                mod, text.type, name=name, addrspace=address_space.GENERIC
+                mod, text.type, name=name, addrspace=address_space.GENERIC.value
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -400,7 +400,7 @@ class SPIRVTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return gv.bitcast(charty.as_pointer(address_space.GENERIC))
+        return gv.bitcast(charty.as_pointer(address_space.GENERIC.value))
 
     def addrspacecast(self, builder, src, addrspace):
         """Insert an LLVM addressspace cast instruction into the module.

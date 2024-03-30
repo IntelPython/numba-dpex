@@ -8,7 +8,7 @@ from numba.extending import NativeValue, unbox
 from numba.np import numpy_support
 
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.utils import address_space as AddressSpace
+from numba_dpex.kernel_api.memory_enums import AddressSpace
 
 
 class DpctlMDLocalAccessorType(Type):
@@ -36,14 +36,14 @@ class LocalAccessorType(USMNdArray):
 
         type_name = (
             f"LocalAccessor(dtype={parsed_dtype}, ndim={ndim}, "
-            f"address_space={AddressSpace.LOCAL})"
+            f"address_space={AddressSpace.LOCAL.value})"
         )
 
         super().__init__(
             ndim=ndim,
             layout="C",
             dtype=parsed_dtype,
-            addrspace=AddressSpace.LOCAL,
+            addrspace=AddressSpace.LOCAL.value,
             name=type_name,
         )
 

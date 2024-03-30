@@ -9,8 +9,8 @@ from numba.extending import typeof_impl
 from numba.np import numpy_support
 
 from numba_dpex.kernel_api import AtomicRef, Group, Item, LocalAccessor, NdItem
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 from numba_dpex.kernel_api.ranges import NdRange, Range
-from numba_dpex.utils.constants import address_space
 
 from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
@@ -59,7 +59,7 @@ def _array_typeof_helper(val, array_class_type):
         readonly=readonly,
         usm_type=usm_type,
         queue=ty_queue,
-        addrspace=address_space.GLOBAL,
+        addrspace=address_space.GLOBAL.value,
     )
 
 
