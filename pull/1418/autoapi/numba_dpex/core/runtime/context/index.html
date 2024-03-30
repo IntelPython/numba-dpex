@@ -508,15 +508,15 @@ from a given filter string.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release">
 <span class="sig-name descname"><span class="pre">acquire_meminfo_and_schedule_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclEventRef</span>
-<span class="n">DPEXRT_nrt_acquire_meminfo_and_schedule_release</span><span class="p">(</span>
-    <span class="n">NRT_api_functions</span> <span class="o">*</span><span class="n">nrt</span><span class="p">,</span>
-    <span class="n">DPCTLSyclQueueRef</span> <span class="n">QRef</span><span class="p">,</span>
-    <span class="n">NRT_MemInfo</span> <span class="o">**</span><span class="n">meminfo_array</span><span class="p">,</span>
-    <span class="n">size_t</span> <span class="n">meminfo_array_size</span><span class="p">,</span>
-    <span class="n">DPCTLSyclEventRef</span> <span class="o">*</span><span class="n">depERefs</span><span class="p">,</span>
-    <span class="n">size_t</span> <span class="n">nDepERefs</span><span class="p">,</span>
-    <span class="nb">int</span> <span class="o">*</span><span class="n">status</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclEventRef</span>
+<span class="nf">DPEXRT_nrt_acquire_meminfo_and_schedule_release</span><span class="p">(</span>
+<span class="w">    </span><span class="n">NRT_api_functions</span><span class="w"> </span><span class="o">*</span><span class="n">nrt</span><span class="p">,</span>
+<span class="w">    </span><span class="n">DPCTLSyclQueueRef</span><span class="w"> </span><span class="n">QRef</span><span class="p">,</span>
+<span class="w">    </span><span class="n">NRT_MemInfo</span><span class="w"> </span><span class="o">**</span><span class="n">meminfo_array</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">meminfo_array_size</span><span class="p">,</span>
+<span class="w">    </span><span class="n">DPCTLSyclEventRef</span><span class="w"> </span><span class="o">*</span><span class="n">depERefs</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nDepERefs</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">status</span><span class="p">,</span>
 <span class="p">);</span>
 </pre></div>
 </div>
@@ -526,15 +526,15 @@ from a given filter string.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel">
 <span class="sig-name descname"><span class="pre">build_or_get_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call build_or_get_kernel.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclKernelRef</span>
-<span class="n">DPEXRT_build_or_get_kernel</span><span class="p">(</span>
-    <span class="n">const</span> <span class="n">DPCTLSyclContextRef</span> <span class="n">ctx</span><span class="p">,</span>
-    <span class="n">const</span> <span class="n">DPCTLSyclDeviceRef</span> <span class="n">dev</span><span class="p">,</span>
-    <span class="n">size_t</span> <span class="n">il_hash</span><span class="p">,</span>
-    <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">il</span><span class="p">,</span>
-    <span class="n">size_t</span> <span class="n">il_length</span><span class="p">,</span>
-    <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">compile_opts</span><span class="p">,</span>
-    <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">kernel_name</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclKernelRef</span>
+<span class="nf">DPEXRT_build_or_get_kernel</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">DPCTLSyclContextRef</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">DPCTLSyclDeviceRef</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">il_hash</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">il</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">il_length</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">compile_opts</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">kernel_name</span><span class="p">,</span>
 <span class="p">);</span>
 </pre></div>
 </div>
@@ -544,7 +544,7 @@ from a given filter string.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size">
 <span class="sig-name descname"><span class="pre">kernel_cache_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call kernel_cache_size.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">size_t</span> <span class="n">DPEXRT_kernel_cache_size</span><span class="p">();</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">size_t</span><span class="w"> </span><span class="nf">DPEXRT_kernel_cache_size</span><span class="p">();</span>
 </pre></div>
 </div>
 </dd></dl>

@@ -241,7 +241,7 @@ Classes
 
       Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
 
-      .. code-block::
+      .. code-block:: c
 
           DPCTLSyclEventRef
           DPEXRT_nrt_acquire_meminfo_and_schedule_release(
@@ -260,7 +260,7 @@ Classes
 
       Inserts LLVM IR to call build_or_get_kernel.
 
-      .. code-block::
+      .. code-block:: c
 
           DPCTLSyclKernelRef
           DPEXRT_build_or_get_kernel(
@@ -279,7 +279,7 @@ Classes
 
       Inserts LLVM IR to call kernel_cache_size.
 
-      .. code-block::
+      .. code-block:: c
 
           size_t DPEXRT_kernel_cache_size();
 
