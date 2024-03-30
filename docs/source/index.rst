@@ -49,6 +49,7 @@ Data Parallel Extension for Numba*
    user_guide/index
    autoapi/index
    config_options
+   supported_sycl_features
    experimental/index
    useful_links
 

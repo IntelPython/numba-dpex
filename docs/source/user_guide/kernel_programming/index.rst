@@ -1,4 +1,4 @@
-.. _index:
+.. _kernel-programming-guide:
 .. include:: ./../../ext_links.txt
 
 Kernel Programming
