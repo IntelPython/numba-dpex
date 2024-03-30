@@ -27,7 +27,6 @@ author = "Intel Corporation"
 # ones.
 extensions = [
     "sphinx.ext.todo",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",

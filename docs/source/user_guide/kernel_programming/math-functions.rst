@@ -1,3 +1,5 @@
+.. include:: ./../../ext_links.txt
+
 
 Scalar mathematical functions from the Python `math`_ module and the `dpnp`_
 library can be used inside a kernel function. During compilation the

@@ -55,14 +55,7 @@ Data Parallel Extension for Numba*
 
 .. toctree::
    :maxdepth: 1
-   :caption: Development
+   :caption: Miscellaneous Notes
 
-   contribution_guide
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Misc Notes
-
-   examples
    license
    release-notes
