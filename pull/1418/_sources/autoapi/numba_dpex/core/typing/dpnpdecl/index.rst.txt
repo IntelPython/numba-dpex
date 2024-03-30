@@ -1,0 +1,164 @@
+
+:orphan:
+
+numba_dpex.core.typing.dpnpdecl
+===============================
+
+.. py:module:: numba_dpex.core.typing.dpnpdecl
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DpnpRulesArrayOperator <numba_dpex.core.typing.dpnpdecl.DpnpRulesArrayOperator>`
+     - Defines method ``generic(self, args, kws)`` which compute a possible
+   * - :py:obj:`DpnpRulesInplaceArrayOperator <numba_dpex.core.typing.dpnpdecl.DpnpRulesInplaceArrayOperator>`
+     - Defines method ``generic(self, args, kws)`` which compute a possible
+   * - :py:obj:`DpnpRulesUnaryArrayOperator <numba_dpex.core.typing.dpnpdecl.DpnpRulesUnaryArrayOperator>`
+     - Defines method ``generic(self, args, kws)`` which compute a possible
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`registry <numba_dpex.core.typing.dpnpdecl.registry>`
+     - \-
+   * - :py:obj:`infer <numba_dpex.core.typing.dpnpdecl.infer>`
+     - \-
+   * - :py:obj:`infer_global <numba_dpex.core.typing.dpnpdecl.infer_global>`
+     - \-
+   * - :py:obj:`infer_getattr <numba_dpex.core.typing.dpnpdecl.infer_getattr>`
+     - \-
+   * - :py:obj:`all_ufuncs <numba_dpex.core.typing.dpnpdecl.all_ufuncs>`
+     - \-
+   * - :py:obj:`supported_ufuncs <numba_dpex.core.typing.dpnpdecl.supported_ufuncs>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: DpnpRulesArrayOperator(context)
+
+   Bases: :py:obj:`numba.core.typing.npydecl.NumpyRulesArrayOperator`
+
+   Defines method ``generic(self, args, kws)`` which compute a possible
+   signature base on input types.  The signature does not have to match the
+   input types. It is compared against the input types afterwards.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`install_operations <numba_dpex.core.typing.dpnpdecl.DpnpRulesArrayOperator.install_operations>`\ ()
+        - :summarylabel:`class` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: install_operations()
+      :classmethod:
+
+
+
+
+.. py:class:: DpnpRulesInplaceArrayOperator(context)
+
+   Bases: :py:obj:`numba.core.typing.npydecl.NumpyRulesInplaceArrayOperator`
+
+   Defines method ``generic(self, args, kws)`` which compute a possible
+   signature base on input types.  The signature does not have to match the
+   input types. It is compared against the input types afterwards.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`install_operations <numba_dpex.core.typing.dpnpdecl.DpnpRulesInplaceArrayOperator.install_operations>`\ ()
+        - :summarylabel:`class` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: install_operations()
+      :classmethod:
+
+
+
+
+.. py:class:: DpnpRulesUnaryArrayOperator(context)
+
+   Bases: :py:obj:`numba.core.typing.npydecl.NumpyRulesUnaryArrayOperator`
+
+   Defines method ``generic(self, args, kws)`` which compute a possible
+   signature base on input types.  The signature does not have to match the
+   input types. It is compared against the input types afterwards.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`install_operations <numba_dpex.core.typing.dpnpdecl.DpnpRulesUnaryArrayOperator.install_operations>`\ ()
+        - :summarylabel:`class` \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: install_operations()
+      :classmethod:
+
+
+
+
+
+Attributes
+----------
+.. py:data:: registry
+
+   
+
+.. py:data:: infer
+
+   
+
+.. py:data:: infer_global
+
+   
+
+.. py:data:: infer_getattr
+
+   
+
+.. py:data:: all_ufuncs
+
+   
+
+.. py:data:: supported_ufuncs
+
+   
+
+
+

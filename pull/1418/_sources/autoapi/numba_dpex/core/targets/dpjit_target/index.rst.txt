@@ -1,0 +1,155 @@
+
+:orphan:
+
+numba_dpex.core.targets.dpjit_target
+====================================
+
+.. py:module:: numba_dpex.core.targets.dpjit_target
+
+.. autoapi-nested-parse::
+
+   Defines the target and typing contexts for numba_dpex's dpjit decorator.
+
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`Dpex <numba_dpex.core.targets.dpjit_target.Dpex>`
+     - Mark the target as CPU.
+   * - :py:obj:`DpexTypingContext <numba_dpex.core.targets.dpjit_target.DpexTypingContext>`
+     - Custom typing context to support dpjit compilation.
+   * - :py:obj:`DpexTargetContext <numba_dpex.core.targets.dpjit_target.DpexTargetContext>`
+     - Changes BaseContext calling convention
+
+
+
+.. list-table:: Attributes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`DPEX_TARGET_NAME <numba_dpex.core.targets.dpjit_target.DPEX_TARGET_NAME>`
+     - \-
+   * - :py:obj:`dpex_function_registry <numba_dpex.core.targets.dpjit_target.dpex_function_registry>`
+     - \-
+
+
+Classes
+-------
+
+.. py:class:: Dpex
+
+   Bases: :py:obj:`numba.core.target_extension.CPU`
+
+   Mark the target as CPU.
+
+
+
+
+
+.. py:class:: DpexTypingContext
+
+   Bases: :py:obj:`numba.core.typing.Context`
+
+   Custom typing context to support dpjit compilation.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`load_additional_registries <numba_dpex.core.targets.dpjit_target.DpexTypingContext.load_additional_registries>`\ ()
+        - Register dpjit specific functions like dpnp ufuncs.
+
+
+   .. rubric:: Members
+
+   .. py:method:: load_additional_registries()
+
+      Register dpjit specific functions like dpnp ufuncs.
+
+
+
+
+.. py:class:: DpexTargetContext(typingctx, target=DPEX_TARGET_NAME)
+
+   Bases: :py:obj:`numba.core.cpu.CPUContext`
+
+   Changes BaseContext calling convention
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`init <numba_dpex.core.targets.dpjit_target.DpexTargetContext.init>`\ ()
+        - For subclasses to add initializer
+      * - :py:obj:`dpexrt <numba_dpex.core.targets.dpjit_target.DpexTargetContext.dpexrt>`\ ()
+        - \-
+      * - :py:obj:`load_additional_registries <numba_dpex.core.targets.dpjit_target.DpexTargetContext.load_additional_registries>`\ ()
+        - Load dpjit-specific registries.
+      * - :py:obj:`get_ufunc_info <numba_dpex.core.targets.dpjit_target.DpexTargetContext.get_ufunc_info>`\ (ufunc_key)
+        - Get the ufunc implementation for a given ufunc object.
+
+
+   .. rubric:: Members
+
+   .. py:method:: init()
+
+      For subclasses to add initializer
+
+
+   .. py:method:: dpexrt()
+
+
+   .. py:method:: load_additional_registries()
+
+      Load dpjit-specific registries.
+
+
+   .. py:method:: get_ufunc_info(ufunc_key)
+
+      Get the ufunc implementation for a given ufunc object.
+
+      The default implementation in BaseContext always raises a
+      ``NotImplementedError`` exception. Subclasses may raise ``KeyError``
+      to signal that the given ``ufunc_key`` is not available.
+
+      :param ufunc_key:
+      :type ufunc_key: NumPy ufunc
+
+      :returns: **res** -- A mapping of a NumPy ufunc type signature to a lower-level
+                implementation.
+      :rtype: dict[str, callable]
+
+
+
+
+
+Attributes
+----------
+.. py:data:: DPEX_TARGET_NAME
+   :value: 'dpex'
+
+   
+
+.. py:data:: dpex_function_registry
+
+   
+
+
+

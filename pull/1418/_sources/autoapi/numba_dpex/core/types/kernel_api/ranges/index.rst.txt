@@ -1,0 +1,51 @@
+
+:orphan:
+
+numba_dpex.core.types.kernel_api.ranges
+=======================================
+
+.. py:module:: numba_dpex.core.types.kernel_api.ranges
+
+
+Overview
+--------
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`RangeType <numba_dpex.core.types.kernel_api.ranges.RangeType>`
+     - Numba-dpex type corresponding to
+   * - :py:obj:`NdRangeType <numba_dpex.core.types.kernel_api.ranges.NdRangeType>`
+     - Numba-dpex type corresponding to
+
+
+
+
+Classes
+-------
+
+.. py:class:: RangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.Range`
+
+
+
+
+.. py:class:: NdRangeType(ndim: int)
+
+   Bases: :py:obj:`numba.core.types.Type`
+
+   Numba-dpex type corresponding to
+   :class:`numba_dpex.kernel_api.ranges.NdRange`
+
+
+
+
+
+
+

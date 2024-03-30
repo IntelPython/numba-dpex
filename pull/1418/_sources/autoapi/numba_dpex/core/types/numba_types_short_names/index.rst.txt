@@ -1,0 +1,87 @@
+
+:orphan:
+
+numba_dpex.core.types.numba_types_short_names
+=============================================
+
+.. py:module:: numba_dpex.core.types.numba_types_short_names
+
+
+Overview
+--------
+
+
+
+
+Attributes
+----------
+.. py:data:: none
+
+   
+
+.. py:data:: uint32
+
+   
+
+.. py:data:: uint64
+
+   
+
+.. py:data:: int32
+
+   
+
+.. py:data:: int64
+
+   
+
+.. py:data:: float32
+
+   
+
+.. py:data:: float64
+
+   
+
+.. py:data:: b1
+
+   
+
+.. py:data:: i4
+
+   
+
+.. py:data:: i8
+
+   
+
+.. py:data:: u4
+
+   
+
+.. py:data:: u8
+
+   
+
+.. py:data:: f4
+
+   
+
+.. py:data:: f8
+
+   
+
+.. py:data:: float_
+
+   
+
+.. py:data:: double
+
+   
+
+.. py:data:: void
+
+   
+
+
+

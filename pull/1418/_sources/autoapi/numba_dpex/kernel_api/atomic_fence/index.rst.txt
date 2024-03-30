@@ -1,0 +1,53 @@
+
+:orphan:
+
+numba_dpex.kernel_api.atomic_fence
+==================================
+
+.. py:module:: numba_dpex.kernel_api.atomic_fence
+
+.. autoapi-nested-parse::
+
+   Python functions that simulate SYCL's atomic_fence primitives.
+
+
+
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`atomic_fence <numba_dpex.kernel_api.atomic_fence.atomic_fence>`\ (memory_order, memory_scope)
+     - Performs a memory fence operations across all work-items.
+
+
+
+
+Functions
+---------
+.. py:function:: atomic_fence(memory_order: numba_dpex.kernel_api.memory_enums.MemoryOrder, memory_scope: numba_dpex.kernel_api.memory_enums.MemoryScope)
+
+   Performs a memory fence operations across all work-items.
+
+   The function is equivalent to the ``sycl::atomic_fence`` function and
+   controls the order of memory accesses (loads and stores) by individual
+   work-items.
+
+   .. important::
+       The function is a no-op during CPython execution and only available in
+       JIT compiled mode of execution.
+
+   :param memory_order: The memory synchronization order.
+   :type memory_order: MemoryOrder
+   :param memory_scope: The set of work-items and devices to which
+                        the memory ordering constraints apply.
+   :type memory_scope: MemoryScope
+
+
+
+
+
