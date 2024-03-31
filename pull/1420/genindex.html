@@ -473,14 +473,14 @@
         </ul></li>
         <li><a href="autoapi/numba_dpex/core/descriptor/index.html#numba_dpex.core.descriptor.DpexKernelTarget">DpexKernelTarget (class in numba_dpex.core.descriptor)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/targets/dpjit_target/index.html#numba_dpex.core.targets.dpjit_target.DpexTargetContext.dpexrt">dpexrt() (DpexTargetContext method)</a>
 
         <ul>
           <li><a href="autoapi/numba_dpex/core/utils/kernel_launcher_codegen/index.html#numba_dpex.core.utils.kernel_launcher_codegen.KernelLaunchIRBuilder.dpexrt">(KernelLaunchIRBuilder method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/runtime/context/index.html#numba_dpex.core.runtime.context.DpexRTContext">DpexRTContext (class in numba_dpex.core.runtime.context)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/descriptor/index.html#numba_dpex.core.descriptor.DpexTarget">DpexTarget (class in numba_dpex.core.descriptor)</a>
@@ -514,6 +514,8 @@
         <li><a href="autoapi/numba_dpex/core/typing/dpnpdecl/index.html#numba_dpex.core.typing.dpnpdecl.DpnpRulesUnaryArrayOperator">DpnpRulesUnaryArrayOperator (class in numba_dpex.core.typing.dpnpdecl)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/passes/dufunc_inliner/index.html#numba_dpex.core.passes.dufunc_inliner.dufunc_inliner">dufunc_inliner() (in module numba_dpex.core.passes.dufunc_inliner)</a>
+</li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_diagnostics/index.html#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump">dump() (ExtendedParforDiagnostics method)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/parfors/kernel_templates/kernel_template_iface/index.html#numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir">dump_kernel_ir() (KernelTemplateInterface method)</a>
 
@@ -564,10 +566,10 @@
           <li><a href="user_guide/debugging/common_issues.html#index-0">NUMBA_OPT</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/runtime/context/index.html#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_from_python">eventstruct_from_python() (DpexRTContext method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/runtime/context/index.html#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_init">eventstruct_init() (DpexRTContext method)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/runtime/context/index.html#numba_dpex.core.runtime.context.DpexRTContext.eventstruct_to_python">eventstruct_to_python() (DpexRTContext method)</a>
@@ -575,6 +577,8 @@
         <li><a href="autoapi/numba_dpex/kernel_api/atomic_ref/index.html#numba_dpex.kernel_api.atomic_ref.AtomicRef.exchange">exchange() (AtomicRef method)</a>, <a href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef.exchange">[1]</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/descriptor/index.html#numba_dpex.core.descriptor.DpexTargetOptions.experimental">experimental (DpexTargetOptions attribute)</a>
+</li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_diagnostics/index.html#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics">ExtendedParforDiagnostics (class in numba_dpex.core.parfors.parfor_diagnostics)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1022,6 +1026,8 @@
 </li>
           <li><a href="autoapi/numba_dpex/core/parfors/kernel_templates/reduction_template/index.html#module-numba_dpex.core.parfors.kernel_templates.reduction_template">numba_dpex.core.parfors.kernel_templates.reduction_template</a>
 </li>
+          <li><a href="autoapi/numba_dpex/core/parfors/parfor_diagnostics/index.html#module-numba_dpex.core.parfors.parfor_diagnostics">numba_dpex.core.parfors.parfor_diagnostics</a>
+</li>
           <li><a href="autoapi/numba_dpex/core/parfors/parfor_lowerer/index.html#module-numba_dpex.core.parfors.parfor_lowerer">numba_dpex.core.parfors.parfor_lowerer</a>
 </li>
           <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#module-numba_dpex.core.parfors.parfor_pass">numba_dpex.core.parfors.parfor_pass</a>
@@ -1327,6 +1333,13 @@
 </li>
         </ul></li>
         <li>
+    numba_dpex.core.parfors.parfor_diagnostics
+
+        <ul>
+          <li><a href="autoapi/numba_dpex/core/parfors/parfor_diagnostics/index.html#module-numba_dpex.core.parfors.parfor_diagnostics">module</a>
+</li>
+        </ul></li>
+        <li>
     numba_dpex.core.parfors.parfor_lowerer
 
         <ul>
@@ -1368,6 +1381,8 @@
           <li><a href="autoapi/numba_dpex/core/passes/passes/index.html#module-numba_dpex.core.passes.passes">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     numba_dpex.core.pipelines
 
@@ -1375,8 +1390,6 @@
           <li><a href="autoapi/numba_dpex/core/pipelines/index.html#module-numba_dpex.core.pipelines">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     numba_dpex.core.pipelines.dpjit_compiler
 
@@ -1682,13 +1695,15 @@
 </li>
         <li><a href="autoapi/numba_dpex/core/parfors/parfor_lowerer/index.html#numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl">ParforLowerImpl (class in numba_dpex.core.parfors.parfor_lowerer)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/parfors/parfor_pass/index.html#numba_dpex.core.parfors.parfor_pass.ParforPass">ParforPass (class in numba_dpex.core.parfors.parfor_pass)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/numba_dpex/core/utils/itanium_mangler/index.html#numba_dpex.core.utils.itanium_mangler.PREFIX">PREFIX (in module numba_dpex.core.utils.itanium_mangler)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/utils/itanium_mangler/index.html#numba_dpex.core.utils.itanium_mangler.prepend_namespace">prepend_namespace() (in module numba_dpex.core.utils.itanium_mangler)</a>
+</li>
+        <li><a href="autoapi/numba_dpex/core/parfors/parfor_diagnostics/index.html#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading">print_auto_offloading() (ExtendedParforDiagnostics method)</a>
 </li>
         <li><a href="autoapi/numba_dpex/core/utils/kernel_flattened_args_builder/index.html#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.print_kernel_arg_list">print_kernel_arg_list() (KernelFlattenedArgsBuilder method)</a>
 </li>
