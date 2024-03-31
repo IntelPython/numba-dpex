@@ -9,14 +9,10 @@ import numpy
 from numba.core import types
 from numba.core.imputils import Registry
 
-from numba_dpex.core.utils.itanium_mangler import mangle
-
-from ._declare_function import _declare_function
+from numba_dpex.core.utils import cgutils_extra, itanium_mangler
 
 registry = Registry()
 lower = registry.lower
-
-# -----------------------------------------------------------------------------
 
 _unary_b_f = types.int32(types.float32)
 _unary_b_d = types.int32(types.float64)
@@ -88,7 +84,7 @@ function_descriptors = {
 
 
 # some functions may be named differently by the underlying math
-# library as oposed to the Python name.
+# library as opposed to the Python name.
 _lib_counterpart = {"gamma": "tgamma"}
 
 
@@ -96,8 +92,13 @@ def _mk_fn_decl(name, decl_sig):
     sym = _lib_counterpart.get(name, name)
 
     def core(context, builder, sig, args):
-        fn = _declare_function(
-            context, builder, sym, decl_sig, decl_sig.args, mangler=mangle
+        fn = cgutils_extra.declare_function(
+            context,
+            builder,
+            sym,
+            decl_sig,
+            decl_sig.args,
+            mangler=itanium_mangler.mangle,
         )
         res = builder.call(fn, args)
         return context.cast(builder, res, decl_sig.return_type, sig.return_type)
