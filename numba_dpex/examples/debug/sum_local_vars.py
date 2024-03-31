@@ -9,7 +9,7 @@ import numba_dpex as ndpx
 
 @ndpx.kernel(debug=True)
 def data_parallel_sum(item, a, b, c):
-    i = ndpx.get_global_id(0)
+    i = item.get_id(0)
     l1 = a[i] + 2.5
     l2 = b[i] * 0.3
     c[i] = l1 + l2
