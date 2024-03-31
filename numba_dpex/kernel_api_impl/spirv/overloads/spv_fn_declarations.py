@@ -12,7 +12,7 @@ import warnings
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
-from numba_dpex.core import itanium_mangler as ext_itanium_mangler
+from numba_dpex.core.utils import itanium_mangler as ext_itanium_mangler
 from numba_dpex.kernel_api_impl.spirv.target import CC_SPIR_FUNC
 
 _SUPPORT_CONVERGENT = True

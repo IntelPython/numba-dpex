@@ -11,9 +11,9 @@ from numba import errors
 from numba.core import cgutils, types
 from numba.extending import intrinsic, overload, overload_method
 
-from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.kernel_api.atomic_ref import AtomicRefType
+from numba_dpex.core.utils import itanium_mangler as ext_itanium_mangler
 from numba_dpex.kernel_api import (
     AddressSpace,
     AtomicRef,

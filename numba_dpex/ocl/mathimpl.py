@@ -9,7 +9,7 @@ import numpy
 from numba.core import types
 from numba.core.imputils import Registry
 
-from numba_dpex.core.itanium_mangler import mangle
+from numba_dpex.core.utils.itanium_mangler import mangle
 
 from ._declare_function import _declare_function
 
