@@ -17,18 +17,17 @@ from numba.core.cpu import CPUContext
 from numba.core.datamodel import DataModelManager
 from numba.core.types.containers import UniTuple
 
-from numba_dpex import utils
 from numba_dpex.core import config
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
+from numba_dpex.core.utils import cgutils_extra
 from numba_dpex.core.utils.kernel_flattened_args_builder import (
     KernelFlattenedArgsBuilder,
 )
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
-from numba_dpex.utils import create_null_ptr
 
 MAX_SIZE_OF_SYCL_RANGE = 3
 
@@ -142,10 +141,15 @@ class KernelLaunchIRBuilder:
 
         Returns: An LLVM Value storing a null pointer
         """
-        zero = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
+        zero = cgutils.alloca_once(
+            self.builder, cgutils_extra.LLVMTypes.int64_t
+        )
         self.builder.store(self.context.get_constant(types.int64, 0), zero)
         return self.builder.bitcast(
-            zero, utils.get_llvm_type(context=self.context, type=types.voidptr)
+            zero,
+            cgutils_extra.get_llvm_type(
+                context=self.context, type=types.voidptr
+            ),
         )
 
     # TODO: remove, not part of the builder
@@ -159,7 +163,9 @@ class KernelLaunchIRBuilder:
         # Allocate a stack var to store the queue created from the filter string
         sycl_queue_val = cgutils.alloca_once(
             self.builder,
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
+            cgutils_extra.get_llvm_type(
+                context=self.context, type=types.voidptr
+            ),
         )
         # Insert a global constant to store the filter string
         device = self.context.insert_const_string(
@@ -256,8 +262,8 @@ class KernelLaunchIRBuilder:
         """
         int64_range = [
             (
-                self.builder.sext(rext, utils.LLVMTypes.int64_t)
-                if rext.type != utils.LLVMTypes.int64_t
+                self.builder.sext(rext, cgutils_extra.LLVMTypes.int64_t)
+                if rext.type != cgutils_extra.LLVMTypes.int64_t
                 else rext
             )
             for rext in idx_range
@@ -334,7 +340,7 @@ class KernelLaunchIRBuilder:
             )
         else:
             spv_compiler_options = self.builder.load(
-                create_null_ptr(self.builder, self.context)
+                cgutils_extra.create_null_ptr(self.builder, self.context)
             )
 
         # build_or_get_kernel steals reference to context and device cause it
