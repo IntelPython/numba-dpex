@@ -1,0 +1,24 @@
+
+
+:orphan:
+
+numba_dpex.core.overloads.ranges_overloads
+==========================================
+
+.. py:module:: numba_dpex.core.overloads.ranges_overloads
+
+
+
+
+
+
+
+Attributes
+----------
+.. py:data:: DPEX_TARGET_NAME
+   :value: 'dpex'
+
+   
+
+
+
