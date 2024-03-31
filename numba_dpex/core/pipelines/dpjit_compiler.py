@@ -19,13 +19,13 @@ from numba.core.typed_passes import (
 )
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
+from numba_dpex.core.parfors.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.core.parfors.parfor_pass import ParforPass
 from numba_dpex.core.passes import (
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforLegalizeCFDPass,
 )
-from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 
 
 class _DpjitPassBuilder(object):
