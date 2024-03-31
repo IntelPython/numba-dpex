@@ -291,9 +291,9 @@ class SPIRVTargetContext(BaseContext):
 
         """
         # pylint: disable=import-outside-toplevel
-        from numba_dpex import printimpl
         from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
+        from numba_dpex.kernel_api_impl.spirv import printimpl
         from numba_dpex.ocl import mathimpl
 
         self.insert_func_defn(mathimpl.registry.functions)

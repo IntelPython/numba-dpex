@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""
+An implementation of ``print`` for use in a kernel for the SPIRVKernelTarget.
+"""
+
 from functools import singledispatch
 
 import llvmlite.ir as llvmir
@@ -14,7 +18,16 @@ registry = Registry()
 lower = registry.lower
 
 
-def declare_print(lmod):
+def declare_print(lmod: llvmir.Module):
+    """Inserts declaration for C printf into the given LLVM module
+
+    Args:
+        lmod (llvmir.Module): LLVM module into which the function declaration
+            needs to be inserted.
+
+    Returns:
+        An LLVM IR Function object for the inserted C printf function.
+    """
     voidptrty = llvmir.PointerType(
         llvmir.IntType(8), addrspace=address_space.GENERIC.value
     )
@@ -32,33 +45,34 @@ def print_item(ty, context, builder, val):
     A (format string, [list of arguments]) is returned that will allow
     forming the final printf()-like call.
     """
-    raise NotImplementedError(
-        "printing unimplemented for values of type %s" % (ty,)
-    )
+    raise NotImplementedError(f"printing unimplemented for values of type {ty}")
 
 
 @print_item.register(types.Integer)
 @print_item.register(types.IntegerLiteral)
 def int_print_impl(ty, context, builder, val):
+    """Implements printing an integer value."""
     if ty in types.unsigned_domain:
         rawfmt = "%llu"
         dsttype = types.uint64
     else:
         rawfmt = "%lld"
         dsttype = types.int64
-    fmt = context.insert_const_string(builder.module, rawfmt)  # noqa
+    context.insert_const_string(builder.module, rawfmt)
     lld = context.cast(builder, val, ty, dsttype)
     return rawfmt, [lld]
 
 
 @print_item.register(types.Float)
 def real_print_impl(ty, context, builder, val):
+    """Implements printing a real number value."""
     lld = context.cast(builder, val, ty, types.float64)
     return "%f", [lld]
 
 
 @print_item.register(types.StringLiteral)
 def const_print_impl(ty, context, builder, sigval):
+    """Implements printing a string value."""
     pyval = ty.literal_value
     assert isinstance(pyval, str)  # Ensured by lowering
     rawfmt = "%s"
@@ -76,7 +90,7 @@ def print_varargs(context, builder, sig, args):
     values = []
 
     only_str = True
-    for i, (argtype, argval) in enumerate(zip(sig.args, args)):
+    for _, (argtype, argval) in enumerate(zip(sig.args, args)):
         argfmt, argvals = print_item(argtype, context, builder, argval)
         formats.append(argfmt)
         values.extend(argvals)
