@@ -23,8 +23,8 @@ import numba_dpex as dpex
 
 
 @dpex.kernel
-def async_kernel(x):
-    idx = dpex.get_global_id(0)
+def async_kernel(item, x):
+    idx = item.get_id(0)
 
     for i in range(1300):
         den = x.dtype.type(i + 1)
