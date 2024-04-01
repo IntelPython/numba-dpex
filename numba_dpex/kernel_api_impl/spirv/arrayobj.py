@@ -4,8 +4,6 @@
 
 """Contains SPIR-V specific array functions."""
 
-import operator
-from functools import reduce
 from typing import Union
 
 import llvmlite.ir as llvmir
@@ -34,7 +32,7 @@ def require_literal(literal_type: types.Type):
             )
 
 
-def make_spirv_array(  # pylint: disable=too-many-arguments
+def np_cfarray(  # pylint: disable=too-many-arguments
     context: BaseContext,
     builder: IRBuilder,
     ty_array: types.Array,
@@ -42,10 +40,13 @@ def make_spirv_array(  # pylint: disable=too-many-arguments
     shape: llvmir.Value,
     data: llvmir.Value,
 ):
-    """Makes SPIR-V array and fills it data.
+    """Makes numpy-like array and fills it's data depending on the context's
+    datamodel.
 
     Generic version of numba.np.arrayobj.np_cfarray so that it can be used
     not only as intrinsic, but inside instruction generation.
+
+    TODO: upstream changes to numba.
     """
     # Create array object
     ary = context.make_array(ty_array)(context, builder)
@@ -84,32 +85,3 @@ def make_spirv_array(  # pylint: disable=too-many-arguments
     )
 
     return ary
-
-
-def allocate_array_data_on_stack(
-    context: BaseContext,
-    builder: IRBuilder,
-    ty_array: types.Array,
-    ty_shape: Union[types.IntegerLiteral, types.BaseTuple],
-):
-    """Allocates flat array of given shape on the stack."""
-    if not isinstance(ty_shape, types.BaseTuple):
-        ty_shape = (ty_shape,)
-
-    return cgutils.alloca_once(
-        builder,
-        context.get_data_type(ty_array.dtype),
-        size=reduce(operator.mul, [s.literal_value for s in ty_shape]),
-    )
-
-
-def make_spirv_generic_array_on_stack(
-    context: BaseContext,
-    builder: IRBuilder,
-    ty_array: types.Array,
-    ty_shape: Union[types.IntegerLiteral, types.BaseTuple],
-    shape: llvmir.Value,
-):
-    """Makes SPIR-V array of given shape with empty data."""
-    data = allocate_array_data_on_stack(context, builder, ty_array, ty_shape)
-    return make_spirv_array(context, builder, ty_array, ty_shape, shape, data)
