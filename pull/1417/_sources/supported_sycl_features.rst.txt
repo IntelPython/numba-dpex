@@ -114,9 +114,7 @@ runtime API. Such features are provided by the ``dpctl`` package.
    * - ``private_memory``
      -
      - Not directly supported. Refer to :class:`numba_dpex.kernel_api.PrivateArray`
-       for the closest analogue. However, ``PrivateArray`` does not come with
-       the explicit guaranteed use of private per-work-item memory provided by
-       SYCL*'s ``private_memory``.
+       for the closest analogue.
    * - Constant memory
      -
      - SYCL 2020 no longer defines a constant memory region in the device memory
