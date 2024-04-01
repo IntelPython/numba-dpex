@@ -12,19 +12,7 @@ import llvmlite.ir as llvmir
 from llvmlite.ir.builder import IRBuilder
 from numba.core import cgutils, errors, types
 from numba.core.base import BaseContext
-
-from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
-from numba_dpex.ocl.oclimpl import _get_target_data
-
-
-def get_itemsize(context: SPIRVTargetContext, array_type: types.Array):
-    """
-    Return the item size for the given array or buffer type.
-    Same as numba.np.arrayobj.get_itemsize, but using spirv data.
-    """
-    targetdata = _get_target_data(context)
-    lldtype = context.get_data_type(array_type.dtype)
-    return lldtype.get_abi_size(targetdata)
+from numba.np.arrayobj import get_itemsize
 
 
 def require_literal(literal_type: types.Type):
@@ -47,14 +35,18 @@ def require_literal(literal_type: types.Type):
 
 
 def make_spirv_array(  # pylint: disable=too-many-arguments
-    context: SPIRVTargetContext,
+    context: BaseContext,
     builder: IRBuilder,
     ty_array: types.Array,
     ty_shape: Union[types.IntegerLiteral, types.BaseTuple],
     shape: llvmir.Value,
     data: llvmir.Value,
 ):
-    """Makes SPIR-V array and fills it data."""
+    """Makes SPIR-V array and fills it data.
+
+    Generic version of numba.np.arrayobj.np_cfarray so that it can be used
+    not only as intrinsic, but inside instruction generation.
+    """
     # Create array object
     ary = context.make_array(ty_array)(context, builder)
 
@@ -112,7 +104,7 @@ def allocate_array_data_on_stack(
 
 
 def make_spirv_generic_array_on_stack(
-    context: SPIRVTargetContext,
+    context: BaseContext,
     builder: IRBuilder,
     ty_array: types.Array,
     ty_shape: Union[types.IntegerLiteral, types.BaseTuple],

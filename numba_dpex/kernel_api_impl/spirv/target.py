@@ -13,7 +13,7 @@ from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba.core import cgutils, funcdesc
 from numba.core import types as nb_types
-from numba.core import typing, utils
+from numba.core import typing
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.target_extension import GPU, target_registry
@@ -150,7 +150,7 @@ class SPIRVTargetContext(BaseContext):
 
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
         self._target_data = ll.create_target_data(
-            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
+            codegen.SPIR_DATA_LAYOUT[self.address_size]
         )
 
         # Override data model manager to SPIR model
