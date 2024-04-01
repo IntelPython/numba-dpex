@@ -1,42 +1,14 @@
 .. _index:
 .. include:: ./ext_links.txt
 
-.. Feedbacks:
-.. 	Use proper names (as provided by marketing)
-.. 	Do not use "we/I"
-.. 	Use correct acronym, expand acronym at the first instance
-
-
-.. Follow cupy docs.
-
-.. Overview:
-.. 	Main Features
-.. 	Project Goal
-
-.. Getting Started:
-.. 	Yevheni
-.. 	Docker page
-
-.. User Guide:
-.. 	https://intelpython.github.io/oneAPI-for-SciPy/details/programming_model/
-.. 	Kernel Programming API --> Kernel Programming Basics
-.. 	Compiling and Offloading DPNP
-.. 		- Introduce @dpjit
-.. 		- Array constructor in dpjit
-.. 		- ufunc (refer to numba)
-.. 		- prange
-.. 		-
-.. 	Debugging using GDB
-.. 	# Performance Tips
-.. 	# Troubleshooting
-.. 	Useful Links
-.. 	# To-Do
-
-.. API Reference:
-
-
 Data Parallel Extension for Numba*
 ==================================
+
+Numba-dpex is an open-source kernel-programming API and JIT compiler for
+portable accelerator programming directly in Python. The API and the compiler is
+modeled after the C++ SYCL* language and brings a similar programming model and
+language design to Python. The page lists the relevant documentation to learn to
+program data-parallel kernels using numba-dpex.
 
 .. module:: numba_dpex
 
@@ -55,14 +27,7 @@ Data Parallel Extension for Numba*
 
 .. toctree::
    :maxdepth: 1
-   :caption: Development
+   :caption: Miscellaneous Notes
 
-   contribution_guide
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Misc Notes
-
-   examples
    license
    release-notes

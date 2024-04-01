@@ -5,9 +5,11 @@
 # coding: utf-8
 # Configuration file for the Sphinx documentation builder.
 
-# -- Project information -----------------------------------------------------
+# -- Project information -------------------------------------------------------
 
 import sys
+
+import numba_dpex
 
 sys.path.append(".")
 
@@ -18,16 +20,15 @@ copyright = "2020-2024, Intel Corporation"
 author = "Intel Corporation"
 
 # The full version, including alpha/beta/rc tags
-# release = "main"
+release = numba_dpex.__version__
 
-# -- General configuration ----------------------------------------------------
+# -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
     "sphinx.ext.todo",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
@@ -35,6 +36,7 @@ extensions = [
     "sphinxcontrib.googleanalytics",
     "myst_parser",
     "autoapi.extension",
+    "sphinx.ext.intersphinx",
     "sphinxcontrib.bibtex",
 ]
 
@@ -52,12 +54,11 @@ exclude_patterns = []
 extlinks = {}
 extlinks.update(sycl_ext_links)
 
-# -- Options for HTML output -------------------------------------------------
+# -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = "pydata_sphinx_theme"
 html_theme = "furo"
 
 html_theme_options = {
@@ -82,7 +83,7 @@ html_sidebars = {}
 
 html_show_sourcelink = False
 
-# -- Todo extension configuration  ----------------------------------------------
+# -- Todo extension configuration  ---------------------------------------------
 todo_include_todos = True
 todo_link_only = True
 
@@ -90,8 +91,14 @@ todo_link_only = True
 intersphinx_mapping = {}
 
 
-# -- Prepend module name to an object name or not -----------------------------------
+# -- Prepend module name to an object name or not ------------------------------
 add_module_names = False
+
+
+# -- autodoc configurations ----------------------------------------------------
+
+autodoc_typehints_format = "short"
+python_use_unqualified_type_names = True
 
 # -- Auto API configurations ---------------------------------------------------
 

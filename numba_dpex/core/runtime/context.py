@@ -439,16 +439,18 @@ class DpexRTContext(object):
     ):
         """Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
 
-        DPCTLSyclEventRef
-        DPEXRT_nrt_acquire_meminfo_and_schedule_release(
-            NRT_api_functions *nrt,
-            DPCTLSyclQueueRef QRef,
-            NRT_MemInfo **meminfo_array,
-            size_t meminfo_array_size,
-            DPCTLSyclEventRef *depERefs,
-            size_t nDepERefs,
-            int *status,
-        );
+        .. code-block:: c
+
+            DPCTLSyclEventRef
+            DPEXRT_nrt_acquire_meminfo_and_schedule_release(
+                NRT_api_functions *nrt,
+                DPCTLSyclQueueRef QRef,
+                NRT_MemInfo **meminfo_array,
+                size_t meminfo_array_size,
+                DPCTLSyclEventRef *depERefs,
+                size_t nDepERefs,
+                int *status,
+            );
 
         """
         mod = builder.module
@@ -475,16 +477,18 @@ class DpexRTContext(object):
     def build_or_get_kernel(self, builder: llvmir.IRBuilder, args):
         """Inserts LLVM IR to call build_or_get_kernel.
 
-        DPCTLSyclKernelRef
-        DPEXRT_build_or_get_kernel(
-            const DPCTLSyclContextRef ctx,
-            const DPCTLSyclDeviceRef dev,
-            size_t il_hash,
-            const char *il,
-            size_t il_length,
-            const char *compile_opts,
-            const char *kernel_name,
-        );
+        .. code-block:: c
+
+            DPCTLSyclKernelRef
+            DPEXRT_build_or_get_kernel(
+                const DPCTLSyclContextRef ctx,
+                const DPCTLSyclDeviceRef dev,
+                size_t il_hash,
+                const char *il,
+                size_t il_length,
+                const char *compile_opts,
+                const char *kernel_name,
+            );
 
         """
         mod = builder.module
@@ -511,7 +515,9 @@ class DpexRTContext(object):
     def kernel_cache_size(self, builder: llvmir.IRBuilder):
         """Inserts LLVM IR to call kernel_cache_size.
 
-        size_t DPEXRT_kernel_cache_size();
+        .. code-block:: c
+
+            size_t DPEXRT_kernel_cache_size();
 
         """
         fn = cgutils.get_or_insert_function(
