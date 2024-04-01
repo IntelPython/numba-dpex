@@ -18,11 +18,11 @@ from numba_dpex import kernel_api as kapi
 
 @ndpx.kernel
 def sum_reduction_kernel(nditem: kapi.NdItem, A, input_size, partial_sums, slm):
-    local_id = ndpx.get_local_id(0)
-    global_id = ndpx.get_global_id(0)
-    group_size = ndpx.get_local_size(0)
-    group_id = ndpx.get_group_id(0)
-
+    local_id = nditem.get_local_id(0)
+    global_id = nditem.get_global_id(0)
+    group_size = nditem.get_local_range(0)
+    gr = nditem.get_group()
+    group_id = gr.get_group_id(0)
     slm[local_id] = 0
 
     if global_id < input_size:
@@ -32,7 +32,7 @@ def sum_reduction_kernel(nditem: kapi.NdItem, A, input_size, partial_sums, slm):
     stride = group_size // 2
     while stride > 0:
         # Waiting for each 2x2 addition into given workgroup
-        ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
+        kapi.group_barrier(gr)
 
         # Add elements 2 by 2 between local_id and local_id + stride
         if local_id < stride:
