@@ -1,8 +1,11 @@
 {% import 'macros.rst' as macros %}
 
 {% if not obj.display %}
+{% if not "config" in obj.name %}
+
 :orphan:
 
+{% endif %}
 {% endif %}
 {{ obj.name }}
 {{ "=" * obj.name|length }}
@@ -57,13 +60,14 @@ Submodules
 {% set visible_children = obj.children|selectattr("display")|rejectattr("imported")|list %}
 {% endif %}
 {% if visible_children %}
-Overview
---------
+
 
 {% set visible_classes = visible_children|selectattr("type", "equalto", "class")|list %}
 {% set visible_functions = visible_children|selectattr("type", "equalto", "function")|list %}
 {% set visible_attributes = visible_children|selectattr("type", "equalto", "data")|list %}
 {% if "show-module-summary" in autoapi_options and (visible_classes or visible_functions) %}
+Overview
+--------
 {% block classes scoped %}
 {% if visible_classes %}
 {{ macros.auto_summary(visible_classes, title="Classes") }}
