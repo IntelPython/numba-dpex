@@ -12,27 +12,36 @@
 
 
 
-Data-parallel Extension for Numba* (numba-dpex) is a standalone extension for
-the [Numba](http://numba.pydata.org) Python JIT compiler. Numba-dpex provides
-a generic kernel programming API and an offload feature that extends Numba's
-auto-parallelizer to generate data-parallel kernels for `parfor` nodes.
+Data-parallel Extension for Numba* (numba-dpex) is an open-source standalone
+extension for the [Numba](http://numba.pydata.org) Python JIT compiler.
+Numba-dpex provides a [SYCL*](https://sycl.tech/)-like API for kernel
+programming Python. SYCL* is an open standard developed by the [Unified
+Acceleration Foundation](https://uxlfoundation.org/) as a vendor-agnostic way of
+programming different types of data-parallel hardware such as multi-core CPUs,
+GPUs, and FPGAs. Numba-dpex's kernel-programming API brings the same programming
+model and a similar API to Python. The API allows expressing portable
+data-parallel kernels  in Python and then JIT compiling them for different
+hardware targets. JIT compilation is supported for hardware that use the
+[SPIR-V](https://www.khronos.org/spir/) intermediate representation format that
+includes [OpenCL](https://www.khronos.org/opencl/) CPU (Intel, AMD) devices,
+OpenCL GPU (Intel integrated and discrete GPUs) devices, and [oneAPI Level
+Zero](https://spec.oneapi.io/level-zero/latest/index.html) GPU (Intel integrated
+and discrete GPUs) devices.
 
-Numba-dpex's kernel API has a design and API similar to Numba's `cuda.jit`
-module, but is based on the [SYCL](https://sycl.tech/) language. The
-code-generation for the kernel API currently supports
-[SPIR-V](https://www.khronos.org/spir/)-based
-[OpenCL](https://www.khronos.org/opencl/) and
-[oneAPI Level Zero](https://spec.oneapi.io/level-zero/latest/index.html)
-devices that are supported by Intel&reg; DPC++ SYCL compiler runtime. Supported
-devices include Intel&reg; CPUs, integrated GPUs and discrete GPUs.
+The kernel programming API does not yet support every SYCL* feature. Refer to
+the [SYCL* and numba-dpex feature comparison](https://intelpython.github.io/numba-dpex/latest/supported_sycl_features.html)
+page to get a summary of supported features.
+Numba-dpex only implements SYCL*'s kernel programming API, all SYCL runtime
+Python bindings are provided by the [dpctl](https://github.com/IntelPython/dpctl)
+package.
 
-The offload functionality in numba-dpex is based on Numba's `parfor`
-loop-parallelizer. Our compiler extends Numba's `parfor` feature to generate
-kernels and offload them to devices supported by DPC++ SYCL compiler runtime.
-The offload functionality is supported via a new NumPy drop-in replacement
-library: [dpnp](https://github.com/IntelPython/dpnp). Note that `dpnp` and NumPy-based
-expressions can be used together in the same function, with `dpnp` expressions getting
-offloaded by `numba-dpex` and NumPy expressions getting parallelized by Numba.
+Along with the kernel programming API, numba-dpex extends Numba's
+auto-parallelizer to bring device offload capabilities to `prange` loops and
+NumPy-like vector expressions. The offload functionality is supported via the
+NumPy drop-in replacement library: [dpnp](https://github.com/IntelPython/dpnp).
+Note that `dpnp` and NumPy-based expressions can be used together in the same
+function, with `dpnp` expressions getting offloaded by `numba-dpex` and NumPy
+expressions getting parallelized by Numba.
 
 Refer the [documentation](https://intelpython.github.io/numba-dpex) and examples
 to learn more.

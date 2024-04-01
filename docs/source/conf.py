@@ -36,6 +36,7 @@ extensions = [
     "sphinxcontrib.googleanalytics",
     "myst_parser",
     "autoapi.extension",
+    "sphinx.ext.intersphinx",
     "sphinxcontrib.bibtex",
 ]
 
