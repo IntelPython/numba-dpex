@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.decorators
@@ -7,9 +8,10 @@ numba_dpex.core.decorators
 .. py:module:: numba_dpex.core.decorators
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

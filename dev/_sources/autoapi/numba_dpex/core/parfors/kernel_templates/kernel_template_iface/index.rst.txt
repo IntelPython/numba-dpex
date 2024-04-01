@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.parfors.kernel_templates.kernel_template_iface
@@ -7,9 +8,10 @@ numba_dpex.core.parfors.kernel_templates.kernel_template_iface
 .. py:module:: numba_dpex.core.parfors.kernel_templates.kernel_template_iface
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

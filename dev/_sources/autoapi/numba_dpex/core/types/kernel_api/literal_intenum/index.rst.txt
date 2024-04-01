@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.kernel_api.literal_intenum
@@ -13,9 +14,10 @@ numba_dpex.core.types.kernel_api.literal_intenum
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

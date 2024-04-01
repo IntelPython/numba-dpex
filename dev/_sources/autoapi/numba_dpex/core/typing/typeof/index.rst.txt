@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.typing.typeof
@@ -7,9 +8,10 @@ numba_dpex.core.typing.typeof
 .. py:module:: numba_dpex.core.typing.typeof
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

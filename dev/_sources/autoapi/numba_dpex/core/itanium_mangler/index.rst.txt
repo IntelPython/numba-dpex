@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.itanium_mangler
@@ -38,9 +39,10 @@ numba_dpex.core.itanium_mangler
 
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

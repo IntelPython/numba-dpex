@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.passes.dufunc_inliner
@@ -7,9 +8,10 @@ numba_dpex.core.passes.dufunc_inliner
 .. py:module:: numba_dpex.core.passes.dufunc_inliner
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

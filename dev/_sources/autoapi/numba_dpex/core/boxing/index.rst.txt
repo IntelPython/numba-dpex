@@ -11,9 +11,10 @@ numba_dpex.core.boxing
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.boxing.ranges
@@ -7,9 +8,10 @@ numba_dpex.core.boxing.ranges
 .. py:module:: numba_dpex.core.boxing.ranges
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0
