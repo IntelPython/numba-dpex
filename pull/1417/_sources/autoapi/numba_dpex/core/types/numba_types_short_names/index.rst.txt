@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.numba_types_short_names
@@ -7,8 +8,7 @@ numba_dpex.core.types.numba_types_short_names
 .. py:module:: numba_dpex.core.types.numba_types_short_names
 
 
-Overview
---------
+
 
 
 

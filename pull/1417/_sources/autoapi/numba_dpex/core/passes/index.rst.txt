@@ -5,9 +5,10 @@ numba_dpex.core.passes
 .. py:module:: numba_dpex.core.passes
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

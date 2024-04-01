@@ -12,7 +12,7 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Experimental Features" href="experimental/index.html" /><link rel="prev" title="numba_dpex.core.kernel_launcher" href="autoapi/numba_dpex/core/kernel_launcher/index.html" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Experimental Features" href="experimental/index.html" /><link rel="prev" title="Configuration Options" href="config_options.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>SYCL* and numba-dpex Feature Comparison - numba-dpex documentation</title>
@@ -190,7 +190,6 @@
 <li class="toctree-l3"><a class="reference internal" href="user_guide/debugging/common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -199,6 +198,7 @@
 <li class="toctree-l2"><a class="reference internal" href="autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="config_options.html">Configuration Options</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SYCL* and numba-dpex Feature Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="useful_links.html">Useful links</a></li>
@@ -293,7 +293,8 @@ explicitly specified. Equivalent to <code class="docutils literal notranslate"><
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">h_item</span></code></p></td>
 <td></td>
-<td><p>Not supported</p></td>
+<td><p>Not supported. There is no corresponding API in numba-dpex for
+<code class="docutils literal notranslate"><span class="pre">group::parallel_for_work_item</span></code> or <code class="docutils literal notranslate"><span class="pre">parallel_for_work_group</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">group</span></code></p></td>
 <td><p><a class="reference internal" href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Group</span></code></a></p></td>
@@ -394,7 +395,7 @@ invocation using the
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">atomic_ref</span></code></p></td>
 <td><p><a class="reference internal" href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.AtomicRef</span></code></a></p></td>
-<td></td>
+<td><p>Atomic references are supported for both global and local memory.</p></td>
 </tr>
 </tbody>
 </table>
@@ -420,8 +421,11 @@ invocation using the
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">private_memory</span></code></p></td>
 <td></td>
-<td><p>Not directly supported. Refer to <a class="reference internal" href="autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.PrivateArray</span></code></a>
-for the closest analogue.</p></td>
+<td><p>Not supported as there is no corresponding API in numba-dpex for
+<code class="docutils literal notranslate"><span class="pre">group::parallel_for_work_item</span></code> or <code class="docutils literal notranslate"><span class="pre">parallel_for_work_group</span></code>.</p>
+<p>Allocating variables on a work-item’s private memory can be done using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.PrivateMemory</span></code>.</p>
+</td>
 </tr>
 <tr class="row-even"><td><p>Constant memory</p></td>
 <td></td>
@@ -589,14 +593,14 @@ the <code class="docutils literal notranslate"><span class="pre">dpctl</span></c
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="autoapi/numba_dpex/core/kernel_launcher/index.html">
+          <a class="prev-page" href="config_options.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">numba_dpex.core.kernel_launcher</div>
+                <div class="title">Configuration Options</div>
                 
               </div>
             </a>

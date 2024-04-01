@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.kernel_api.flag_enum
@@ -14,9 +15,10 @@ numba_dpex.kernel_api.flag_enum
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

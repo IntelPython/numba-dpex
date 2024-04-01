@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.kernel_interface.arrayobj
@@ -15,9 +16,10 @@ numba_dpex.core.kernel_interface.arrayobj
 
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

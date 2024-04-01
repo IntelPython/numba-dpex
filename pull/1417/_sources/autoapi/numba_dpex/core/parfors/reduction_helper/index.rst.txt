@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.parfors.reduction_helper
@@ -7,9 +8,10 @@ numba_dpex.core.parfors.reduction_helper
 .. py:module:: numba_dpex.core.parfors.reduction_helper
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

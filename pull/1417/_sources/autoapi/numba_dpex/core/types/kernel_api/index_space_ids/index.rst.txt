@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.kernel_api.index_space_ids
@@ -12,9 +13,10 @@ numba_dpex.core.types.kernel_api.index_space_ids
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

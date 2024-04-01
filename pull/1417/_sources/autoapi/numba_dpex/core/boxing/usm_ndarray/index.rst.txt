@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.boxing.usm_ndarray
@@ -7,9 +8,10 @@ numba_dpex.core.boxing.usm_ndarray
 .. py:module:: numba_dpex.core.boxing.usm_ndarray
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.datamodel.models
@@ -7,9 +8,10 @@ numba_dpex.core.datamodel.models
 .. py:module:: numba_dpex.core.datamodel.models
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

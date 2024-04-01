@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.utils.kernel_flattened_args_builder
@@ -14,9 +15,10 @@ numba_dpex.core.utils.kernel_flattened_args_builder
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

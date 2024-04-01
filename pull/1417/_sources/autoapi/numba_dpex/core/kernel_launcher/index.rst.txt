@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.kernel_launcher
@@ -13,9 +14,10 @@ numba_dpex.core.kernel_launcher
 
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

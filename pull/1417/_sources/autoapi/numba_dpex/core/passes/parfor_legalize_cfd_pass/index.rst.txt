@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.passes.parfor_legalize_cfd_pass
@@ -7,9 +8,10 @@ numba_dpex.core.passes.parfor_legalize_cfd_pass
 .. py:module:: numba_dpex.core.passes.parfor_legalize_cfd_pass
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

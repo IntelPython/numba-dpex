@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.kernel_api.local_accessor
@@ -7,9 +8,10 @@ numba_dpex.core.types.kernel_api.local_accessor
 .. py:module:: numba_dpex.core.types.kernel_api.local_accessor
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto
