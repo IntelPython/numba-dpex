@@ -1,7 +1,0 @@
-
-numba_dpex.core.pipelines
-=========================
-
-.. py:module:: numba_dpex.core.pipelines
-
-
