@@ -26,7 +26,7 @@ Overview
 Classes
 -------
 
-.. py:class:: DpnpNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+.. py:class:: DpnpNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL.value)
 
    Bases: :py:obj:`numba_dpex.core.types.usm_ndarray_type.USMNdArray`
 

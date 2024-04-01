@@ -184,7 +184,7 @@ Classes
 
 
 
-.. py:class:: USMNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL)
+.. py:class:: USMNdArray(ndim, layout='C', dtype=None, usm_type='device', device=None, queue=None, readonly=False, name=None, aligned=True, addrspace=address_space.GLOBAL.value)
 
    Bases: :py:obj:`numba.core.types.npytypes.Array`
 
