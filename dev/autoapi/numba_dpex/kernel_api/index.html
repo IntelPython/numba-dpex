@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="numba_dpex.core.decorators" href="../core/decorators/index.html" /><link rel="prev" title="API Reference" href="../../index.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.kernel_api - numba-dpex documentation</title>
+        <title>numba_dpex.kernel_api - numba-dpex 0.22.1+235.g013be2e3f documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">numba-dpex 0.22.1+235.g013be2e3f documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.22.1+235.g013be2e3f documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,13 +203,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../useful_links.html">Useful links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../contribution_guide.html">Contribution Guide</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">List of examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../release-notes.html">Release Notes</a></li>
 </ul>
@@ -528,7 +523,7 @@ the AtomicRef.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">#</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
 <p>Represents a particular work-group within a parallel execution and
 provides API to extract various properties of the work-group. An instance
@@ -579,7 +574,7 @@ index is returned.</p>
 multi-dimensional index within an nd-range.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p><em>int</em></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If the <code class="docutils literal notranslate"><span class="pre">dim</span></code> argument is not in the (1..3) interval.</p>
@@ -597,7 +592,7 @@ multi-dimensional index within an nd-range.</p>
 nd-range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -615,7 +610,7 @@ index is returned.</p>
 <dd class="field-even"><p>The extent of group range for the specified dimension.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -630,7 +625,7 @@ index is returned.</p>
 nd-range kernel.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -649,7 +644,7 @@ index is returned.</p>
 dimension.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -664,7 +659,7 @@ dimension.</p>
 nd-range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -673,7 +668,7 @@ nd-range.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">#</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
 <p>Identifies the work-item in a parallel execution of a kernel launched with
 the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> index-space class.</p>
@@ -707,7 +702,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The linear id of the work item in the global range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -721,7 +716,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The id</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -741,7 +736,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The size</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -799,7 +794,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The global id</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -813,7 +808,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The global linear id.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -827,7 +822,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dd class="field-odd"><p>The local id</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -842,7 +837,7 @@ dimensions.</p>
 <dd class="field-odd"><p>The local linear id.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -856,7 +851,7 @@ dimensions.</p>
 <dd class="field-odd"><p>The size</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -870,7 +865,7 @@ dimensions.</p>
 <dd class="field-odd"><p>The size</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1137,7 +1132,7 @@ class.</p>
 <dd class="field-odd"><p>A <cite>Range</cite> object defining the index space.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range">Range</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1151,7 +1146,7 @@ class.</p>
 <dd class="field-odd"><p>A <cite>Range</cite> object to specify index space of a work group.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range">Range</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><em>Range</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1197,7 +1192,7 @@ the behavior of <cite>sycl::range</cite>.</p>
 <dd class="field-even"><p>The range of the dimension indexed by <cite>index</cite>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1213,7 +1208,7 @@ the range of the individual dimensions.</p>
 <dd class="field-odd"><p>The size of a range.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
+<dd class="field-even"><p><em>int</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1225,7 +1220,7 @@ the range of the individual dimensions.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.atomic_fence">
-<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">#</a></dt>
 <dd><p>Performs a memory fence operations across all work-items.</p>
 <p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function and
 controls the order of memory accesses (loads and stores) by individual
@@ -1248,7 +1243,7 @@ the memory ordering constraints apply.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.group_barrier">
-<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">numba_dpex.kernel_api.index_space_ids.Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryScope</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">#</a></dt>
 <dd><p>Performs a barrier operation across all work-items in a work-group.</p>
 <p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
 synchronizes work within a group of work-items. All the work-items
@@ -1282,7 +1277,7 @@ consistency operations that are performed by the barrier.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.call_kernel">
-<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">numba_dpex.kernel_api.ranges.NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">#</a></dt>
 <dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -1473,7 +1468,7 @@ Ndrange object</p></li>
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../_static/documentation_options.js?v=6e36004a"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.kernel_api.atomic_fence - numba-dpex documentation</title>
+        <title>numba_dpex.kernel_api.atomic_fence - numba-dpex 0.22.1+235.g013be2e3f documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">numba-dpex 0.22.1+235.g013be2e3f documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.22.1+235.g013be2e3f documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,13 +203,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../useful_links.html">Useful links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../contribution_guide.html">Contribution Guide</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">List of examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../release-notes.html">Release Notes</a></li>
 </ul>
@@ -266,7 +261,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.atomic_fence.atomic_fence">
-<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">numba_dpex.kernel_api.memory_enums.MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence.atomic_fence" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence.atomic_fence" title="Link to this definition">#</a></dt>
 <dd><p>Performs a memory fence operations across all work-items.</p>
 <p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function and
 controls the order of memory accesses (loads and stores) by individual
@@ -347,7 +342,7 @@ the memory ordering constraints apply.</p></li>
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../../_static/documentation_options.js?v=6e36004a"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>

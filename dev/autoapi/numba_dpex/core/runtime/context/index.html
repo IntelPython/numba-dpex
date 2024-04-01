@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.runtime.context - numba-dpex documentation</title>
+        <title>numba_dpex.core.runtime.context - numba-dpex 0.22.1+235.g013be2e3f documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex  documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.22.1+235.g013be2e3f documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex  documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.22.1+235.g013be2e3f documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,13 +203,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../experimental/index.html">Experimental Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../useful_links.html">Useful links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../contribution_guide.html">Contribution Guide</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../examples.html">List of examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../release-notes.html">Release Notes</a></li>
 </ul>
@@ -250,9 +245,9 @@
 <span id="numba-dpex-core-runtime-context"></span><h1>numba_dpex.core.runtime.context<a class="headerlink" href="#module-numba_dpex.core.runtime.context" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id15">
-<table class="summarytable docutils align-default" id="id15">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext" title="numba_dpex.core.runtime.context.DpexRTContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpexRTContext</span></code></a></p></td>
 <td><p>An object providing access to DPEXRT API in the lowering pass.</p></td>
@@ -269,9 +264,9 @@
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>An object providing access to DPEXRT API in the lowering pass.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id16">
-<table class="summarytable docutils align-default" id="id16">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc" title="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meminfo_alloc</span></code></a>(builder, size, usm_type, queue_ref)</p></td>
 <td><p>Wrapper to call <code class="xref py py-func docutils literal notranslate"><span class="pre">meminfo_alloc_unchecked()</span></code></p></td>
@@ -513,43 +508,45 @@ from a given filter string.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release">
 <span class="sig-name descname"><span class="pre">acquire_meminfo_and_schedule_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.acquire_meminfo_and_schedule_release" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.</p>
-<p>DPCTLSyclEventRef
-DPEXRT_nrt_acquire_meminfo_and_schedule_release(</p>
-<blockquote>
-<div><p>NRT_api_functions <a href="#id1"><span class="problematic" id="id2">*</span></a>nrt,
-DPCTLSyclQueueRef QRef,
-NRT_MemInfo <a href="#id3"><span class="problematic" id="id4">**</span></a>meminfo_array,
-size_t meminfo_array_size,
-DPCTLSyclEventRef <a href="#id5"><span class="problematic" id="id6">*</span></a>depERefs,
-size_t nDepERefs,
-int <a href="#id7"><span class="problematic" id="id8">*</span></a>status,</p>
-</div></blockquote>
-<p>);</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclEventRef</span>
+<span class="nf">DPEXRT_nrt_acquire_meminfo_and_schedule_release</span><span class="p">(</span>
+<span class="w">    </span><span class="n">NRT_api_functions</span><span class="w"> </span><span class="o">*</span><span class="n">nrt</span><span class="p">,</span>
+<span class="w">    </span><span class="n">DPCTLSyclQueueRef</span><span class="w"> </span><span class="n">QRef</span><span class="p">,</span>
+<span class="w">    </span><span class="n">NRT_MemInfo</span><span class="w"> </span><span class="o">**</span><span class="n">meminfo_array</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">meminfo_array_size</span><span class="p">,</span>
+<span class="w">    </span><span class="n">DPCTLSyclEventRef</span><span class="w"> </span><span class="o">*</span><span class="n">depERefs</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nDepERefs</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">status</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel">
 <span class="sig-name descname"><span class="pre">build_or_get_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.build_or_get_kernel" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call build_or_get_kernel.</p>
-<p>DPCTLSyclKernelRef
-DPEXRT_build_or_get_kernel(</p>
-<blockquote>
-<div><p>const DPCTLSyclContextRef ctx,
-const DPCTLSyclDeviceRef dev,
-size_t il_hash,
-const char <a href="#id9"><span class="problematic" id="id10">*</span></a>il,
-size_t il_length,
-const char <a href="#id11"><span class="problematic" id="id12">*</span></a>compile_opts,
-const char <a href="#id13"><span class="problematic" id="id14">*</span></a>kernel_name,</p>
-</div></blockquote>
-<p>);</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">DPCTLSyclKernelRef</span>
+<span class="nf">DPEXRT_build_or_get_kernel</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">DPCTLSyclContextRef</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">DPCTLSyclDeviceRef</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">il_hash</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">il</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">il_length</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">compile_opts</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">kernel_name</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size">
 <span class="sig-name descname"><span class="pre">kernel_cache_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.kernel_cache_size" title="Link to this definition">#</a></dt>
 <dd><p>Inserts LLVM IR to call kernel_cache_size.</p>
-<p>size_t DPEXRT_kernel_cache_size();</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">size_t</span><span class="w"> </span><span class="nf">DPEXRT_kernel_cache_size</span><span class="p">();</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -633,7 +630,7 @@ const char <a href="#id13"><span class="problematic" id="id14">*</span></a>kerne
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=6e36004a"></script>
     <script src="../../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
