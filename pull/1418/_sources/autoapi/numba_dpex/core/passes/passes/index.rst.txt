@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.passes.passes
@@ -7,9 +8,10 @@ numba_dpex.core.passes.passes
 .. py:module:: numba_dpex.core.passes.passes
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

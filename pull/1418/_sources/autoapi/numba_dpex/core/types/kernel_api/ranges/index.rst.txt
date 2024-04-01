@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.kernel_api.ranges
@@ -7,9 +8,10 @@ numba_dpex.core.types.kernel_api.ranges
 .. py:module:: numba_dpex.core.types.kernel_api.ranges
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

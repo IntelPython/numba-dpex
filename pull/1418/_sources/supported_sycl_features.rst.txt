@@ -38,7 +38,8 @@ runtime API. Such features are provided by the ``dpctl`` package.
      -
    * - ``h_item``
      -
-     - Not supported
+     - Not supported. There is no corresponding API in numba-dpex for
+       ``group::parallel_for_work_item`` or ``parallel_for_work_group``.
    * - ``group``
      - :class:`numba_dpex.kernel_api.Group`
      -
@@ -99,7 +100,7 @@ runtime API. Such features are provided by the ``dpctl`` package.
      - Not supported
    * - ``atomic_ref``
      - :class:`numba_dpex.kernel_api.AtomicRef`
-     -
+     - Atomic references are supported for both global and local memory.
 
 .. list-table:: On-device memory allocation
    :widths: 25 25 50
@@ -113,10 +114,11 @@ runtime API. Such features are provided by the ``dpctl`` package.
      -
    * - ``private_memory``
      -
-     - Not directly supported. Refer to :class:`numba_dpex.kernel_api.PrivateArray`
-       for the closest analogue. However, ``PrivateArray`` does not come with
-       the explicit guaranteed use of private per-work-item memory provided by
-       SYCL*'s ``private_memory``.
+     - Not supported as there is no corresponding API in numba-dpex for
+       ``group::parallel_for_work_item`` or ``parallel_for_work_group``.
+
+       Allocating variables on a work-item's private memory can be done using
+       :class:`numba_dpex.kernel_api.PrivateMemory`.
    * - Constant memory
      -
      - SYCL 2020 no longer defines a constant memory region in the device memory

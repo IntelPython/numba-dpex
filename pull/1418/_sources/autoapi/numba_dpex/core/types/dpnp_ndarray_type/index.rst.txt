@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.dpnp_ndarray_type
@@ -7,9 +8,10 @@ numba_dpex.core.types.dpnp_ndarray_type
 .. py:module:: numba_dpex.core.types.dpnp_ndarray_type
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

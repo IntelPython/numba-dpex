@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.targets.dpjit_target
@@ -12,9 +13,10 @@ numba_dpex.core.targets.dpjit_target
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

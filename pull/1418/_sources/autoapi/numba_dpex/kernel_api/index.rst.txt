@@ -13,9 +13,10 @@ numba_dpex.kernel_api
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

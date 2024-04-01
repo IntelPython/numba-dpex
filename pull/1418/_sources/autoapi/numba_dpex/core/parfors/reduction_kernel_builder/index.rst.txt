@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.parfors.reduction_kernel_builder
@@ -7,9 +8,10 @@ numba_dpex.core.parfors.reduction_kernel_builder
 .. py:module:: numba_dpex.core.parfors.reduction_kernel_builder
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0

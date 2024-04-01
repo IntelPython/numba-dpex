@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.kernel_api.atomic_ref
@@ -13,9 +14,10 @@ numba_dpex.kernel_api.atomic_ref
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

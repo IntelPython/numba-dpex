@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.dpjit_dispatcher
@@ -7,9 +8,10 @@ numba_dpex.core.dpjit_dispatcher
 .. py:module:: numba_dpex.core.dpjit_dispatcher
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto

@@ -1,4 +1,5 @@
 
+
 :orphan:
 
 numba_dpex.core.types.dpctl_types
@@ -7,9 +8,10 @@ numba_dpex.core.types.dpctl_types
 .. py:module:: numba_dpex.core.types.dpctl_types
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto
