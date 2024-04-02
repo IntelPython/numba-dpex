@@ -5,7 +5,7 @@
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
-from numba_dpex.core.itanium_mangler import mangle_c
+from numba_dpex.core.utils.itanium_mangler import mangle_c
 
 # -----------------------------------------------------------------------------
 
