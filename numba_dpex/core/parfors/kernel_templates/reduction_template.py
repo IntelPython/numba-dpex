@@ -55,7 +55,7 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
 
         gufunc_txt = ""
         gufunc_txt += "def " + self._kernel_name
-        gufunc_txt += "(" + (", ".join(self._kernel_params)) + "):\n"
+        gufunc_txt += "(nd_item, " + (", ".join(self._kernel_params)) + "):\n"
         global_id_dim = 0
         for_loop_dim = self._parfor_dim
 
@@ -64,14 +64,17 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         else:
             global_id_dim = self._parfor_dim
 
+        gufunc_txt += "    group = nd_item.get_group()\n"
         for dim in range(global_id_dim):
             dstr = str(dim)
             gufunc_txt += (
-                f"    {self._ivar_names[dim]} = dpex.get_global_id({dstr})\n"
+                f"    {self._ivar_names[dim]} = nd_item.get_global_id({dstr})\n"
             )
-            gufunc_txt += f"    local_id{dim} = dpex.get_local_id({dstr})\n"
-            gufunc_txt += f"    local_size{dim} = dpex.get_local_size({dstr})\n"
-            gufunc_txt += f"    group_id{dim} = dpex.get_group_id({dstr})\n"
+            gufunc_txt += f"    local_id{dim} = nd_item.get_local_id({dstr})\n"
+            gufunc_txt += (
+                f"    local_size{dim} = group.get_local_range({dstr})\n"
+            )
+            gufunc_txt += f"    group_id{dim} = group.get_group_id({dstr})\n"
 
         # Allocate local_sums arrays for each reduction variable.
         for redvar in self._redvars:

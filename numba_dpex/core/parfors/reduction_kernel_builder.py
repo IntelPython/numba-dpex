@@ -20,6 +20,7 @@ from numba.core.ir_utils import (
 from numba.core.typing import signature
 
 from numba_dpex.core.types import DpctlSyclQueue
+from numba_dpex.core.types.kernel_api.index_space_ids import NdItemType
 
 from .kernel_builder import _print_body  # saved for debug
 from .kernel_builder import (
@@ -48,6 +49,7 @@ def create_reduction_main_kernel_for_parfor(
     """
 
     loc = parfor_node.init_block.loc
+    parfor_dim = len(parfor_node.loop_nests)
 
     for race in parfor_node.races:
         msg = (
@@ -84,7 +86,7 @@ def create_reduction_main_kernel_for_parfor(
         sentinel_name=sentinel_name,
         loop_ranges=loop_ranges,
         param_dict=reductionKernelVar.param_dict,
-        parfor_dim=len(parfor_node.loop_nests),
+        parfor_dim=parfor_dim,
         redvars=reductionKernelVar.parfor_redvars,
         parfor_args=reductionKernelVar.parfor_params,
         parfor_reddict=parfor_reddict,
@@ -136,6 +138,13 @@ def create_reduction_main_kernel_for_parfor(
     if not has_aliases:
         flags.noalias = True
 
+    # The first argument to a range kernel is a kernel_api.NdItem object. The
+    # ``NdItem`` object is used by the kernel_api.spirv backend to generate the
+    # correct SPIR-V indexing instructions. Since, the argument is not something
+    # available originally in the kernel_param_types, we add it at this point to
+    # make sure the kernel signature matches the actual generated code.
+    ty_item = NdItemType(parfor_dim)
+    kernel_param_types = (ty_item, *kernel_param_types)
     kernel_sig = signature(types.none, *kernel_param_types)
 
     # FIXME: A better design is required so that we do not have to create a
