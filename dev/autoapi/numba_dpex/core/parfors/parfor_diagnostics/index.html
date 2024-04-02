@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.boxing.ranges - numba-dpex 0.22.1+239.g0a21ec2c1 documentation</title>
+        <title>numba_dpex.core.parfors.parfor_diagnostics - numba-dpex 0.22.1+239.g0a21ec2c1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -241,56 +241,54 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.core.boxing.ranges">
-<span id="numba-dpex-core-boxing-ranges"></span><h1>numba_dpex.core.boxing.ranges<a class="headerlink" href="#module-numba_dpex.core.boxing.ranges" title="Link to this heading">#</a></h1>
+          <section id="module-numba_dpex.core.parfors.parfor_diagnostics">
+<span id="numba-dpex-core-parfors-parfor-diagnostics"></span><h1>numba_dpex.core.parfors.parfor_diagnostics<a class="headerlink" href="#module-numba_dpex.core.parfors.parfor_diagnostics" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.boxing.ranges.unbox_range" title="numba_dpex.core.boxing.ranges.unbox_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unbox_range</span></code></a>(typ, obj, c)</p></td>
-<td><p>Converts a Python Range object to numba-dpex’s native struct representation</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.boxing.ranges.unbox_ndrange" title="numba_dpex.core.boxing.ranges.unbox_ndrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unbox_ndrange</span></code></a>(typ, obj, c)</p></td>
-<td><p>Converts a Python Range object to numba-dpex’s native struct representation</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.boxing.ranges.box_range" title="numba_dpex.core.boxing.ranges.box_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">box_range</span></code></a>(typ, val, c)</p></td>
-<td><p>Convert a native range structure to a Range object.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.boxing.ranges.box_ndrange" title="numba_dpex.core.boxing.ranges.box_ndrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">box_ndrange</span></code></a>(typ, val, c)</p></td>
-<td><p>Convert a native range structure to a Range object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics</span></code></a></p></td>
+<td><p>Holds parfor diagnostic info, this is accumulated throughout the</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.boxing.ranges.unbox_range">
-<span class="sig-name descname"><span class="pre">unbox_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.boxing.ranges.unbox_range" title="Link to this definition">#</a></dt>
-<dd><p>Converts a Python Range object to numba-dpex’s native struct representation
-for RangeType.</p>
-</dd></dl>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ExtendedParforDiagnostics</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.parfors.parfor.ParforDiagnostics</span></code></p>
+<p>Holds parfor diagnostic info, this is accumulated throughout the
+PreParforPass and ParforPass, also in the closure inlining!</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a>(level)</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_auto_offloading</span></code></a>(lines)</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.boxing.ranges.unbox_ndrange">
-<span class="sig-name descname"><span class="pre">unbox_ndrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.boxing.ranges.unbox_ndrange" title="Link to this definition">#</a></dt>
-<dd><p>Converts a Python Range object to numba-dpex’s native struct representation
-for NdRangeType.</p>
-</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading">
+<span class="sig-name descname"><span class="pre">print_auto_offloading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.boxing.ranges.box_range">
-<span class="sig-name descname"><span class="pre">box_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.boxing.ranges.box_range" title="Link to this definition">#</a></dt>
-<dd><p>Convert a native range structure to a Range object.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.boxing.ranges.box_ndrange">
-<span class="sig-name descname"><span class="pre">box_ndrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.boxing.ranges.box_ndrange" title="Link to this definition">#</a></dt>
-<dd><p>Convert a native range structure to a Range object.</p>
 </dd></dl>
 
 </section>
@@ -336,13 +334,14 @@ for NdRangeType.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.boxing.ranges</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.core.parfors.parfor_diagnostics</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#functions">Functions</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.boxing.ranges.unbox_range"><code class="docutils literal notranslate"><span class="pre">unbox_range()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.boxing.ranges.unbox_ndrange"><code class="docutils literal notranslate"><span class="pre">unbox_ndrange()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.boxing.ranges.box_range"><code class="docutils literal notranslate"><span class="pre">box_range()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.boxing.ranges.box_ndrange"><code class="docutils literal notranslate"><span class="pre">box_ndrange()</span></code></a></li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics.dump()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics.print_auto_offloading()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

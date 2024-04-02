@@ -2,10 +2,10 @@
 
 :orphan:
 
-numba_dpex.core.itanium_mangler
-===============================
+numba_dpex.core.utils.itanium_mangler
+=====================================
 
-.. py:module:: numba_dpex.core.itanium_mangler
+.. py:module:: numba_dpex.core.utils.itanium_mangler
 
 .. autoapi-nested-parse::
 
@@ -49,29 +49,29 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`mangle_type_or_value <numba_dpex.core.itanium_mangler.mangle_type_or_value>`\ (typ)
+   * - :py:obj:`mangle_type_or_value <numba_dpex.core.utils.itanium_mangler.mangle_type_or_value>`\ (typ)
      - Mangle type parameter and arbitrary value.
-   * - :py:obj:`mangle_ext <numba_dpex.core.itanium_mangler.mangle_ext>`\ (ident, argtys, \*None, abi_tags)
+   * - :py:obj:`mangle_ext <numba_dpex.core.utils.itanium_mangler.mangle_ext>`\ (ident, argtys, \*None, abi_tags)
      - Mangle identifier with Numba type objects and abi-tags.
-   * - :py:obj:`mangle_abi_tag <numba_dpex.core.itanium_mangler.mangle_abi_tag>`\ (abi_tag)
+   * - :py:obj:`mangle_abi_tag <numba_dpex.core.utils.itanium_mangler.mangle_abi_tag>`\ (abi_tag)
      - \-
-   * - :py:obj:`mangle_identifier <numba_dpex.core.itanium_mangler.mangle_identifier>`\ (ident, template_params, \*None, abi_tags, uid)
+   * - :py:obj:`mangle_identifier <numba_dpex.core.utils.itanium_mangler.mangle_identifier>`\ (ident, template_params, \*None, abi_tags, uid)
      - Mangle the identifier with optional template parameters and abi_tags.
-   * - :py:obj:`mangle_type_c <numba_dpex.core.itanium_mangler.mangle_type_c>`\ (typ)
+   * - :py:obj:`mangle_type_c <numba_dpex.core.utils.itanium_mangler.mangle_type_c>`\ (typ)
      - Mangle C type name
-   * - :py:obj:`mangle_type_or_value_numba <numba_dpex.core.itanium_mangler.mangle_type_or_value_numba>`\ (typ)
+   * - :py:obj:`mangle_type_or_value_numba <numba_dpex.core.utils.itanium_mangler.mangle_type_or_value_numba>`\ (typ)
      - Mangle type parameter and arbitrary value.
-   * - :py:obj:`mangle_templated_ident <numba_dpex.core.itanium_mangler.mangle_templated_ident>`\ (identifier, parameters)
+   * - :py:obj:`mangle_templated_ident <numba_dpex.core.utils.itanium_mangler.mangle_templated_ident>`\ (identifier, parameters)
      - Mangle templated identifier.
-   * - :py:obj:`mangle_args_c <numba_dpex.core.itanium_mangler.mangle_args_c>`\ (argtys)
+   * - :py:obj:`mangle_args_c <numba_dpex.core.utils.itanium_mangler.mangle_args_c>`\ (argtys)
      - Mangle sequence of C type names
-   * - :py:obj:`mangle_args <numba_dpex.core.itanium_mangler.mangle_args>`\ (argtys)
+   * - :py:obj:`mangle_args <numba_dpex.core.utils.itanium_mangler.mangle_args>`\ (argtys)
      - Mangle sequence of Numba type objects and arbitrary values.
-   * - :py:obj:`mangle_c <numba_dpex.core.itanium_mangler.mangle_c>`\ (ident, argtys)
+   * - :py:obj:`mangle_c <numba_dpex.core.utils.itanium_mangler.mangle_c>`\ (ident, argtys)
      - Mangle identifier with C type names
-   * - :py:obj:`mangle <numba_dpex.core.itanium_mangler.mangle>`\ (ident, argtys, \*None, abi_tags, uid)
+   * - :py:obj:`mangle <numba_dpex.core.utils.itanium_mangler.mangle>`\ (ident, argtys, \*None, abi_tags, uid)
      - Mangle identifier with Numba type objects and abi-tags.
-   * - :py:obj:`prepend_namespace <numba_dpex.core.itanium_mangler.prepend_namespace>`\ (mangled, ns)
+   * - :py:obj:`prepend_namespace <numba_dpex.core.utils.itanium_mangler.prepend_namespace>`\ (mangled, ns)
      - Prepend namespace to mangled name.
 
 
@@ -80,15 +80,15 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`PREFIX <numba_dpex.core.itanium_mangler.PREFIX>`
+   * - :py:obj:`PREFIX <numba_dpex.core.utils.itanium_mangler.PREFIX>`
      - \-
-   * - :py:obj:`C2CODE <numba_dpex.core.itanium_mangler.C2CODE>`
+   * - :py:obj:`C2CODE <numba_dpex.core.utils.itanium_mangler.C2CODE>`
      - \-
-   * - :py:obj:`N2C <numba_dpex.core.itanium_mangler.N2C>`
+   * - :py:obj:`N2C <numba_dpex.core.utils.itanium_mangler.N2C>`
      - \-
-   * - :py:obj:`mangle_type <numba_dpex.core.itanium_mangler.mangle_type>`
+   * - :py:obj:`mangle_type <numba_dpex.core.utils.itanium_mangler.mangle_type>`
      - \-
-   * - :py:obj:`mangle_value <numba_dpex.core.itanium_mangler.mangle_value>`
+   * - :py:obj:`mangle_value <numba_dpex.core.utils.itanium_mangler.mangle_value>`
      - \-
 
 
