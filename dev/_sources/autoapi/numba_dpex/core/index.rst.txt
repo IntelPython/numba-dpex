@@ -13,7 +13,7 @@ Subpackages
 
    boxing/index.rst
    datamodel/index.rst
-   kernel_interface/index.rst
+   overloads/index.rst
    parfors/index.rst
    passes/index.rst
    pipelines/index.rst
