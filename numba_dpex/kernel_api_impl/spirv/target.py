@@ -13,7 +13,7 @@ from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba.core import cgutils, funcdesc
 from numba.core import types as nb_types
-from numba.core import typing, utils
+from numba.core import typing
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.target_extension import GPU, target_registry
@@ -24,6 +24,7 @@ from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
 from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.kernel_api.flag_enum import FlagEnum
+from numba_dpex.kernel_api_impl.spirv.arrayobj import populate_array
 from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 from numba_dpex.utils import address_space, calling_conv
 
@@ -37,9 +38,7 @@ LLVM_SPIRV_ARGS = 112
 
 class CompilationMode(IntEnum):
     """Flags used to determine how a function should be compiled by the
-    numba_dpex.experimental.dispatcher.KernelDispatcher. Note the functionality
-    will be merged into numba_dpex.core.kernel_interface.dispatcher in the
-    future.
+    numba_dpex.kernel_api_impl_spirv.dispatcher.KernelDispatcher.
 
         KERNEL :         Indicates that the function will be compiled into an
                          LLVM function that has ``spir_kernel`` calling
@@ -150,7 +149,7 @@ class SPIRVTargetContext(BaseContext):
 
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
         self._target_data = ll.create_target_data(
-            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
+            codegen.SPIR_DATA_LAYOUT[self.address_size]
         )
 
         # Override data model manager to SPIR model
@@ -419,10 +418,7 @@ class SPIRVTargetContext(BaseContext):
         """
         Populate array structure.
         """
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.core.kernel_interface import arrayobj
-
-        return arrayobj.populate_array(arr, **kwargs)
+        return populate_array(arr, **kwargs)
 
     def get_executable(self, func, fndesc, env):
         """Not implemented for SPIRVTargetContext"""

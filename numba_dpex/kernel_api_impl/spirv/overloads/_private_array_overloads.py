@@ -7,6 +7,9 @@ Implements the SPIR-V overloads for the kernel_api.PrivateArray class.
 """
 
 
+import operator
+from functools import reduce
+
 import llvmlite.ir as llvmir
 from llvmlite.ir.builder import IRBuilder
 from numba.core import cgutils, types
@@ -18,7 +21,7 @@ from numba.extending import type_callable
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.kernel_api import PrivateArray
 from numba_dpex.kernel_api_impl.spirv.arrayobj import (
-    make_spirv_generic_array_on_stack,
+    np_cfarray,
     require_literal,
 )
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTypingContext
@@ -74,9 +77,18 @@ def dpex_private_array_lower(
         fill_zeros = False
     ty_array = sig.return_type
 
-    ary = make_spirv_generic_array_on_stack(
-        context, builder, ty_array, ty_shape, shape
+    # Allocate data on stack
+    data = cgutils.alloca_once(
+        builder,
+        context.get_data_type(ty_array.dtype),
+        size=(
+            reduce(operator.mul, [s.literal_value for s in ty_shape])
+            if isinstance(ty_shape, types.BaseTuple)
+            else ty_shape.literal_value
+        ),
     )
+
+    ary = np_cfarray(context, builder, ty_array, ty_shape, shape, data)
 
     if fill_zeros:
         cgutils.memset(

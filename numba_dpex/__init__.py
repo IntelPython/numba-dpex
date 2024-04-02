@@ -84,7 +84,7 @@ import numba_dpex.core.targets.dpjit_target  # noqa E402
 import numba_dpex.core.types as types  # noqa E402
 from numba_dpex.core import boxing  # noqa E402
 from numba_dpex.core import config  # noqa E402
-from numba_dpex.core.kernel_interface import ranges_overloads  # noqa E402
+from numba_dpex.core.overloads import ranges_overloads  # noqa E402
 
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402

@@ -11,6 +11,7 @@ from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
+from numba.np.arrayobj import get_itemsize
 
 from numba_dpex import spirv_kernel_target
 from numba_dpex.core import config
@@ -403,9 +404,7 @@ def _make_array(
     aryty = Array(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
     ary = context.make_array(aryty)(context, builder)
 
-    targetdata = _get_target_data(context)
-    lldtype = context.get_data_type(dtype)
-    itemsize = lldtype.get_abi_size(targetdata)
+    itemsize = get_itemsize(context, aryty)
     # Compute strides
     rstrides = [itemsize]
     for i, lastsize in enumerate(reversed(shape[1:])):
@@ -424,7 +423,3 @@ def _make_array(
     )
 
     return ary._getvalue()
-
-
-def _get_target_data(context):
-    return ll.create_target_data(SPIR_DATA_LAYOUT[context.address_size])
