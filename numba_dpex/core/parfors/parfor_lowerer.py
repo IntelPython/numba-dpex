@@ -169,8 +169,24 @@ class ParforLowerImpl:
         queue_ref = kl_builder.get_queue(exec_queue=kernel_fn.queue)
 
         kernel_args = []
-        for arg in kernel_fn.kernel_args:
-            kernel_args.append(_getvar(lowerer, arg))
+        for i, arg in enumerate(kernel_fn.kernel_args):
+            if (
+                kernel_fn.local_accessors is not None
+                and arg in kernel_fn.local_accessors
+            ):
+                wg_size = lowerer.context.get_constant(
+                    types.intp, kernel_fn.work_group_size
+                )
+                la_shape = cgutils.pack_array(lowerer.builder, [wg_size])
+                arg_ty = kernel_fn.kernel_arg_types[i]
+                la = cgutils.create_struct_proxy(arg_ty)(
+                    lowerer.context,
+                    lowerer.builder,
+                )
+                la.shape = la_shape
+                kernel_args.append(la._getvalue())
+            else:
+                kernel_args.append(_getvar(lowerer, arg))
 
         kernel_ref_addr = kernel_fn.kernel.addressof_ref()
         kernel_ref = lowerer.builder.inttoptr(

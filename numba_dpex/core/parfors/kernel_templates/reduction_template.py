@@ -30,8 +30,8 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         parfor_args,
         parfor_reddict,
         redvars_dict,
+        local_accessors_dict,
         typemap,
-        work_group_size,
     ) -> None:
         self._kernel_name = kernel_name
         self._kernel_params = kernel_params
@@ -44,8 +44,8 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         self._parfor_args = parfor_args
         self._parfor_reddict = parfor_reddict
         self._redvars_dict = redvars_dict
+        self._local_accessors_dict = local_accessors_dict
         self._typemap = typemap
-        self._work_group_size = work_group_size
 
         self._kernel_txt = self._generate_kernel_stub_as_string()
         self._kernel_ir = self._generate_kernel_ir()
@@ -75,13 +75,6 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
                 f"    local_size{dim} = group.get_local_range({dstr})\n"
             )
             gufunc_txt += f"    group_id{dim} = group.get_group_id({dstr})\n"
-
-        # Allocate local_sums arrays for each reduction variable.
-        for redvar in self._redvars:
-            rtyp = str(self._typemap[redvar])
-            redvar = self._redvars_dict[redvar]
-            gufunc_txt += f"    local_sums_{redvar} = \
-                dpex.local.array({self._work_group_size}, dpnp.{rtyp})\n"
 
         for dim in range(global_id_dim, for_loop_dim):
             for indent in range(1 + (dim - global_id_dim)):
