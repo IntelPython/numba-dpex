@@ -36,7 +36,7 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.utils import kernel_launcher as kl
+from numba_dpex.core.utils import call_kernel_builder as kl
 from numba_dpex.kernel_api_impl.spirv import spirv_generator
 from numba_dpex.kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
 from numba_dpex.kernel_api_impl.spirv.target import (

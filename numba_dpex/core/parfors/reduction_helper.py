@@ -20,8 +20,8 @@ from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 from numba_dpex.core.datamodel.models import (
     dpex_data_model_manager as kernel_dmm,
 )
+from numba_dpex.core.utils.call_kernel_builder import KernelLaunchIRBuilder
 from numba_dpex.core.utils.cgutils_extra import get_llvm_type
-from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 from ..types.dpnp_ndarray_type import DpnpNdArray
