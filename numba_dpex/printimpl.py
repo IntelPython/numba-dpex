@@ -8,7 +8,7 @@ import llvmlite.ir as llvmir
 from numba.core import cgutils, types
 from numba.core.imputils import Registry
 
-from numba_dpex.utils import address_space
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 
 registry = Registry()
 lower = registry.lower
@@ -16,7 +16,7 @@ lower = registry.lower
 
 def declare_print(lmod):
     voidptrty = llvmir.PointerType(
-        llvmir.IntType(8), addrspace=address_space.GENERIC
+        llvmir.IntType(8), addrspace=address_space.GENERIC.value
     )
     printfty = llvmir.FunctionType(
         llvmir.IntType(32), [voidptrty], var_arg=True

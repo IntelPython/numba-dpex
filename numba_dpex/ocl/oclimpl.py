@@ -16,9 +16,9 @@ from numba.np.arrayobj import get_itemsize
 from numba_dpex import spirv_kernel_target
 from numba_dpex.core import config
 from numba_dpex.core.types import Array
+from numba_dpex.kernel_api import AddressSpace as address_space
 from numba_dpex.kernel_api_impl.spirv.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.ocl.atomics import atomic_helper
-from numba_dpex.utils import address_space
 
 from . import stubs
 from ._declare_function import _declare_function
@@ -301,7 +301,7 @@ def dpex_private_array_integer(context, builder, sig, args):
         shape=(length,),
         dtype=dtype,
         symbol_name="_dpex_pmem",
-        addrspace=address_space.PRIVATE,
+        addrspace=address_space.PRIVATE.value,
     )
 
 
@@ -316,7 +316,7 @@ def dpex_private_array_tuple(context, builder, sig, args):
         shape=shape,
         dtype=dtype,
         symbol_name="_dpex_pmem",
-        addrspace=address_space.PRIVATE,
+        addrspace=address_space.PRIVATE.value,
     )
 
 
@@ -330,7 +330,7 @@ def dpex_local_array_integer(context, builder, sig, args):
         shape=(length,),
         dtype=dtype,
         symbol_name="_dpex_lmem",
-        addrspace=address_space.LOCAL,
+        addrspace=address_space.LOCAL.value,
     )
 
 
@@ -345,7 +345,7 @@ def dpex_local_array_tuple(context, builder, sig, args):
         shape=shape,
         dtype=dtype,
         symbol_name="_dpex_lmem",
-        addrspace=address_space.LOCAL,
+        addrspace=address_space.LOCAL.value,
     )
 
 
@@ -358,7 +358,7 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
     lldtype = context.get_data_type(dtype)
     laryty = llvmir.ArrayType(lldtype, elemcount)
 
-    if addrspace == address_space.LOCAL:
+    if addrspace == address_space.LOCAL.value:
         lmod = builder.module
 
         # Create global variable in the requested address-space
@@ -374,7 +374,7 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
         if dtype not in types.number_domain:
             raise TypeError("unsupported type: %s" % dtype)
 
-    elif addrspace == address_space.PRIVATE:
+    elif addrspace == address_space.PRIVATE.value:
         gvmem = cgutils.alloca_once(builder, laryty, name=symbol_name)
     else:
         raise NotImplementedError("addrspace {addrspace}".format(**locals()))
@@ -397,7 +397,7 @@ def _make_array(
     dtype,
     shape,
     layout="C",
-    addrspace=address_space.GENERIC,
+    addrspace=address_space.GENERIC.value,
 ):
     ndim = len(shape)
     # Create array object

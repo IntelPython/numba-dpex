@@ -16,12 +16,12 @@ from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 from numba.core.cpu import CPUContext
 
-from numba_dpex import utils
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.kernel_api.local_accessor import (
     DpctlMDLocalAccessorType,
     LocalAccessorType,
 )
+from numba_dpex.core.utils import cgutils_extra as utils
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 

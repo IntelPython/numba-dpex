@@ -15,7 +15,7 @@ from numba.core.typing.templates import (
 
 import numba_dpex as dpex
 from numba_dpex.core.types import Array
-from numba_dpex.utils import address_space
+from numba_dpex.kernel_api import AddressSpace as address_space
 
 registry = Registry()
 intrinsic = registry.register
@@ -158,7 +158,7 @@ class OCL_local_array(CallableTemplate):
                     dtype=nb_dtype,
                     ndim=ndim,
                     layout="C",
-                    addrspace=address_space.LOCAL,
+                    addrspace=address_space.LOCAL.value,
                 )
 
         return typer
@@ -201,7 +201,7 @@ class OCL_private_array(CallableTemplate):
                     dtype=nb_dtype,
                     ndim=ndim,
                     layout="C",
-                    addrspace=address_space.PRIVATE,
+                    addrspace=address_space.PRIVATE.value,
                 )
 
         return typer

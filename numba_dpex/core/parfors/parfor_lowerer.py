@@ -20,7 +20,7 @@ from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
 )
-from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
+from numba_dpex.core.utils.call_kernel_builder import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 from ..exceptions import UnsupportedParforError

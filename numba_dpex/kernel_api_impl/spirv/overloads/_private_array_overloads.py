@@ -20,12 +20,12 @@ from numba.extending import type_callable
 
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.kernel_api import PrivateArray
+from numba_dpex.kernel_api.memory_enums import AddressSpace
 from numba_dpex.kernel_api_impl.spirv.arrayobj import (
     np_cfarray,
     require_literal,
 )
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTypingContext
-from numba_dpex.utils import address_space as AddressSpace
 
 from ._registry import lower
 
@@ -50,7 +50,7 @@ def type_interval(context):  # pylint: disable=unused-argument
             dtype=_ty_parse_dtype(dtype),
             ndim=_ty_parse_shape(shape),
             layout="C",
-            addrspace=AddressSpace.PRIVATE,
+            addrspace=AddressSpace.PRIVATE.value,
         )
 
     return typer
