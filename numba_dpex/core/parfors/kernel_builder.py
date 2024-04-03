@@ -44,6 +44,8 @@ class ParforKernel:
         kernel_args,
         kernel_arg_types,
         queue: dpctl.SyclQueue,
+        local_accessors=None,
+        work_group_size=None,
     ):
         self.name = name
         self.kernel = kernel
@@ -51,6 +53,8 @@ class ParforKernel:
         self.kernel_args = kernel_args
         self.kernel_arg_types = kernel_arg_types
         self.queue = queue
+        self.local_accessors = local_accessors
+        self.work_group_size = work_group_size
 
 
 def _print_block(block):

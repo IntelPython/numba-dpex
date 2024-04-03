@@ -30,8 +30,8 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         parfor_args,
         parfor_reddict,
         redvars_dict,
+        local_accessors_dict,
         typemap,
-        work_group_size,
     ) -> None:
         self._kernel_name = kernel_name
         self._kernel_params = kernel_params
@@ -44,8 +44,8 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         self._parfor_args = parfor_args
         self._parfor_reddict = parfor_reddict
         self._redvars_dict = redvars_dict
+        self._local_accessors_dict = local_accessors_dict
         self._typemap = typemap
-        self._work_group_size = work_group_size
 
         self._kernel_txt = self._generate_kernel_stub_as_string()
         self._kernel_ir = self._generate_kernel_ir()
@@ -55,7 +55,7 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
 
         gufunc_txt = ""
         gufunc_txt += "def " + self._kernel_name
-        gufunc_txt += "(" + (", ".join(self._kernel_params)) + "):\n"
+        gufunc_txt += "(nd_item, " + (", ".join(self._kernel_params)) + "):\n"
         global_id_dim = 0
         for_loop_dim = self._parfor_dim
 
@@ -64,21 +64,17 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         else:
             global_id_dim = self._parfor_dim
 
+        gufunc_txt += "    group = nd_item.get_group()\n"
         for dim in range(global_id_dim):
             dstr = str(dim)
             gufunc_txt += (
-                f"    {self._ivar_names[dim]} = dpex.get_global_id({dstr})\n"
+                f"    {self._ivar_names[dim]} = nd_item.get_global_id({dstr})\n"
             )
-            gufunc_txt += f"    local_id{dim} = dpex.get_local_id({dstr})\n"
-            gufunc_txt += f"    local_size{dim} = dpex.get_local_size({dstr})\n"
-            gufunc_txt += f"    group_id{dim} = dpex.get_group_id({dstr})\n"
-
-        # Allocate local_sums arrays for each reduction variable.
-        for redvar in self._redvars:
-            rtyp = str(self._typemap[redvar])
-            redvar = self._redvars_dict[redvar]
-            gufunc_txt += f"    local_sums_{redvar} = \
-                dpex.local.array({self._work_group_size}, dpnp.{rtyp})\n"
+            gufunc_txt += f"    local_id{dim} = nd_item.get_local_id({dstr})\n"
+            gufunc_txt += (
+                f"    local_size{dim} = group.get_local_range({dstr})\n"
+            )
+            gufunc_txt += f"    group_id{dim} = group.get_group_id({dstr})\n"
 
         for dim in range(global_id_dim, for_loop_dim):
             for indent in range(1 + (dim - global_id_dim)):
@@ -282,10 +278,13 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
         )
 
         for redvar in self._redvars:
+            rtyp = str(self._typemap[redvar])
             legal_redvar = self._redvars_dict[redvar]
             gufunc_txt += "        "
             gufunc_txt += legal_redvar + " = "
-            gufunc_txt += f"{self._parfor_reddict[redvar].init_val}\n"
+            gufunc_txt += (
+                f"dpnp.{rtyp}({self._parfor_reddict[redvar].init_val})\n"
+            )
 
         gufunc_txt += (
             "        "
@@ -294,32 +293,17 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
             + f"{self._global_size_var_name[0]} + j\n"
         )
 
-        for redvar in self._redvars:
-            rtyp = str(self._typemap[redvar])
-            redvar = self._redvars_dict[redvar]
-            gufunc_txt += (
-                "        "
-                + f"local_sums_{redvar} = "
-                + f"dpex.local.array(1, dpnp.{rtyp})\n"
-            )
-
         gufunc_txt += "        " + self._sentinel_name + " = 0\n"
-
-        for i, redvar in enumerate(self._redvars):
-            legal_redvar = self._redvars_dict[redvar]
-            gufunc_txt += (
-                "        " + f"local_sums_{legal_redvar}[0] = {legal_redvar}\n"
-            )
 
         for i, redvar in enumerate(self._redvars):
             legal_redvar = self._redvars_dict[redvar]
             redop = self._parfor_reddict[redvar].redop
             if redop == operator.iadd:
                 gufunc_txt += f"        {self._final_sum_var_name[i]}[0] +=  \
-                    local_sums_{legal_redvar}[0]\n"
+                    {legal_redvar}\n"
             elif redop == operator.imul:
                 gufunc_txt += f"        {self._final_sum_var_name[i]}[0] *=  \
-                    local_sums_{legal_redvar}[0]\n"
+                    {legal_redvar}\n"
             else:
                 raise NotImplementedError
 
