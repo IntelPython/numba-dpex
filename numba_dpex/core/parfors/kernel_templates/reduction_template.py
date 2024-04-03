@@ -8,7 +8,7 @@ import sys
 import dpnp
 from numba.core import compiler
 
-import numba_dpex as dpex
+import numba_dpex.kernel_api as kapi
 
 from .kernel_template_iface import KernelTemplateInterface
 
@@ -112,7 +112,7 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         gufunc_txt += (
             "    stride0 = local_size0 // 2\n"
             + "    while stride0 > 0:\n"
-            + "        dpex.barrier(dpex.LOCAL_MEM_FENCE)\n"
+            + "        kapi.group_barrier(group)\n"
             + "        if local_id0 < stride0:\n"
         )
 
@@ -158,7 +158,7 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         Returns: The Numba functionIR object for the compiled kernel_txt string.
 
         """
-        globls = {"dpnp": dpnp, "dpex": dpex}
+        globls = {"dpnp": dpnp, "kapi": kapi}
         locls = {}
         exec(self._kernel_txt, globls, locls)
         kernel_fn = locls[self._kernel_name]
@@ -317,7 +317,7 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
 
         """
 
-        globls = {"dpnp": dpnp, "dpex": dpex}
+        globls = {"dpnp": dpnp, "kapi": kapi}
         locls = {}
         exec(self._kernel_txt, globls, locls)
         kernel_fn = locls[self._kernel_name]
