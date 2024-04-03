@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.parfors.parfor_diagnostics - numba-dpex 0.22.1+248.g5fb609301 documentation</title>
+        <title>numba_dpex.core.utils.cgutils_extra - numba-dpex 0.22.1+248.g5fb609301 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -241,16 +241,38 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-numba_dpex.core.parfors.parfor_diagnostics">
-<span id="numba-dpex-core-parfors-parfor-diagnostics"></span><h1>numba_dpex.core.parfors.parfor_diagnostics<a class="headerlink" href="#module-numba_dpex.core.parfors.parfor_diagnostics" title="Link to this heading">#</a></h1>
+          <section id="module-numba_dpex.core.utils.cgutils_extra">
+<span id="numba-dpex-core-utils-cgutils-extra"></span><h1>numba_dpex.core.utils.cgutils_extra<a class="headerlink" href="#module-numba_dpex.core.utils.cgutils_extra" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics</span></code></a></p></td>
-<td><p>Holds parfor diagnostic info, this is accumulated throughout the</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LLVMTypes</span></code></a></p></td>
+<td><p>A helper class to get LLVM Values for integer C types.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_type</span></code></a>(context, type)</p></td>
+<td><p>Returns the LLVM Value corresponding to a Numba type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_ptr_type</span></code></a>(type)</p></td>
+<td><p>Returns an LLVM pointer type for a give LLVM type object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr" title="numba_dpex.core.utils.cgutils_extra.create_null_ptr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_null_ptr</span></code></a>(builder, context)</p></td>
+<td><p>Allocates a new LLVM Value storing a <code class="docutils literal notranslate"><span class="pre">void*</span></code> and returns the Value to</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_zero" title="numba_dpex.core.utils.cgutils_extra.get_zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zero</span></code></a>(context)</p></td>
+<td><p>Returns an LLVM Constant storing a 64 bit representation for zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_one" title="numba_dpex.core.utils.cgutils_extra.get_one"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_one</span></code></a>(context)</p></td>
+<td><p>Returns an LLVM Constant storing a 64 bit representation for one.</p></td>
 </tr>
 </tbody>
 </table>
@@ -259,36 +281,156 @@
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ExtendedParforDiagnostics</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.parfors.parfor.ParforDiagnostics</span></code></p>
-<p>Holds parfor diagnostic info, this is accumulated throughout the
-PreParforPass and ParforPass, also in the closure inlining!</p>
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LLVMTypes</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes" title="Link to this definition">#</a></dt>
+<dd><p>A helper class to get LLVM Values for integer C types.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
-<table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a>(level)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">byte_t</span></code></a></p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading" title="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_auto_offloading</span></code></a>(lines)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">byte_ptr_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_ptr_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_ptr_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">byte_ptr_ptr_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int32_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_ptr_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_ptr_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int32_ptr_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int64_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_ptr_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_ptr_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int64_ptr_t</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.void_t" title="numba_dpex.core.utils.cgutils_extra.LLVMTypes.void_t"><code class="xref py py-obj docutils literal notranslate"><span class="pre">void_t</span></code></a></p></td>
 <td><p>-</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump">
-<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump" title="Link to this definition">#</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_t">
+<span class="sig-name descname"><span class="pre">byte_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_t" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading">
-<span class="sig-name descname"><span class="pre">print_auto_offloading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading" title="Link to this definition">#</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_t">
+<span class="sig-name descname"><span class="pre">byte_ptr_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_t" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_ptr_t">
+<span class="sig-name descname"><span class="pre">byte_ptr_ptr_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_ptr_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_t">
+<span class="sig-name descname"><span class="pre">int32_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_ptr_t">
+<span class="sig-name descname"><span class="pre">int32_ptr_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_ptr_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_t">
+<span class="sig-name descname"><span class="pre">int64_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_ptr_t">
+<span class="sig-name descname"><span class="pre">int64_ptr_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_ptr_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.LLVMTypes.void_t">
+<span class="sig-name descname"><span class="pre">void_t</span></span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.void_t" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.get_llvm_type">
+<span class="sig-name descname"><span class="pre">get_llvm_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type" title="Link to this definition">#</a></dt>
+<dd><p>Returns the LLVM Value corresponding to a Numba type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – The LLVM context or the execution state of the current IR</p></li>
+<li><p><strong>generator.</strong> – </p></li>
+<li><p><strong>type</strong> – A Numba type object.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns: An Python object wrapping an LLVM Value corresponding to the</dt><dd><p>specified Numba type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type">
+<span class="sig-name descname"><span class="pre">get_llvm_ptr_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type" title="Link to this definition">#</a></dt>
+<dd><p>Returns an LLVM pointer type for a give LLVM type object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>type</strong> – An LLVM type for which we need the corresponding pointer type.</p>
+</dd>
+</dl>
+<p>Returns: An LLVM pointer type object corresponding to the input LLVM type.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.create_null_ptr">
+<span class="sig-name descname"><span class="pre">create_null_ptr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr" title="Link to this definition">#</a></dt>
+<dd><p>Allocates a new LLVM Value storing a <code class="docutils literal notranslate"><span class="pre">void*</span></code> and returns the Value to
+caller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>builder</strong> – The LLVM IR builder to be used for code generation.</p></li>
+<li><p><strong>context</strong> – The LLVM IR builder context.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: An LLVM value storing a null pointer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.get_zero">
+<span class="sig-name descname"><span class="pre">get_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.get_zero" title="Link to this definition">#</a></dt>
+<dd><p>Returns an LLVM Constant storing a 64 bit representation for zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The LLVM IR builder context.</p>
+</dd>
+</dl>
+<p>Returns: An LLVM Constant Value storing zero.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.get_one">
+<span class="sig-name descname"><span class="pre">get_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.get_one" title="Link to this definition">#</a></dt>
+<dd><p>Returns an LLVM Constant storing a 64 bit representation for one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The LLVM IR builder context.</p>
+</dd>
+</dl>
+<p>Returns: An LLVM Constant Value storing one.</p>
 </dd></dl>
 
 </section>
@@ -334,14 +476,28 @@ PreParforPass and ParforPass, also in the closure inlining!</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.parfors.parfor_diagnostics</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.core.utils.cgutils_extra</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics.dump()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading"><code class="docutils literal notranslate"><span class="pre">ExtendedParforDiagnostics.print_auto_offloading()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes"><code class="docutils literal notranslate"><span class="pre">LLVMTypes</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_ptr_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.byte_ptr_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_ptr_ptr_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int32_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int32_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int32_ptr_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int64_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.int64_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int64_ptr_t</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.LLVMTypes.void_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.void_t</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_type()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_ptr_type()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr"><code class="docutils literal notranslate"><span class="pre">create_null_ptr()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_zero"><code class="docutils literal notranslate"><span class="pre">get_zero()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_one"><code class="docutils literal notranslate"><span class="pre">get_one()</span></code></a></li>
 </ul>
 </li>
 </ul>
