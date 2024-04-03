@@ -293,6 +293,7 @@ class SPIRVTargetContext(BaseContext):
         """
         # pylint: disable=import-outside-toplevel
         from numba_dpex import printimpl
+        from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
         from numba_dpex.ocl import mathimpl, oclimpl
 
@@ -300,6 +301,7 @@ class SPIRVTargetContext(BaseContext):
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(dpnpimpl.registry.functions)
         self.install_registry(printimpl.registry)
+        self.install_registry(dpctlimpl.registry)
         self.install_registry(spirv_registry)
         # Replace dpnp math functions with their OpenCL versions.
         self.replace_dpnp_ufunc_with_ocl_intrinsics()
