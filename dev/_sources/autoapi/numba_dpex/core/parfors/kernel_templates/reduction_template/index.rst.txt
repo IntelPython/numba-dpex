@@ -28,7 +28,7 @@ Overview
 Classes
 -------
 
-.. py:class:: TreeReduceIntermediateKernelTemplate(kernel_name, kernel_params, ivar_names, sentinel_name, loop_ranges, param_dict, parfor_dim, redvars, parfor_args, parfor_reddict, redvars_dict, typemap, work_group_size)
+.. py:class:: TreeReduceIntermediateKernelTemplate(kernel_name, kernel_params, ivar_names, sentinel_name, loop_ranges, param_dict, parfor_dim, redvars, parfor_args, parfor_reddict, redvars_dict, local_accessors_dict, typemap)
 
    Bases: :py:obj:`numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface`
 

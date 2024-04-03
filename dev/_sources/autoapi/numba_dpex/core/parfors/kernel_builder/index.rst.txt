@@ -36,7 +36,7 @@ Overview
 Classes
 -------
 
-.. py:class:: ParforKernel(name, kernel, signature, kernel_args, kernel_arg_types, queue: dpctl.SyclQueue)
+.. py:class:: ParforKernel(name, kernel, signature, kernel_args, kernel_arg_types, queue: dpctl.SyclQueue, local_accessors=None, work_group_size=None)
 
 
 

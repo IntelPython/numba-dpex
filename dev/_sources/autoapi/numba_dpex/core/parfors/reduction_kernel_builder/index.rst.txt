@@ -28,7 +28,7 @@ Overview
 
 Functions
 ---------
-.. py:function:: create_reduction_main_kernel_for_parfor(loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict=None)
+.. py:function:: create_reduction_main_kernel_for_parfor(loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar: numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables, parfor_reddict=None)
 
    Creates a numba_dpex.kernel function for reduction main kernel.
 
