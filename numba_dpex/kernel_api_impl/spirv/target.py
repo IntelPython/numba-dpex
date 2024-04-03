@@ -25,8 +25,9 @@ from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
+from numba_dpex.kernel_api_impl.spirv import printimpl
 from numba_dpex.kernel_api_impl.spirv.arrayobj import populate_array
-from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
+from numba_dpex.kernel_api_impl.spirv.math import mathdecl, mathimpl
 
 from . import codegen
 from .overloads._registry import registry as spirv_registry
@@ -100,9 +101,7 @@ class SPIRVTypingContext(typing.BaseContext):
         return retty
 
     def load_additional_registries(self):
-        """Register the OpenCL API and math and other functions."""
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.ocl import mathdecl
+        """Register the OpenCL math functions along with dpnp math functions."""
 
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
@@ -273,11 +272,12 @@ class SPIRVTargetContext(BaseContext):
         for name, ufunc in ufuncs:
             for sig in self.ufunc_db[ufunc].keys():
                 if (
-                    sig in sig_mapper
-                    and (name, sig_mapper[sig]) in lower_ocl_impl
+                    sig in mathimpl.sig_mapper
+                    and (name, mathimpl.sig_mapper[sig])
+                    in mathimpl.lower_ocl_impl
                 ):
-                    self.ufunc_db[ufunc][sig] = lower_ocl_impl[
-                        (name, sig_mapper[sig])
+                    self.ufunc_db[ufunc][sig] = mathimpl.lower_ocl_impl[
+                        (name, mathimpl.sig_mapper[sig])
                     ]
 
     def load_additional_registries(self):
@@ -293,8 +293,6 @@ class SPIRVTargetContext(BaseContext):
         # pylint: disable=import-outside-toplevel
         from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
-        from numba_dpex.kernel_api_impl.spirv import printimpl
-        from numba_dpex.ocl import mathimpl
 
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(dpnpimpl.registry.functions)

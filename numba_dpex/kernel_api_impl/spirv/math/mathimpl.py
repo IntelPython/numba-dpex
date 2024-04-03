@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+""" Codegen implementation for supported math functions in SPIRVKernelTarget.
+"""
+
 import math
 import warnings
 
@@ -35,10 +38,8 @@ sig_mapper = {
     "dd->d": _binary_d_dd,
     "fi->f": _binary_f_fi,
     "fl->f": _binary_f_fl,
-    "ff->f": _binary_f_ff,
     "di->d": _binary_d_di,
     "dl->d": _binary_d_dl,
-    "dd->d": _binary_d_dd,
 }
 
 function_descriptors = {
@@ -147,28 +148,33 @@ _supported = [
 ]
 
 
-lower_ocl_impl = dict()
+lower_ocl_impl = {}
 
 
 def function_name_to_supported_decl(name, sig):
+    """Maps a math function to a specific implementation for given signature."""
+    key = None
     try:
         # only symbols present in the math module
         key = getattr(math, name)
     except AttributeError:
         try:
             key = getattr(numpy, name)
-        except:
-            return None
+        except AttributeError:
+            warnings.warn(
+                f"No declaration for function {name} for signature {sig} "
+                "in math or NumPy modules"
+            )
+    if key is not None:
+        fn = _mk_fn_decl(name, sig)
+        lower_ocl_impl[(name, sig)] = lower(key, *sig.args)(fn)
 
-    fn = _mk_fn_decl(name, sig)
-    lower_ocl_impl[(name, sig)] = lower(key, *sig.args)(fn)
 
-
-for name in _supported:
-    sigs = function_descriptors.get(name)
+for supported_fn_name in _supported:
+    sigs = function_descriptors.get(supported_fn_name)
     if sigs is None:
-        warnings.warn("OCL - failed to register '{0}'".format(name))
+        warnings.warn(f"OCL - failed to register '{supported_fn_name}'")
         continue
 
-    for sig in sigs:
-        function_name_to_supported_decl(name, sig)
+    for supported_sig in sigs:
+        function_name_to_supported_decl(supported_fn_name, supported_sig)
