@@ -102,9 +102,8 @@ class SPIRVTypingContext(typing.BaseContext):
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
         # pylint: disable=import-outside-toplevel
-        from numba_dpex.ocl import mathdecl, ocldecl
+        from numba_dpex.ocl import mathdecl
 
-        self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
         self.install_registry(dpnpdecl.registry)
@@ -295,9 +294,8 @@ class SPIRVTargetContext(BaseContext):
         from numba_dpex import printimpl
         from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
-        from numba_dpex.ocl import mathimpl, oclimpl
+        from numba_dpex.ocl import mathimpl
 
-        self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(dpnpimpl.registry.functions)
         self.install_registry(printimpl.registry)
