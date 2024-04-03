@@ -14,6 +14,7 @@ from numba.core.imputils import Registry
 from numba.core.target_extension import CPU, target_registry
 
 from numba_dpex.core.datamodel.models import _init_dpjit_data_model_manager
+from numba_dpex.dpctl_iface import dpctlimpl
 from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 
@@ -69,6 +70,7 @@ class DpexTargetContext(CPUContext):
         Load dpjit-specific registries.
         """
         self.install_registry(dpex_function_registry)
+        self.install_registry(dpctlimpl.registry)
 
         # loading CPU specific registries
         super().load_additional_registries()

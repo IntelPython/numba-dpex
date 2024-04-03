@@ -2,25 +2,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import operator
-
 import dpnp
 from numba import errors, types
-from numba.core.imputils import impl_ret_borrowed, lower_builtin
 from numba.core.types import scalars
 from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
-from numba.extending import overload, overload_attribute
-from numba.np.arrayobj import _getitem_array_generic as np_getitem_array_generic
-from numba.np.arrayobj import make_array
+from numba.extending import overload
 from numba.np.numpy_support import is_nonelike
 
 from numba_dpex.core.types import DpnpNdArray
-from numba_dpex.kernel_api_impl.spirv.arrayobj import (
-    _getitem_array_generic as kernel_getitem_array_generic,
-)
-from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ._intrinsic import (
     impl_dpnp_empty,
@@ -31,7 +22,6 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
-    ol_dpnp_nd_array_sycl_queue,
 )
 
 # can't import name because of the circular import
@@ -1067,65 +1057,3 @@ def ol_dpnp_full_like(
             "Cannot parse input types to "
             + f"function dpnp.full_like({x1}, {fill_value}, {dtype}, ...)."
         )
-
-
-# TODO: target specific
-@lower_builtin(operator.getitem, DpnpNdArray, types.Integer)
-@lower_builtin(operator.getitem, DpnpNdArray, types.SliceType)
-def getitem_arraynd_intp(context, builder, sig, args):
-    """
-    Overrding the numba.np.arrayobj.getitem_arraynd_intp to support dpnp.ndarray
-
-    The data model for numba.types.Array and numba_dpex.types.DpnpNdArray
-    are different. DpnpNdArray has an extra attribute to store a sycl::queue
-    pointer. For that reason, np_getitem_arraynd_intp needs to be overriden so
-    that when returning a view of a dpnp.ndarray the sycl::queue pointer
-    member in the LLVM IR struct gets properly updated.
-    """
-    getitem_call_in_kernel = isinstance(context, SPIRVTargetContext)
-    _getitem_array_generic = np_getitem_array_generic
-
-    if getitem_call_in_kernel:
-        _getitem_array_generic = kernel_getitem_array_generic
-
-    aryty, idxty = sig.args
-    ary, idx = args
-
-    assert aryty.ndim >= 1
-    ary = make_array(aryty)(context, builder, ary)
-
-    res = _getitem_array_generic(
-        context, builder, sig.return_type, aryty, ary, (idxty,), (idx,)
-    )
-    ret = impl_ret_borrowed(context, builder, sig.return_type, res)
-
-    if isinstance(sig.return_type, DpnpNdArray) and not getitem_call_in_kernel:
-        array_val = args[0]
-        array_ty = sig.args[0]
-        sycl_queue_attr_pos = context.data_model_manager.lookup(
-            array_ty
-        ).get_field_position("sycl_queue")
-        sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
-        ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
-
-    return ret
-
-
-@overload_attribute(DpnpNdArray, "sycl_queue", target=DPEX_TARGET_NAME)
-def dpnp_nd_array_sycl_queue(arr):
-    """Returns :class:`dpctl.SyclQueue` object associated with USM data.
-
-    This is an overloaded attribute implementation for dpnp.sycl_queue.
-
-    Args:
-        arr (numba_dpex.core.types.DpnpNdArray): Input array from which to
-            take sycl_queue.
-
-    Returns:
-        function: Local function `ol_dpnp_nd_array_sycl_queue()`.
-    """
-
-    def get(arr):
-        return ol_dpnp_nd_array_sycl_queue(arr)
-
-    return get
