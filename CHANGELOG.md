@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.23.0] - 2024-04-XX
+
+### Fixed
+* Array alignment problem for stack arrays allocated for kernel arguments. (#1357)
+* Issue #892, #906 caused by incorrect code generation for indexing (#1377)
+* Fix `KernelHasReturnValueError` inside `KernelDispatcher`. (#1394)
+* Issue #1390: broken support for slicing into `dpctl.tensor.usm_ndarray` in kernels (#1425)
+
+### Added
+* A new overloaded `dimensions` attribute for all index-space id classes (#1359)
+* Support for `AtomicRef` creation using multi-dimensional arrays (#1367)
+* Support for linearized indexing functions inside a JIT compiled kernel (#1368)
+* Improved documentation: overview (#1341), kernel programming guide (#1388), API docs (#1414), configs options (#1415), comparison with SYCL API (#1417)
+* New `PrivateArray` class in `kernel_api` to replace `dpex.private.array` (#1370, #1377)
+* Support for libsycinterface::DPCTLKernelArgType enum for specifying type of kernel args instead of hard coding (#1382)
+* New indexing unit tests for kernel_api simulator and JIT compiled modes (#1378)
+* New unit tests to verify all `kernel_api` features usable inside `device_func` (#1391)
+* A `sycl::local_accessor`-like API (`kernel_api.LocalAccessor`) for numba-dpex kernel (#1331)
+* Specialization support for `device_func` decorator (#1398)
+* Support for all `kernel_api` functions inside the `numba_dpex.kernel` decorator. (#1400)
+
+### Changed
+* Default inline threshold value set to `2` from `None`. (#1385)
+* Port parfor kernel templates to `kernel_api` (#1416), (#1424)
+* Minimum required dpctl version is now 0.16.1
+* Minimum required numba version is now 0.59.0
+
+### Removed
+* OpenCL-like kernel API functions (#1420)
+* `func` decorator (replaced by `device_func`) (#1400)
+* `numba_dpex.experimental.kernel` and `numba_dpex.experimental.device_func` (#1400)
+
 ## [0.22.0] - 2024-02-19
 
 ### Fixed
@@ -53,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Support for Numba 0.57 (#1307)
 
 ### Deprecated
-* OpenCL-like kernel API fucntions in numba_dpex.ocldecl module
+* OpenCL-like kernel API functions in numba_dpex.ocldecl module
 
 ## [0.21.4] - 2023-10-12
 
