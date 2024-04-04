@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+""" Codegen implementation for supported math functions in SPIRVKernelTarget.
+"""
+
 import math
 import warnings
 
@@ -9,14 +12,10 @@ import numpy
 from numba.core import types
 from numba.core.imputils import Registry
 
-from numba_dpex.core.utils.itanium_mangler import mangle
-
-from ._declare_function import _declare_function
+from numba_dpex.core.utils import cgutils_extra, itanium_mangler
 
 registry = Registry()
 lower = registry.lower
-
-# -----------------------------------------------------------------------------
 
 _unary_b_f = types.int32(types.float32)
 _unary_b_d = types.int32(types.float64)
@@ -39,10 +38,8 @@ sig_mapper = {
     "dd->d": _binary_d_dd,
     "fi->f": _binary_f_fi,
     "fl->f": _binary_f_fl,
-    "ff->f": _binary_f_ff,
     "di->d": _binary_d_di,
     "dl->d": _binary_d_dl,
-    "dd->d": _binary_d_dd,
 }
 
 function_descriptors = {
@@ -88,7 +85,7 @@ function_descriptors = {
 
 
 # some functions may be named differently by the underlying math
-# library as oposed to the Python name.
+# library as opposed to the Python name.
 _lib_counterpart = {"gamma": "tgamma"}
 
 
@@ -96,8 +93,13 @@ def _mk_fn_decl(name, decl_sig):
     sym = _lib_counterpart.get(name, name)
 
     def core(context, builder, sig, args):
-        fn = _declare_function(
-            context, builder, sym, decl_sig, decl_sig.args, mangler=mangle
+        fn = cgutils_extra.declare_function(
+            context,
+            builder,
+            sym,
+            decl_sig,
+            decl_sig.args,
+            mangler=itanium_mangler.mangle,
         )
         res = builder.call(fn, args)
         return context.cast(builder, res, decl_sig.return_type, sig.return_type)
@@ -146,28 +148,33 @@ _supported = [
 ]
 
 
-lower_ocl_impl = dict()
+lower_ocl_impl = {}
 
 
 def function_name_to_supported_decl(name, sig):
+    """Maps a math function to a specific implementation for given signature."""
+    key = None
     try:
         # only symbols present in the math module
         key = getattr(math, name)
     except AttributeError:
         try:
             key = getattr(numpy, name)
-        except:
-            return None
+        except AttributeError:
+            warnings.warn(
+                f"No declaration for function {name} for signature {sig} "
+                "in math or NumPy modules"
+            )
+    if key is not None:
+        fn = _mk_fn_decl(name, sig)
+        lower_ocl_impl[(name, sig)] = lower(key, *sig.args)(fn)
 
-    fn = _mk_fn_decl(name, sig)
-    lower_ocl_impl[(name, sig)] = lower(key, *sig.args)(fn)
 
-
-for name in _supported:
-    sigs = function_descriptors.get(name)
+for supported_fn_name in _supported:
+    sigs = function_descriptors.get(supported_fn_name)
     if sigs is None:
-        warnings.warn("OCL - failed to register '{0}'".format(name))
+        warnings.warn(f"OCL - failed to register '{supported_fn_name}'")
         continue
 
-    for sig in sigs:
-        function_name_to_supported_decl(name, sig)
+    for supported_sig in sigs:
+        function_name_to_supported_decl(supported_fn_name, supported_sig)

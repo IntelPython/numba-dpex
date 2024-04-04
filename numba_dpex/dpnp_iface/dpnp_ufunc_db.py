@@ -9,8 +9,7 @@ import numpy as np
 from numba.core import types
 
 from numba_dpex.core.typing import dpnpdecl
-
-from ..ocl import mathimpl
+from numba_dpex.kernel_api_impl.spirv.math import mathimpl
 
 # A global instance of dpnp ufuncs that are supported by numba-dpex
 _dpnp_ufunc_db = None

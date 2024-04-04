@@ -98,23 +98,6 @@ from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 from .core.decorators import device_func, dpjit, kernel  # noqa E402
 from .core.kernel_launcher import call_kernel, call_kernel_async  # noqa E402
 from .core.targets import dpjit_target  # noqa E402
-from .ocl.stubs import (  # noqa E402
-    GLOBAL_MEM_FENCE,
-    LOCAL_MEM_FENCE,
-    atomic,
-    barrier,
-    get_global_id,
-    get_global_size,
-    get_group_id,
-    get_local_id,
-    get_local_size,
-    get_num_groups,
-    get_work_dim,
-    local,
-    mem_fence,
-    private,
-    sub_group_barrier,
-)
 
 load_dpctl_sycl_interface()
 del load_dpctl_sycl_interface

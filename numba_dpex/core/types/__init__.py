@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from .array_type import Array
 from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
 from .kernel_api.literal_intenum import IntEnumLiteral
@@ -34,7 +33,6 @@ from .usm_ndarray_type import USMNdArray
 usm_ndarray = USMNdArray
 
 __all__ = [
-    "Array",
     "DpctlSyclQueue",
     "DpctlSyclEvent",
     "DpnpNdArray",
