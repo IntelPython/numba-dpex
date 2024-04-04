@@ -1,4 +1,7 @@
 
+
+:orphan:
+
 numba_dpex.kernel_api.ranges
 ============================
 
@@ -11,18 +14,19 @@ numba_dpex.kernel_api.ranges
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto
    :class: summarytable
 
    * - :py:obj:`Range <numba_dpex.kernel_api.ranges.Range>`
-     - A data structure to encapsulate a single kernel launch parameter.
+     - Analogue to the :sycl_range:`sycl::range <>` class.
    * - :py:obj:`NdRange <numba_dpex.kernel_api.ranges.NdRange>`
-     - A class to encapsulate all kernel launch parameters.
+     - Analogue to the :sycl_ndrange:`sycl::nd_range <>` class.
 
 
 
@@ -34,7 +38,7 @@ Classes
 
    Bases: :py:obj:`tuple`
 
-   A data structure to encapsulate a single kernel launch parameter.
+   Analogue to the :sycl_range:`sycl::range <>` class.
 
    The range is an abstraction that describes the number of elements
    in each dimension of buffers and index spaces. It can contain
@@ -47,14 +51,6 @@ Classes
 
 
    .. rubric:: Overview
-
-   .. list-table:: Attributes
-      :header-rows: 0
-      :widths: auto
-      :class: summarytable
-
-      * - :py:obj:`UNDEFINED_DIMENSION <numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION>`
-        - \-
 
 
    .. list-table:: Methods
@@ -69,10 +65,6 @@ Classes
 
 
    .. rubric:: Members
-
-   .. py:attribute:: UNDEFINED_DIMENSION
-
-      
 
    .. py:method:: get(index)
 
@@ -100,7 +92,7 @@ Classes
 
 .. py:class:: NdRange(global_size, local_size)
 
-   A class to encapsulate all kernel launch parameters.
+   Analogue to the :sycl_ndrange:`sycl::nd_range <>` class.
 
    The NdRange defines the index space for a work group as well as
    the global index space. It is passed to parallel_for to execute

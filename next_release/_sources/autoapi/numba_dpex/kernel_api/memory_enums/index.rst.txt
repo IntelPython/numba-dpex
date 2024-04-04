@@ -1,4 +1,7 @@
 
+
+:orphan:
+
 numba_dpex.kernel_api.memory_enums
 ==================================
 
@@ -11,20 +14,21 @@ numba_dpex.kernel_api.memory_enums
 
 
 
+
+
 Overview
 --------
-
 .. list-table:: Classes
    :header-rows: 0
    :widths: auto
    :class: summarytable
 
    * - :py:obj:`MemoryOrder <numba_dpex.kernel_api.memory_enums.MemoryOrder>`
-     - An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
+     - Analogue of :sycl_memory_order:`sycl::memory_order <>` enumeration.
    * - :py:obj:`MemoryScope <numba_dpex.kernel_api.memory_enums.MemoryScope>`
-     - An enumeration of SYCL memory scope. For more details please refer to
+     - Analogue of :sycl_memory_scope:`sycl::memory_scope <>` enumeration.
    * - :py:obj:`AddressSpace <numba_dpex.kernel_api.memory_enums.AddressSpace>`
-     - The address space values supported by numba_dpex.
+     - Analogue of :sycl_addr_space:`SYCL address space classes <>`.
 
 
 
@@ -36,20 +40,11 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
-   integer values of the enums is kept consistent with the corresponding
+   Analogue of :sycl_memory_order:`sycl::memory_order <>` enumeration.
+
+   The integer values of the enums is kept consistent with the corresponding
    implementation in dpcpp.
 
-   =====================   ============
-   Order                   Enum value
-   =====================   ============
-   RELAXED                 0
-   ACQUIRE                 1
-   CONSUME_UNSUPPORTED     2
-   RELEASE                 3
-   ACQ_REL                 4
-   SEQ_CST                 5
-   =====================   ============
 
 
    .. rubric:: Overview
@@ -112,18 +107,11 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   An enumeration of SYCL memory scope. For more details please refer to
-   SYCL 2020 specification, section 3.8.3.2
+   Analogue of :sycl_memory_scope:`sycl::memory_scope <>` enumeration.
 
-   ===============  ============
-   Memory Scope     Enum value
-   ===============  ============
-   WORK_ITEM        0
-   SUB_GROUP        1
-   WORK_GROUP       2
-   DEVICE           3
-   SYSTEM           4
-   ===============  ============
+   The integer values of the enums is kept consistent with the corresponding
+   implementation in dpcpp.
+
 
 
    .. rubric:: Overview
@@ -179,17 +167,10 @@ Classes
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
-   The address space values supported by numba_dpex.
+   Analogue of :sycl_addr_space:`SYCL address space classes <>`.
 
-   ==================   ============
-   Address space        Value
-   ==================   ============
-   PRIVATE              0
-   GLOBAL               1
-   CONSTANT             2
-   LOCAL                3
-   GENERIC              4
-   ==================   ============
+   The integer values of the enums is kept consistent with the corresponding
+   implementation in dpcpp.
 
 
    .. rubric:: Overview

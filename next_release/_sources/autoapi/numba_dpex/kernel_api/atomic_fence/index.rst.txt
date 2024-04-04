@@ -1,4 +1,7 @@
 
+
+:orphan:
+
 numba_dpex.kernel_api.atomic_fence
 ==================================
 
@@ -10,9 +13,10 @@ numba_dpex.kernel_api.atomic_fence
 
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0
@@ -20,28 +24,30 @@ Overview
    :class: summarytable
 
    * - :py:obj:`atomic_fence <numba_dpex.kernel_api.atomic_fence.atomic_fence>`\ (memory_order, memory_scope)
-     - The function for performing memory fence across all work-items.
+     - Performs a memory fence operations across all work-items.
 
 
 
 
 Functions
 ---------
-.. py:function:: atomic_fence(memory_order, memory_scope)
+.. py:function:: atomic_fence(memory_order: numba_dpex.kernel_api.memory_enums.MemoryOrder, memory_scope: numba_dpex.kernel_api.memory_enums.MemoryScope)
 
-   The function for performing memory fence across all work-items.
-   Modeled after ``sycl::atomic_fence`` function.
-   It provides control over re-ordering of memory load
-   and store operations. The ``atomic_fence`` function acts as a
-   fence across all work-items and devices specified by a
-   memory_scope argument.
+   Performs a memory fence operations across all work-items.
 
-   Args:
-   memory_order: The memory synchronization order.
+   The function is equivalent to the ``sycl::atomic_fence`` function and
+   controls the order of memory accesses (loads and stores) by individual
+   work-items.
 
-   memory_scope: The set of work-items and devices to which
-   the memory ordering constraints apply.
+   .. important::
+       The function is a no-op during CPython execution and only available in
+       JIT compiled mode of execution.
 
+   :param memory_order: The memory synchronization order.
+   :type memory_order: MemoryOrder
+   :param memory_scope: The set of work-items and devices to which
+                        the memory ordering constraints apply.
+   :type memory_scope: MemoryScope
 
 
 

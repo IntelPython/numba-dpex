@@ -1,53 +1,166 @@
-.. _index:
+.. _kernel-programming-guide:
 .. include:: ./../../ext_links.txt
 
-Kernel Programming Basics
+Kernel Programming
+##################
+
+The tutorial covers the numba-dpex kernel programming API (kapi) and introduces
+the concepts needed to write data-parallel kernels in numba-dpex.
+
+
+.. Preliminary concepts
+.. --------------------
+
+.. Data parallelism
+.. ++++++++++++++++
+
+.. Single Program Multiple Data
+.. ++++++++++++++++++++++++++++
+
+.. Range v/s Nd-Range Kernels
+.. ++++++++++++++++++++++++++
+
+.. Work items and Work groups
+.. ++++++++++++++++++++++++++
+
+Core concepts
+*************
+
+Writing a *range* kernel
+========================
+
+.. include:: ./writing-range-kernel.rst
+
+Writing an *nd-range* kernel
+============================
+
+.. include:: ./writing-ndrange-kernel.rst
+
+.. Launching a kernel
+.. ==================
+
+.. include:: ./call-kernel.rst
+
+The ``device_func`` decorator
+=============================
+
+.. include:: ./device-functions.rst
+
+
+Supported types of kernel argument
+==================================
+
+A kapi kernel function can have both array and scalar arguments. At least one of
+the argument to every kernel function has to be an array. The requirement is
+enforced so that a execution queue can be inferred at the kernel launch stage.
+An array type argument is passed as a reference to the kernel and all scalar
+arguments are passed by value.
+
+Supported array types
+---------------------
+- `dpctl.tensor.usm_ndarray`_ : A SYCL-based Python Array API complaint tensor.
+- `dpnp.ndarray`_ :  A ``numpy.ndarray``-like array container that supports SYCL USM memory allocation.
+
+Scalar types
+------------
+
+Scalar values can be passed to a kernel function either using the default Python
+scalar type or as explicit NumPy or dpnp data type objects.
+:ref:`ex_scalar_kernel_arg_ty` shows the two possible ways of defining a scalar
+type. In both scenarios, numba-dpex depends on the default Numba* type inferring
+algorithm to determine the LLVM IR type of a Python object that represents a
+scalar value. At the kernel submission stage the LLVM IR type is reinterpreted
+as a C++11 type to interoperate with the underlying SYCL runtime.
+
+.. code-block:: python
+    :caption: **Example:** Ways of defining a scalar kernel argument
+    :name: ex_scalar_kernel_arg_ty
+
+    import dpnp
+
+    a = 1
+    b = dpnp.dtype("int32").type(1)
+
+    print(type(a))
+    print(type(b))
+
+.. code-block:: bash
+    :caption: **Output:** Ways of defining a scalar kernel argument
+    :name: ex_scalar_kernel_arg_ty_output
+
+    <class 'int'>
+    <class 'numpy.int32'>
+
+The following scalar types are currently supported as arguments of a numba-dpex
+kernel function:
+
+- ``int``
+- ``float``
+- ``complex``
+- ``numpy.int32``
+- ``numpy.uint32``
+- ``numpy.int64``
+- ``numpy.uint32``
+- ``numpy.float32``
+- ``numpy.float64``
+
+.. important::
+
+    The Numba* type inferring algorithm by default infers a native Python
+    scalar type to be a 64-bit value. The algorithm is defined that way to be
+    consistent with the default CPython behavior. The default inferred 64-bit
+    type can cause compilation failures on platforms that do not have native
+    64-bit floating point support. Another potential fallout of the default
+    64-bit type inference can be when a narrower width type is required by a
+    specific kernel. To avoid these issues, users are advised to always use a
+    dpnp/numpy type object to explicitly define the type of a scalar value.
+
+DLPack support
+--------------
+At this time direct support for the `DLPack`_ protocol is has not been added to
+numba-dpex. To interoperate numba_dpex with other SYCL USM based libraries,
+users should first convert their input tensor or ndarray object into either of
+the two supported array types, both of which support DLPack.
+
+
+Supported Python features
+*************************
+
+Mathematical operations
+=======================
+
+.. include:: ./math-functions.rst
+
+Operators
+=========
+
+.. include:: ./operators.rst
+
+General Python features
+=======================
+
+.. include:: ./supported-python-features.rst
+
+
+Advanced concepts
+*****************
+
+Local memory allocation
+=======================
+
+Private memory allocation
 =========================
 
-`Data Parallel Extensions for Python*`_ introduce a concept of an *offload kernel*, defined as
-a part of a Python program being submitted for execution to the device queue.
+Group barrier synchronization
+=============================
 
-.. image:: ./../../../asset/images/kernel-queue-device.png
-    :scale: 50%
-    :align: center
-    :alt: Offload Kernel
+Atomic operations
+=================
 
-There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the *data parallel kernel programming*. In this model you express the work in terms of *work items*.
-You split data into small pieces, and each piece will be a unit of work, or a *work item*. The total number of
-work items is called *global size*. You can also group work items into bigger chunks called *work groups*.
-The number of work items in the work group is called the *local size*.
+.. Async kernel execution
+.. ======================
 
-.. image:: ./../../../asset/images/kernel_prog_model.png
-    :scale: 50%
-    :align: center
-    :alt: Offload Kernel
+.. include:: ./call-kernel-async.rst
 
-In this example there are 48 *work items* (8 in dimension 0, and 6 in dimension 1), that is the *global size* is 48.
-Work items are grouped in *work groups* with the *local size* 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.
-
-In the *data parallel kernel programming* model you write a function that processes a given work item.
-Such a function is called the *data parallel kernel*.
-
-**Data Parallel Extension for Numba** offers a way to write data parallel kernels directly using Python using
-``numba_dpex.kernel``. It bears similarities with ``numba.cuda`` and ``numba.roc``, but unlike these proprietary
-programming models ``numba_dpex`` is built on top of `SYCL*`_ , which is hardware agnostic, meaning
-that with ``numba_dpex.kernel`` programming model you will be able to write a portable code targeting different
-hardware vendors.
-
-.. note::
-   The current version of ``numba-dpex`` supports Intel SYCL devices only
-
-.. toctree::
-   :caption: This document will cover the following chapters:
-   :maxdepth: 2
-
-   writing_kernels
-   synchronization
-   device-functions
-   atomic-operations
-   memory_allocation_address_space
-   reduction
-   ufunc
-   supported-python-features
+Specializing a kernel or a device_func
+======================================

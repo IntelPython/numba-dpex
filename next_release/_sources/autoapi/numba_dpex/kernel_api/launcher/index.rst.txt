@@ -1,4 +1,7 @@
 
+
+:orphan:
+
 numba_dpex.kernel_api.launcher
 ==============================
 
@@ -10,9 +13,10 @@ numba_dpex.kernel_api.launcher
 
 
 
+
+
 Overview
 --------
-
 
 .. list-table:: Function
    :header-rows: 0
@@ -27,17 +31,27 @@ Overview
 
 Functions
 ---------
-.. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
+.. py:function:: call_kernel(kernel_fn, index_range: Union[numba_dpex.kernel_api.ranges.Range, numba_dpex.kernel_api.ranges.NdRange], *kernel_args)
 
    Mocks the launching of a kernel function over either a Range or NdRange.
 
-   :param kernel_fn: A callable function object
-   :param index_range: An instance of a Range object
-   :type index_range: numba_dpex.Range
+   .. important::
+       The function is meant to be used only during prototyping a kernel_api
+       function in Python. To launch a JIT compiled kernel, the
+       :func:`numba_dpex.core.kernel_launcher.call_kernel` function should be
+       used.
 
-   :raises ValueError: If the first positional argument is not callable
+   :param kernel_fn: A callable function object written using
+                     :py:mod:`numba_dpex.kernel_api`.
+   :param index_range: An instance of a Range or an NdRange object
+   :type index_range: Range|NdRange
+   :param kernel_args: The expanded list of actual arguments with which to
+                       launch the kernel execution.
+   :type kernel_args: List
+
+   :raises ValueError: If the first positional argument is not callable.
    :raises ValueError: If the second positional argument is not a Range or an
-   :raises Ndrange object:
+       Ndrange object
 
 
 
