@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core - numba-dpex 0.22.1+259.g4deff1ad9 documentation</title>
+        <title>numba_dpex.core - numba-dpex 0.22.1+266.gf2d308057 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">numba-dpex 0.22.1+259.g4deff1ad9 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">numba-dpex 0.22.1+266.gf2d308057 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.22.1+259.g4deff1ad9 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.22.1+266.gf2d308057 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -273,31 +273,28 @@
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.Array" title="numba_dpex.core.Array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a></p></td>
-<td><p>An array type for use inside our compiler pipeline.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.DpctlSyclQueue" title="numba_dpex.core.DpctlSyclQueue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.DpctlSyclQueue" title="numba_dpex.core.DpctlSyclQueue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a></p></td>
 <td><p>A Numba type to represent a dpctl.SyclQueue PyObject.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.DpctlSyclEvent" title="numba_dpex.core.DpctlSyclEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpctlSyclEvent</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.DpctlSyclEvent" title="numba_dpex.core.DpctlSyclEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpctlSyclEvent</span></code></a></p></td>
 <td><p>A Numba type to represent a dpctl.SyclEvent PyObject.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.DpnpNdArray" title="numba_dpex.core.DpnpNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpnpNdArray</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.DpnpNdArray" title="numba_dpex.core.DpnpNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpnpNdArray</span></code></a></p></td>
 <td><p>The Numba type to represent an dpnp.ndarray. The type has the same</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.IntEnumLiteral" title="numba_dpex.core.IntEnumLiteral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntEnumLiteral</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.IntEnumLiteral" title="numba_dpex.core.IntEnumLiteral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntEnumLiteral</span></code></a></p></td>
 <td><p>A Literal type for IntEnum objects. The type contains the original Python</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.KernelDispatcherType" title="numba_dpex.core.KernelDispatcherType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelDispatcherType</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.KernelDispatcherType" title="numba_dpex.core.KernelDispatcherType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelDispatcherType</span></code></a></p></td>
 <td><p>The type of KernelDispatcher dispatchers</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.NdRangeType" title="numba_dpex.core.NdRangeType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRangeType</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.NdRangeType" title="numba_dpex.core.NdRangeType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRangeType</span></code></a></p></td>
 <td><p>Numba-dpex type corresponding to</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.RangeType" title="numba_dpex.core.RangeType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RangeType</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.RangeType" title="numba_dpex.core.RangeType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RangeType</span></code></a></p></td>
 <td><p>Numba-dpex type corresponding to</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.USMNdArray" title="numba_dpex.core.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.USMNdArray" title="numba_dpex.core.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p></td>
 <td><p>A type class to represent dpctl.tensor.usm_ndarray.</p></td>
 </tr>
 </tbody>
@@ -368,48 +365,14 @@
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.Array">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.Array" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#numba_dpex.core.Array" title="numba_dpex.core.Array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a></p>
-<p>An array type for use inside our compiler pipeline.</p>
-<p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
-<table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.Array.copy" title="numba_dpex.core.Array.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(dtype, ndim, layout, readonly, addrspace)</p></td>
-<td><p>-</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.Array.is_precise" title="numba_dpex.core.Array.is_precise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_precise</span></code></a>()</p></td>
-<td><p>Whether this type is precise, i.e. can be part of a successful</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Members</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.Array.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.Array.copy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.Array.is_precise">
-<span class="sig-name descname"><span class="pre">is_precise</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.Array.is_precise" title="Link to this definition">#</a></dt>
-<dd><p>Whether this type is precise, i.e. can be part of a successful
-type inference.  Default implementation returns True.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.DpctlSyclQueue">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpctlSyclQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.DpctlSyclQueue" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.types.Type</span></code></p>
 <p>A Numba type to represent a dpctl.SyclQueue PyObject.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
-<table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.DpctlSyclQueue.rand_digit_str" title="numba_dpex.core.DpctlSyclQueue.rand_digit_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand_digit_str</span></code></a>(n)</p></td>
 <td><p>-</p></td>
@@ -447,9 +410,9 @@ structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
 <p>A Literal type for IntEnum objects. The type contains the original Python
 value of the IntEnum class in it.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
-<table class="summarytable docutils align-default" id="id5">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
+<table class="summarytable docutils align-default" id="id4">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.IntEnumLiteral.can_convert_to" title="numba_dpex.core.IntEnumLiteral.can_convert_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">can_convert_to</span></code></a>(typingctx, other)</p></td>
 <td><p>Check whether this type can be converted to the <em>other</em>.</p></td>
@@ -474,9 +437,9 @@ If successful, must return a string describing the conversion, e.g.
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.Dispatcher</span></code></p>
 <p>The type of KernelDispatcher dispatchers</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
-<table class="summarytable docutils align-default" id="id6">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
+<table class="summarytable docutils align-default" id="id5">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.KernelDispatcherType.cast_python_value" title="numba_dpex.core.KernelDispatcherType.cast_python_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cast_python_value</span></code></a>(args)</p></td>
 <td><p><span class="summarylabel">abc</span> -</p></td>
@@ -514,9 +477,9 @@ If successful, must return a string describing the conversion, e.g.
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.npytypes.Array</span></code></p>
 <p>A type class to represent dpctl.tensor.usm_ndarray.</p>
 <p class="rubric">Overview</p>
-<div class="table-wrapper colwidths-auto summarytable docutils container" id="id7">
-<table class="summarytable docutils align-default" id="id7">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
+<table class="summarytable docutils align-default" id="id6">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.USMNdArray.copy" title="numba_dpex.core.USMNdArray.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(dtype, ndim, layout, readonly, addrspace, device, usm_type)</p></td>
 <td><p>-</p></td>
@@ -690,11 +653,6 @@ If successful, must return a string describing the conversion, e.g.
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.Array"><code class="docutils literal notranslate"><span class="pre">Array</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.Array.copy"><code class="docutils literal notranslate"><span class="pre">Array.copy()</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.Array.is_precise"><code class="docutils literal notranslate"><span class="pre">Array.is_precise()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#numba_dpex.core.DpctlSyclQueue"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a><ul>
 <li><a class="reference internal" href="#numba_dpex.core.DpctlSyclQueue.rand_digit_str"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.rand_digit_str()</span></code></a></li>
 </ul>
@@ -751,7 +709,7 @@ If successful, must return a string describing the conversion, e.g.
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=e9cac773"></script>
+</div><script src="../../../_static/documentation_options.js?v=3a0f61da"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

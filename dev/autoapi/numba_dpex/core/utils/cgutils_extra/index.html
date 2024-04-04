@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.utils.cgutils_extra - numba-dpex 0.22.1+259.g4deff1ad9 documentation</title>
+        <title>numba_dpex.core.utils.cgutils_extra - numba-dpex 0.22.1+266.gf2d308057 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.22.1+259.g4deff1ad9 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.22.1+266.gf2d308057 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.22.1+259.g4deff1ad9 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.22.1+266.gf2d308057 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -259,19 +259,22 @@
 <table class="summarytable docutils align-default" id="id2">
 <caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_type</span></code></a>(context, type)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.declare_function" title="numba_dpex.core.utils.cgutils_extra.declare_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">declare_function</span></code></a>(context, builder, name, sig, cargs, mangler)</p></td>
+<td><p>Insert declaration for a opencl builtin function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_type</span></code></a>(context, type)</p></td>
 <td><p>Returns the LLVM Value corresponding to a Numba type.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_ptr_type</span></code></a>(type)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type" title="numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_llvm_ptr_type</span></code></a>(type)</p></td>
 <td><p>Returns an LLVM pointer type for a give LLVM type object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr" title="numba_dpex.core.utils.cgutils_extra.create_null_ptr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_null_ptr</span></code></a>(builder, context)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr" title="numba_dpex.core.utils.cgutils_extra.create_null_ptr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_null_ptr</span></code></a>(builder, context)</p></td>
 <td><p>Allocates a new LLVM Value storing a <code class="docutils literal notranslate"><span class="pre">void*</span></code> and returns the Value to</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_zero" title="numba_dpex.core.utils.cgutils_extra.get_zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zero</span></code></a>(context)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_zero" title="numba_dpex.core.utils.cgutils_extra.get_zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zero</span></code></a>(context)</p></td>
 <td><p>Returns an LLVM Constant storing a 64 bit representation for zero.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_one" title="numba_dpex.core.utils.cgutils_extra.get_one"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_one</span></code></a>(context)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_one" title="numba_dpex.core.utils.cgutils_extra.get_one"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_one</span></code></a>(context)</p></td>
 <td><p>Returns an LLVM Constant storing a 64 bit representation for one.</p></td>
 </tr>
 </tbody>
@@ -362,6 +365,25 @@
 </section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.declare_function">
+<span class="sig-name descname"><span class="pre">declare_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mangler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">mangle_c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.declare_function" title="Link to this definition">#</a></dt>
+<dd><p>Insert declaration for a opencl builtin function.
+Uses the Itanium mangler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (<em>target context</em>) – </p></li>
+<li><p><strong>builder</strong> (<em>llvm builder</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – symbol name</p></li>
+<li><p><strong>sig</strong> (<em>signature</em>) – function signature of the symbol being declared</p></li>
+<li><p><strong>cargs</strong> (<em>sequence</em><em> of </em><em>str</em>) – C type names for the arguments</p></li>
+<li><p><strong>mangler</strong> (<em>a mangler function</em>) – function to use to mangle the symbol</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.cgutils_extra.get_llvm_type">
 <span class="sig-name descname"><span class="pre">get_llvm_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type" title="Link to this definition">#</a></dt>
@@ -493,6 +515,7 @@ caller.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.declare_function"><code class="docutils literal notranslate"><span class="pre">declare_function()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_type()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.get_llvm_ptr_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_ptr_type()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.core.utils.cgutils_extra.create_null_ptr"><code class="docutils literal notranslate"><span class="pre">create_null_ptr()</span></code></a></li>
@@ -511,7 +534,7 @@ caller.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=e9cac773"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=3a0f61da"></script>
     <script src="../../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
