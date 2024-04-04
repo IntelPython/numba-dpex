@@ -8,14 +8,14 @@ import numpy
 import numba_dpex as dpex
 
 
-@dpex.func
+@dpex.device_func
 def g(a):
     return a + dpnp.float32(1)
 
 
 @dpex.kernel
-def f(a, b):
-    i = dpex.get_global_id(0)
+def f(item, a, b):
+    i = item.get_id(0)
     b[i] = g(a[i])
 
 

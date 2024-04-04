@@ -10,18 +10,19 @@ from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 
 
 class AtomicRef:
-    """Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
-    view into a data container that can be then updated atomically using any of
-    the ``fetch_*`` member functions of the class.
+    """Analogue to the :sycl_atomic_ref:`sycl::atomic_ref <>` class.
+
+    An atomic reference is a view into a data container that can be then updated
+    atomically using any of the ``fetch_*`` member functions of the class.
     """
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
         ref,
-        index=0,
+        index,
         memory_order=MemoryOrder.RELAXED,
         memory_scope=MemoryScope.DEVICE,
-        address_space=AddressSpace.GLOBAL,
+        address_space=None,
     ):
         """A Python stub to represent a SYCL AtomicRef class. An AtomicRef
         object represents a single element view into a Python array-like object
@@ -34,6 +35,11 @@ class AtomicRef:
         self._memory_order = memory_order
         self._memory_scope = memory_scope
         self._address_space = address_space
+
+        if not (hasattr(ref, "__getitem__") and hasattr(ref, "__setitem__")):
+            raise TypeError(
+                "Cannot create an AtomicRef from an unsupported ref type."
+            )
         self._ref = ref
         self._index = index
 
@@ -66,7 +72,6 @@ class AtomicRef:
             val : Value to be added to the object referenced by the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] += val
@@ -79,10 +84,9 @@ class AtomicRef:
 
         Args:
             val : Value to be subtracted from the object referenced by the
-            AtomicRef.
+                AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] -= val
@@ -95,10 +99,9 @@ class AtomicRef:
 
         Args:
             val : Value to be compared against the object referenced by the
-            AtomicRef.
+                AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] = min(old, val)
@@ -111,10 +114,9 @@ class AtomicRef:
 
         Args:
             val : Value to be compared against the object referenced by the
-            AtomicRef.
+                AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] = max(old, val)
@@ -127,10 +129,9 @@ class AtomicRef:
 
         Args:
             val : Value to be bitwise ANDed against the object referenced by
-            the AtomicRef.
+                the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] &= val
@@ -143,10 +144,9 @@ class AtomicRef:
 
         Args:
             val : Value to be bitwise ORed against the object referenced by
-            the AtomicRef.
+                the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] |= val
@@ -159,7 +159,7 @@ class AtomicRef:
 
         Args:
             val : Value to be bitwise XORed against the object referenced by
-            the AtomicRef.
+                the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
 
@@ -172,7 +172,6 @@ class AtomicRef:
         """Loads the value of the object referenced by the AtomicRef.
 
         Returns: The value of the object referenced by the AtomicRef.
-
         """
         return self._ref[self._index]
 
@@ -180,22 +179,20 @@ class AtomicRef:
         """Stores operand ``val`` to the object referenced by the AtomicRef.
 
         Args:
-            val : Value to be stored in the object referenced by
-            the AtomicRef.
-
+            val : Value to be stored in the object referenced by the AtomicRef.
         """
         self._ref[self._index] = val
 
     def exchange(self, val):
         """Replaces the value of the object referenced by the AtomicRef
-        with value of ``val``. Returns the original value of the referenced object.
+        with value of ``val``. Returns the original value of the referenced
+        object.
 
         Args:
             val : Value to be exchanged against the object referenced by
-            the AtomicRef.
+                the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
-
         """
         old = self._ref[self._index].copy()
         self._ref[self._index] = val
@@ -203,23 +200,21 @@ class AtomicRef:
 
     def compare_exchange(self, expected, desired, expected_idx=0):
         """Compares the value of the object referenced by the AtomicRef
-        against the value of ``expected[expected_idx]``.
-        If the values are equal, replaces the value of the
-        referenced object with the value of ``desired``.
-        Otherwise assigns the original value of the
-        referenced object to ``expected[expected_idx]``.
+        against the value of ``expected[expected_idx]``. If the values are
+        equal, replaces the value of the referenced object with the value of
+        ``desired``. Otherwise assigns the original value of the referenced
+        object to ``expected[expected_idx]``.
 
         Args:
-            expected : Array containing the expected value of the
-            object referenced by the AtomicRef.
-            desired : Value that replaces the value of the object
-            referenced by the AtomicRef.
+            expected : Array containing the expected value of the object
+                referenced by the AtomicRef.
+            desired : Value that replaces the value of the object referenced by
+                the AtomicRef.
             expected_idx: Offset in `expected` array where the expected
             value of the object referenced by the AtomicRef is present.
 
-        Returns: Returns ``True`` if the comparison operation and
-        replacement operation were successful.
-
+        Returns: ``True`` if the comparison operation and replacement operation
+            were successful.
         """
         if self._ref[self._index] == expected[expected_idx]:
             self._ref[self._index] = desired

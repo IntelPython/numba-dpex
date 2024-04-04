@@ -46,7 +46,6 @@ class DpexTargetOptions(CPUTargetOptions):
     experimental = _option_mapping("experimental")
     release_gil = _option_mapping("release_gil")
     no_compile = _option_mapping("no_compile")
-    use_mlir = _option_mapping("use_mlir")
     inline_threshold = _option_mapping("inline_threshold")
     _compilation_mode = _option_mapping("_compilation_mode")
 
@@ -55,7 +54,6 @@ class DpexTargetOptions(CPUTargetOptions):
         _inherit_if_not_set(flags, options, "experimental", False)
         _inherit_if_not_set(flags, options, "release_gil", False)
         _inherit_if_not_set(flags, options, "no_compile", True)
-        _inherit_if_not_set(flags, options, "use_mlir", False)
         if config.INLINE_THRESHOLD is not None:
             _inherit_if_not_set(
                 flags, options, "inline_threshold", config.INLINE_THRESHOLD
@@ -97,6 +95,10 @@ class DpexKernelTarget(TargetDescriptor):
         The typing context for used by the Dpex compiler pipeline.
         """
         return self._toplevel_typing_context
+
+    @property
+    def target_name(self):
+        return self._target_name
 
 
 class DpexTarget(TargetDescriptor):

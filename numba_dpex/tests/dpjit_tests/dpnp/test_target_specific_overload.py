@@ -23,5 +23,5 @@ def test_dpnp_dpex_target(func):
     dpnp_func_dpjit = dpjit(dpnp_func)
 
     dpnp_func_dpjit()
-    with pytest.raises(errors.TypingError):
+    with pytest.raises((errors.TypingError, errors.UnsupportedError)):
         dpnp_func_njit()

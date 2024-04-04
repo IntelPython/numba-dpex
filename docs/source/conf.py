@@ -5,34 +5,42 @@
 # coding: utf-8
 # Configuration file for the Sphinx documentation builder.
 
+# -- Project information -------------------------------------------------------
+
+import sys
+
 import numba_dpex
 
-# -- Project information -----------------------------------------------------
+sys.path.append(".")
+
+from sycl_spec_links import sycl_ext_links  # noqa E402
 
 project = "numba-dpex"
 copyright = "2020-2024, Intel Corporation"
 author = "Intel Corporation"
 
 # The full version, including alpha/beta/rc tags
-# release = "main"
+release = numba_dpex.__version__
 
-# -- General configuration ----------------------------------------------------
+# -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
     "sphinx.ext.todo",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
-    "sphinx.ext.autosectionlabel",
     "sphinxcontrib.programoutput",
     "sphinxcontrib.googleanalytics",
     "myst_parser",
     "autoapi.extension",
+    "sphinx.ext.intersphinx",
+    "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ["bibliography.bib"]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -43,13 +51,14 @@ templates_path = []
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+extlinks = {}
+extlinks.update(sycl_ext_links)
 
-# -- Options for HTML output -------------------------------------------------
+# -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = "pydata_sphinx_theme"
 html_theme = "furo"
 
 html_theme_options = {
@@ -70,63 +79,33 @@ googleanalytics_enabled = True
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
 
-html_sidebars = {
-    # "**": [
-    #     "globaltoc.html",
-    #     "sourcelink.html",
-    #     "searchbox.html",
-    #     "relations.html",
-    # ],
-}
+html_sidebars = {}
 
 html_show_sourcelink = False
 
-# -- Todo extension configuration  ----------------------------------------------
+# -- Todo extension configuration  ---------------------------------------------
 todo_include_todos = True
 todo_link_only = True
 
 # -- InterSphinx configuration: looks for objects in external projects -----
-# Add here external classes you want to link from Intel SDC documentation
-# Each entry of the dictionary has the following format:
-#      'class name': ('link to object.inv file for that class', None)
-# intersphinx_mapping = {
-#    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
-#    'python': ('http://docs.python.org/2', None),
-#    'numpy': ('http://docs.scipy.org/doc/numpy', None)
-# }
 intersphinx_mapping = {}
 
-# -- Napoleon extension configuration (Numpy and Google docstring options) -------
-# napoleon_google_docstring = True
-# napoleon_numpy_docstring = True
-# napoleon_include_init_with_doc = True
-# napoleon_include_private_with_doc = True
-# napoleon_include_special_with_doc = True
-# napoleon_use_admonition_for_examples = False
-# napoleon_use_admonition_for_notes = False
-# napoleon_use_admonition_for_references = False
-# napoleon_use_ivar = False
-# napoleon_use_param = True
-# napoleon_use_rtype = True
 
-# -- Prepend module name to an object name or not -----------------------------------
+# -- Prepend module name to an object name or not ------------------------------
 add_module_names = False
+
+
+# -- autodoc configurations ----------------------------------------------------
+
+autodoc_typehints_format = "short"
+python_use_unqualified_type_names = True
 
 # -- Auto API configurations ---------------------------------------------------
 
-
-# def skip_util_classes(app, what, name, obj, skip, options):
-#     if what == "module" and "experimental" in name:
-#         if what == "module" and "decorators" not in name:
-#             skip = True
-#     return skip
-
-
-# def setup(sphinx):
-#     sphinx.connect("autoapi-skip-member", skip_util_classes)
-
-
-autoapi_dirs = ["../../numba_dpex/kernel_api"]
+autoapi_dirs = [
+    "../../numba_dpex/kernel_api",
+    "../../numba_dpex/core",
+]
 autoapi_type = "python"
 
 autoapi_template_dir = "_templates/autoapi"
@@ -160,3 +139,14 @@ def prepare_jinja_env(jinja_env) -> None:
 
 
 autoapi_prepare_jinja_env = prepare_jinja_env
+
+
+def skip_member(app, what, name, obj, skip, options):
+    # skip submodules
+    if what == "module":
+        skip = True
+    return skip
+
+
+def setup(sphinx):
+    sphinx.connect("autoapi-skip-member", skip_member)

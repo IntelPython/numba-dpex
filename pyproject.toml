@@ -1,79 +1,140 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  # TODO: keep in sync with [project.dependencies] and /conda-recipe/meta.yaml
+  "setuptools>=63.0.0",
+  "scikit-build>=0.17.0",
+  "ninja>=1.11.1; platform_system!='Windows'",
+  "cmake>=3.29.0",
+  "numba>=0.59.0",
+  "dpctl>=0.16.1",
+  "numpy>=1.24.0",
+  "wheel",
+  # WARNING: check with doc how to upgrade
+  "versioneer[toml]==0.29"
+]
+
+[project]
+authors = [{name = "Intel Corporation"}]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: GPU",
+  "Environment :: Plugins",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development :: Compilers",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux"
+]
+dependencies = [
+  # TODO: keep in sync with [build-system.requires] and /conda-recipe/meta.yaml
+  # This restrictions are for dependabot, actual restrictions are set with
+  # conda.
+  # TODO: populate it during build process
+  "numba>=0.59.0",
+  "llvmlite>=0.42.0",
+  "dpctl>=0.16.1",
+  "dpnp>=0.14.0",
+  "numpy>=1.24.0",
+  "dpcpp_llvm_spirv>=2024.0"
+]
+description = "An extension for Numba to add data-parallel offload capability"
+dynamic = ["version"]
+keywords = [
+  "sycl",
+  "python3",
+  "numba",
+  "numpy",
+  "intel",
+  "mkl",
+  "oneapi",
+  "gpu",
+  "dpcpp"
+]
+license = {text = "Apache 2.0"}
+name = "numba-dpex"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+
+[project.urls]
+Changelog = "https://github.com/IntelPython/numba-dpex/blob/main/CHANGELOG.md"
+Documentation = "https://intelpython.github.io/numba-dpex/"
+Homepage = "https://github.com/IntelPython/numba-dpex"
+Issues = "https://github.com/IntelPython/numba-dpex/issues"
+Repository = "https://github.com/IntelPython/numba-dpex.git"
+
 [tool.black]
-exclude = "versioneer.py|numba_dpex/_version.py"
+exclude = "numba_dpex/_version.py"
 line-length = 80
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-line_length = 80
-skip = ["versioneer.py", "numba_dpex/_version.py"]
-
-[tool.coverage.run]
-branch = true
-source = [
-    "numba_dpex"
-]
-omit = [
-    "numba_dpex/tests/*",
-    "numba_dpex/_version.py",
-]
-concurrency = [
-    "multiprocessing",
-]
-parallel = true
-
 [tool.coverage.report]
-precision = 2
-omit = [
-    "numba_dpex/tests/*",
-    "numba_dpex/_version.py",
-]
 exclude_lines = [
   "pragma: no cover",
   "raise NotImplementedError",
   "if config.DEBUG:",
   "@register_jitable",
-  "def dpnp_impl",
+  "def dpnp_impl"
+]
+omit = [
+  "numba_dpex/tests/*",
+  "numba_dpex/_version.py"
+]
+precision = 2
+
+[tool.coverage.run]
+branch = true
+concurrency = [
+  "multiprocessing"
+]
+omit = [
+  "numba_dpex/tests/*",
+  "numba_dpex/_version.py"
+]
+parallel = true
+source = [
+  "numba_dpex"
 ]
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "numba_dpex/_version.py"
-versionfile_build = "numba_dpex/_version.py"
-parentdir_prefix = ""
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 80
+multi_line_output = 3
+skip = ["numba_dpex/_version.py"]
+use_parentheses = true
 
 [tool.pylint]
 disable = [
-    "fixme"
+  "fixme"
 ]
-
-[build-system]
-requires = [
-    "setuptools>=42",
-    "scikit-build>=0.13",
-    "cmake>=3.18",
-    "ninja",
-    "numba>=0.58",
-    "versioneer-518"
-]
-build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-minversion = "6.0"
-norecursedirs= [
-    ".*", "*.egg*", "build", "dist", "conda-recipe",
-]
-xfail_strict = true
 addopts = [
-    "--disable-warnings",
-    "--strict",
-    "--durations=20",
-    "-ra -vv",
+  "--disable-warnings",
+  "--strict",
+  "--durations=20",
+  "-ra -vv"
+]
+minversion = "6.0"
+norecursedirs = [
+  ".*",
+  "*.egg*",
+  "build",
+  "dist",
+  "conda-recipe"
 ]
 testpaths = [
-    "numba_dpex/tests"
+  "numba_dpex/tests"
 ]
+xfail_strict = true
+
+[tool.versioneer]
+VCS = "git"
+parentdir_prefix = ""
+style = "pep440"
+versionfile_build = "numba_dpex/_version.py"
+versionfile_source = "numba_dpex/_version.py"

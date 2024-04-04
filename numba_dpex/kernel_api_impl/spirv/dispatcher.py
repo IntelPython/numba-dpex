@@ -5,9 +5,10 @@
 """Implements a new numba dispatcher class and a compiler class to compile and
 call numba_dpex.kernel decorated function.
 """
+import hashlib
 from collections import namedtuple
 from contextlib import ExitStack
-from typing import Tuple
+from typing import List, Tuple
 
 import numba.core.event as ev
 from llvmlite.binding.value import ValueRef
@@ -25,7 +26,8 @@ from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
-from numba_dpex import config, numba_sem_version
+from numba_dpex import config
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     InvalidKernelSpecializationError,
@@ -34,17 +36,15 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.utils import kernel_launcher as kl
-from numba_dpex.experimental.target import (
-    DPEX_KERNEL_EXP_TARGET_NAME,
-    dpex_exp_kernel_target,
-)
+from numba_dpex.core.utils import call_kernel_builder as kl
 from numba_dpex.kernel_api_impl.spirv import spirv_generator
 from numba_dpex.kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
 from numba_dpex.kernel_api_impl.spirv.target import (
     CompilationMode,
     SPIRVTargetContext,
 )
+
+from .target import SPIRV_TARGET_NAME
 
 _SPIRVKernelCompileResult = namedtuple(
     "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
@@ -57,7 +57,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
     """
 
     def check_queue_equivalence_of_args(
-        self, py_func_name: str, args: [types.Type, ...]
+        self, py_func_name: str, args: List[types.Type]
     ):
         """Evaluates if all USMNdArray arguments passed to a kernel function
         has the same DpctlSyclQueue type.
@@ -139,7 +139,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
                 unsupported_argnum_list=unsupported_argnum_list,
             )
 
-    def check_arguments(self, py_func_name: str, args: [types.Type, ...]):
+    def check_arguments(self, py_func_name: str, args: List[types.Type]):
         """Checks arguments and queue of the input arguments.
 
         Raises:
@@ -181,6 +181,9 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
         # all linking libraries getting linked together and final optimization
         # including inlining of functions if an inlining level is specified.
         kernel_library.finalize()
+
+        if config.DUMP_KERNEL_LLVM:
+            self._dump_kernel(kernel_fndesc, kernel_library)
         # Compiled the LLVM IR to SPIR-V
         kernel_spirv_module = spirv_generator.llvm_to_spirv(
             kernel_targetctx,
@@ -238,7 +241,7 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
             pass
 
         try:
-            with target_override(DPEX_KERNEL_EXP_TARGET_NAME):
+            with target_override(SPIRV_TARGET_NAME):
                 cres: CompileResult = self._compile_core(args, return_type)
 
             if (
@@ -268,19 +271,25 @@ class _SPIRVKernelCompiler(_FunctionCompiler):
 
             kcres_attrs.append(kernel_device_ir_module)
 
-            if config.DUMP_KERNEL_LLVM:
-                with open(
-                    cres.fndesc.llvm_func_name + ".ll",
-                    "w",
-                    encoding="UTF-8",
-                ) as fptr:
-                    fptr.write(str(cres.library.final_module))
-
         except errors.TypingError as err:
             self._failed_cache[key] = err
             return False, err
 
         return True, _SPIRVKernelCompileResult(*kcres_attrs)
+
+    def _dump_kernel(self, fndesc, library):
+        """Dump kernel into file."""
+        name = fndesc.llvm_func_name
+        if len(name) > 200:
+            sha256 = hashlib.sha256(name.encode("utf-8")).hexdigest()
+            name = name[:150] + "_" + sha256
+
+        with open(
+            name + ".ll",
+            "w",
+            encoding="UTF-8",
+        ) as fptr:
+            fptr.write(str(library.final_module))
 
 
 class SPIRVKernelDispatcher(Dispatcher):
@@ -292,7 +301,7 @@ class SPIRVKernelDispatcher(Dispatcher):
 
     """
 
-    targetdescr = dpex_exp_kernel_target
+    targetdescr = dpex_kernel_target
     _fold_args = False
 
     def __init__(
@@ -313,22 +322,12 @@ class SPIRVKernelDispatcher(Dispatcher):
 
         self._kernel_name = pyfunc.__name__
 
-        if numba_sem_version < (0, 59, 0):
-            # pylint: disable=unexpected-keyword-arg
-            super().__init__(
-                py_func=pyfunc,
-                locals=local_vars_to_numba_types,
-                impl_kind="direct",
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
-        else:
-            super().__init__(
-                py_func=pyfunc,
-                locals=local_vars_to_numba_types,
-                targetoptions=targetoptions,
-                pipeline_class=pipeline_class,
-            )
+        super().__init__(
+            py_func=pyfunc,
+            locals=local_vars_to_numba_types,
+            targetoptions=targetoptions,
+            pipeline_class=pipeline_class,
+        )
         self._compiler = _SPIRVKernelCompiler(
             pyfunc,
             self.targetdescr,
@@ -405,13 +404,6 @@ class SPIRVKernelDispatcher(Dispatcher):
                     except ExecutionQueueInferenceError as eqie:
                         raise eqie
 
-                    # A function being compiled in the KERNEL compilation mode
-                    # cannot have a non-void return value
-                    if return_type and return_type != void:
-                        raise KernelHasReturnValueError(
-                            kernel_name=None, return_type=return_type, sig=sig
-                        )
-
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
                 if existing is not None:
@@ -434,6 +426,16 @@ class SPIRVKernelDispatcher(Dispatcher):
                         kcres: _SPIRVKernelCompileResult = compiler.compile(
                             args, return_type
                         )
+                        if (
+                            self.targetoptions["_compilation_mode"]
+                            == CompilationMode.KERNEL
+                            and kcres.signature.return_type is not None
+                            and kcres.signature.return_type != types.void
+                        ):
+                            raise KernelHasReturnValueError(
+                                kernel_name=self.py_func.__name__,
+                                return_type=kcres.signature.return_type,
+                            )
                     except errors.ForceLiteralArg as err:
 
                         def folded(args, kws):
@@ -466,5 +468,5 @@ class SPIRVKernelDispatcher(Dispatcher):
         raise NotImplementedError
 
 
-_dpex_target = target_registry[DPEX_KERNEL_EXP_TARGET_NAME]
+_dpex_target = target_registry[SPIRV_TARGET_NAME]
 dispatcher_registry[_dpex_target] = SPIRVKernelDispatcher

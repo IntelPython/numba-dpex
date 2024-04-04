@@ -13,17 +13,7 @@ import dpctl
 import dpnp
 import pytest
 
-from numba_dpex import config, dpjit, numba_sem_version
-
-
-@cache
-def has_numba_mlir():
-    try:
-        import numba_mlir
-    except ImportError:
-        return False
-
-    return True
+from numba_dpex import config, dpjit
 
 
 def has_opencl_gpu():
@@ -38,6 +28,13 @@ def has_opencl_cpu():
     Checks if dpctl is able to select an OpenCL CPU device.
     """
     return bool(dpctl.get_num_devices(backend="opencl", device_type="cpu"))
+
+
+def has_cpu():
+    """
+    Checks if dpctl is able to select any CPU device.
+    """
+    return bool(dpctl.get_num_devices(device_type="cpu"))
 
 
 def has_level_zero():
@@ -58,15 +55,13 @@ def has_sycl_platforms():
     return False
 
 
-def is_gen12(device_type):
-    with dpctl.device_context(device_type):
-        q = dpctl.get_current_queue()
-        device = q.get_sycl_device()
-        name = device.name
-        if "Gen12" in name:
-            return True
+def is_gen12():
+    """Checks if the default device is an Intel Gen12 (Xe) GPU."""
+    device_name = dpctl.SyclDevice().name
+    if "Gen12" in device_name:
+        return True
 
-        return False
+    return False
 
 
 def platform_not_supported(device_type):
@@ -101,10 +96,7 @@ skip_no_level_zero_gpu = pytest.mark.skipif(
     not has_level_zero(),
     reason="No level-zero GPU platforms available",
 )
-skip_no_numba_mlir = pytest.mark.skipif(
-    not has_numba_mlir(),
-    reason="numba-mlir package is not availabe",
-)
+
 
 filter_strings = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
@@ -129,21 +121,13 @@ filter_strings_level_zero_gpu = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
 
-skip_no_numba056 = pytest.mark.skipif(
-    numba_sem_version < (0, 56), reason="Need Numba 0.56 or higher"
-)
-
 skip_no_gdb = pytest.mark.skipif(
     config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
     reason="Intel® Distribution for GDB* is not available",
 )
 
-
 decorators = [
     pytest.param(dpjit, id="dpjit"),
-    pytest.param(
-        dpjit(use_mlir=True), id="dpjit_mlir", marks=skip_no_numba_mlir
-    ),
 ]
 
 

@@ -13,7 +13,7 @@ from numba.core.types.npytypes import Array
 from numba.np.numpy_support import from_dtype
 
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
-from numba_dpex.utils.constants import address_space
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 
 
 class USMNdArray(Array):
@@ -30,7 +30,7 @@ class USMNdArray(Array):
         readonly=False,
         name=None,
         aligned=True,
-        addrspace=address_space.GLOBAL,
+        addrspace=address_space.GLOBAL.value,
     ):
         if (
             queue is not None

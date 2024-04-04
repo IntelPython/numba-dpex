@@ -16,6 +16,7 @@ dependencies:
   - dpnp>=0.14*
   - dpcpp-llvm-spirv
   - opencl_rt
+  - versioneer
   - pip
   - pip:
     - sphinx
@@ -24,6 +25,7 @@ dependencies:
     - recommonmark
     - sphinx-rtd-theme
     - sphinxcontrib-apidoc
+    - sphinxcontrib-bibtex
     - sphinxcontrib-googleanalytics
     - sphinxcontrib.programoutput
     - pydata-sphinx-theme

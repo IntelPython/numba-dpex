@@ -13,19 +13,19 @@ from numba.core.typed_passes import (
     NoPythonSupportedFeatureValidation,
     NopythonTypeInference,
     ParforFusionPass,
-    ParforPass,
     ParforPreLoweringPass,
     PreLowerStripPhis,
     PreParforPass,
 )
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
+from numba_dpex.core.parfors.parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dpex.core.parfors.parfor_pass import ParforPass
 from numba_dpex.core.passes import (
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforLegalizeCFDPass,
 )
-from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 
 
 class _DpjitPassBuilder(object):
@@ -36,8 +36,6 @@ class _DpjitPassBuilder(object):
     The pass builder does not implement pipelines for objectmode or interpreted
     execution.
     """
-
-    _use_mlir = False
 
     @staticmethod
     def define_typed_pipeline(state, name="dpex_dpjit_typed"):
@@ -72,15 +70,6 @@ class _DpjitPassBuilder(object):
     ):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
-
-        flags = state.flags
-        if cls._use_mlir or hasattr(flags, "use_mlir") and flags.use_mlir:
-            from numba_mlir.mlir.passes import MlirReplaceParfors
-
-            pm.add_pass(
-                MlirReplaceParfors,
-                "Lower parfor using MLIR pipeline",
-            )
 
         # legalize
         pm.add_pass(
@@ -118,10 +107,6 @@ class _DpjitPassBuilder(object):
         return pm
 
 
-class _DpjitPassBuilderMlir(_DpjitPassBuilder):
-    _use_mlir = True
-
-
 class DpjitCompiler(CompilerBase):
     """Dpex's compiler pipeline to offload parfor nodes into SYCL kernels."""
 
@@ -138,11 +123,3 @@ class DpjitCompiler(CompilerBase):
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             raise UnsupportedCompilationModeError()
         return pms
-
-
-class DpjitCompilerMlir(DpjitCompiler):
-    _pass_builder = _DpjitPassBuilderMlir
-
-
-def get_compiler(use_mlir):
-    return DpjitCompilerMlir if use_mlir else DpjitCompiler

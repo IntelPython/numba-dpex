@@ -4,13 +4,14 @@
 
 import pytest
 from numba import types
-from numba.core.datamodel import default_manager, models
+from numba.core.datamodel import models
 from numba.core.registry import cpu_target
 
 from numba_dpex.core.datamodel.models import (
     USMArrayDeviceModel,
     USMArrayHostModel,
     dpex_data_model_manager,
+    dpjit_data_model_manager,
 )
 from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray, USMNdArray
 
@@ -32,7 +33,7 @@ def test_model_for_array(nd_array):
     """
     device_model = dpex_data_model_manager.lookup(nd_array)
     assert isinstance(device_model, USMArrayDeviceModel)
-    host_model = default_manager.lookup(nd_array)
+    host_model = dpjit_data_model_manager.lookup(nd_array)
     assert isinstance(host_model, USMArrayHostModel)
 
 

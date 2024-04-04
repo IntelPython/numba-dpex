@@ -19,18 +19,21 @@ from numba.core.ir_utils import (
 )
 from numba.core.typing import signature
 
+from numba_dpex.core.parfors.reduction_helper import ReductionKernelVariables
 from numba_dpex.core.types import DpctlSyclQueue
+from numba_dpex.core.types.kernel_api.index_space_ids import NdItemType
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
 
-from ..utils.kernel_templates.reduction_template import (
-    RemainderReduceIntermediateKernelTemplate,
-    TreeReduceIntermediateKernelTemplate,
-)
 from .kernel_builder import _print_body  # saved for debug
 from .kernel_builder import (
     ParforKernel,
     _compile_kernel_parfor,
     _to_scalar_from_0d,
     update_sentinel,
+)
+from .kernel_templates.reduction_template import (
+    RemainderReduceIntermediateKernelTemplate,
+    TreeReduceIntermediateKernelTemplate,
 )
 
 
@@ -40,7 +43,7 @@ def create_reduction_main_kernel_for_parfor(
     typemap,
     flags,
     has_aliases,
-    reductionKernelVar,
+    reductionKernelVar: ReductionKernelVariables,
     parfor_reddict=None,
 ):
     """
@@ -48,6 +51,7 @@ def create_reduction_main_kernel_for_parfor(
     """
 
     loc = parfor_node.init_block.loc
+    parfor_dim = len(parfor_node.loop_nests)
 
     for race in parfor_node.races:
         msg = (
@@ -77,20 +81,35 @@ def create_reduction_main_kernel_for_parfor(
         except KeyError:
             pass
 
+    parfor_params = reductionKernelVar.parfor_params.copy()
+    parfor_legalized_params = reductionKernelVar.parfor_legalized_params.copy()
+    parfor_param_types = reductionKernelVar.param_types.copy()
+    local_accessors_dict = {}
+    for k, v in reductionKernelVar.redvars_legal_dict.items():
+        la_var = "local_sums_" + v
+        local_accessors_dict[k] = la_var
+        idx = reductionKernelVar.parfor_params.index(k)
+        arr_ty = reductionKernelVar.param_types[idx]
+        la_ty = LocalAccessorType(parfor_dim, arr_ty.dtype)
+
+        parfor_params.append(la_var)
+        parfor_legalized_params.append(la_var)
+        parfor_param_types.append(la_ty)
+
     kernel_template = TreeReduceIntermediateKernelTemplate(
         kernel_name=kernel_name,
-        kernel_params=reductionKernelVar.parfor_legalized_params,
+        kernel_params=parfor_legalized_params,
         ivar_names=reductionKernelVar.legal_loop_indices,
         sentinel_name=sentinel_name,
         loop_ranges=loop_ranges,
         param_dict=reductionKernelVar.param_dict,
-        parfor_dim=len(parfor_node.loop_nests),
+        parfor_dim=parfor_dim,
         redvars=reductionKernelVar.parfor_redvars,
-        parfor_args=reductionKernelVar.parfor_params,
+        parfor_args=parfor_params,
         parfor_reddict=parfor_reddict,
         redvars_dict=reductionKernelVar.redvars_legal_dict,
+        local_accessors_dict=local_accessors_dict,
         typemap=typemap,
-        work_group_size=reductionKernelVar.work_group_size,
     )
     kernel_ir = kernel_template.kernel_ir
 
@@ -114,7 +133,7 @@ def create_reduction_main_kernel_for_parfor(
             new_var_dict[name] = mk_unique_var(name)
 
     replace_var_names(kernel_ir.blocks, new_var_dict)
-    kernel_param_types = reductionKernelVar.param_types
+    kernel_param_types = parfor_param_types
     kernel_stub_last_label = max(kernel_ir.blocks.keys()) + 1
     # Add kernel stub last label to each parfor.loop_body label to prevent
     # label conflicts.
@@ -136,6 +155,13 @@ def create_reduction_main_kernel_for_parfor(
     if not has_aliases:
         flags.noalias = True
 
+    # The first argument to a range kernel is a kernel_api.NdItem object. The
+    # ``NdItem`` object is used by the kernel_api.spirv backend to generate the
+    # correct SPIR-V indexing instructions. Since, the argument is not something
+    # available originally in the kernel_param_types, we add it at this point to
+    # make sure the kernel signature matches the actual generated code.
+    ty_item = NdItemType(parfor_dim)
+    kernel_param_types = (ty_item, *kernel_param_types)
     kernel_sig = signature(types.none, *kernel_param_types)
 
     # FIXME: A better design is required so that we do not have to create a
@@ -155,13 +181,20 @@ def create_reduction_main_kernel_for_parfor(
 
     flags.noalias = old_alias
 
+    parfor_params = (
+        reductionKernelVar.parfor_params.copy()
+        + parfor_params[len(reductionKernelVar.parfor_params) :]  # noqa: $203
+    )
+
     return ParforKernel(
         name=kernel_name,
         kernel=sycl_kernel,
         signature=kernel_sig,
-        kernel_args=reductionKernelVar.parfor_params,
-        kernel_arg_types=reductionKernelVar.func_arg_types,
+        kernel_args=parfor_params,
+        kernel_arg_types=parfor_param_types,
         queue=exec_queue,
+        local_accessors=set(local_accessors_dict.values()),
+        work_group_size=reductionKernelVar.work_group_size,
     )
 
 

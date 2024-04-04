@@ -19,6 +19,5 @@ exclude =
     .git,
     __pycache__,
     _version.py,
-    versioneer.py,
     lowerer.py,
     parfor.py

@@ -5,7 +5,7 @@
 import dpctl
 import dpnp
 import pytest
-from numba.core.errors import LoweringError
+from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 
@@ -84,8 +84,10 @@ def test_print_only_str(input_arrays):
 
     a = input_arrays
 
-    with pytest.raises(LoweringError):
+    with pytest.raises(TypingError) as ex_info:
         dpex.call_kernel(print_string, dpex.Range(1), a)
+
+    assert "LoweringError" in ex_info.value.args[0]
 
 
 @skip_on_gpu
@@ -100,5 +102,7 @@ def test_print_array(input_arrays):
 
     a = input_arrays
 
-    with pytest.raises(LoweringError):
+    with pytest.raises(TypingError) as ex_info:
         dpex.call_kernel(print_string, dpex.Range(1), a)
+
+    assert "LoweringError" in ex_info.value.args[0]

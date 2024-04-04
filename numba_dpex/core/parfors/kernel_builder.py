@@ -21,15 +21,18 @@ from numba.core.ir_utils import (
     rename_labels,
     replace_var_names,
 )
+from numba.core.target_extension import target_override
 from numba.core.typing import signature
 from numba.parfors import parfor
 
-import numba_dpex as dpex
 from numba_dpex.core import config
+from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
+from numba_dpex.kernel_api_impl.spirv import spirv_generator
 
 from ..descriptor import dpex_kernel_target
-from ..types import DpnpNdArray, USMNdArray
-from ..utils.kernel_templates import RangeKernelTemplate
+from ..types import DpnpNdArray
+from .compiler import compile_numba_ir_with_dpex
+from .kernel_templates.range_kernel_template import RangeKernelTemplate
 
 
 class ParforKernel:
@@ -41,6 +44,8 @@ class ParforKernel:
         kernel_args,
         kernel_arg_types,
         queue: dpctl.SyclQueue,
+        local_accessors=None,
+        work_group_size=None,
     ):
         self.name = name
         self.kernel = kernel
@@ -48,6 +53,8 @@ class ParforKernel:
         self.kernel_args = kernel_args
         self.kernel_arg_types = kernel_arg_types
         self.queue = queue
+        self.local_accessors = local_accessors
+        self.work_group_size = work_group_size
 
 
 def _print_block(block):
@@ -65,18 +72,28 @@ def _print_body(body_dict):
 def _compile_kernel_parfor(
     sycl_queue, kernel_name, func_ir, argtypes, debug=False
 ):
-    # Create a SPIRVKernel object
-    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
-        func_ir, kernel_name
+    with target_override(dpex_kernel_target.target_context.target_name):
+        cres = compile_numba_ir_with_dpex(
+            pyfunc=func_ir,
+            pyfunc_name=kernel_name,
+            args=argtypes,
+            return_type=None,
+            debug=debug,
+            is_kernel=True,
+            typing_context=dpex_kernel_target.typing_context,
+            target_context=dpex_kernel_target.target_context,
+            extra_compile_flags=None,
+        )
+    cres.library.inline_threshold = config.INLINE_THRESHOLD
+    cres.library._optimize_final_module()
+    func = cres.library.get_function(cres.fndesc.llvm_func_name)
+    kernel = dpex_kernel_target.target_context.prepare_spir_kernel(
+        func, cres.signature.args
     )
-
-    # compile the kernel
-    kernel.compile(
-        args=argtypes,
-        typing_ctx=dpex_kernel_target.typing_context,
-        target_ctx=dpex_kernel_target.target_context,
-        debug=debug,
-        compile_flags=None,
+    spirv_module = spirv_generator.llvm_to_spirv(
+        dpex_kernel_target.target_context,
+        kernel.module.__str__(),
+        kernel.module.as_bitcode(),
     )
 
     dpctl_create_program_from_spirv_flags = []
@@ -84,14 +101,14 @@ def _compile_kernel_parfor(
         # if debug is ON we need to pass additional flags to igc.
         dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
 
-    # create a program
+    # create a sycl::kernel_bundle
     kernel_bundle = dpctl_prog.create_program_from_spirv(
         sycl_queue,
-        kernel.device_driver_ir_module,
+        spirv_module,
         " ".join(dpctl_create_program_from_spirv_flags),
     )
-    #  create a kernel
-    sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+    #  create a sycl::kernel
+    sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.name)
 
     return sycl_kernel
 
@@ -409,6 +426,13 @@ def create_kernel_for_parfor(
         print("kernel_ir after remove dead")
         kernel_ir.dump()
 
+    # The first argument to a range kernel is a kernel_api.Item object. The
+    # ``Item`` object is used by the kernel_api.spirv backend to generate the
+    # correct SPIR-V indexing instructions. Since, the argument is not something
+    # available originally in the kernel_param_types, we add it at this point to
+    # make sure the kernel signature matches the actual generated code.
+    ty_item = ItemType(parfor_dim)
+    kernel_param_types = (ty_item, *kernel_param_types)
     kernel_sig = signature(types.none, *kernel_param_types)
 
     if config.DEBUG_ARRAY_OPT:

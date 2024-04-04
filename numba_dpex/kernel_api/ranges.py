@@ -15,7 +15,7 @@ from numba_dpex.core.exceptions import (
 
 
 class Range(tuple):
-    """A data structure to encapsulate a single kernel launch parameter.
+    """Analogue to the :sycl_range:`sycl::range <>` class.
 
     The range is an abstraction that describes the number of elements
     in each dimension of buffers and index spaces. It can contain
@@ -27,7 +27,7 @@ class Range(tuple):
     the behavior of `sycl::range`.
     """
 
-    UNDEFINED_DIMENSION = -1
+    _UNDEFINED_DIMENSION = -1
 
     def __new__(cls, dim0, dim1=None, dim2=None):
         """Constructs a 1, 2, or 3 dimensional range.
@@ -114,7 +114,7 @@ class Range(tuple):
         try:
             return self[1]
         except IndexError:
-            return Range.UNDEFINED_DIMENSION
+            return Range._UNDEFINED_DIMENSION
 
     @property
     def dim2(self) -> int:
@@ -127,11 +127,11 @@ class Range(tuple):
         try:
             return self[2]
         except IndexError:
-            return Range.UNDEFINED_DIMENSION
+            return Range._UNDEFINED_DIMENSION
 
 
 class NdRange:
-    """A class to encapsulate all kernel launch parameters.
+    """Analogue to the :sycl_ndrange:`sycl::nd_range <>` class.
 
     The NdRange defines the index space for a work group as well as
     the global index space. It is passed to parallel_for to execute

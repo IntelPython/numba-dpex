@@ -13,61 +13,61 @@ import pytest
 
 from numba_dpex.tests._helper import skip_no_gdb
 
-from .common import setup_breakpoint
+from .gdb import gdb
 
 pytestmark = skip_no_gdb
 
 
-# commands/next
-@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
-def test_next(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:20",
-        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
-    )
-
+def test_next(app: gdb):
+    app.breakpoint("simple_dpex_func.py:18")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:18")
+    app.expect(r"18\s+i = item.get_id\(0\)", with_eol=True)
+    app.set_scheduler_lock()
     app.next()
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
+    )
+    # checking that we did not step in
     app.next()
+    app.expect(r"in _ZN8__main__21kernel_sum_", with_eol=True)
 
-    app.child.expect(r"Done\.\.\.")
 
-
-# commands/step_dpex_func
-@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
-def test_step(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:20",
-        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+def test_step(app: gdb):
+    app.breakpoint("simple_dpex_func.py:19")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:19")
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
-
+    app.set_scheduler_lock()
     app.step()
+    app.expect(r"__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True)
+    app.expect(r"12\s+result = a_in_func \+ b_in_func", with_eol=True)
     app.step()
-
-    app.child.expect(r"__main__::func_sum \(.*\) at simple_dpex_func.py:13")
-    app.child.expect(r"13\s+result = a_in_func \+ b_in_func")
-
-
-# commands/stepi
-@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
-def test_stepi(app):
-    setup_breakpoint(
-        app,
-        "simple_dpex_func.py:20",
-        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+    app.expect(
+        r"13\s+return result",
+        with_eol=True,
     )
 
-    app.stepi()
 
-    app.child.expect(
-        r"0x[0-f]+\s+20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+@pytest.mark.parametrize("func", ["stepi", "nexti"])
+def test_stepi(app: gdb, func: str):
+    app.breakpoint("simple_dpex_func.py:19")
+    app.run("simple_dpex_func.py")
+    app.expect_hit_breakpoint("simple_dpex_func.py:19")
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )
-
-    app.stepi()
-
-    app.child.expect(r"Switching to Thread")
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dpex_func.py:20")
-    app.child.expect(
-        r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    app.set_scheduler_lock()
+    # Stepi/nexti steps over instruction, so the same source code line is
+    # reached, but with a different instruction address.
+    f = getattr(app, func)
+    f()
+    app.expect(
+        r"19\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        with_eol=True,
     )

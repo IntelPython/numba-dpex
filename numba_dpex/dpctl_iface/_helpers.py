@@ -4,6 +4,8 @@
 
 from numba.core import types
 
+from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
+
 
 def numba_type_to_dpctl_typenum(context, ty):
     """
@@ -11,32 +13,27 @@ def numba_type_to_dpctl_typenum(context, ty):
     ``DPCTLKernelArgType``.
     """
 
-    val = None
-    if ty == types.int32 or isinstance(ty, types.scalars.IntegerLiteral):
-        # DPCTL_LONG_LONG
-        val = context.get_constant(types.int32, 9)
+    from dpctl._sycl_queue import kernel_arg_type as kargty
+
+    if ty == types.boolean:
+        return context.get_constant(types.int32, kargty.dpctl_uint8.value)
+    elif ty == types.int32 or isinstance(ty, types.scalars.IntegerLiteral):
+        return context.get_constant(types.int32, kargty.dpctl_int32.value)
     elif ty == types.uint32:
-        # DPCTL_UNSIGNED_LONG_LONG
-        val = context.get_constant(types.int32, 10)
-    elif ty == types.boolean:
-        # DPCTL_UNSIGNED_INT
-        val = context.get_constant(types.int32, 5)
+        return context.get_constant(types.int32, kargty.dpctl_uint32.value)
     elif ty == types.int64:
-        # DPCTL_LONG_LONG
-        val = context.get_constant(types.int32, 9)
+        return context.get_constant(types.int32, kargty.dpctl_int64.value)
     elif ty == types.uint64:
-        # DPCTL_SIZE_T
-        val = context.get_constant(types.int32, 11)
+        return context.get_constant(types.int32, kargty.dpctl_uint64.value)
     elif ty == types.float32:
-        # DPCTL_FLOAT
-        val = context.get_constant(types.int32, 12)
+        return context.get_constant(types.int32, kargty.dpctl_float32.value)
     elif ty == types.float64:
-        # DPCTL_DOUBLE
-        val = context.get_constant(types.int32, 13)
+        return context.get_constant(types.int32, kargty.dpctl_float64.value)
     elif ty == types.voidptr or isinstance(ty, types.CPointer):
-        # DPCTL_VOID_PTR
-        val = context.get_constant(types.int32, 15)
+        return context.get_constant(types.int32, kargty.dpctl_void_ptr.value)
+    elif isinstance(ty, LocalAccessorType):
+        return context.get_constant(
+            types.int32, kargty.dpctl_local_accessor.value
+        )
     else:
         raise NotImplementedError
-
-    return val

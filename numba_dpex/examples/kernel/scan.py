@@ -2,52 +2,55 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# scan.py is not working due to issue: https://github.com/IntelPython/numba-dpex/issues/829
+"""An implementation of the Hillis-Steele algorithm to compute prefix sums.
+
+The algorithm is implemented to work with a single work group of N work items,
+where N is the number of elements.
+"""
 
 import dpnp as np
 
 import numba_dpex as ndpx
+from numba_dpex import kernel_api as kapi
 
 # 1D array size
 N = 64
 
 
-# Implements Hillis-Steele prefix sum algorithm
 @ndpx.kernel
-def kernel_hillis_steele_scan(a):
+def kernel_hillis_steele_scan(nditem: kapi.NdItem, a, slm_b, slm_c):
     # Get local and global id and workgroup size
-    gid = ndpx.get_global_id(0)
-    lid = ndpx.get_local_id(0)
-    ls = ndpx.get_local_size(0)
-
-    # Create temporals in local memory
-    b = ndpx.local.array(ls, dtype=a.dtype)
-    c = ndpx.local.array(ls, dtype=a.dtype)
+    gid = nditem.get_global_id(0)
+    lid = nditem.get_local_id(0)
+    ls = nditem.get_local_range(0)
+    gr = nditem.get_group()
 
     # Initialize locals
-    c[lid] = b[lid] = a[gid]
-    ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
+    slm_c[lid] = slm_b[lid] = a[gid]
+
+    kapi.group_barrier(gr)
 
     # Calculate prefix sum
     d = 1
     while d < ls:
         if lid > d:
-            c[lid] = b[lid] + b[lid - d]
+            slm_c[lid] = slm_b[lid] + slm_b[lid - d]
         else:
-            c[lid] = b[lid]
+            slm_c[lid] = slm_b[lid]
 
-        ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
+        kapi.group_barrier(gr)
 
         # Swap c and b
-        e = c[lid]
-        c[lid] = b[lid]
-        b[lid] = e
+        e = slm_c[lid]
+        slm_c[lid] = slm_b[lid]
+        slm_b[lid] = e
 
         # Double the stride
         d *= 2
 
-    ndpx.barrier()  # The same as ndpx.barrier(ndpx.GLOBAL_MEM_FENCE)
-    a[gid] = b[lid]
+    kapi.group_barrier(gr, kapi.MemoryScope.DEVICE)
+
+    a[gid] = slm_b[lid]
 
 
 def main():
@@ -56,7 +59,14 @@ def main():
 
     print("Using device ...")
     print(arr.device)
-    kernel_hillis_steele_scan[ndpx.Range(N)](arr)
+
+    # Create temporals in local memory
+    slm_b = kapi.LocalAccessor(N, dtype=arr.dtype)
+    slm_c = kapi.LocalAccessor(N, dtype=arr.dtype)
+
+    ndpx.call_kernel(
+        kernel_hillis_steele_scan, ndpx.NdRange((N,), (N,)), arr, slm_b, slm_c
+    )
 
     # the output should be [0, 1, 3, 6, ...]
     arr_np = np.asnumpy(arr)

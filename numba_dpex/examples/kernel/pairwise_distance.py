@@ -2,13 +2,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""The example demonstrates a N^2 pairwise distance matrix computation for an
+array of N elements using a numba_dpex range kernel.
+"""
 import argparse
 from math import sqrt
 from string import Template
 from time import time
 
-import dpctl
-import dpctl.memory as dpctl_mem
 import dpnp as np
 
 import numba_dpex as ndpx
@@ -26,7 +27,6 @@ args = parser.parse_args()
 
 # Global work size is equal to the number of points
 global_size = ndpx.Range(args.n)
-# Local Work size is optional
 local_size = ndpx.Range(args.l)
 
 X = np.random.random((args.n, args.d)).astype(np.single)
@@ -34,12 +34,12 @@ D = np.empty((args.n, args.n), dtype=np.single)
 
 
 @ndpx.kernel
-def pairwise_distance(X, D, xshape0, xshape1):
+def pairwise_distance(nditem, X, D):
     """
     An Euclidean pairwise distance computation implemented as
     a ``kernel`` function.
     """
-    idx = ndpx.get_global_id(0)
+    idx = nditem.get_global_id(0)
 
     d0 = X[idx, 0] - X[idx, 0]
     # for i in range(xshape0):
@@ -54,10 +54,10 @@ def pairwise_distance(X, D, xshape0, xshape1):
 def driver():
     # measure running time
     times = list()
-    for repeat in range(args.r):
+    for _ in range(args.r):
         start = time()
-        pairwise_distance[ndpx.NdRange(global_size, local_size)](
-            X, D, X.shape[0], X.shape[1]
+        ndpx.call_kernel(
+            pairwise_distance, ndpx.NdRange(global_size, local_size), X, D
         )
         end = time()
 

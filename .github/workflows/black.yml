@@ -9,6 +9,8 @@ on:
   push:
     branches: [main]
 
+permissions: read-all
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "black"
@@ -19,9 +21,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       # Set up a Python environment for use in actions
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
 
       # Run black code formatter
       - uses: psf/black@stable

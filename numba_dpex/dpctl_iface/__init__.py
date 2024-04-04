@@ -6,3 +6,5 @@
 The ``dpctl_iface`` module implements Numba's interface to the libsyclinterface
 library that provides C bindings to DPC++'s SYCL runtime API.
 """
+
+from . import arrayobj

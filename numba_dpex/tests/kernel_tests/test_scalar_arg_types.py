@@ -13,14 +13,14 @@ N = 1024
 
 
 @dpex.kernel
-def scaling_kernel(a, b, c):
-    i = dpex.get_global_id(0)
+def scaling_kernel(item, a, b, c):
+    i = item.get_id(0)
     b[i] = a[i] * c
 
 
 @dpex.kernel
-def kernel_with_bool_arg(a, b, test):
-    i = dpex.get_global_id(0)
+def kernel_with_bool_arg(item, a, b, test):
+    i = item.get_id(0)
     if test:
         b[i] = a[i] + a[i]
     else:

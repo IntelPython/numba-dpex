@@ -13,6 +13,8 @@ from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry
 from numba.core.target_extension import CPU, target_registry
 
+from numba_dpex.core.datamodel.models import _init_dpjit_data_model_manager
+from numba_dpex.dpctl_iface import dpctlimpl
 from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 
@@ -49,6 +51,8 @@ class DpexTargetContext(CPUContext):
         self.lower_extensions = {}
         super().init()
 
+        self.data_model_manager = _init_dpjit_data_model_manager()
+
         # TODO: initialize nrt once switched to nrt from drt. Most likely we
         # call it somewhere. Double check.
         # https://github.com/IntelPython/numba-dpex/issues/1175
@@ -66,6 +70,7 @@ class DpexTargetContext(CPUContext):
         Load dpjit-specific registries.
         """
         self.install_registry(dpex_function_registry)
+        self.install_registry(dpctlimpl.registry)
 
         # loading CPU specific registries
         super().load_additional_registries()

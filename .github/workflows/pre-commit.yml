@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
 
+permissions: read-all
+
 jobs:
   pre-commit:
     runs-on: ubuntu-20.04
@@ -12,14 +14,14 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-    - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: '3.11'
         activate-environment: "coverage"
         channel-priority: "disabled"
         environment-file: environment/pre-commit.yml
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pre-commit
         key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}

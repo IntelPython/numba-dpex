@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl.tensor as dpt
 import dpnp
 import numpy as np
 
@@ -10,9 +9,8 @@ import numba_dpex as ndpx
 
 
 def make_write_values_kernel(n_rows):
-    """Uppermost kernel to set 1s in a certain way.
-    The uppermost kernel function invokes two levels
-    of inner functions to set 1s in an empty matrix
+    """Uppermost kernel to set 1s in a certain way. The uppermost kernel
+    function invokes two levels of inner functions to set 1s in an empty matrix
     in a certain way.
 
     Args:
@@ -20,8 +18,8 @@ def make_write_values_kernel(n_rows):
 
     Returns:
         numba_dpex.core.kernel_interface.dispatcher.JitKernel:
-            A JitKernel object that encapsulates a @kernel
-            decorated numba_dpex compiled kernel object.
+            A KernelDispatcher object that encapsulates a @kernel decorated
+            numba_dpex compiled kernel object.
     """
     write_values = make_write_values_kernel_func()
 
@@ -31,7 +29,7 @@ def make_write_values_kernel(n_rows):
             is_even = (row_idx % 2) == 0
             write_values(array_in, row_idx, is_even)
 
-    return write_values_kernel[ndpx.NdRange(ndpx.Range(1), ndpx.Range(1))]
+    return write_values_kernel
 
 
 def make_write_values_kernel_func():
@@ -47,7 +45,7 @@ def make_write_values_kernel_func():
     write_when_odd = make_write_values_kernel_func_inner(1)
     write_when_even = make_write_values_kernel_func_inner(3)
 
-    @ndpx.func
+    @ndpx.device_func
     def write_values(array_in, row_idx, is_even):
         if is_even:
             write_when_even(array_in, row_idx)
@@ -70,7 +68,7 @@ def make_write_values_kernel_func_inner(n_cols):
             numba_dpex compiled function object.
     """
 
-    @ndpx.func
+    @ndpx.device_func
     def write_values_inner(array_in, row_idx):
         for idx in range(n_cols):
             array_in[row_idx, idx] = 1
@@ -89,9 +87,9 @@ def test_qualname_basic():
         else:
             ans[i, 0] = 1
 
-    a = dpnp.zeros((10, 10), dtype=dpt.int64)
+    a = dpnp.zeros((10, 10), dtype=dpnp.int64)
 
     kernel = make_write_values_kernel(10)
-    kernel(a)
+    ndpx.call_kernel(kernel, ndpx.NdRange((1,), (1,)), a)
 
     assert np.array_equal(dpnp.asnumpy(a), ans)

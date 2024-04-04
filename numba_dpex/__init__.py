@@ -16,10 +16,9 @@ import dpctl
 import llvmlite.binding as ll
 from numba import __version__ as numba_version
 
-from numba_dpex.core.kernel_interface.launcher import call_kernel
-
 from .kernel_api_impl.spirv import target as spirv_kernel_target
-from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
+from .numba_patches import patch_is_ufunc
+from .register_kernel_api_overloads import init_kernel_api_spirv_overloads
 
 
 def load_dpctl_sycl_interface():
@@ -68,22 +67,10 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
 
 
 numba_sem_version = parse_sem_version(numba_version)
-if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
-    logging.warning(
-        "numba_dpex needs at least numba 0.58.0 but no more than 0.59.0, using "
-        f"numba={numba_version} may cause unexpected behavior"
-    )
+dpctl_sem_version = parse_sem_version(dpctl.__version__)
 
 # Monkey patches
 patch_is_ufunc.patch()
-patch_arrayexpr_tree_to_ir.patch()
-
-dpctl_sem_version = parse_sem_version(dpctl.__version__)
-if dpctl_sem_version < (0, 14):
-    logging.warning(
-        "numba_dpex needs dpctl 0.14 or greater, using "
-        f"dpctl={dpctl_sem_version} may cause unexpected behavior"
-    )
 
 from numba import prange  # noqa E402
 
@@ -97,7 +84,7 @@ import numba_dpex.core.targets.dpjit_target  # noqa E402
 import numba_dpex.core.types as types  # noqa E402
 from numba_dpex.core import boxing  # noqa E402
 from numba_dpex.core import config  # noqa E402
-from numba_dpex.core.kernel_interface import ranges_overloads  # noqa E402
+from numba_dpex.core.overloads import ranges_overloads  # noqa E402
 
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402
@@ -108,25 +95,9 @@ from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 # backward compatibility
 from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 
+from .core.decorators import device_func, dpjit, kernel  # noqa E402
+from .core.kernel_launcher import call_kernel, call_kernel_async  # noqa E402
 from .core.targets import dpjit_target  # noqa E402
-from .decorators import dpjit, func, kernel  # noqa E402
-from .ocl.stubs import (  # noqa E402
-    GLOBAL_MEM_FENCE,
-    LOCAL_MEM_FENCE,
-    atomic,
-    barrier,
-    get_global_id,
-    get_global_size,
-    get_group_id,
-    get_local_id,
-    get_local_size,
-    get_num_groups,
-    get_work_dim,
-    local,
-    mem_fence,
-    private,
-    sub_group_barrier,
-)
 
 load_dpctl_sycl_interface()
 del load_dpctl_sycl_interface
@@ -137,4 +108,16 @@ from numba_dpex._version import get_versions  # noqa E402
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = types.__all__ + ["Range", "NdRange", "call_kernel"]
+# Initialize the kernel_api SPIRV overloads
+init_kernel_api_spirv_overloads()
+
+__all__ = types.__all__ + [
+    "call_kernel",
+    "call_kernel_async",
+    "device_func",
+    "dpjit",
+    "kernel",
+    "prange",
+    "Range",
+    "NdRange",
+]

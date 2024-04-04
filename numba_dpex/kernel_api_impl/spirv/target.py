@@ -11,28 +11,26 @@ from functools import cached_property
 import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
-from numba import typeof
 from numba.core import cgutils, funcdesc
 from numba.core import types as nb_types
-from numba.core import typing, utils
+from numba.core import typing
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.target_extension import GPU, target_registry
-from numba.core.types import Array as NpArrayType
 from numba.core.types.scalars import IntEnumClass
-from numba.core.typing import cmathdecl, enumdecl, npydecl
+from numba.core.typing import cmathdecl, enumdecl
 
-from numba_dpex.core.datamodel.models import _init_data_model_manager
-from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
-from numba_dpex.core.typeconv import to_usm_ndarray
-from numba_dpex.core.types import IntEnumLiteral, USMNdArray
+from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
+from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
-from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.kernel_api.flag_enum import FlagEnum
-from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
-from numba_dpex.utils import address_space, calling_conv
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
+from numba_dpex.kernel_api_impl.spirv import printimpl
+from numba_dpex.kernel_api_impl.spirv.arrayobj import populate_array
+from numba_dpex.kernel_api_impl.spirv.math import mathdecl, mathimpl
 
 from . import codegen
+from .overloads._registry import registry as spirv_registry
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -41,9 +39,7 @@ LLVM_SPIRV_ARGS = 112
 
 class CompilationMode(IntEnum):
     """Flags used to determine how a function should be compiled by the
-    numba_dpex.experimental.dispatcher.KernelDispatcher. Note the functionality
-    will be merged into numba_dpex.core.kernel_interface.dispatcher in the
-    future.
+    numba_dpex.kernel_api_impl_spirv.dispatcher.KernelDispatcher.
 
         KERNEL :         Indicates that the function will be compiled into an
                          LLVM function that has ``spir_kernel`` calling
@@ -104,59 +100,11 @@ class SPIRVTypingContext(typing.BaseContext):
             retty = super().resolve_getattr(typ, attr)
         return retty
 
-    def resolve_argument_type(self, val):
-        """Return the Numba type of a Python value used as a function argument.
-
-        Overrides the implementation of ``numba.core.typing.BaseContext`` to
-        handle the special case of ``numba.core.types.npytypes.Array``. Whenever
-        a NumPy ndarray argument is encountered as an argument to a ``kernel``
-        function, it is converted to a ``numba_dpex.core.types.Array`` type.
-
-        Args:
-            val : A Python value that is passed as an argument to a ``kernel``
-                  function.
-
-        Returns: The Numba type corresponding to the Python value.
-
-        Raises:
-            ValueError: If the type of the Python value is not supported.
-
-        """
-        try:
-            numba_type = typeof(val)
-
-            if isinstance(numba_type, NpArrayType) and not isinstance(
-                numba_type, USMNdArray
-            ):
-                raise UnsupportedKernelArgumentError(
-                    type=str(type(val)), value=val
-                )
-
-        except ValueError:
-            # When an array-like kernel argument is not recognized by
-            # numba-dpex, this additional check sees if the array-like object
-            # implements the __sycl_usm_array_interface__ protocol. For such
-            # cases, we treat the object as an UsmNdArray type.
-            try:
-                suai_attrs = get_info_from_suai(val)
-                return to_usm_ndarray(suai_attrs)
-            except Exception as err:
-                raise UnsupportedKernelArgumentError(
-                    type=str(type(val)), value=val
-                ) from err
-
-        return super().resolve_argument_type(val)
-
     def load_additional_registries(self):
-        """Register the OpenCL API and math and other functions."""
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.ocl import mathdecl, ocldecl
+        """Register the OpenCL math functions along with dpnp math functions."""
 
-        self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
-        # TODO: https://github.com/IntelPython/numba-dpex/issues/1270
-        self.install_registry(npydecl.registry)
         self.install_registry(dpnpdecl.registry)
         self.install_registry(enumdecl.registry)
 
@@ -185,46 +133,34 @@ class SPIRVTargetContext(BaseContext):
     """
 
     implement_powi_as_math_call = True
+    allow_dynamic_globals = True
 
-    def _gen_arg_addrspace_md(self, fn):
-        """Generate kernel_arg_addr_space metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        codes = []
+    def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
+        super().__init__(typingctx, target)
 
-        for a in fnty.args:
-            if cgutils.is_pointer(a):
-                codes.append(address_space.GLOBAL)
-            else:
-                codes.append(address_space.PRIVATE)
+    def init(self):
+        """Called by the super().__init__ constructor to initalize the child
+        class.
+        """
+        # pylint: disable=import-outside-toplevel
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
 
-        consts = [llvmir.Constant(llvmir.IntType(32), x) for x in codes]
-        name = llvmir.MetaDataString(mod, "kernel_arg_addr_space")
-        return mod.add_metadata([name] + consts)
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
+        self._target_data = ll.create_target_data(
+            codegen.SPIR_DATA_LAYOUT[self.address_size]
+        )
 
-    def _gen_arg_type(self, fn):
-        """Generate kernel_arg_type metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_type")
-        return mod.add_metadata([name] + consts)
+        # Override data model manager to SPIR model
+        self.data_model_manager = _init_kernel_data_model_manager()
+        self.extra_compile_options = {}
 
-    def _gen_arg_type_qual(self, fn):
-        """Generate kernel_arg_type_qual metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, "") for _ in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_type_qual")
-        return mod.add_metadata([name] + consts)
+        _lazy_init_dpnp_db()
 
-    def _gen_arg_base_type(self, fn):
-        """Generate kernel_arg_base_type metadata."""
-        mod = fn.module
-        fnty = fn.type.pointee
-        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
-        name = llvmir.MetaDataString(mod, "kernel_arg_base_type")
-        return mod.add_metadata([name] + consts)
+        # we need to import it after, because before init it is None and
+        # variable is passed by value
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
+
+        self.ufunc_db = _dpnp_ufunc_db
 
     def _finalize_kernel_wrapper_module(self, fn):
         """Add metadata and calling convention to the wrapper function.
@@ -281,33 +217,6 @@ class SPIRVTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
-        super().__init__(typingctx, target)
-
-    def init(self):
-        """Called by the super().__init__ constructor to initalize the child
-        class.
-        """
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
-
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
-        self._target_data = ll.create_target_data(
-            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
-        )
-
-        # Override data model manager to SPIR model
-        self.data_model_manager = _init_data_model_manager()
-        self.extra_compile_options = {}
-
-        _lazy_init_dpnp_db()
-
-        # we need to import it after, because before init it is None and
-        # variable is passed by value
-        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
-
-        self.ufunc_db = _dpnp_ufunc_db
-
     def get_getattr(self, typ, attr):
         """
         Overrides the get_getattr function to provide an implementation for
@@ -363,11 +272,12 @@ class SPIRVTargetContext(BaseContext):
         for name, ufunc in ufuncs:
             for sig in self.ufunc_db[ufunc].keys():
                 if (
-                    sig in sig_mapper
-                    and (name, sig_mapper[sig]) in lower_ocl_impl
+                    sig in mathimpl.sig_mapper
+                    and (name, mathimpl.sig_mapper[sig])
+                    in mathimpl.lower_ocl_impl
                 ):
-                    self.ufunc_db[ufunc][sig] = lower_ocl_impl[
-                        (name, sig_mapper[sig])
+                    self.ufunc_db[ufunc][sig] = mathimpl.lower_ocl_impl[
+                        (name, mathimpl.sig_mapper[sig])
                     ]
 
     def load_additional_registries(self):
@@ -381,14 +291,14 @@ class SPIRVTargetContext(BaseContext):
 
         """
         # pylint: disable=import-outside-toplevel
-        from numba_dpex import printimpl
+        from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
-        from numba_dpex.ocl import mathimpl, oclimpl
 
-        self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(dpnpimpl.registry.functions)
         self.install_registry(printimpl.registry)
+        self.install_registry(dpctlimpl.registry)
+        self.install_registry(spirv_registry)
         # Replace dpnp math functions with their OpenCL versions.
         self.replace_dpnp_ufunc_with_ocl_intrinsics()
 
@@ -455,7 +365,7 @@ class SPIRVTargetContext(BaseContext):
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
         ret = super().declare_function(module, fndesc)
-        ret.calling_convention = calling_conv.CC_SPIR_FUNC
+        ret.calling_convention = CC_SPIR_FUNC
         return ret
 
     def insert_const_string(self, mod, string):
@@ -480,7 +390,7 @@ class SPIRVTargetContext(BaseContext):
         if gv is None:
             # Not defined yet
             gv = cgutils.add_global_variable(
-                mod, text.type, name=name, addrspace=address_space.GENERIC
+                mod, text.type, name=name, addrspace=address_space.GENERIC.value
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -488,7 +398,7 @@ class SPIRVTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return gv.bitcast(charty.as_pointer(address_space.GENERIC))
+        return gv.bitcast(charty.as_pointer(address_space.GENERIC.value))
 
     def addrspacecast(self, builder, src, addrspace):
         """Insert an LLVM addressspace cast instruction into the module.
@@ -506,10 +416,7 @@ class SPIRVTargetContext(BaseContext):
         """
         Populate array structure.
         """
-        # pylint: disable=import-outside-toplevel
-        from numba_dpex.core.kernel_interface import arrayobj
-
-        return arrayobj.populate_array(arr, **kwargs)
+        return populate_array(arr, **kwargs)
 
     def get_executable(self, func, fndesc, env):
         """Not implemented for SPIRVTargetContext"""

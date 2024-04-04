@@ -21,3 +21,4 @@ dependencies:
   - pexpect
   - scikit-build>=0.15*
   - cmake>=3.26*
+  - versioneer

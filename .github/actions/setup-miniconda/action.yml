@@ -1,0 +1,96 @@
+name: "Setup Miniconda"
+description: "Wrapper around conda-incubator/setup-miniconda to cache lock files."
+inputs:
+  python-version:
+    description: "Refer conda-incubator/setup-miniconda."
+    required: false
+    default: ""
+  activate-environment:
+    description: "Refer conda-incubator/setup-miniconda."
+    required: false
+    default: "test"
+  environment-file:
+    description: "Refer conda-incubator/setup-miniconda."
+    required: false
+    default: ""
+  channels:
+    description: "Refer conda-incubator/setup-miniconda."
+    required: false
+    default: ""
+  channel-priority:
+    description: "Refer conda-incubator/setup-miniconda, default changed to 'disabled'."
+    required: false
+    default: "disabled"
+  run-post:
+    description: "Refer conda-incubator/setup-miniconda, default changed to 'false'."
+    required: false
+    default: "false"
+  cache-number:
+    description: "Increase this value to reset cache if env file has not changed."
+    required: false
+    default: "-3"
+  dependencies:
+    description: "List of packages separated by ; to use in environment file."
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Get Date
+      id: get-date
+      shell: bash
+      run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+
+    - name: Generate channels hash
+      id: channels-hash
+      shell: bash
+      run: echo "hash=$(echo '${{inputs.channels}}' | sha1sum | cut -d ' ' -f 1)" >> $GITHUB_OUTPUT
+
+    - name: Write dependencies
+      if: inputs.dependencies != ''
+      shell: bash
+      run: |
+        printf "dependencies:;${{inputs.dependencies}}" | sed 's/;/\n  - /g' > \
+        ${{inputs.environment-file}}
+
+    - name: Cache Conda env
+      uses: actions/cache@v4
+      with:
+        # TODO: use channels as part of the key
+        path: ${{inputs.environment-file}}.lock
+        key: setup-miniconda-${{ runner.os }}-${{ runner.arch }}-${{
+          inputs.python-version }}-${{
+          steps.get-date.outputs.today }}-${{
+          steps.channels-hash.hash }}-${{
+          hashFiles(inputs.environment-file) }}-${{
+          inputs.cache-number }}
+      id: cache
+
+    - name: Setup miniconda
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: ${{ inputs.python-version }}
+        activate-environment: ${{inputs.activate-environment}}
+        channels: ${{ inputs.channels }}
+        channel-priority: ${{ inputs.channel-priority }}
+        environment-file: ${{ inputs.environment-file }}
+        run-post: ${{ inputs.run-post }}
+
+    - name: Save environment resolution
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash -l {0}
+      run: conda list --explicit > ${{inputs.activate-environment}}.lock
+
+    - name: Setup conda
+      if: steps.cache.outputs.cache-hit == 'true'
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: ${{inputs.activate-environment}}
+        channels: ${{ inputs.channels }}
+        environment-file: ${{inputs.activate-environment}}.lock
+        run-post: ${{ inputs.run-post }}
+
+    - name: Disable defaults
+      shell: bash -l {0}
+      run: conda config --remove channels defaults

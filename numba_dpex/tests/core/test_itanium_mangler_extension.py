@@ -6,8 +6,8 @@ import pytest
 from numba import float32, float64, int32, int64, uint32, uint64
 from numba.core import types
 
-import numba_dpex.core.itanium_mangler as itanium_mangler
-from numba_dpex.utils import address_space
+import numba_dpex.core.utils.itanium_mangler as itanium_mangler
+from numba_dpex.kernel_api import AddressSpace as address_space
 
 list_of_dtypes = [
     (int32, "i"),
@@ -25,10 +25,10 @@ def dtypes(request):
 
 
 list_of_addrspaces = [
-    (address_space.PRIVATE, "3AS0"),
-    (address_space.GLOBAL, "3AS1"),
-    (address_space.LOCAL, "3AS3"),
-    (address_space.GENERIC, "3AS4"),
+    (address_space.PRIVATE.value, "3AS0"),
+    (address_space.GLOBAL.value, "3AS1"),
+    (address_space.LOCAL.value, "3AS3"),
+    (address_space.GENERIC.value, "3AS4"),
 ]
 
 

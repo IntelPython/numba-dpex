@@ -4,26 +4,36 @@
 
 from llvmlite import ir as llvmir
 from numba.core import datamodel, types
-from numba.core.datamodel.models import PrimitiveModel, StructModel
-from numba.core.extending import register_model
+from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
 
 from numba_dpex.core.exceptions import UnreachableError
-from numba_dpex.utils import address_space
+from numba_dpex.core.types.kernel_api.atomic_ref import AtomicRefType
+from numba_dpex.core.types.kernel_api.index_space_ids import (
+    GroupType,
+    ItemType,
+    NdItemType,
+)
+from numba_dpex.core.types.kernel_api.local_accessor import (
+    DpctlMDLocalAccessorType,
+    LocalAccessorType,
+)
+from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 
 from ..types import (
-    Array,
     DpctlSyclEvent,
     DpctlSyclQueue,
     DpnpNdArray,
     IntEnumLiteral,
+    KernelDispatcherType,
     NdRangeType,
     RangeType,
     USMNdArray,
 )
 
 
-def _get_flattened_member_count(ty):
-    """Return the number of fields in an instance of a given StructModel."""
+def get_flattened_member_count(ty):
+    """Returns the number of fields in an instance of a given StructModel."""
+
     flattened_member_count = 0
     members = ty._members
     for member in members:
@@ -51,7 +61,7 @@ class GenericPointerModel(PrimitiveModel):
         adrsp = (
             fe_type.addrspace
             if fe_type.addrspace is not None
-            else address_space.GLOBAL
+            else address_space.GLOBAL.value
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
@@ -109,7 +119,7 @@ class USMArrayDeviceModel(StructModel):
         """
         Return the number of fields in an instance of a USMArrayDeviceModel.
         """
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class USMArrayHostModel(StructModel):
@@ -143,7 +153,7 @@ class USMArrayHostModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a USMArrayHostModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class SyclQueueModel(StructModel):
@@ -223,7 +233,7 @@ class RangeModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a RangeModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
 class NdRangeModel(StructModel):
@@ -246,10 +256,65 @@ class NdRangeModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a NdRangeModel."""
-        return _get_flattened_member_count(self)
+        return get_flattened_member_count(self)
 
 
-def _init_data_model_manager() -> datamodel.DataModelManager:
+class AtomicRefModel(StructModel):
+    """Data model for AtomicRefType."""
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            (
+                "ref",
+                types.CPointer(fe_type.dtype, addrspace=fe_type.address_space),
+            ),
+        ]
+        super().__init__(dmm, fe_type, members)
+
+
+class EmptyStructModel(StructModel):
+    """Data model that does not take space. Intended to be used with types that
+    are presented only at typing stage and not represented physically."""
+
+    def __init__(self, dmm, fe_type):
+        members = []
+        super().__init__(dmm, fe_type, members)
+
+
+class DpctlMDLocalAccessorModel(StructModel):
+    """Data model to represent DpctlMDLocalAccessorType.
+
+    Must be the same structure as
+    dpctl/syclinterface/dpctl_sycl_queue_interface.h::MDLocalAccessor.
+
+    Structure intended to be used only on host side of the kernel call.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            ("ndim", types.size_t),
+            ("dpctl_type_id", types.int32),
+            ("dim0", types.size_t),
+            ("dim1", types.size_t),
+            ("dim2", types.size_t),
+        ]
+        super().__init__(dmm, fe_type, members)
+
+
+class LocalAccessorModel(StructModel):
+    """
+    Data model for the LocalAccessor type when used in a host-only function.
+    """
+
+    def __init__(self, dmm, fe_type):
+        ndim = fe_type.ndim
+        members = [
+            ("shape", types.UniTuple(types.intp, ndim)),
+        ]
+        super().__init__(dmm, fe_type, members)
+
+
+def _init_kernel_data_model_manager() -> datamodel.DataModelManager:
     """Initializes a data model manager used by the SPRIVTarget.
 
     SPIRV kernel functions for certain types of devices require an explicit
@@ -269,7 +334,6 @@ def _init_data_model_manager() -> datamodel.DataModelManager:
     """
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
-    dmm.register(Array, USMArrayDeviceModel)
 
     # Register the USMNdArray type to USMArrayDeviceModel in numba_dpex's data
     # model manager. The dpex_data_model_manager is used by the DpexKernelTarget
@@ -285,28 +349,68 @@ def _init_data_model_manager() -> datamodel.DataModelManager:
 
     dmm.register(IntEnumLiteral, IntEnumLiteralModel)
 
+    # Register the types and data model in the DpexExpTargetContext
+    dmm.register(AtomicRefType, AtomicRefModel)
+
+    # Register the LocalAccessorType type
+    dmm.register(LocalAccessorType, USMArrayDeviceModel)
+
+    # Register the GroupType type
+    dmm.register(GroupType, EmptyStructModel)
+
+    # Register the ItemType type
+    dmm.register(ItemType, EmptyStructModel)
+
+    # Register the NdItemType type
+    dmm.register(NdItemType, EmptyStructModel)
+
     return dmm
 
 
-dpex_data_model_manager = _init_data_model_manager()
+def _init_dpjit_data_model_manager() -> datamodel.DataModelManager:
+    # TODO: copy manager
+    dmm = datamodel.default_manager
+
+    # Register the USMNdArray type to USMArrayHostModel in numba's default data
+    # model manager
+    dmm.register(USMNdArray, USMArrayHostModel)
+
+    # Register the DpnpNdArray type to USMArrayHostModel in numba's default data
+    # model manager
+    dmm.register(DpnpNdArray, USMArrayHostModel)
+
+    # Register the DpctlSyclQueue type
+    dmm.register(DpctlSyclQueue, SyclQueueModel)
+
+    # Register the DpctlSyclEvent type
+    dmm.register(DpctlSyclEvent, SyclEventModel)
+
+    # Register the RangeType type
+    dmm.register(RangeType, RangeModel)
+
+    # Register the NdRangeType type
+    dmm.register(NdRangeType, NdRangeModel)
+
+    # Register the GroupType type
+    dmm.register(GroupType, EmptyStructModel)
+
+    # Register the ItemType type
+    dmm.register(ItemType, EmptyStructModel)
+
+    # Register the NdItemType type
+    dmm.register(NdItemType, EmptyStructModel)
+
+    # Register the MDLocalAccessorType type
+    dmm.register(DpctlMDLocalAccessorType, DpctlMDLocalAccessorModel)
+
+    # Register the LocalAccessorType type
+    dmm.register(LocalAccessorType, LocalAccessorModel)
+
+    # Register the KernelDispatcherType type
+    dmm.register(KernelDispatcherType, OpaqueModel)
+
+    return dmm
 
 
-# Register the USMNdArray type to USMArrayDeviceModel in numba's default data
-# model manager
-register_model(USMNdArray)(USMArrayHostModel)
-
-# Register the DpnpNdArray type to USMArrayHostModel in numba's default data
-# model manager
-register_model(DpnpNdArray)(USMArrayHostModel)
-
-# Register the DpctlSyclQueue type
-register_model(DpctlSyclQueue)(SyclQueueModel)
-
-# Register the DpctlSyclEvent type
-register_model(DpctlSyclEvent)(SyclEventModel)
-
-# Register the RangeType type
-register_model(RangeType)(RangeModel)
-
-# Register the NdRangeType type
-register_model(NdRangeType)(NdRangeModel)
+dpex_data_model_manager = _init_kernel_data_model_manager()
+dpjit_data_model_manager = _init_dpjit_data_model_manager()

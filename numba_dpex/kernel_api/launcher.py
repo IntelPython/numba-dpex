@@ -7,8 +7,10 @@
 
 from inspect import signature
 from itertools import product
+from typing import Union
 
 from .index_space_ids import Group, Item, NdItem
+from .local_accessor import LocalAccessor, _LocalAccessorMock
 from .ranges import NdRange, Range
 
 
@@ -32,6 +34,12 @@ def _range_kernel_launcher(kernel_fn, index_range, *kernel_args):
 
     range_sets = [range(ir) for ir in index_range]
     index_tuples = list(product(*range_sets))
+
+    for karg in kernel_args:
+        if isinstance(karg, LocalAccessor):
+            raise TypeError(
+                "LocalAccessor arguments are only supported for NdRange kernels"
+            )
 
     for idx in index_tuples:
         it = Item(extent=index_range, index=idx)
@@ -66,6 +74,12 @@ def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
     local_index_tuples = list(product(*local_range_sets))
     group_index_tuples = list(product(*group_range_sets))
 
+    modified_kernel_args = []
+    for karg in kernel_args:
+        if isinstance(karg, LocalAccessor):
+            karg = _LocalAccessorMock(karg)
+        modified_kernel_args.append(karg)
+
     # Loop over the groups (parallel loop)
     for gidx in group_index_tuples:
         # loop over work items in the group (parallel loop)
@@ -76,40 +90,49 @@ def _ndrange_kernel_launcher(kernel_fn, index_range, *kernel_args):
                 global_id.append(
                     gidx_val * index_range.local_range[dim] + lidx[dim]
                 )
-            # Every NdItem has its own global Item, local Item and Group
-            nditem = NdItem(
-                global_item=Item(
-                    extent=index_range.global_range, index=global_id
-                ),
-                local_item=Item(extent=index_range.local_range, index=lidx),
-                group=Group(
-                    index_range.global_range,
-                    index_range.local_range,
-                    group_range,
-                    gidx,
-                ),
-            )
-
             if len(signature(kernel_fn).parameters) - len(kernel_args) != 1:
                 raise ValueError(
                     "Required number of kernel function arguments do not "
                     "match provided number of kernel args"
                 )
 
-            kernel_fn(nditem, *kernel_args)
+            kernel_fn(
+                NdItem(
+                    global_item=Item(
+                        extent=index_range.global_range, index=global_id
+                    ),
+                    local_item=Item(extent=index_range.local_range, index=lidx),
+                    group=Group(
+                        index_range.global_range,
+                        index_range.local_range,
+                        group_range,
+                        gidx,
+                    ),
+                ),
+                *modified_kernel_args,
+            )
 
 
-def call_kernel(kernel_fn, index_range, *kernel_args):
+def call_kernel(kernel_fn, index_range: Union[Range, NdRange], *kernel_args):
     """Mocks the launching of a kernel function over either a Range or NdRange.
 
+    .. important::
+        The function is meant to be used only during prototyping a kernel_api
+        function in Python. To launch a JIT compiled kernel, the
+        :func:`numba_dpex.core.kernel_launcher.call_kernel` function should be
+        used.
+
     Args:
-        kernel_fn : A callable function object
-        index_range (numba_dpex.Range): An instance of a Range object
+        kernel_fn : A callable function object written using
+            :py:mod:`numba_dpex.kernel_api`.
+        index_range (Range|NdRange): An instance of a Range or an NdRange object
+        kernel_args (List): The expanded list of actual arguments with which to
+            launch the kernel execution.
 
     Raises:
-        ValueError: If the first positional argument is not callable
+        ValueError: If the first positional argument is not callable.
         ValueError: If the second positional argument is not a Range or an
-        Ndrange object
+            Ndrange object
     """
     if not callable(kernel_fn):
         raise ValueError(

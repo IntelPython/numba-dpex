@@ -26,6 +26,7 @@ on:
       buildkit_version:
         default: '0.11.6'
 
+permissions: read-all
 
 jobs:
   env:
@@ -71,26 +72,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -113,26 +114,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -156,26 +157,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -200,26 +201,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -243,26 +244,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -288,26 +289,26 @@ jobs:
       DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/builder:${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -331,26 +332,26 @@ jobs:
       DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/builder:${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -378,26 +379,26 @@ jobs:
       DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/runtime:${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -426,26 +427,26 @@ jobs:
       DOCKER_TAG: ${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -469,26 +470,26 @@ jobs:
       DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/runtime:${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}-gpu
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}
@@ -513,26 +514,26 @@ jobs:
       DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/builder:${{ needs.env.outputs.VERSION }}-py${{ matrix.python_version }}-gpu
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             image=moby/buildkit:v${{ inputs.buildkit_version }}
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
           tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           target: ${{ env.BUILD_TARGET }}

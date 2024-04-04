@@ -4,30 +4,30 @@ on:
     branches:
       - main
   pull_request:
-    paths:
-      - 'numba_dpex/**'
-      - environment/coverage.yml
-      - pyproject.toml
+
+permissions: read-all
 
 jobs:
   main:
     name: Generate coverage and push to Coveralls.io
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     defaults:
       run:
         shell: bash -l {0}
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ github.token }}
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: '3.10'
           miniforge-variant: Mambaforge
@@ -51,32 +51,11 @@ jobs:
           conda env export > /tmp/env-cov.yml
           cat /tmp/env-cov.yml
 
+      # Ignoring test due to opencl driver optimization bug
       - name: Run tests with coverage
         run: |
-          pytest  -q --cov --cov-report term-missing --pyargs numba_dpex
+          pytest  -q --cov --cov-report xml --pyargs numba_dpex \
+            -k 'not test_1d_strided_dpnp_array_in_kernel[2]'
 
-      - name: Install coveralls
-        shell: bash -l {0}
-        run: |
-          pip install coveralls==3.2.0
-
-      - name: Upload coverage data to coveralls.io
-        run: |
-          coveralls --service=github
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-          COVERALLS_PARALLEL: true
-
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: main
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Coveralls Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
-        COVERALLS_PARALLEL: true
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2

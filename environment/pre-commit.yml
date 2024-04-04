@@ -21,3 +21,4 @@ dependencies:
   - cmake>=3.26*
   - pre-commit
   - pylint
+  - versioneer
