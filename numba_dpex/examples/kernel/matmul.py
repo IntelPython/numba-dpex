@@ -83,7 +83,7 @@ Y = _arange_reshaped((5, 5), dtype)
 X = dpt.asarray(X)
 Y = dpt.asarray(Y)
 device = X.device.sycl_device
-result = dpt.zeros((5, 5), dtype, device=device)
+result = dpt.zeros((5, 5), dtype=dtype, device=device)
 X_slm = kapi.LocalAccessor(shape=work_group_size, dtype=dtype)
 Y_slm = kapi.LocalAccessor(shape=work_group_size, dtype=dtype)
 
