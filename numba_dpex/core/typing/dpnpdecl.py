@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
+
 import dpnp
 import numpy as np
 from numba.core import types
@@ -34,14 +36,33 @@ class DpnpRulesArrayOperator(NumpyRulesArrayOperator):
     @property
     def ufunc(self):
         try:
-            op = getattr(dpnp, self._op_map[self.key])
+            dpnpop = getattr(dpnp, self._op_map[self.key])
             npop = getattr(np, self._op_map[self.key])
-            op.nin = npop.nin
-            op.nout = npop.nout
-            op.nargs = npop.nargs
-            op.types = npop.types
-            op.is_dpnp_ufunc = True
-            return op
+            if not hasattr(dpnpop, "nin"):
+                dpnpop.nin = npop.nin
+            if not hasattr(dpnpop, "nout"):
+                dpnpop.nout = npop.nout
+            if not hasattr(dpnpop, "nargs"):
+                dpnpop.nargs = dpnpop.nin + dpnpop.nout
+
+            # Check if the dpnp operation has a `types` attribute and if an
+            # AttributeError gets raised then "monkey patch" the attribute from
+            # numpy. If the attribute lookup raised a ValueError, it indicates
+            # that dpnp could not be resolve the supported types for the
+            # operation. Dpnp will fail to resolve the `types` if no SYCL
+            # devices are available on the system. For such a scenario, we print
+            # a user-level warning.
+            try:
+                dpnpop.types
+            except ValueError:
+                logging.exception(
+                    f"The types attribute for the {dpnpop} fuction could not "
+                    "be determined."
+                )
+            except AttributeError:
+                dpnpop.types = npop.types
+            dpnpop.is_dpnp_ufunc = True
+            return dpnpop
         except:
             pass
 

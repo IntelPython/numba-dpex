@@ -83,14 +83,16 @@ def _fill_ufunc_db_with_dpnp_ufuncs(ufunc_db):
             if not hasattr(dpnpop, "nargs"):
                 dpnpop.nargs = dpnpop.nin + dpnpop.nout
 
-            # Check for `types` attribute for dpnp op.
-            # AttributeError:
-            # If the `types` attribute is not present for dpnp op,
-            # use the `types` attribute from corresponding numpy op.
-            # ValueError:
-            # Store all dpnp ops that failed when `types` attribute
-            # is present but failure occurs when read.
-            # Log all failing dpnp outside this loop.
+            # Check if the dpnp operation has a `types` attribute and if an
+            # AttributeError gets raised then "monkey patch" the attribute from
+            # numpy. If the attribute lookup raised a ValueError, it indicates
+            # that dpnp could not be resolve the supported types for the
+            # operation. Dpnp will fail to resolve the `types` if no SYCL
+            # devices are available on the system. For such a scenario, we log
+            # dpnp operations for which the ValueError happened and print them
+            # as a user-level warning. It is done this way so that the failure
+            # to load the dpnpdecl registry due to the ValueError does not
+            # impede a user from importing numba-dpex.
             try:
                 dpnpop.types
             except ValueError:
