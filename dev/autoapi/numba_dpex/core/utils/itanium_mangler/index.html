@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.utils.itanium_mangler - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.utils.itanium_mangler - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,7 +242,7 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.core.utils.itanium_mangler">
-<span id="numba-dpex-core-utils-itanium-mangler"></span><h1>numba_dpex.core.utils.itanium_mangler<a class="headerlink" href="#module-numba_dpex.core.utils.itanium_mangler" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-core-utils-itanium-mangler"></span><h1>numba_dpex.core.utils.itanium_mangler<a class="headerlink" href="#module-numba_dpex.core.utils.itanium_mangler" title="Link to this heading">¶</a></h1>
 <p>Itanium CXX ABI Mangler</p>
 <p>Reference: <a class="reference external" href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html">https://itanium-cxx-abi.github.io/cxx-abi/abi.html</a></p>
 <p>The basics of the mangling scheme.</p>
@@ -265,10 +265,10 @@ the mentioned name encoding scheme.  Template parameters can contain literal
 values like the ‘1’ in the array type shown earlier.  There is special encoding
 scheme for them to avoid leading digits.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_or_value" title="numba_dpex.core.utils.itanium_mangler.mangle_type_or_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mangle_type_or_value</span></code></a>(typ)</p></td>
 <td><p>Mangle type parameter and arbitrary value.</p></td>
@@ -311,7 +311,7 @@ scheme for them to avoid leading digits.</p>
 </div>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.itanium_mangler.PREFIX" title="numba_dpex.core.utils.itanium_mangler.PREFIX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PREFIX</span></code></a></p></td>
 <td><p>-</p></td>
@@ -333,10 +333,10 @@ scheme for them to avoid leading digits.</p>
 </div>
 </section>
 <section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_type_or_value">
-<span class="sig-name descname"><span class="pre">mangle_type_or_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_or_value" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_type_or_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_or_value" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle type parameter and arbitrary value.</p>
 <p>This function extends Numba’s <cite>magle_type_or_value()</cite> to
 support numba.types.CPointer type, e.g. an <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">*</span></code> argument will be
@@ -361,18 +361,18 @@ follows the rule defined in Section 5.1.5.1 of the <code class="docutils literal
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_ext">
-<span class="sig-name descname"><span class="pre">mangle_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_ext" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_ext" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle identifier with Numba type objects and abi-tags.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_abi_tag">
-<span class="sig-name descname"><span class="pre">mangle_abi_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abi_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_abi_tag" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_abi_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abi_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_abi_tag" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_identifier">
-<span class="sig-name descname"><span class="pre">mangle_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_identifier" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_identifier" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle the identifier with optional template parameters and abi_tags.</p>
 <p>Note:</p>
 <p>This treats ‘.’ as ‘::’ in C++.</p>
@@ -380,7 +380,7 @@ follows the rule defined in Section 5.1.5.1 of the <code class="docutils literal
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_type_c">
-<span class="sig-name descname"><span class="pre">mangle_type_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_c" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_type_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_c" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle C type name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -391,72 +391,72 @@ follows the rule defined in Section 5.1.5.1 of the <code class="docutils literal
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_type_or_value_numba">
-<span class="sig-name descname"><span class="pre">mangle_type_or_value_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_or_value_numba" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_type_or_value_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type_or_value_numba" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle type parameter and arbitrary value.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_templated_ident">
-<span class="sig-name descname"><span class="pre">mangle_templated_ident</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_templated_ident" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_templated_ident</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_templated_ident" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle templated identifier.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_args_c">
-<span class="sig-name descname"><span class="pre">mangle_args_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_args_c" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_args_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_args_c" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle sequence of C type names</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_args">
-<span class="sig-name descname"><span class="pre">mangle_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_args" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_args" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle sequence of Numba type objects and arbitrary values.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_c">
-<span class="sig-name descname"><span class="pre">mangle_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_c" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_c" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle identifier with C type names</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle">
-<span class="sig-name descname"><span class="pre">mangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ident</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abi_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle" title="Link to this definition">¶</a></dt>
 <dd><p>Mangle identifier with Numba type objects and abi-tags.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.prepend_namespace">
-<span class="sig-name descname"><span class="pre">prepend_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mangled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.prepend_namespace" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">prepend_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mangled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.prepend_namespace" title="Link to this definition">¶</a></dt>
 <dd><p>Prepend namespace to mangled name.</p>
 </dd></dl>
 
 </section>
 <section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.PREFIX">
-<span class="sig-name descname"><span class="pre">PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_Z'</span></em><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.PREFIX" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_Z'</span></em><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.PREFIX" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.C2CODE">
-<span class="sig-name descname"><span class="pre">C2CODE</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.C2CODE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">C2CODE</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.C2CODE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.N2C">
-<span class="sig-name descname"><span class="pre">N2C</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.N2C" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">N2C</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.N2C" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_type">
-<span class="sig-name descname"><span class="pre">mangle_type</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_type</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_type" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.itanium_mangler.mangle_value">
-<span class="sig-name descname"><span class="pre">mangle_value</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_value" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mangle_value</span></span><a class="headerlink" href="#numba_dpex.core.utils.itanium_mangler.mangle_value" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -538,8 +538,8 @@ follows the rule defined in Section 5.1.5.1 of the <code class="docutils literal
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

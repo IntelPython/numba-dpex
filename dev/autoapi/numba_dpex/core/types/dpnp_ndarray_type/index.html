@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.types.dpnp_ndarray_type - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.types.dpnp_ndarray_type - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,12 +242,12 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.core.types.dpnp_ndarray_type">
-<span id="numba-dpex-core-types-dpnp-ndarray-type"></span><h1>numba_dpex.core.types.dpnp_ndarray_type<a class="headerlink" href="#module-numba_dpex.core.types.dpnp_ndarray_type" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-core-types-dpnp-ndarray-type"></span><h1>numba_dpex.core.types.dpnp_ndarray_type<a class="headerlink" href="#module-numba_dpex.core.types.dpnp_ndarray_type" title="Link to this heading">¶</a></h1>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray" title="numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DpnpNdArray</span></code></a></p></td>
 <td><p>The Numba type to represent an dpnp.ndarray. The type has the same</p></td>
@@ -257,10 +257,10 @@
 </div>
 </section>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">address_space.GLOBAL.value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">address_space.GLOBAL.value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../usm_ndarray_type/index.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.types.usm_ndarray_type.USMNdArray</span></code></a></p>
 <p>The Numba type to represent an dpnp.ndarray. The type has the same
 structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
@@ -326,8 +326,8 @@ structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

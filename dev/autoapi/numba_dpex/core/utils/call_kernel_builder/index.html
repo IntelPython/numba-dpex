@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.utils.call_kernel_builder - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.utils.call_kernel_builder - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,13 +242,13 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.core.utils.call_kernel_builder">
-<span id="numba-dpex-core-utils-call-kernel-builder"></span><h1>numba_dpex.core.utils.call_kernel_builder<a class="headerlink" href="#module-numba_dpex.core.utils.call_kernel_builder" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-core-utils-call-kernel-builder"></span><h1>numba_dpex.core.utils.call_kernel_builder<a class="headerlink" href="#module-numba_dpex.core.utils.call_kernel_builder" title="Link to this heading">¶</a></h1>
 <p>Module that contains numba style wrapper around sycl kernel submit.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule" title="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPIRVKernelModule</span></code></a></p></td>
 <td><p>Represents SPIRV binary code and function name in this binary</p></td>
@@ -261,7 +261,7 @@
 </div>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.get_queue_from_llvm_values" title="numba_dpex.core.utils.call_kernel_builder.get_queue_from_llvm_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_queue_from_llvm_values</span></code></a>(ctx, builder, ty_kernel_args, ll_kernel_args)</p></td>
 <td><p>Get the sycl queue from the first USMNdArray argument. Prior passes</p></td>
@@ -271,7 +271,7 @@
 </div>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
 <table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.MAX_SIZE_OF_SYCL_RANGE" title="numba_dpex.core.utils.call_kernel_builder.MAX_SIZE_OF_SYCL_RANGE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_SIZE_OF_SYCL_RANGE</span></code></a></p></td>
 <td><p>-</p></td>
@@ -287,16 +287,16 @@
 </div>
 </section>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SPIRVKernelModule</span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SPIRVKernelModule</span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 <p>Represents SPIRV binary code and function name in this binary</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
 <table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_name" title="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_name</span></code></a></p></td>
 <td><p>-</p></td>
@@ -310,26 +310,26 @@
 <p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_name">
-<span class="sig-name descname"><span class="pre">kernel_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_name" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">kernel_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_name" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_bitcode">
-<span class="sig-name descname"><span class="pre">kernel_bitcode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bytes</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_bitcode" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">kernel_bitcode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bytes</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule.kernel_bitcode" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelLaunchIRBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.builder.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_dmm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.datamodel.DataModelManager</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelLaunchIRBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.builder.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_dmm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.datamodel.DataModelManager</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder" title="Link to this definition">¶</a></dt>
 <dd><p>Helper class to build the LLVM IR for the submission of a kernel.</p>
 <p>The class generates LLVM IR inside the current LLVM module that is needed
 for submitting kernels. The LLVM Values that</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.dpexrt" title="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.dpexrt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dpexrt</span></code></a>()</p></td>
 <td><p>Dpex runtime context.</p></td>
@@ -379,13 +379,13 @@ for submitting kernels. The LLVM Values that</p>
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.dpexrt">
-<span class="sig-name descname"><span class="pre">dpexrt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.dpexrt" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">dpexrt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.dpexrt" title="Link to this definition">¶</a></dt>
 <dd><p>Dpex runtime context.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.get_queue">
-<span class="sig-name descname"><span class="pre">get_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dpctl.SyclQueue</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.get_queue" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dpctl.SyclQueue</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.get_queue" title="Link to this definition">¶</a></dt>
 <dd><p>Allocates memory on the stack to store a DPCTLSyclQueueRef.</p>
 <p>Returns: A LLVM Value storing the pointer to the SYCL queue created
 using the filter string for the Python exec_queue (dpctl.SyclQueue).</p>
@@ -393,13 +393,13 @@ using the filter string for the Python exec_queue (dpctl.SyclQueue).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel">
-<span class="sig-name descname"><span class="pre">set_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_kernel_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_kernel_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel" title="Link to this definition">¶</a></dt>
 <dd><p>Sets kernel to the argument list.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel_from_spirv">
-<span class="sig-name descname"><span class="pre">set_kernel_from_spirv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule" title="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule"><span class="pre">SPIRVKernelModule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel_from_spirv" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_kernel_from_spirv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule" title="numba_dpex.core.utils.call_kernel_builder.SPIRVKernelModule"><span class="pre">SPIRVKernelModule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_kernel_from_spirv" title="Link to this definition">¶</a></dt>
 <dd><p>Sets kernel to the argument list from the SPIRV bytecode.</p>
 <p>It pastes bytecode as a constant string and create kernel bundle from it
 using SYCL API. It caches kernel, so it won’t be sent to device second
@@ -408,53 +408,53 @@ time.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue">
-<span class="sig-name descname"><span class="pre">set_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue_ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue" title="Link to this definition">¶</a></dt>
 <dd><p>Sets queue to the argument list.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue_from_arguments">
-<span class="sig-name descname"><span class="pre">set_queue_from_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue_from_arguments" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_queue_from_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_queue_from_arguments" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the sycl queue from the first USMNdArray argument provided
 earlier.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range">
-<span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range" title="Link to this definition">¶</a></dt>
 <dd><p>Sets global and local range if provided to the argument list.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range_from_indexer">
-<span class="sig-name descname"><span class="pre">set_range_from_indexer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_indexer_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../types/kernel_api/ranges/index.html#numba_dpex.core.types.kernel_api.ranges.RangeType" title="numba_dpex.core.types.kernel_api.ranges.RangeType"><span class="pre">RangeType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../../types/kernel_api/ranges/index.html#numba_dpex.core.types.kernel_api.ranges.NdRangeType" title="numba_dpex.core.types.kernel_api.ranges.NdRangeType"><span class="pre">NdRangeType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_index_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.BaseStructType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range_from_indexer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_range_from_indexer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_indexer_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../types/kernel_api/ranges/index.html#numba_dpex.core.types.kernel_api.ranges.RangeType" title="numba_dpex.core.types.kernel_api.ranges.RangeType"><span class="pre">RangeType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../../types/kernel_api/ranges/index.html#numba_dpex.core.types.kernel_api.ranges.NdRangeType" title="numba_dpex.core.types.kernel_api.ranges.NdRangeType"><span class="pre">NdRangeType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_index_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.BaseStructType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_range_from_indexer" title="Link to this definition">¶</a></dt>
 <dd><p>Returns two lists of LLVM IR Values that hold the unboxed extents of
 a Python Range or NdRange object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments">
-<span class="sig-name descname"><span class="pre">set_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numba.core.types.Type</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numba.core.types.Type</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments" title="Link to this definition">¶</a></dt>
 <dd><p>Sets flattened kernel args, kernel arg types and number of those
 arguments to the argument list.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments_form_tuple">
-<span class="sig-name descname"><span class="pre">set_arguments_form_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_kernel_args_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.types.containers.UniTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_kernel_args_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments_form_tuple" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_arguments_form_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_kernel_args_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.types.containers.UniTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_kernel_args_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_arguments_form_tuple" title="Link to this definition">¶</a></dt>
 <dd><p>Sets flattened kernel args, kernel arg types and number of those
 arguments to the argument list based on the arguments stored in tuple.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events">
-<span class="sig-name descname"><span class="pre">set_dependent_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dep_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_dependent_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dep_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events" title="Link to this definition">¶</a></dt>
 <dd><p>Sets dependent events to the argument list.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events_from_tuple">
-<span class="sig-name descname"><span class="pre">set_dependent_events_from_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_dependent_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.types.containers.UniTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_dependent_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events_from_tuple" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_dependent_events_from_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty_dependent_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.types.containers.UniTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_dependent_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.Instruction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.set_dependent_events_from_tuple" title="Link to this definition">¶</a></dt>
 <dd><p>Set’s dependent events from tuple represented by LLVM IR.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -465,7 +465,7 @@ arguments to the argument list based on the arguments stored in tuple.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.submit">
-<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.submit" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.submit" title="Link to this definition">¶</a></dt>
 <dd><p>Submits kernel by calling sycl.dpctl_queue_submit_range or
 sycl.dpctl_queue_submit_ndrange. Must be called after all arguments
 set.</p>
@@ -473,7 +473,7 @@ set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.acquire_meminfo_and_submit_release">
-<span class="sig-name descname"><span class="pre">acquire_meminfo_and_submit_release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.acquire_meminfo_and_submit_release" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">acquire_meminfo_and_submit_release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">llvmlite.ir.Instruction</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.KernelLaunchIRBuilder.acquire_meminfo_and_submit_release" title="Link to this definition">¶</a></dt>
 <dd><p>Schedule sycl host task to release nrt meminfo of the arguments used
 to run job. Use it to keep arguments alive during kernel execution.</p>
 </dd></dl>
@@ -482,10 +482,10 @@ to run job. Use it to keep arguments alive during kernel execution.</p>
 
 </section>
 <section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.get_queue_from_llvm_values">
-<span class="sig-name descname"><span class="pre">get_queue_from_llvm_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.builder.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ty_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numba.core.types.Type</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.get_queue_from_llvm_values" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_queue_from_llvm_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.builder.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ty_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numba.core.types.Type</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ll_kernel_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">llvmlite.ir.Instruction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.get_queue_from_llvm_values" title="Link to this definition">¶</a></dt>
 <dd><p>Get the sycl queue from the first USMNdArray argument. Prior passes
 before lowering make sure that compute-follows-data is enforceable
 for a specific call to a kernel. As such, at the stage of lowering
@@ -494,20 +494,20 @@ the queue from the first USMNdArray argument can be extracted.</p>
 
 </section>
 <section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.MAX_SIZE_OF_SYCL_RANGE">
-<span class="sig-name descname"><span class="pre">MAX_SIZE_OF_SYCL_RANGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.MAX_SIZE_OF_SYCL_RANGE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">MAX_SIZE_OF_SYCL_RANGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.MAX_SIZE_OF_SYCL_RANGE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.OPEN_CL_OPT_DISABLE_FLAG">
-<span class="sig-name descname"><span class="pre">OPEN_CL_OPT_DISABLE_FLAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-cl-opt-disable'</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.OPEN_CL_OPT_DISABLE_FLAG" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">OPEN_CL_OPT_DISABLE_FLAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-cl-opt-disable'</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.OPEN_CL_OPT_DISABLE_FLAG" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.call_kernel_builder.L0_OPT_DISABLE_FLAG">
-<span class="sig-name descname"><span class="pre">L0_OPT_DISABLE_FLAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-g'</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.L0_OPT_DISABLE_FLAG" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">L0_OPT_DISABLE_FLAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-g'</span></em><a class="headerlink" href="#numba_dpex.core.utils.call_kernel_builder.L0_OPT_DISABLE_FLAG" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -601,8 +601,8 @@ the queue from the first USMNdArray argument can be extracted.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Debugging Features in Numba 0.55" href="numba-0.55.html" /><link rel="prev" title="Altering Execution" href="altering.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Debugging Local Variables - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>Debugging Local Variables - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,14 +242,14 @@
         </div>
         <article role="main">
           <section id="debugging-local-variables">
-<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Link to this heading">#</a></h1>
+<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Link to this heading">¶</a></h1>
 <p>Several conditions could influence debugging of local variables:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#numba-opt"><span class="std std-ref">Optimization Level for LLVM</span></a></p></li>
 <li><p><a class="reference internal" href="#local-variables-lifetime"><span class="std std-ref">Local Variables Lifetime in Numba IR</span></a></p></li>
 </ol>
 <section id="optimization-level-for-llvm">
-<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Link to this heading">#</a></h2>
+<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Link to this heading">¶</a></h2>
 <p>Numba provides environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> for configuring
 optimization level for LLVM. The default optimization level is three.
 Refer <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a> for details. It is recommended to debug with
@@ -260,7 +260,7 @@ as follows:</p>
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher levels - some variables may be optimized out.</p></li>
 </ul>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">10</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">11</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -305,7 +305,7 @@ as follows:</p>
 </section>
 </section>
 <section id="local-variables-lifetime-in-numba-ir">
-<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Link to this heading">#</a></h2>
+<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Link to this heading">¶</a></h2>
 <p>Lifetime of Python variables are different from lifetime of variables in compiled code.
 Numba analyses variables lifetime and try to optimize it.
 The debugger can show the variable values, but they may be zeros
@@ -317,7 +317,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <p>Default is zero.</p>
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.</p>
 <section id="example-1-using-numba-extend-variable-lifetimes">
-<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Link to this heading">#</a></h3>
+<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Link to this heading">¶</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">14</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
 <span class="linenos">15</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="n">numba</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Set breakpoint here</span>
@@ -361,7 +361,7 @@ for extending the lifetime of variables to the end of the block in which their l
 </div>
 </section>
 <section id="example-2-using-numba-dump-annotation">
-<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Link to this heading">#</a></h3>
+<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Link to this heading">¶</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">10</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">11</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -575,7 +575,7 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 </div>
 </section>
 <section id="example-3-using-info-locals">
-<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Link to this heading">#</a></h3>
+<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Link to this heading">¶</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 6</span>
@@ -761,8 +761,8 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

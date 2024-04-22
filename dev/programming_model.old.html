@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Programming Model - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>Programming Model - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,7 +242,7 @@
         </div>
         <article role="main">
           <span class="target" id="programming-model"></span><section id="id2">
-<h1>Programming Model<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
+<h1>Programming Model<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h1>
 <p>In a heterogeneous system there may be <strong>multiple</strong> devices a Python user may
 want to engage. For example, it is common for a consumer-grade laptop to feature
 an integrated or a discrete GPU alongside a CPU.</p>
@@ -255,7 +255,7 @@ devices?</p></li>
 <li><p>How does a Python application manage data sharing?</p></li>
 </ol>
 <section id="recognizing-available-devices">
-<h2>Recognizing available devices<a class="headerlink" href="#recognizing-available-devices" title="Link to this heading">#</a></h2>
+<h2>Recognizing available devices<a class="headerlink" href="#recognizing-available-devices" title="Link to this heading">¶</a></h2>
 <p>Python package <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> answers these questions. All the computational devices
 known to the underlying DPC++ runtime can be accessed using
 <code class="docutils literal notranslate"><span class="pre">dpctl.get_devices()</span></code>. A specific device of interest <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/device_selection.html">can be selected</a>
@@ -282,7 +282,7 @@ can be used to query properies of the device, such as its name, vendor, maximal
 number of computational units, memory size, etc.</p>
 </section>
 <section id="specifying-offload-target">
-<h2>Specifying offload target<a class="headerlink" href="#specifying-offload-target" title="Link to this heading">#</a></h2>
+<h2>Specifying offload target<a class="headerlink" href="#specifying-offload-target" title="Link to this heading">¶</a></h2>
 <p>To answer the second question on the list we need a digression to explain
 offloading in oneAPI DPC++ first.</p>
 <div class="admonition note">
@@ -391,7 +391,7 @@ sharing was managed by DPC++ runtime, while in the case of using <code class="do
 kernel it was managed during execution of <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method.</p>
 </section>
 <section id="data-sharing">
-<h2>Data sharing<a class="headerlink" href="#data-sharing" title="Link to this heading">#</a></h2>
+<h2>Data sharing<a class="headerlink" href="#data-sharing" title="Link to this heading">¶</a></h2>
 <p>Implicit management of data is surely convenient, but its use in an interpreted
 code comes at a performance cost. A runtime must implicitly copy data from host
 to the device before the kernel execution commences and then copy some (or all)
@@ -425,7 +425,7 @@ data.</p>
 needed.</p>
 </section>
 <section id="compute-follows-data">
-<h2>Compute follows data<a class="headerlink" href="#compute-follows-data" title="Link to this heading">#</a></h2>
+<h2>Compute follows data<a class="headerlink" href="#compute-follows-data" title="Link to this heading">¶</a></h2>
 <p>Automatic deduction of the execution queue from allocation queues is consistent
 with “<a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html">local control for data allocation target</a>”
 in the array API standard. User has full control over memory allocation through
@@ -536,8 +536,8 @@ issue on GitHub or reach out on Gitter should you encounter any issues.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=15c9f761"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+</div><script src="_static/documentation_options.js?v=3f411995"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

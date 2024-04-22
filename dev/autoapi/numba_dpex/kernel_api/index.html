@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="numba_dpex.core.decorators" href="../core/decorators/index.html" /><link rel="prev" title="API Reference" href="../../index.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.kernel_api - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.kernel_api - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,16 +242,16 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.kernel_api">
-<span id="numba-dpex-kernel-api"></span><h1>numba_dpex.kernel_api<a class="headerlink" href="#module-numba_dpex.kernel_api" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-kernel-api"></span><h1>numba_dpex.kernel_api<a class="headerlink" href="#module-numba_dpex.kernel_api" title="Link to this heading">¶</a></h1>
 <p>The kernel_api module provides a set of Python classes and functions that are
 analogous to the C++ SYCL API. The kernel_api module is meant to allow
 prototyping SYCL-like kernels in pure Python before compiling them using
 numba_dpex.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicRef</span></code></a></p></td>
 <td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p></td>
@@ -291,7 +291,7 @@ numba_dpex.</p>
 </div>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.atomic_fence" title="numba_dpex.kernel_api.atomic_fence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_fence</span></code></a>(memory_order, memory_scope)</p></td>
 <td><p>Performs a memory fence operations across all work-items.</p></td>
@@ -307,17 +307,17 @@ numba_dpex.</p>
 </div>
 </section>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomicRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryOrder.RELAXED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.DEVICE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomicRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryOrder.RELAXED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.DEVICE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p>
 <p>An atomic reference is a view into a data container that can be then updated
 atomically using any of the <code class="docutils literal notranslate"><span class="pre">fetch_*</span></code> member functions of the class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
 <table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AtomicRef.fetch_add" title="numba_dpex.kernel_api.AtomicRef.fetch_add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_add</span></code></a>(val)</p></td>
 <td><p>Adds the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> to the object referenced by the AtomicRef</p></td>
@@ -358,7 +358,7 @@ atomically using any of the <code class="docutils literal notranslate"><span cla
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_add">
-<span class="sig-name descname"><span class="pre">fetch_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_add" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_add" title="Link to this definition">¶</a></dt>
 <dd><p>Adds the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> to the object referenced by the AtomicRef
 and assigns the result to the value of the referenced object. Returns
 the original value of the object.</p>
@@ -372,7 +372,7 @@ the original value of the object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_sub">
-<span class="sig-name descname"><span class="pre">fetch_sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_sub" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_sub" title="Link to this definition">¶</a></dt>
 <dd><p>Subtracts the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> to the object referenced by the
 AtomicRef and assigns the result to the value of the referenced object.
 Returns the original value of the object.</p>
@@ -387,7 +387,7 @@ AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_min">
-<span class="sig-name descname"><span class="pre">fetch_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_min" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_min" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the minimum value of the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> and the object
 referenced by the AtomicRef and assigns the result to the value of the
 referenced object. Returns the original value of the object.</p>
@@ -402,7 +402,7 @@ AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_max">
-<span class="sig-name descname"><span class="pre">fetch_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_max" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_max" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the maximum value of the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> and the object
 referenced by the AtomicRef and assigns the result to the value of the
 referenced object. Returns the original value of the object.</p>
@@ -417,7 +417,7 @@ AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_and">
-<span class="sig-name descname"><span class="pre">fetch_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_and" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_and" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the bitwise AND of the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> and the object
 referenced by the AtomicRef and assigns the result to the value of the
 referenced object. Returns the original value of the object.</p>
@@ -432,7 +432,7 @@ the AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_or">
-<span class="sig-name descname"><span class="pre">fetch_or</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_or" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_or</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_or" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the bitwise OR of the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> and the object
 referenced by the AtomicRef and assigns the result to the value of the
 referenced object. Returns the original value of the object.</p>
@@ -447,7 +447,7 @@ the AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.fetch_xor">
-<span class="sig-name descname"><span class="pre">fetch_xor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_xor" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fetch_xor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.fetch_xor" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the bitwise XOR of the operand <code class="docutils literal notranslate"><span class="pre">val</span></code> and the object
 referenced by the AtomicRef and assigns the result to the value of the
 referenced object. Returns the original value of the object.</p>
@@ -462,14 +462,14 @@ the AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.load" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.load" title="Link to this definition">¶</a></dt>
 <dd><p>Loads the value of the object referenced by the AtomicRef.</p>
 <p>Returns: The value of the object referenced by the AtomicRef.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.store">
-<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.store" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.store" title="Link to this definition">¶</a></dt>
 <dd><p>Stores operand <code class="docutils literal notranslate"><span class="pre">val</span></code> to the object referenced by the AtomicRef.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -480,7 +480,7 @@ the AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.exchange">
-<span class="sig-name descname"><span class="pre">exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.exchange" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.exchange" title="Link to this definition">¶</a></dt>
 <dd><p>Replaces the value of the object referenced by the AtomicRef
 with value of <code class="docutils literal notranslate"><span class="pre">val</span></code>. Returns the original value of the referenced
 object.</p>
@@ -495,7 +495,7 @@ the AtomicRef.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef.compare_exchange">
-<span class="sig-name descname"><span class="pre">compare_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.compare_exchange" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compare_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef.compare_exchange" title="Link to this definition">¶</a></dt>
 <dd><p>Compares the value of the object referenced by the AtomicRef
 against the value of <code class="docutils literal notranslate"><span class="pre">expected[expected_idx]</span></code>. If the values are
 equal, replaces the value of the referenced object with the value of
@@ -509,7 +509,7 @@ referenced by the AtomicRef.</p></li>
 <li><p><strong>desired</strong> – Value that replaces the value of the object referenced by
 the AtomicRef.</p></li>
 <li><p><strong>expected_idx</strong> – Offset in <cite>expected</cite> array where the expected</p></li>
-<li><p><strong>present.</strong> (<em>value</em><em> of </em><em>the object referenced by the AtomicRef is</em>) – </p></li>
+<li><p><strong>present.</strong> (<em>value</em><em> of </em><em>the object referenced by the AtomicRef is</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -523,7 +523,7 @@ the AtomicRef.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
 <p>Represents a particular work-group within a parallel execution and
 provides API to extract various properties of the work-group. An instance
@@ -533,7 +533,7 @@ a work-item belongs.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
 <table class="summarytable docutils align-default" id="id4">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group.get_group_id" title="numba_dpex.kernel_api.Group.get_group_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_id</span></code></a>(dim)</p></td>
 <td><p>Returns a specific coordinate of the multi-dimensional index of a group.</p></td>
@@ -559,7 +559,7 @@ a work-item belongs.</p>
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_id">
-<span class="sig-name descname"><span class="pre">get_group_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_group_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_id" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a specific coordinate of the multi-dimensional index of a group.</p>
 <p>Since the work-items in a work-group have a defined position within the
 global nd-range, the returned group id can be used along with the local
@@ -584,7 +584,7 @@ multi-dimensional index within an nd-range.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_linear_id">
-<span class="sig-name descname"><span class="pre">get_group_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_group_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_id" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a linearized version of the work-group index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -599,7 +599,7 @@ nd-range.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_range">
-<span class="sig-name descname"><span class="pre">get_group_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_group_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_range" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the extent of the range of groups in an nd-range for given dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -617,7 +617,7 @@ index is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_group_linear_range">
-<span class="sig-name descname"><span class="pre">get_group_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_group_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_group_linear_range" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of work-groups in the nd_range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -632,7 +632,7 @@ nd-range kernel.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_local_range">
-<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_range" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the extent of the range of work-items in a work-group for given dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -651,7 +651,7 @@ dimension.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group.get_local_linear_range">
-<span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_linear_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group.get_local_linear_range" title="Link to this definition">¶</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -668,14 +668,14 @@ nd-range.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
 <p>Identifies the work-item in a parallel execution of a kernel launched with
 the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> index-space class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id5">
 <table class="summarytable docutils align-default" id="id5">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item.get_linear_id" title="numba_dpex.kernel_api.Item.get_linear_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linear_id</span></code></a>()</p></td>
 <td><p>Returns the linear id associated with this item for all dimensions.</p></td>
@@ -695,7 +695,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item.get_linear_id">
-<span class="sig-name descname"><span class="pre">get_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_linear_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_linear_id" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the linear id associated with this item for all dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -709,7 +709,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item.get_id">
-<span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_id" title="Link to this definition">¶</a></dt>
 <dd><p>Get the id for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -723,13 +723,13 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item.get_linear_range">
-<span class="sig-name descname"><span class="pre">get_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_linear_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_linear_range" title="Link to this definition">¶</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item.get_range">
-<span class="sig-name descname"><span class="pre">get_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item.get_range" title="Link to this definition">¶</a></dt>
 <dd><p>Get the range size for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -745,14 +745,14 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
 <a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id6">
 <table class="summarytable docutils align-default" id="id6">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem.get_global_id" title="numba_dpex.kernel_api.NdItem.get_global_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_id</span></code></a>(idx)</p></td>
 <td><p>Get the global id for a specific dimension.</p></td>
@@ -787,7 +787,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_global_id">
-<span class="sig-name descname"><span class="pre">get_global_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_id" title="Link to this definition">¶</a></dt>
 <dd><p>Get the global id for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -801,7 +801,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_global_linear_id">
-<span class="sig-name descname"><span class="pre">get_global_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_linear_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_linear_id" title="Link to this definition">¶</a></dt>
 <dd><p>Get the linearized global id for the item for all dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -815,7 +815,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_local_id">
-<span class="sig-name descname"><span class="pre">get_local_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_id" title="Link to this definition">¶</a></dt>
 <dd><p>Get the local id for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -829,7 +829,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_local_linear_id">
-<span class="sig-name descname"><span class="pre">get_local_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_linear_id" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_linear_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_linear_id" title="Link to this definition">¶</a></dt>
 <dd><p>Get the local linear id associated with this item for all
 dimensions.</p>
 <dl class="field-list simple">
@@ -844,7 +844,7 @@ dimensions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_global_range">
-<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_range" title="Link to this definition">¶</a></dt>
 <dd><p>Get the global range size for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -858,7 +858,7 @@ dimensions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_local_range">
-<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_range" title="Link to this definition">¶</a></dt>
 <dd><p>Get the local range size for a specific dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -872,19 +872,19 @@ dimensions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_local_linear_range">
-<span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_linear_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_local_linear_range" title="Link to this definition">¶</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_global_linear_range">
-<span class="sig-name descname"><span class="pre">get_global_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_linear_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_linear_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_global_linear_range" title="Link to this definition">¶</a></dt>
 <dd><p>Return the total number of work-items in the work-group.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem.get_group">
-<span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_group" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem.get_group" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -897,7 +897,7 @@ dimensions.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.LocalAccessor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.LocalAccessor" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.LocalAccessor" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p>
 <p>The class acts as a proxy to allocating device local memory and
 accessing that memory from within a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated
@@ -906,7 +906,7 @@ function.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
 <p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
@@ -914,7 +914,7 @@ implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id7">
 <table class="summarytable docutils align-default" id="id7">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id7" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace.PRIVATE" title="numba_dpex.kernel_api.AddressSpace.PRIVATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PRIVATE</span></code></a></p></td>
 <td><p>-</p></td>
@@ -937,34 +937,34 @@ implementation in dpcpp.</p>
 <p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace.PRIVATE">
-<span class="sig-name descname"><span class="pre">PRIVATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.PRIVATE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">PRIVATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.PRIVATE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace.GLOBAL">
-<span class="sig-name descname"><span class="pre">GLOBAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.GLOBAL" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">GLOBAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.GLOBAL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace.CONSTANT">
-<span class="sig-name descname"><span class="pre">CONSTANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.CONSTANT" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">CONSTANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.CONSTANT" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace.LOCAL">
-<span class="sig-name descname"><span class="pre">LOCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.LOCAL" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">LOCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.LOCAL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace.GENERIC">
-<span class="sig-name descname"><span class="pre">GENERIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.GENERIC" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">GENERIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace.GENERIC" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
 <p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
@@ -972,7 +972,7 @@ implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id8">
 <table class="summarytable docutils align-default" id="id8">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id8" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder.RELAXED" title="numba_dpex.kernel_api.MemoryOrder.RELAXED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RELAXED</span></code></a></p></td>
 <td><p>-</p></td>
@@ -998,39 +998,39 @@ implementation in dpcpp.</p>
 <p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.RELAXED">
-<span class="sig-name descname"><span class="pre">RELAXED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.RELAXED" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">RELAXED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.RELAXED" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.ACQUIRE">
-<span class="sig-name descname"><span class="pre">ACQUIRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.ACQUIRE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ACQUIRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.ACQUIRE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED">
-<span class="sig-name descname"><span class="pre">CONSUME_UNSUPPORTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">CONSUME_UNSUPPORTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.RELEASE">
-<span class="sig-name descname"><span class="pre">RELEASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.RELEASE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">RELEASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.RELEASE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.ACQ_REL">
-<span class="sig-name descname"><span class="pre">ACQ_REL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.ACQ_REL" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ACQ_REL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.ACQ_REL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder.SEQ_CST">
-<span class="sig-name descname"><span class="pre">SEQ_CST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.SEQ_CST" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SEQ_CST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder.SEQ_CST" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
 <p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
@@ -1038,7 +1038,7 @@ implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id9">
 <table class="summarytable docutils align-default" id="id9">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id9" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope.WORK_ITEM" title="numba_dpex.kernel_api.MemoryScope.WORK_ITEM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WORK_ITEM</span></code></a></p></td>
 <td><p>-</p></td>
@@ -1061,34 +1061,34 @@ implementation in dpcpp.</p>
 <p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope.WORK_ITEM">
-<span class="sig-name descname"><span class="pre">WORK_ITEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.WORK_ITEM" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">WORK_ITEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.WORK_ITEM" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope.SUB_GROUP">
-<span class="sig-name descname"><span class="pre">SUB_GROUP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.SUB_GROUP" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SUB_GROUP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.SUB_GROUP" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope.WORK_GROUP">
-<span class="sig-name descname"><span class="pre">WORK_GROUP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.WORK_GROUP" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">WORK_GROUP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.WORK_GROUP" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope.DEVICE">
-<span class="sig-name descname"><span class="pre">DEVICE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.DEVICE" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DEVICE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.DEVICE" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope.SYSTEM">
-<span class="sig-name descname"><span class="pre">SYSTEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.SYSTEM" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SYSTEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope.SYSTEM" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.PrivateArray">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PrivateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.PrivateArray" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PrivateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.PrivateArray" title="Link to this definition">¶</a></dt>
 <dd><p>An array that gets allocated on the private memory of a work-item.</p>
 <p>The class should be used to allocate small arrays on the private
 per-work-item memory for fast accesses inside a kernel. It is similar in
@@ -1098,7 +1098,7 @@ not a direct analogue.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange" title="Link to this definition">¶</a></dt>
 <dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p>
 <p>The NdRange defines the index space for a work group as well as
 the global index space. It is passed to parallel_for to execute
@@ -1111,7 +1111,7 @@ class.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id10">
 <table class="summarytable docutils align-default" id="id10">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id10" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange.get_global_range" title="numba_dpex.kernel_api.NdRange.get_global_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_range</span></code></a>()</p></td>
 <td><p>Returns a Range defining the index space.</p></td>
@@ -1125,7 +1125,7 @@ class.</p>
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange.get_global_range">
-<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange.get_global_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange.get_global_range" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a Range defining the index space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1139,7 +1139,7 @@ class.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange.get_local_range">
-<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange.get_local_range" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange.get_local_range" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a Range defining the index space of a work group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1155,7 +1155,7 @@ class.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Range">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.Range" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.Range" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p>
 <p>The range is an abstraction that describes the number of elements
@@ -1168,7 +1168,7 @@ the behavior of <cite>sycl::range</cite>.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id11">
 <table class="summarytable docutils align-default" id="id11">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id11" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range.get" title="numba_dpex.kernel_api.Range.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(index)</p></td>
 <td><p>Returns the range of a single dimension.</p></td>
@@ -1182,7 +1182,7 @@ the behavior of <cite>sycl::range</cite>.</p>
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Range.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Range.get" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Range.get" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the range of a single dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1199,7 +1199,7 @@ the behavior of <cite>sycl::range</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Range.size">
-<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Range.size" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Range.size" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the size of a range.</p>
 <p>Returns the size of a range by multiplying
 the range of the individual dimensions.</p>
@@ -1217,10 +1217,10 @@ the range of the individual dimensions.</p>
 
 </section>
 <section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.atomic_fence">
-<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">atomic_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryOrder" title="numba_dpex.kernel_api.memory_enums.MemoryOrder"><span class="pre">MemoryOrder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.atomic_fence" title="Link to this definition">¶</a></dt>
 <dd><p>Performs a memory fence operations across all work-items.</p>
 <p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::atomic_fence</span></code> function and
 controls the order of memory accesses (loads and stores) by individual
@@ -1243,7 +1243,7 @@ the memory ordering constraints apply.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.group_barrier">
-<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="memory_enums/index.html#numba_dpex.kernel_api.memory_enums.MemoryScope" title="numba_dpex.kernel_api.memory_enums.MemoryScope"><span class="pre">MemoryScope</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.group_barrier" title="Link to this definition">¶</a></dt>
 <dd><p>Performs a barrier operation across all work-items in a work-group.</p>
 <p>The function is equivalent to the <code class="docutils literal notranslate"><span class="pre">sycl::group_barrier</span></code> function. It
 synchronizes work within a group of work-items. All the work-items
@@ -1277,7 +1277,7 @@ consistency operations that are performed by the barrier.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.call_kernel">
-<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">call_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><span class="pre">NdRange</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.call_kernel" title="Link to this definition">¶</a></dt>
 <dd><p>Mocks the launching of a kernel function over either a Range or NdRange.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -1468,8 +1468,8 @@ Ndrange object</p></li>
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

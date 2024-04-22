@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Useful links" href="../useful_links.html" /><link rel="prev" title="SYCL* and numba-dpex Feature Comparison" href="../supported_sycl_features.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Experimental Features - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>Experimental Features - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,13 +242,13 @@
         </div>
         <article role="main">
           <span class="target" id="index"></span><section id="experimental-features">
-<h1>Experimental Features<a class="headerlink" href="#experimental-features" title="Link to this heading">#</a></h1>
+<h1>Experimental Features<a class="headerlink" href="#experimental-features" title="Link to this heading">¶</a></h1>
 <p>Numba-dpex includes various experimental features that are not yet suitable for
 everyday production usage, but are included as an engineering preview.
 The most prominent experimental features currently included in numba-dpex are
 listed in this section.</p>
 <section id="compiling-and-offloading-dpnp-statements">
-<h2>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements<a class="headerlink" href="#compiling-and-offloading-dpnp-statements" title="Link to this heading">#</a></h2>
+<h2>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements<a class="headerlink" href="#compiling-and-offloading-dpnp-statements" title="Link to this heading">¶</a></h2>
 <p>Data Parallel Extension for NumPy* (<a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a>) is a drop-in NumPy* replacement
 library built using the oneAPI software stack including <a class="reference external" href="https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/2023-2/intel-oneapi-math-kernel-library-onemkl.html">oneMKL</a>, <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-library.html#gs.5izf63">oneDPL</a> and
 <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a>. numba-dpex has experimental support for compiling a subset of dpnp
@@ -272,7 +272,7 @@ following code snippet:</p>
 </div>
 </section>
 <section id="offloading-prange-loops">
-<h2>Offloading <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops<a class="headerlink" href="#offloading-prange-loops" title="Link to this heading">#</a></h2>
+<h2>Offloading <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops<a class="headerlink" href="#offloading-prange-loops" title="Link to this heading">¶</a></h2>
 <p>numba-dpex supports using the <code class="docutils literal notranslate"><span class="pre">numba.prange</span></code> statements with
 <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> objects. All such <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops are offloaded as kernels and
 executed on a device inferred using the compute follows data programming model.
@@ -343,7 +343,7 @@ demonstrated by the following naive pairwise distance computation.</p>
 </div>
 </section>
 <section id="kernel-fusion">
-<h2>Kernel fusion<a class="headerlink" href="#kernel-fusion" title="Link to this heading">#</a></h2>
+<h2>Kernel fusion<a class="headerlink" href="#kernel-fusion" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 
@@ -420,8 +420,8 @@ demonstrated by the following naive pairwise distance computation.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+</div><script src="../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

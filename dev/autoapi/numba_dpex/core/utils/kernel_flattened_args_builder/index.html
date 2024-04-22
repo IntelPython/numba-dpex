@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.utils.kernel_flattened_args_builder - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.utils.kernel_flattened_args_builder - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,15 +242,15 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.core.utils.kernel_flattened_args_builder">
-<span id="numba-dpex-core-utils-kernel-flattened-args-builder"></span><h1>numba_dpex.core.utils.kernel_flattened_args_builder<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_flattened_args_builder" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-core-utils-kernel-flattened-args-builder"></span><h1>numba_dpex.core.utils.kernel_flattened_args_builder<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_flattened_args_builder" title="Link to this heading">¶</a></h1>
 <p>Provides helpers to populate the list of kernel arguments that will
 be passed to a DPCTLQueue_Submit function call by a KernelLaunchIRBuilder
 object.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg" title="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelArg</span></code></a></p></td>
 <td><p>Stores the llvm IR value and the dpctl typeid for a kernel argument.</p></td>
@@ -263,16 +263,16 @@ object.</p>
 </div>
 </section>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelArg</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelArg</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 <p>Stores the llvm IR value and the dpctl typeid for a kernel argument.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val" title="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val"><code class="xref py py-obj docutils literal notranslate"><span class="pre">llvm_val</span></code></a></p></td>
 <td><p>-</p></td>
@@ -286,19 +286,19 @@ object.</p>
 <p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val">
-<span class="sig-name descname"><span class="pre">llvm_val</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">llvmlite.ir.Instruction</span></em><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">llvm_val</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">llvmlite.ir.Instruction</span></em><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.llvm_val" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.typeid">
-<span class="sig-name descname"><span class="pre">typeid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.typeid" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">typeid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg.typeid" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelFlattenedArgsBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_dmm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelFlattenedArgsBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.core.cpu.CPUContext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">llvmlite.ir.IRBuilder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_dmm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder" title="Link to this definition">¶</a></dt>
 <dd><p>Helper to generate the flattened list of kernel arguments to be
 passed to a DPCTLQueue_Submit function.</p>
 <p><strong>Note</strong> Two separate data models are used when building a flattened
@@ -324,7 +324,7 @@ correct type for the attribute.</p>
 <p class="rubric">Overview</p>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
 <table class="summarytable docutils align-default" id="id3">
-<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument" title="numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_argument</span></code></a>(arg_type, arg_packed_llvm_val)</p></td>
 <td><p>Add flattened representation of a kernel argument.</p></td>
@@ -341,13 +341,13 @@ correct type for the attribute.</p>
 <p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument">
-<span class="sig-name descname"><span class="pre">add_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_packed_llvm_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_packed_llvm_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.add_argument" title="Link to this definition">¶</a></dt>
 <dd><p>Add flattened representation of a kernel argument.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.get_kernel_arg_list">
-<span class="sig-name descname"><span class="pre">get_kernel_arg_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg" title="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg"><span class="pre">KernelArg</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.get_kernel_arg_list" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_kernel_arg_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg" title="numba_dpex.core.utils.kernel_flattened_args_builder.KernelArg"><span class="pre">KernelArg</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.get_kernel_arg_list" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a list of KernelArg objects representing a flattened kernel
 argument.</p>
 <dl class="field-list simple">
@@ -362,7 +362,7 @@ argument.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.print_kernel_arg_list">
-<span class="sig-name descname"><span class="pre">print_kernel_arg_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.print_kernel_arg_list" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">print_kernel_arg_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_flattened_args_builder.KernelFlattenedArgsBuilder.print_kernel_arg_list" title="Link to this definition">¶</a></dt>
 <dd><p>Prints out the kernel argument list in a human readable format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -443,8 +443,8 @@ argument.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

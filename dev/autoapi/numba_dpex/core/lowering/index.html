@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>numba_dpex.core.lowering - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>numba_dpex.core.lowering - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,13 +242,13 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.core.lowering">
-<span id="numba-dpex-core-lowering"></span><h1>numba_dpex.core.lowering<a class="headerlink" href="#module-numba_dpex.core.lowering" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-core-lowering"></span><h1>numba_dpex.core.lowering<a class="headerlink" href="#module-numba_dpex.core.lowering" title="Link to this heading">¶</a></h1>
 <p>Registers any custom lowering functions to default Numba lowering registry.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
-<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.lowering.dpex_dispatcher_const" title="numba_dpex.core.lowering.dpex_dispatcher_const"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dpex_dispatcher_const</span></code></a>(context)</p></td>
 <td><p>Dummy lowering function for a KernelDispatcherType object.</p></td>
@@ -258,7 +258,7 @@
 </div>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
 <table class="summarytable docutils align-default" id="id2">
-<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.lowering.registry" title="numba_dpex.core.lowering.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>-</p></td>
@@ -271,10 +271,10 @@
 </div>
 </section>
 <section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.lowering.dpex_dispatcher_const">
-<span class="sig-name descname"><span class="pre">dpex_dispatcher_const</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.lowering.dpex_dispatcher_const" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">dpex_dispatcher_const</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.lowering.dpex_dispatcher_const" title="Link to this definition">¶</a></dt>
 <dd><p>Dummy lowering function for a KernelDispatcherType object.</p>
 <p>The dummy lowering function for the KernelDispatcher types is added so that
 a <a class="reference internal" href="../decorators/index.html#numba_dpex.core.decorators.kernel" title="numba_dpex.core.decorators.kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.decorators.kernel()</span></code></a> decorated function can be passed
@@ -283,15 +283,15 @@ as an argument to dpjit.</p>
 
 </section>
 <section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.lowering.registry">
-<span class="sig-name descname"><span class="pre">registry</span></span><a class="headerlink" href="#numba_dpex.core.lowering.registry" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">registry</span></span><a class="headerlink" href="#numba_dpex.core.lowering.registry" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="numba_dpex.core.lowering.lower_constant">
-<span class="sig-name descname"><span class="pre">lower_constant</span></span><a class="headerlink" href="#numba_dpex.core.lowering.lower_constant" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">lower_constant</span></span><a class="headerlink" href="#numba_dpex.core.lowering.lower_constant" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -359,8 +359,8 @@ as an argument to dpjit.</p>
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

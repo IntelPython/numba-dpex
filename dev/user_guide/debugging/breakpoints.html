@@ -14,11 +14,11 @@
     </script>
     <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Stepping" href="stepping.html" /><link rel="prev" title="Supported Features" href="features.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Breakpoints - numba-dpex 0.23.0rc1+6.g1336f7620 documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>Breakpoints - numba-dpex 0.23.0rc1+13.g09728307c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
     
@@ -134,7 +134,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</div></a>
+      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0rc1+13.g09728307c documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +157,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+6.g1336f7620 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+13.g09728307c documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,7 +242,7 @@
         </div>
         <article role="main">
           <section id="breakpoints">
-<h1>Breakpoints<a class="headerlink" href="#breakpoints" title="Link to this heading">#</a></h1>
+<h1>Breakpoints<a class="headerlink" href="#breakpoints" title="Link to this heading">¶</a></h1>
 <p>A <cite>breakpoint</cite> makes your program stop whenever a certain point in the program
 is reached.</p>
 <p>You can set breakpoints with the <code class="docutils literal notranslate"><span class="pre">break</span></code> command to specify the place where
@@ -287,7 +287,7 @@ function names.</p>
 </pre></div>
 </div>
 <section id="break-function">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Link to this heading">¶</a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -306,7 +306,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-filename-linenumber">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Link to this heading">¶</a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -325,7 +325,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-filename-function">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Link to this heading">¶</a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -344,7 +344,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-if-cond">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Link to this heading">¶</a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -362,7 +362,7 @@ function names.</p>
 </div>
 </section>
 <section id="breakpoints-with-nested-functions">
-<h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Link to this heading">#</a></h2>
+<h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Link to this heading">¶</a></h2>
 <p>Consider numba-dpex kernel code. See the source file
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_dpex_func.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
@@ -486,8 +486,8 @@ function names.</p>
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=15c9f761"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+</div><script src="../../_static/documentation_options.js?v=3f411995"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
