@@ -37,9 +37,11 @@ requirements:
         - dpctl >=0.16.1
         - dpnp >=0.14
         - numpy >=1.24
+        # TODO: temporary fix, because IGC is broken for output produced by llvm-spirv 2024.1 on windows
         # TODO: there is no 2024 release for python 3.11
         # - dpcpp-llvm-spirv >={{ required_compiler_version }}
-        - dpcpp-llvm-spirv >=2023.0
+        - dpcpp-llvm-spirv >=2023.0 # [not win]
+        - dpcpp-llvm-spirv >=2023.0,<2024.1 # [win]
         - wheel >=0.43
         - pip >=24.0
         - python-build >=1.1
@@ -50,6 +52,9 @@ requirements:
         - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
         - {{ pin_compatible('intel-cmplr-lib-rt', min_pin='x.x', max_pin='x') }}
         - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x') }}
+        # TODO: temporary fix, because IGC is broken for output produced by llvm-spirv 2024.1 on windows
+        - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x') }} # [not win]
+        - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x', upper_bound='2024.1') }} # [win]
         - {{ pin_compatible('dpnp', min_pin='x.x.x', max_pin='x.x') }}
         - {{ pin_compatible('dpctl', min_pin='x.x.x', max_pin='x.x') }}
         - {{ pin_compatible('numba', min_pin='x.x.x', max_pin='x.x') }}
