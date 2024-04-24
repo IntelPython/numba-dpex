@@ -11,7 +11,7 @@ from functools import cached_property
 import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
-from numba.core import cgutils, funcdesc
+from numba.core import cgutils
 from numba.core import types as nb_types
 from numba.core import typing
 from numba.core.base import BaseContext
@@ -23,6 +23,7 @@ from numba.core.typing import cmathdecl, enumdecl
 from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
 from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
+from numba_dpex.core.utils import itanium_mangler
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 from numba_dpex.kernel_api.memory_enums import AddressSpace as address_space
 from numba_dpex.kernel_api_impl.spirv import printimpl
@@ -188,7 +189,7 @@ class SPIRVTargetContext(BaseContext):
         wrapper_module = self._internal_codegen.create_empty_spirv_module(
             "dpex.kernel.wrapper"
         )
-        wrappername = func.name.replace("dpex_fn", "dpex_kernel")
+        wrappername = func.name + ("dpex_kernel")
         argtys = list(arginfo.argument_types)
         fnty = llvmir.FunctionType(
             llvmir.IntType(32),
@@ -319,12 +320,9 @@ class SPIRVTargetContext(BaseContext):
 
     def mangler(self, name, types, *, abi_tags=(), uid=None):
         """
-        Generates a name for a function by appending \"dpex_fn\" to the
-        name of the function before calling Numba's default function name
-        mangler."""
-        return funcdesc.default_mangler(
-            name + "dpex_fn", types, abi_tags=abi_tags, uid=uid
-        )
+        Generates a mangled function name using numba_dpex's itanium mangler.
+        """
+        return itanium_mangler.mangle(name, types, abi_tags=abi_tags, uid=uid)
 
     def prepare_spir_kernel(self, func, argtypes):
         """Generates a wrapper function with \"spir_kernel\" calling conv that
