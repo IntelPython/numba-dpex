@@ -38,10 +38,8 @@ requirements:
         - dpnp >=0.14
         - numpy >=1.24
         # TODO: temporary fix, because IGC is broken for output produced by llvm-spirv 2024.1 on windows
-        # TODO: there is no 2024 release for python 3.11
-        # - dpcpp-llvm-spirv >={{ required_compiler_version }}
-        - dpcpp-llvm-spirv >=2023.0 # [not win]
-        - dpcpp-llvm-spirv >=2023.0,<2024.1 # [win]
+        - dpcpp-llvm-spirv >={{ required_compiler_version }} # [not win]
+        - dpcpp-llvm-spirv >={{ required_compiler_version }},<2024.1 # [win]
         - wheel >=0.43
         - pip >=24.0
         - python-build >=1.1

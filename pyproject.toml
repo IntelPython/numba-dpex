@@ -39,7 +39,7 @@ dependencies = [
   "dpctl>=0.16.1",
   "dpnp>=0.14.0",
   "numpy>=1.24.0",
-  "dpcpp_llvm_spirv>=2023.0"
+  "dpcpp_llvm_spirv>=2024.0"
 ]
 description = "An extension for Numba to add data-parallel offload capability"
 dynamic = ["version"]
