@@ -21,6 +21,7 @@ from numba.core.types.scalars import IntEnumClass
 from numba.core.typing import cmathdecl, enumdecl
 
 from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
+from numba_dpex.core.debuginfo import DIBuilder as DpexDIbuilder
 from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.core.utils import itanium_mangler
@@ -135,6 +136,7 @@ class SPIRVTargetContext(BaseContext):
 
     implement_powi_as_math_call = True
     allow_dynamic_globals = True
+    DIBuilder = DpexDIbuilder
 
     def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
         super().__init__(typingctx, target)
