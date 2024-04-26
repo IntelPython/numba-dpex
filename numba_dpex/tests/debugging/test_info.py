@@ -104,7 +104,7 @@ def test_info_functions(app):
 
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"11:\s+[a-z 0-9\*]+__main__::data_parallel_sum")
+    app.child.expect(r"11:\s+[a-z 0-9\*]+data_parallel_sum")
 
 
 @pytest.mark.parametrize(

@@ -56,11 +56,6 @@ def test_device_func_breakpoint(
     SAT-4449
     """
 
-    if api == "numba-ndpx-kernel" and breakpoint != "side-by-side.py:15":
-        pytest.skip(
-            "Breakpoint by function name not working for numba-dpex."
-        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1242
-
     app.breakpoint(breakpoint, condition=condition)
     app.run(f"side-by-side.py --api={api}")
     app.expect_hit_breakpoint("side-by-side.py:15")
