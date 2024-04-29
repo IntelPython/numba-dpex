@@ -5,7 +5,6 @@
 import sys
 
 import dpnp
-from numba.core import compiler
 
 import numba_dpex as dpex
 
@@ -51,7 +50,7 @@ class RangeKernelTemplate:
         self._param_dict = param_dict
 
         self._kernel_txt = self._generate_kernel_stub_as_string()
-        self._kernel_ir = self._generate_kernel_ir()
+        self._py_func = self._generate_kernel_ir()
 
     def _generate_kernel_stub_as_string(self):
         """Generates a stub dpex kernel for the parfor as a string.
@@ -109,17 +108,15 @@ class RangeKernelTemplate:
         globls = {"dpnp": dpnp, "dpex": dpex}
         locls = {}
         exec(self._kernel_txt, globls, locls)
-        kernel_fn = locls[self._kernel_name]
-
-        return compiler.run_frontend(kernel_fn)
+        return locls[self._kernel_name]
 
     @property
-    def kernel_ir(self):
-        """Returns the Numba IR generated for a RangeKernelTemplate.
-
-        Returns: The Numba functionIR object for the compiled kernel_txt string.
+    def py_func(self):
+        """Returns the python function generated for a
+            TreeReduceIntermediateKernelTemplate.
+        Returns: The python function object for the compiled kernel_txt string.
         """
-        return self._kernel_ir
+        return self._py_func
 
     @property
     def kernel_string(self):
@@ -134,7 +131,3 @@ class RangeKernelTemplate:
         """Helper to print the kernel function string."""
         print(self._kernel_txt)
         sys.stdout.flush()
-
-    def dump_kernel_ir(self):
-        """Helper to dump the Numba IR for the RangeKernelTemplate."""
-        self._kernel_ir.dump()

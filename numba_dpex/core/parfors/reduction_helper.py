@@ -275,12 +275,14 @@ class ReductionKernelVariables:
         param_dict = _legalize_names_with_typemap(parfor_params, typemap)
         ind_dict = _legalize_names_with_typemap(loop_indices, typemap)
         self._parfor_reddict = parfor_reddict
+        # output of reduction
         self._parfor_redvars = parfor_redvars
         self._redvars_legal_dict = legalize_names(parfor_redvars)
         # Compute a new list of legal loop index names.
         legal_loop_indices = [ind_dict[v] for v in loop_indices]
 
         tmp1 = []
+        # output of reduction computed on device
         self._final_sum_names = []
         self._parfor_redvars_to_redarrs = {}
         for ele1 in reductionHelperList:
@@ -397,16 +399,8 @@ class ReductionKernelVariables:
     def work_group_size(self):
         return self._work_group_size
 
-    def copy_final_sum_to_host(self, parfor_kernel):
+    def copy_final_sum_to_host(self, queue_ref):
         lowerer = self.lowerer
-        kl_builder = KernelLaunchIRBuilder(
-            lowerer.context, lowerer.builder, kernel_dmm
-        )
-
-        # Create a local variable storing a pointer to a DPCTLSyclQueueRef
-        # pointer.
-        queue_ref = kl_builder.get_queue(exec_queue=parfor_kernel.queue)
-
         builder = lowerer.builder
         context = lowerer.context
 
@@ -448,5 +442,3 @@ class ReductionKernelVariables:
             event_ref = sycl.dpctl_queue_memcpy(builder, *args)
             sycl.dpctl_event_wait(builder, event_ref)
             sycl.dpctl_event_delete(builder, event_ref)
-
-        sycl.dpctl_queue_delete(builder, queue_ref)

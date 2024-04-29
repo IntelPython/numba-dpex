@@ -6,7 +6,6 @@ import operator
 import sys
 
 import dpnp
-from numba.core import compiler
 
 import numba_dpex.kernel_api as kapi
 
@@ -48,7 +47,7 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         self._typemap = typemap
 
         self._kernel_txt = self._generate_kernel_stub_as_string()
-        self._kernel_ir = self._generate_kernel_ir()
+        self._py_func = self._generate_kernel_ir()
 
     def _generate_kernel_stub_as_string(self):
         """Generate reduction main kernel template"""
@@ -161,18 +160,15 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         globls = {"dpnp": dpnp, "kapi": kapi}
         locls = {}
         exec(self._kernel_txt, globls, locls)
-        kernel_fn = locls[self._kernel_name]
-
-        return compiler.run_frontend(kernel_fn)
+        return locls[self._kernel_name]
 
     @property
-    def kernel_ir(self):
-        """Returns the Numba IR generated for a
+    def py_func(self):
+        """Returns the python function generated for a
             TreeReduceIntermediateKernelTemplate.
-
-        Returns: The Numba functionIR object for the compiled kernel_txt string.
+        Returns: The python function object for the compiled kernel_txt string.
         """
-        return self._kernel_ir
+        return self._py_func
 
     @property
     def kernel_string(self):
@@ -189,11 +185,6 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         """Helper to print the kernel function string."""
         print(self._kernel_txt)
         sys.stdout.flush()
-
-    def dump_kernel_ir(self):
-        """Helper to dump the Numba IR for a
-        TreeReduceIntermediateKernelTemplate."""
-        self._kernel_ir.dump()
 
 
 class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
@@ -234,7 +225,7 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
         self._reductionKernelVar = reductionKernelVar
 
         self._kernel_txt = self._generate_kernel_stub_as_string()
-        self._kernel_ir = self._generate_kernel_ir()
+        self._py_func = self._generate_kernel_ir()
 
     def _generate_kernel_stub_as_string(self):
         """Generate reduction remainder kernel template"""
@@ -320,18 +311,15 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
         globls = {"dpnp": dpnp, "kapi": kapi}
         locls = {}
         exec(self._kernel_txt, globls, locls)
-        kernel_fn = locls[self._kernel_name]
-
-        return compiler.run_frontend(kernel_fn)
+        return locls[self._kernel_name]
 
     @property
-    def kernel_ir(self):
-        """Returns the Numba IR generated for a
-            RemainderReduceIntermediateKernelTemplate.
-
-        Returns: The Numba functionIR object for the compiled kernel_txt string.
+    def py_func(self):
+        """Returns the python function generated for a
+            TreeReduceIntermediateKernelTemplate.
+        Returns: The python function object for the compiled kernel_txt string.
         """
-        return self._kernel_ir
+        return self._py_func
 
     @property
     def kernel_string(self):
@@ -349,9 +337,3 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
 
         print(self._kernel_txt)
         sys.stdout.flush()
-
-    def dump_kernel_ir(self):
-        """Helper to dump the Numba IR for the
-        RemainderReduceIntermediateKernelTemplate."""
-
-        self._kernel_ir.dump()
