@@ -17,8 +17,8 @@ import dpnp
 from numba.core import config, errors, ir, types, typing
 from numba.core.compiler_machinery import register_pass
 from numba.core.ir_utils import (
+    convert_size_to_var,
     dprint_func_ir,
-    mk_alloc,
     mk_unique_var,
     next_label,
 )
@@ -43,6 +43,7 @@ from numba.parfors.parfor import (
 )
 from numba.stencils.stencilparfor import StencilPass
 
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 from numba_dpex.core.typing import dpnpdecl
 
 
@@ -57,6 +58,37 @@ class ConvertDPNPPass(ConvertNumpyPass):
 
     def __init__(self, pass_states):
         super().__init__(pass_states)
+
+    def _get_queue(self, queue_type, expr: tuple):
+        """
+        Extracts queue from the input arguments of the array operation.
+        """
+        pass_states = self.pass_states
+        typemap: map[str, any] = pass_states.typemap
+
+        var_with_queue = None
+
+        for var in expr[1]:
+            if isinstance(var, tuple):
+                res = self._get_queue(queue_type, var)
+                if res is not None:
+                    return res
+
+                continue
+
+            if not isinstance(var, ir.Var):
+                continue
+
+            _type = typemap[var.name]
+            if not isinstance(_type, DpnpNdArray):
+                continue
+            if queue_type != _type.queue:
+                continue
+
+            var_with_queue = var
+            break
+
+        return ir.Expr.getattr(var_with_queue, "sycl_queue", var_with_queue.loc)
 
     def _arrayexpr_to_parfor(self, equiv_set, lhs, arrayexpr, avail_vars):
         """generate parfor from arrayexpr node, which is essentially a
@@ -77,6 +109,10 @@ class ConvertDPNPPass(ConvertNumpyPass):
             pass_states.typemap, size_vars, scope, loc
         )
 
+        # Expr is a tuple
+        ir_queue = self._get_queue(arr_typ.queue, expr)
+        assert ir_queue is not None
+
         # generate init block and body
         init_block = ir.Block(scope, loc)
         init_block.body = mk_alloc(
@@ -89,6 +125,7 @@ class ConvertDPNPPass(ConvertNumpyPass):
             scope,
             loc,
             pass_states.typemap[lhs.name],
+            queue_ir_val=ir_queue,
         )
         body_label = next_label()
         body_block = ir.Block(scope, loc)
@@ -469,3 +506,66 @@ def _arrayexpr_tree_to_ir(
     typemap.pop(expr_out_var.name, None)
     typemap[expr_out_var.name] = el_typ
     return out_ir
+
+
+def mk_alloc(
+    typingctx,
+    typemap,
+    calltypes,
+    lhs,
+    size_var,
+    dtype,
+    scope,
+    loc,
+    lhs_typ,
+    **kws,
+):
+    """generate an array allocation with np.empty() and return list of nodes.
+    size_var can be an int variable or tuple of int variables.
+    lhs_typ is the type of the array being allocated.
+
+    Taken from numba, added kws argument to pass it to __allocate__
+    """
+    out = []
+    ndims = 1
+    size_typ = types.intp
+    if isinstance(size_var, tuple):
+        if len(size_var) == 1:
+            size_var = size_var[0]
+            size_var = convert_size_to_var(size_var, typemap, scope, loc, out)
+        else:
+            # tuple_var = build_tuple([size_var...])
+            ndims = len(size_var)
+            tuple_var = ir.Var(scope, mk_unique_var("$tuple_var"), loc)
+            if typemap:
+                typemap[tuple_var.name] = types.containers.UniTuple(
+                    types.intp, ndims
+                )
+            # constant sizes need to be assigned to vars
+            new_sizes = [
+                convert_size_to_var(s, typemap, scope, loc, out)
+                for s in size_var
+            ]
+            tuple_call = ir.Expr.build_tuple(new_sizes, loc)
+            tuple_assign = ir.Assign(tuple_call, tuple_var, loc)
+            out.append(tuple_assign)
+            size_var = tuple_var
+            size_typ = types.containers.UniTuple(types.intp, ndims)
+    if hasattr(lhs_typ, "__allocate__"):
+        return lhs_typ.__allocate__(
+            typingctx,
+            typemap,
+            calltypes,
+            lhs,
+            size_var,
+            dtype,
+            scope,
+            loc,
+            lhs_typ,
+            size_typ,
+            out,
+            **kws,
+        )
+
+    # Unused numba's code..
+    assert False
