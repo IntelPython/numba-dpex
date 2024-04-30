@@ -42,8 +42,6 @@ Classes
 
       * - :py:obj:`dump_kernel_string <numba_dpex.core.parfors.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_string>`\ ()
         - Helper to print the kernel function string.
-      * - :py:obj:`dump_kernel_ir <numba_dpex.core.parfors.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_ir>`\ ()
-        - Helper to dump the Numba IR for the RangeKernelTemplate.
 
 
    .. rubric:: Members
@@ -51,11 +49,6 @@ Classes
    .. py:method:: dump_kernel_string()
 
       Helper to print the kernel function string.
-
-
-   .. py:method:: dump_kernel_ir()
-
-      Helper to dump the Numba IR for the RangeKernelTemplate.
 
 
 

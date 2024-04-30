@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
-        <title>numba_dpex.core.parfors.kernel_builder - numba-dpex 0.23.0rc1+19.ga60d0324e documentation</title>
+        <title>numba_dpex.core.parfors.kernel_builder - numba-dpex 0.23.0rc1+23.g675cb7923 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -136,7 +136,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -159,7 +159,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -261,7 +261,7 @@
 <table class="summarytable docutils align-default" id="id2">
 <caption><span class="caption-text">Function</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor" title="numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_kernel_for_parfor</span></code></a>(lowerer, parfor_node, typemap, flags, loop_ranges, has_aliases, races, parfor_outputs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor" title="numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_kernel_for_parfor</span></code></a>(lowerer, parfor_node, typemap, loop_ranges, races, parfor_outputs)</p></td>
 <td><p>Creates a numba_dpex.kernel function for a parfor node.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.kernel_builder.update_sentinel" title="numba_dpex.core.parfors.kernel_builder.update_sentinel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_sentinel</span></code></a>(kernel_ir, sentinel_name, kernel_body, new_label)</p></td>
@@ -275,7 +275,7 @@
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_builder.ParforKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParforKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_arg_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dpctl.SyclQueue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_accessors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_group_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.ParforKernel" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParforKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_arg_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_accessors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_group_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.ParforKernel" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -283,7 +283,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor">
-<span class="sig-name descname"><span class="pre">create_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">races</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_outputs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#numba_dpex.core.parfors.kernel_builder.ParforKernel" title="numba_dpex.core.parfors.kernel_builder.ParforKernel"><span class="pre">ParforKernel</span></a></span></span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">races</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_outputs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#numba_dpex.core.parfors.kernel_builder.ParforKernel" title="numba_dpex.core.parfors.kernel_builder.ParforKernel"><span class="pre">ParforKernel</span></a></span></span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a numba_dpex.kernel function for a parfor node.</p>
 <p>There are two parts to this function:</p>
 <blockquote>
@@ -387,7 +387,7 @@ replaces the __sentinel__ instruction with the actual op for the parfor.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=187ad1e7"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=6c320df7"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=4e2eecee"></script>

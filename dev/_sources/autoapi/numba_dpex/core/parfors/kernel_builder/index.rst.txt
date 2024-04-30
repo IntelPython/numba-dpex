@@ -26,7 +26,7 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`create_kernel_for_parfor <numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor>`\ (lowerer, parfor_node, typemap, flags, loop_ranges, has_aliases, races, parfor_outputs)
+   * - :py:obj:`create_kernel_for_parfor <numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor>`\ (lowerer, parfor_node, typemap, loop_ranges, races, parfor_outputs)
      - Creates a numba_dpex.kernel function for a parfor node.
    * - :py:obj:`update_sentinel <numba_dpex.core.parfors.kernel_builder.update_sentinel>`\ (kernel_ir, sentinel_name, kernel_body, new_label)
      - Searched all the blocks in the IR generated from a kernel template and
@@ -36,14 +36,14 @@ Overview
 Classes
 -------
 
-.. py:class:: ParforKernel(name, kernel, signature, kernel_args, kernel_arg_types, queue: dpctl.SyclQueue, local_accessors=None, work_group_size=None)
+.. py:class:: ParforKernel(signature, kernel_args, kernel_arg_types, local_accessors=None, work_group_size=None, kernel_module=None)
 
 
 
 
 Functions
 ---------
-.. py:function:: create_kernel_for_parfor(lowerer, parfor_node, typemap, flags, loop_ranges, has_aliases, races, parfor_outputs) -> ParforKernel
+.. py:function:: create_kernel_for_parfor(lowerer, parfor_node, typemap, loop_ranges, races, parfor_outputs) -> ParforKernel
 
    Creates a numba_dpex.kernel function for a parfor node.
 

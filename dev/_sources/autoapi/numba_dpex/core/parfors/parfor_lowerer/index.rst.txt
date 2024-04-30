@@ -24,14 +24,6 @@ Overview
 
 
 
-.. list-table:: Attributes
-   :header-rows: 0
-   :widths: auto
-   :class: summarytable
-
-   * - :py:obj:`keep_alive_kernels <numba_dpex.core.parfors.parfor_lowerer.keep_alive_kernels>`
-     - \-
-
 
 Classes
 -------
@@ -95,13 +87,6 @@ Classes
 
 
 
-
-Attributes
-----------
-.. py:data:: keep_alive_kernels
-   :value: []
-
-   
 
 
 

@@ -51,13 +51,13 @@ Classes
       :widths: auto
       :class: summarytable
 
-      * - :py:obj:`copy_final_sum_to_host <numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host>`\ (parfor_kernel)
+      * - :py:obj:`copy_final_sum_to_host <numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host>`\ (queue_ref)
         - \-
 
 
    .. rubric:: Members
 
-   .. py:method:: copy_final_sum_to_host(parfor_kernel)
+   .. py:method:: copy_final_sum_to_host(queue_ref)
 
 
 

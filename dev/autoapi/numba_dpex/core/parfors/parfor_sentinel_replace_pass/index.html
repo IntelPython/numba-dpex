@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
-        <title>numba_dpex.core.types.numba_types_short_names - numba-dpex 0.23.0rc1+23.g675cb7923 documentation</title>
+        <title>numba_dpex.core.parfors.parfor_sentinel_replace_pass - numba-dpex 0.23.0rc1+23.g675cb7923 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -243,94 +243,91 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-numba_dpex.core.types.numba_types_short_names">
-<span id="numba-dpex-core-types-numba-types-short-names"></span><h1>numba_dpex.core.types.numba_types_short_names<a class="headerlink" href="#module-numba_dpex.core.types.numba_types_short_names" title="Link to this heading">¶</a></h1>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.none">
-<span class="sig-name descname"><span class="pre">none</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.none" title="Link to this definition">¶</a></dt>
+          <section id="module-numba_dpex.core.parfors.parfor_sentinel_replace_pass">
+<span id="numba-dpex-core-parfors-parfor-sentinel-replace-pass"></span><h1>numba_dpex.core.parfors.parfor_sentinel_replace_pass<a class="headerlink" href="#module-numba_dpex.core.parfors.parfor_sentinel_replace_pass" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParforBodyArguments</span></code></a></p></td>
+<td><p>Arguments containing information to inject parfor code inside kernel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParforSentinelReplacePass</span></code></a></p></td>
+<td><p>Base class for function passes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParforBodyArguments</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Arguments containing information to inject parfor code inside kernel.</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loop_body</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_dict</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">legal_loop_indices</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body">
+<span class="sig-name descname"><span class="pre">loop_body</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">any</span></em><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.uint32">
-<span class="sig-name descname"><span class="pre">uint32</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.uint32" title="Link to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict">
+<span class="sig-name descname"><span class="pre">param_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">any</span></em><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.uint64">
-<span class="sig-name descname"><span class="pre">uint64</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.uint64" title="Link to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices">
+<span class="sig-name descname"><span class="pre">legal_loop_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">any</span></em><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.int32">
-<span class="sig-name descname"><span class="pre">int32</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.int32" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.int64">
-<span class="sig-name descname"><span class="pre">int64</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.int64" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParforSentinelReplacePass</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
+<p>Base class for function passes</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass" title="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pass</span></code></a>(state)</p></td>
+<td><p>Runs the pass itself. Must return True/False depending on whether</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass" title="Link to this definition">¶</a></dt>
+<dd><p>Runs the pass itself. Must return True/False depending on whether
+statement level modification took place.</p>
+</dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.float32">
-<span class="sig-name descname"><span class="pre">float32</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.float32" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.float64">
-<span class="sig-name descname"><span class="pre">float64</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.float64" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.b1">
-<span class="sig-name descname"><span class="pre">b1</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.b1" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.i4">
-<span class="sig-name descname"><span class="pre">i4</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.i4" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.i8">
-<span class="sig-name descname"><span class="pre">i8</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.i8" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.u4">
-<span class="sig-name descname"><span class="pre">u4</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.u4" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.u8">
-<span class="sig-name descname"><span class="pre">u8</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.u8" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.f4">
-<span class="sig-name descname"><span class="pre">f4</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.f4" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.f8">
-<span class="sig-name descname"><span class="pre">f8</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.f8" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.float_">
-<span class="sig-name descname"><span class="pre">float_</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.float_" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.double">
-<span class="sig-name descname"><span class="pre">double</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.double" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="numba_dpex.core.types.numba_types_short_names.void">
-<span class="sig-name descname"><span class="pre">void</span></span><a class="headerlink" href="#numba_dpex.core.types.numba_types_short_names.void" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 </section>
 </section>
@@ -375,25 +372,19 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">numba_dpex.core.types.numba_types_short_names</a><ul>
-<li><a class="reference internal" href="#attributes">Attributes</a><ul>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.none"><code class="docutils literal notranslate"><span class="pre">none</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.uint32"><code class="docutils literal notranslate"><span class="pre">uint32</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.uint64"><code class="docutils literal notranslate"><span class="pre">uint64</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.int32"><code class="docutils literal notranslate"><span class="pre">int32</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.int64"><code class="docutils literal notranslate"><span class="pre">int64</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.float32"><code class="docutils literal notranslate"><span class="pre">float32</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.float64"><code class="docutils literal notranslate"><span class="pre">float64</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.b1"><code class="docutils literal notranslate"><span class="pre">b1</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.i4"><code class="docutils literal notranslate"><span class="pre">i4</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.i8"><code class="docutils literal notranslate"><span class="pre">i8</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.u4"><code class="docutils literal notranslate"><span class="pre">u4</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.u8"><code class="docutils literal notranslate"><span class="pre">u8</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.f4"><code class="docutils literal notranslate"><span class="pre">f4</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.f8"><code class="docutils literal notranslate"><span class="pre">f8</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.float_"><code class="docutils literal notranslate"><span class="pre">float_</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.double"><code class="docutils literal notranslate"><span class="pre">double</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.core.types.numba_types_short_names.void"><code class="docutils literal notranslate"><span class="pre">void</span></code></a></li>
+<li><a class="reference internal" href="#">numba_dpex.core.parfors.parfor_sentinel_replace_pass</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments"><code class="docutils literal notranslate"><span class="pre">ParforBodyArguments</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body"><code class="docutils literal notranslate"><span class="pre">ParforBodyArguments.loop_body</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict"><code class="docutils literal notranslate"><span class="pre">ParforBodyArguments.param_dict</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices"><code class="docutils literal notranslate"><span class="pre">ParforBodyArguments.legal_loop_indices</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass"><code class="docutils literal notranslate"><span class="pre">ParforSentinelReplacePass</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass"><code class="docutils literal notranslate"><span class="pre">ParforSentinelReplacePass.run_pass()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

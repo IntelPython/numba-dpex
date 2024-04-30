@@ -18,9 +18,9 @@ Overview
    :widths: auto
    :class: summarytable
 
-   * - :py:obj:`create_reduction_main_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor>`\ (loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict)
+   * - :py:obj:`create_reduction_main_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor>`\ (loop_ranges, parfor_node, typemap, reductionKernelVar, parfor_reddict)
      - Creates a numba_dpex.kernel function for reduction main kernel.
-   * - :py:obj:`create_reduction_remainder_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor>`\ (parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict, reductionHelperList)
+   * - :py:obj:`create_reduction_remainder_kernel_for_parfor <numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor>`\ (parfor_node, typemap, reductionKernelVar, parfor_reddict, reductionHelperList)
      - Creates a numba_dpex.kernel function for a reduction remainder kernel.
 
 
@@ -28,12 +28,12 @@ Overview
 
 Functions
 ---------
-.. py:function:: create_reduction_main_kernel_for_parfor(loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar: numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables, parfor_reddict=None)
+.. py:function:: create_reduction_main_kernel_for_parfor(loop_ranges, parfor_node, typemap, reductionKernelVar: numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables, parfor_reddict=None)
 
    Creates a numba_dpex.kernel function for reduction main kernel.
 
 
-.. py:function:: create_reduction_remainder_kernel_for_parfor(parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict, reductionHelperList)
+.. py:function:: create_reduction_remainder_kernel_for_parfor(parfor_node, typemap, reductionKernelVar, parfor_reddict, reductionHelperList)
 
    Creates a numba_dpex.kernel function for a reduction remainder kernel.
 

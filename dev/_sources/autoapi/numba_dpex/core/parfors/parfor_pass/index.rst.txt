@@ -36,6 +36,8 @@ Overview
 
    * - :py:obj:`get_dpnp_ufunc_typ <numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ>`\ (func)
      - get type of the incoming function from builtin registry
+   * - :py:obj:`mk_alloc <numba_dpex.core.parfors.parfor_pass.mk_alloc>`\ (typingctx, typemap, calltypes, lhs, size_var, dtype, scope, loc, lhs_typ, \*\*kws)
+     - generate an array allocation with np.empty() and return list of nodes.
 
 
 
@@ -91,6 +93,15 @@ Functions
 .. py:function:: get_dpnp_ufunc_typ(func)
 
    get type of the incoming function from builtin registry
+
+
+.. py:function:: mk_alloc(typingctx, typemap, calltypes, lhs, size_var, dtype, scope, loc, lhs_typ, **kws)
+
+   generate an array allocation with np.empty() and return list of nodes.
+   size_var can be an int variable or tuple of int variables.
+   lhs_typ is the type of the array being allocated.
+
+   Taken from numba, added kws argument to pass it to __allocate__
 
 
 

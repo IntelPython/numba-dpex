@@ -39,17 +39,11 @@ Classes
 
       * - :py:obj:`dump_kernel_string <numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_string>`\ ()
         - :summarylabel:`abc` \-
-      * - :py:obj:`dump_kernel_ir <numba_dpex.core.parfors.kernel_templates.kernel_template_iface.KernelTemplateInterface.dump_kernel_ir>`\ ()
-        - :summarylabel:`abc` \-
 
 
    .. rubric:: Members
 
    .. py:method:: dump_kernel_string()
-      :abstractmethod:
-
-
-   .. py:method:: dump_kernel_ir()
       :abstractmethod:
 
 

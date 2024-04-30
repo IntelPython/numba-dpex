@@ -46,8 +46,6 @@ Classes
 
       * - :py:obj:`dump_kernel_string <numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string>`\ ()
         - Helper to print the kernel function string.
-      * - :py:obj:`dump_kernel_ir <numba_dpex.core.parfors.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir>`\ ()
-        - Helper to dump the Numba IR for a
 
 
    .. rubric:: Members
@@ -55,12 +53,6 @@ Classes
    .. py:method:: dump_kernel_string()
 
       Helper to print the kernel function string.
-
-
-   .. py:method:: dump_kernel_ir()
-
-      Helper to dump the Numba IR for a
-      TreeReduceIntermediateKernelTemplate.
 
 
 
@@ -83,8 +75,6 @@ Classes
 
       * - :py:obj:`dump_kernel_string <numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string>`\ ()
         - Helper to print the kernel function string.
-      * - :py:obj:`dump_kernel_ir <numba_dpex.core.parfors.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir>`\ ()
-        - Helper to dump the Numba IR for the
 
 
    .. rubric:: Members
@@ -92,12 +82,6 @@ Classes
    .. py:method:: dump_kernel_string()
 
       Helper to print the kernel function string.
-
-
-   .. py:method:: dump_kernel_ir()
-
-      Helper to dump the Numba IR for the
-      RemainderReduceIntermediateKernelTemplate.
 
 
 

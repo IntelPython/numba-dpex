@@ -21,6 +21,14 @@ Overview
      - The Numba type to represent an dpnp.ndarray. The type has the same
 
 
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`partialclass <numba_dpex.core.types.dpnp_ndarray_type.partialclass>`\ (cls, \*args, \*\*kwds)
+     - Creates fabric class of the original class with preset initialization
+
 
 
 Classes
@@ -34,6 +42,14 @@ Classes
    structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.
 
 
+
+
+Functions
+---------
+.. py:function:: partialclass(cls, *args, **kwds)
+
+   Creates fabric class of the original class with preset initialization
+   arguments.
 
 
 

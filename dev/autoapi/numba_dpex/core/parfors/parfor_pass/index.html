@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
-        <title>numba_dpex.core.parfors.parfor_pass - numba-dpex 0.23.0rc1+19.ga60d0324e documentation</title>
+        <title>numba_dpex.core.parfors.parfor_pass - numba-dpex 0.23.0rc1+23.g675cb7923 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -136,7 +136,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -159,7 +159,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -269,6 +269,9 @@ to use it with dpnp instead of numpy.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ" title="numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dpnp_ufunc_typ</span></code></a>(func)</p></td>
 <td><p>get type of the incoming function from builtin registry</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.parfor_pass.mk_alloc" title="numba_dpex.core.parfors.parfor_pass.mk_alloc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mk_alloc</span></code></a>(typingctx, typemap, calltypes, lhs, size_var, dtype, scope, loc, lhs_typ, **kws)</p></td>
+<td><p>generate an array allocation with np.empty() and return list of nodes.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -319,6 +322,15 @@ changes due to lack of extensibility of the original package.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ">
 <span class="sig-name descname"><span class="pre">get_dpnp_ufunc_typ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ" title="Link to this definition">¶</a></dt>
 <dd><p>get type of the incoming function from builtin registry</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_pass.mk_alloc">
+<span class="sig-name descname"><span class="pre">mk_alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calltypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lhs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lhs_typ</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_pass.mk_alloc" title="Link to this definition">¶</a></dt>
+<dd><p>generate an array allocation with np.empty() and return list of nodes.
+size_var can be an int variable or tuple of int variables.
+lhs_typ is the type of the array being allocated.</p>
+<p>Taken from numba, added kws argument to pass it to __allocate__</p>
 </dd></dl>
 
 </section>
@@ -376,6 +388,7 @@ changes due to lack of extensibility of the original package.</p>
 </li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_pass.get_dpnp_ufunc_typ"><code class="docutils literal notranslate"><span class="pre">get_dpnp_ufunc_typ()</span></code></a></li>
+<li><a class="reference internal" href="#numba_dpex.core.parfors.parfor_pass.mk_alloc"><code class="docutils literal notranslate"><span class="pre">mk_alloc()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -389,7 +402,7 @@ changes due to lack of extensibility of the original package.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=187ad1e7"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=6c320df7"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=4e2eecee"></script>

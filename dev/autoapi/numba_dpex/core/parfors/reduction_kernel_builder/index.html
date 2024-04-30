@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
-        <title>numba_dpex.core.parfors.reduction_kernel_builder - numba-dpex 0.23.0rc1+19.ga60d0324e documentation</title>
+        <title>numba_dpex.core.parfors.reduction_kernel_builder - numba-dpex 0.23.0rc1+23.g675cb7923 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -136,7 +136,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -159,7 +159,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+19.ga60d0324e documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc1+23.g675cb7923 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -251,10 +251,10 @@
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor" title="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reduction_main_kernel_for_parfor</span></code></a>(loop_ranges, parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor" title="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reduction_main_kernel_for_parfor</span></code></a>(loop_ranges, parfor_node, typemap, reductionKernelVar, parfor_reddict)</p></td>
 <td><p>Creates a numba_dpex.kernel function for reduction main kernel.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor" title="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reduction_remainder_kernel_for_parfor</span></code></a>(parfor_node, typemap, flags, has_aliases, reductionKernelVar, parfor_reddict, reductionHelperList)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor" title="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reduction_remainder_kernel_for_parfor</span></code></a>(parfor_node, typemap, reductionKernelVar, parfor_reddict, reductionHelperList)</p></td>
 <td><p>Creates a numba_dpex.kernel function for a reduction remainder kernel.</p></td>
 </tr>
 </tbody>
@@ -265,13 +265,13 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor">
-<span class="sig-name descname"><span class="pre">create_reduction_main_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../reduction_helper/index.html#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables" title="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables"><span class="pre">ReductionKernelVariables</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_reduction_main_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../reduction_helper/index.html#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables" title="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables"><span class="pre">ReductionKernelVariables</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_main_kernel_for_parfor" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a numba_dpex.kernel function for reduction main kernel.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor">
-<span class="sig-name descname"><span class="pre">create_reduction_remainder_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionHelperList</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_reduction_remainder_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionHelperList</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a numba_dpex.kernel function for a reduction remainder kernel.</p>
 </dd></dl>
 
@@ -336,7 +336,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=187ad1e7"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=6c320df7"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=4e2eecee"></script>
