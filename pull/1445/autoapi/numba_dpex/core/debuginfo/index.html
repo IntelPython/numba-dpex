@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
-        <title>numba_dpex.core.exceptions - numba-dpex 0.23.0rc1+31.gb43736663 documentation</title>
+        <title>numba_dpex.core.debuginfo - numba-dpex 0.23.0rc1+31.gb43736663 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
@@ -147,7 +147,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -237,15 +237,70 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-numba_dpex.core.exceptions">
-<span id="numba-dpex-core-exceptions"></span><h1>numba_dpex.core.exceptions<a class="headerlink" href="#module-numba_dpex.core.exceptions" title="Link to this heading">¶</a></h1>
-<p>The module defines the custom error classes used in numba_dpex.</p>
+          <section id="module-numba_dpex.core.debuginfo">
+<span id="numba-dpex-core-debuginfo"></span><h1>numba_dpex.core.debuginfo<a class="headerlink" href="#module-numba_dpex.core.debuginfo" title="Link to this heading">¶</a></h1>
+<p>Implements a custom debug metadata generator class for numba-dpex kernels.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.debuginfo.DIBuilder" title="numba_dpex.core.debuginfo.DIBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIBuilder</span></code></a></p></td>
+<td><p>Overrides Numba’s default DIBuilder with numba-dpex-specific customizations.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.debuginfo.DIBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DIBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cgctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directives_only</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.debuginfo.DIBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.debuginfo.DIBuilder</span></code></p>
+<p>Overrides Numba’s default DIBuilder with numba-dpex-specific customizations.</p>
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.core.debuginfo.DIBuilder.mark_subprogram" title="numba_dpex.core.debuginfo.DIBuilder.mark_subprogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_subprogram</span></code></a>(function, qualname, argnames, argtypes, line)</p></td>
+<td><p>Sets DW_AT_name and DW_AT_linkagename tags for a kernel decorated function.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.debuginfo.DIBuilder.mark_subprogram">
+<span class="sig-name descname"><span class="pre">mark_subprogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.debuginfo.DIBuilder.mark_subprogram" title="Link to this definition">¶</a></dt>
+<dd><p>Sets DW_AT_name and DW_AT_linkagename tags for a kernel decorated function.</p>
+<p>Numba generates a unique name for every function it compiles, but in
+upstream Numba the unique name is not used as the “qualified” name of
+the function. The behavior leads to a bug discovered in Numba-dpex when
+a compiled function uses closure variables.
+Refer (<a class="reference external" href="https://github.com/IntelPython/numba-dpex/issues/898">https://github.com/IntelPython/numba-dpex/issues/898</a>).
+To resolve the issue numba-dpex uses the unique_name as the qualified
+name. Refer to
+<a class="reference internal" href="../passes/passes/index.html#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="numba_dpex.core.passes.passes.QualNameDisambiguationLowering"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.passes.passes.QualNameDisambiguationLowering</span></code></a>.
+However, doing so breaks setting GDB breakpoints based on function
+name as the function name is no longer what is in the source, but what
+is the unique name generated by Numba. To fix it, numba-dpex uses a
+modified DISubprogram metadata generator. The name (DW_AT_name) tag is
+set to the base function name, discarding the unique qualifier and
+linkagename is set to an empty string.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -276,8 +331,34 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">numba_dpex.core.debuginfo</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.debuginfo.DIBuilder"><code class="docutils literal notranslate"><span class="pre">DIBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#numba_dpex.core.debuginfo.DIBuilder.mark_subprogram"><code class="docutils literal notranslate"><span class="pre">DIBuilder.mark_subprogram()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
