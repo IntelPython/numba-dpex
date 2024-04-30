@@ -1,7 +1,0 @@
-
-numba_dpex.core.overloads
-=========================
-
-.. py:module:: numba_dpex.core.overloads
-
-
