@@ -25,7 +25,5 @@ def test_backtrace(app):
 
     app.backtrace()
 
-    app.expect(
-        r"#0.*__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True
-    )
-    app.expect(r"#1.*__main__::kernel_sum", with_eol=True)
+    app.expect(r"#0.*func_sum.* at simple_dpex_func.py:12", with_eol=True)
+    app.expect(r"#1.*kernel_sum", with_eol=True)

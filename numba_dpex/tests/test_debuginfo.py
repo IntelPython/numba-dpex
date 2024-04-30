@@ -126,8 +126,8 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
-        r'\!DISubprogram\(name: ".*func_sum\$?\d*"',
-        r'\!DISubprogram\(name: ".*data_parallel_sum\$?\d*"',
+        r'\!DISubprogram\(name: ".*func_sum*"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum*"',
     ]
 
     sig = (itemty, f32arrty, f32arrty, f32arrty)
@@ -156,8 +156,8 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
-        r'\!DISubprogram\(name: ".*func_sum\$?\d*"',
-        r'\!DISubprogram\(name: ".*data_parallel_sum\$\d*"',
+        r'\!DISubprogram\(name: ".*func_sum*"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
     sig = (itemty, f32arrty, f32arrty, f32arrty)
@@ -176,6 +176,8 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
 
 def test_debuginfo_DISubprogram_linkageName():
+    """Tests to check that the linkagename tag is not set by numba-dpex."""
+
     def foo(item, a, b):
         i = item.get_id(0)
         b[i] = a[i]
@@ -190,7 +192,9 @@ def test_debuginfo_DISubprogram_linkageName():
     kernel_ir = kcres.library.get_llvm_str()
 
     for tag in ir_tags:
-        assert make_check(kernel_ir, tag)
+        # Ensure that linkagename (DW_AT_linkagename) tag is not present for
+        # the DISubprogram attribute.
+        assert not make_check(kernel_ir, tag)
 
 
 def test_debuginfo_DICompileUnit_language_and_producer():
