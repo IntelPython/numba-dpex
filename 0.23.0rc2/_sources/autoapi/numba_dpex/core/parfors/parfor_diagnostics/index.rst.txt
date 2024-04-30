@@ -1,0 +1,63 @@
+
+
+:orphan:
+
+numba_dpex.core.parfors.parfor_diagnostics
+==========================================
+
+.. py:module:: numba_dpex.core.parfors.parfor_diagnostics
+
+
+
+
+Overview
+--------
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ExtendedParforDiagnostics <numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics>`
+     - Holds parfor diagnostic info, this is accumulated throughout the
+
+
+
+
+Classes
+-------
+
+.. py:class:: ExtendedParforDiagnostics
+
+   Bases: :py:obj:`numba.parfors.parfor.ParforDiagnostics`
+
+   Holds parfor diagnostic info, this is accumulated throughout the
+   PreParforPass and ParforPass, also in the closure inlining!
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`dump <numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.dump>`\ (level)
+        - \-
+      * - :py:obj:`print_auto_offloading <numba_dpex.core.parfors.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading>`\ (lines)
+        - \-
+
+
+   .. rubric:: Members
+
+   .. py:method:: dump(level=1)
+
+
+   .. py:method:: print_auto_offloading(lines)
+
+
+
+
+
+
+

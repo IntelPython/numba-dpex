@@ -1,0 +1,7 @@
+
+numba_dpex.core.typing
+======================
+
+.. py:module:: numba_dpex.core.typing
+
+
