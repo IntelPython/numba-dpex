@@ -31,7 +31,7 @@ def test_next(app: gdb):
     )
     # checking that we did not step in
     app.next()
-    app.expect(r"in _ZN8__main__21kernel_sum_", with_eol=True)
+    app.expect(r"in _ZN8__main__14kernel_sum_", with_eol=True)
 
 
 def test_step(app: gdb):
@@ -44,7 +44,7 @@ def test_step(app: gdb):
     )
     app.set_scheduler_lock()
     app.step()
-    app.expect(r"__main__::func_sum.* at simple_dpex_func.py:12", with_eol=True)
+    app.expect(r"func_sum.* at simple_dpex_func.py:12", with_eol=True)
     app.expect(r"12\s+result = a_in_func \+ b_in_func", with_eol=True)
     app.step()
     app.expect(
