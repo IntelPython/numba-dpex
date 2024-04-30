@@ -1,0 +1,7 @@
+
+numba_dpex.core.types.kernel_api
+================================
+
+.. py:module:: numba_dpex.core.types.kernel_api
+
+

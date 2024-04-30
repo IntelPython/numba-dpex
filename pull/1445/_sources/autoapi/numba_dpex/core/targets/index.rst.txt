@@ -1,0 +1,7 @@
+
+numba_dpex.core.targets
+=======================
+
+.. py:module:: numba_dpex.core.targets
+
+
