@@ -48,6 +48,8 @@ class DpexTargetOptions(CPUTargetOptions):
     no_compile = _option_mapping("no_compile")
     inline_threshold = _option_mapping("inline_threshold")
     _compilation_mode = _option_mapping("_compilation_mode")
+    # TODO: create separate parfor kernel target
+    _parfor_body_args = _option_mapping("_parfor_body_args")
 
     def finalize(self, flags, options):
         super().finalize(flags, options)
@@ -63,6 +65,7 @@ class DpexTargetOptions(CPUTargetOptions):
         _inherit_if_not_set(
             flags, options, "_compilation_mode", CompilationMode.KERNEL
         )
+        _inherit_if_not_set(flags, options, "_parfor_body_args", None)
 
 
 class DpexKernelTarget(TargetDescriptor):

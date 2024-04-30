@@ -30,13 +30,9 @@ class KernelTemplateInterface(metaclass=abc.ABCMeta):
     def dump_kernel_string(self):
         raise NotImplementedError
 
-    @abc.abstractmethod
-    def dump_kernel_ir(self):
-        raise NotImplementedError
-
     @property
     @abc.abstractmethod
-    def kernel_ir(self):
+    def py_func(self):
         raise NotImplementedError
 
     @property

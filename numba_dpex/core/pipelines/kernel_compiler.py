@@ -8,8 +8,12 @@ from numba.core.typed_passes import (
     IRLegalization,
     NoPythonSupportedFeatureValidation,
 )
+from numba.core.untyped_passes import InlineClosureLikes
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
+from numba_dpex.core.parfors.parfor_sentinel_replace_pass import (
+    ParforSentinelReplacePass,
+)
 from numba_dpex.core.passes.passes import (
     NoPythonBackend,
     QualNameDisambiguationLowering,
@@ -57,6 +61,8 @@ class _KernelPassBuilder(object):
         pm = PassManager(name)
         untyped_passes = ndpb.define_untyped_pipeline(state)
         pm.passes.extend(untyped_passes.passes)
+        # TODO: create separate parfor kernel pass
+        pm.add_pass_after(ParforSentinelReplacePass, InlineClosureLikes)
 
         typed_passes = ndpb.define_typed_pipeline(state)
         pm.passes.extend(typed_passes.passes)

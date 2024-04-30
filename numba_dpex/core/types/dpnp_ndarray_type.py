@@ -2,12 +2,26 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from functools import partial
+
 import dpnp
 from numba.core import ir, types
 from numba.core.ir_utils import get_np_ufunc_typ, mk_unique_var
-from numba.core.pythonapi import NativeValue, PythonAPI, box, unbox
 
 from .usm_ndarray_type import USMNdArray
+
+
+def partialclass(cls, *args, **kwds):
+    """Creates fabric class of the original class with preset initialization
+    arguments."""
+    cls0 = partial(cls, *args, **kwds)
+    new_cls = type(
+        cls.__name__ + "Partial",
+        (cls,),
+        {"__new__": lambda cls, *args, **kwds: cls0(*args, **kwds)},
+    )
+
+    return new_cls
 
 
 class DpnpNdArray(USMNdArray):
@@ -40,15 +54,22 @@ class DpnpNdArray(USMNdArray):
         Returns: The DpnpNdArray class.
         """
         if method == "__call__":
-            if not all(
-                (
-                    isinstance(inp, DpnpNdArray)
-                    or isinstance(inp, types.abstract.Number)
-                )
-                for inp in inputs
-            ):
+            dpnp_type = None
+
+            for inp in inputs:
+                if isinstance(inp, DpnpNdArray):
+                    dpnp_type = inp
+                    continue
+                if isinstance(inp, types.abstract.Number):
+                    continue
+
                 return NotImplemented
-            return DpnpNdArray
+
+            assert dpnp_type is not None
+
+            return partialclass(
+                DpnpNdArray, queue=dpnp_type.queue, usm_type=dpnp_type.usm_type
+            )
         else:
             return
 
@@ -71,6 +92,8 @@ class DpnpNdArray(USMNdArray):
         lhs_typ,
         size_typ,
         out,
+        # dpex specific argument:
+        queue_ir_val=None,
     ):
         """Generates the Numba typed IR representing the allocation of a new
         DpnpNdArray using the dpnp.ndarray overload.
@@ -94,6 +117,10 @@ class DpnpNdArray(USMNdArray):
 
         Returns: The IR Value for the allocated array
         """
+        # TODO: it looks like it is being called only for parfor allocations,
+        # so can we rely on it? We can grab information from input arguments
+        # from rhs, but doc does not set any restriction on parfor use only.
+        assert queue_ir_val is not None
         g_np_var = ir.Var(scope, mk_unique_var("$np_g_var"), loc)
         if typemap:
             typemap[g_np_var.name] = types.misc.Module(dpnp)
@@ -132,11 +159,13 @@ class DpnpNdArray(USMNdArray):
         usm_typ_var = ir.Var(scope, mk_unique_var("$np_usm_type_var"), loc)
         # A default device string arg added as a placeholder
         device_typ_var = ir.Var(scope, mk_unique_var("$np_device_var"), loc)
+        queue_typ_var = ir.Var(scope, mk_unique_var("$np_queue_var"), loc)
 
         if typemap:
             typemap[layout_var.name] = types.literal(lhs_typ.layout)
             typemap[usm_typ_var.name] = types.literal(lhs_typ.usm_type)
-            typemap[device_typ_var.name] = types.literal(lhs_typ.device)
+            typemap[device_typ_var.name] = types.none
+            typemap[queue_typ_var.name] = lhs_typ.queue
 
         layout_var_assign = ir.Assign(
             ir.Const(lhs_typ.layout, loc), layout_var, loc
@@ -145,16 +174,29 @@ class DpnpNdArray(USMNdArray):
             ir.Const(lhs_typ.usm_type, loc), usm_typ_var, loc
         )
         device_typ_var_assign = ir.Assign(
-            ir.Const(lhs_typ.device, loc), device_typ_var, loc
+            ir.Const(None, loc), device_typ_var, loc
         )
+        queue_typ_var_assign = ir.Assign(queue_ir_val, queue_typ_var, loc)
 
         out.extend(
-            [layout_var_assign, usm_typ_var_assign, device_typ_var_assign]
+            [
+                layout_var_assign,
+                usm_typ_var_assign,
+                device_typ_var_assign,
+                queue_typ_var_assign,
+            ]
         )
 
         alloc_call = ir.Expr.call(
             attr_var,
-            [size_var, typ_var, layout_var, device_typ_var, usm_typ_var],
+            [
+                size_var,
+                typ_var,
+                layout_var,
+                device_typ_var,
+                usm_typ_var,
+                queue_typ_var,
+            ],
             (),
             loc,
         )
@@ -170,6 +212,7 @@ class DpnpNdArray(USMNdArray):
                         layout_var,
                         device_typ_var,
                         usm_typ_var,
+                        queue_typ_var,
                     ]
                 ],
                 {},
