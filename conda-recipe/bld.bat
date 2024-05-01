@@ -46,7 +46,7 @@ if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
 )
 
 REM Delete artifacts from package
-del %PREFIX%\setup.py
-del %PREFIX%\LICENSE
-del %PREFIX%\README.md
-del %PREFIX%\MANIFEST.in
+del "%PREFIX%\setup.py"
+del "%PREFIX%\LICENSE"
+del "%PREFIX%\README.md"
+del "%PREFIX%\MANIFEST.in"
