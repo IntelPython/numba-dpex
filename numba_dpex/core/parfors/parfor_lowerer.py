@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from collections import namedtuple
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, ir, types
