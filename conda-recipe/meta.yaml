@@ -3,6 +3,9 @@
 {% set excluded_compiler_version2 = "2024.0.2" %}
 {% set excluded_compiler_version3 = "2024.0.3" %}
 
+{% set pyproject = load_file_data('pyproject.toml') %}
+{% set py_build_deps = pyproject.get('build-system', {}).get('requires', []) %}
+
 package:
     name: numba-dpex
     version: {{ GIT_DESCRIBE_TAG }}
@@ -25,31 +28,32 @@ requirements:
         # does not have it in meta data
         - sysroot_linux-64 >=2.28  # [linux]
     host:
+        - python
+        - pip >=24.0
         - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
         - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
-        - python
+        # ensure we are using latest version of setuptools, since we don't need
+        # editable environments for release.
         - setuptools >=69
-        - scikit-build >=0.17
-        - ninja >=1.11.1 # [not win]
-        - cmake >=3.29
-        - numba >=0.59
-        - llvmlite >=0.42.0
-        - dpctl >=0.16.1
-        - dpnp >=0.14
-        - numpy >=1.24
+        {% for dep in py_build_deps %}
+        {% if dep.startswith('ninja') %}
+        - {{ dep.split(';')[0] }} # [not win]
+        {% elif dep.startswith('cmake') %}
+        - {{ dep }}
+        {% elif dep.startswith('build>=') %}
+        - {{ 'python-' ~ dep }}
+        {% else %}
+        - {{ dep|replace('_','-') }}
+        {% endif %}
+        {% endfor %}
+        # versioneer dependency
+        - tomli # [py<311]
         # TODO: temporary fix, because IGC is broken for output produced by llvm-spirv 2024.1 on windows
         - dpcpp-llvm-spirv >={{ required_compiler_version }} # [not win]
         - dpcpp-llvm-spirv >={{ required_compiler_version }},<2024.1 # [win]
-        - wheel >=0.43
-        - pip >=24.0
-        - python-build >=1.1
-        - versioneer==0.29
-        # versioneer dependency
-        - tomli # [py<311]
     run:
         - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
         - {{ pin_compatible('intel-cmplr-lib-rt', min_pin='x.x', max_pin='x') }}
-        - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x') }}
         # TODO: temporary fix, because IGC is broken for output produced by llvm-spirv 2024.1 on windows
         - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x') }} # [not win]
         - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x', upper_bound='2024.1') }} # [win]

@@ -27,7 +27,13 @@ export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 ${PYTHON} -m build -w -n -x
 ${PYTHON} -m wheel tags --remove --build "$GIT_DESCRIBE_NUMBER" \
     --platform-tag manylinux2014_x86_64 dist/numba_dpex*.whl
-${PYTHON} -m pip install dist/numba_dpex*.whl
+${PYTHON} -m pip install dist/numba_dpex*.whl \
+    --no-build-isolation \
+    --no-deps \
+    --only-binary :all: \
+    --no-index \
+    --prefix "${PREFIX}" \
+    -vv
 
 # Copy wheel package
 if [[ -v WHEELS_OUTPUT_FOLDER ]]; then
