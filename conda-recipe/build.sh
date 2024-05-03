@@ -33,3 +33,10 @@ ${PYTHON} -m pip install dist/numba_dpex*.whl
 if [[ -v WHEELS_OUTPUT_FOLDER ]]; then
     cp dist/numba_dpex*.whl "${WHEELS_OUTPUT_FOLDER[@]}"
 fi
+
+# Delete artifacts from package
+rm -rf "${PREFIX}/__pycache__"
+rm "${PREFIX}/setup.py"
+rm "${PREFIX}/LICENSE"
+rm "${PREFIX}/README.md"
+rm "${PREFIX}/MANIFEST.in"
