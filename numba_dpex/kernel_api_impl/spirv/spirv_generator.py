@@ -124,6 +124,7 @@ class Module:
             "--spirv-ext=+SPV_EXT_shader_atomic_float_add",
             "--spirv-ext=+SPV_EXT_shader_atomic_float_min_max",
             "--spirv-ext=+SPV_INTEL_arbitrary_precision_integers",
+            "--spirv-ext=+SPV_INTEL_variable_length_array",
         ]
         for key in list(self.context.extra_compile_options.keys()):
             if key == LLVM_SPIRV_ARGS:
