@@ -50,10 +50,3 @@ if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
     copy dist\numba_dpex*.whl %WHEELS_OUTPUT_FOLDER%
     if errorlevel 1 exit 1
 )
-
-REM Delete artifacts from package
-rd /s /q "%PREFIX%\__pycache__"
-del "%PREFIX%\setup.py"
-del "%PREFIX%\LICENSE"
-del "%PREFIX%\README.md"
-del "%PREFIX%\MANIFEST.in"

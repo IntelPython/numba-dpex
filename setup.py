@@ -6,7 +6,7 @@
 import re
 
 import versioneer
-from setuptools import find_packages
+from setuptools import find_namespace_packages, find_packages
 from skbuild import setup
 
 """Top level setup.py file. Uses scikit-build.
@@ -58,7 +58,8 @@ setup(
     # Must be passed vis setup.py:
     # https://github.com/scikit-build/scikit-build/issues/864
     # TODO: switch to pyproject toml after switching to scikit-build-core
-    packages=find_packages("."),
+    packages=find_packages(".")
+    + find_namespace_packages(".", include=["numba_dpex.examples.*"]),
     # Needs for examples.
     # TODO: change to false once move examples out of package.
     include_package_data=True,
