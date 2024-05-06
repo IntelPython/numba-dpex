@@ -58,7 +58,7 @@ def test_device_func_breakpoint(
 
     app.breakpoint(breakpoint, condition=condition)
     app.run(f"side-by-side.py --api={api}")
-    app.expect_hit_breakpoint("side-by-side.py:15")
+    app.expect_hit_breakpoint(expected_location="side-by-side.py:15")
     if exp_var is not None:
         app.print(exp_var, expected=exp_val)
 
