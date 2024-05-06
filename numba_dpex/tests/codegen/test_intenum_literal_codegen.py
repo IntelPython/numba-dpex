@@ -47,7 +47,7 @@ def test_compilation_as_literal_constant():
 
     pattern = re.compile(
         r"call spir_func i32 @\_Z.*bitwise\_or"
-        r"\_flags.*\(i64\* nonnull %.*, i64 1, i64 2\)"
+        r"\_flags.*\(i64\*\s(\w+)?\s*%.*, i64 1, i64 2\)"
     )
 
     assert re.search(pattern, llvm_ir_mod) is not None
