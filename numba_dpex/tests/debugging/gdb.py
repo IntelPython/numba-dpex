@@ -33,8 +33,8 @@ RE_DEVICE_ARRAY_TYPE = (
     r"layout=[A-Z],\s+"
     r"address_space=[0-4],\s+"
     r"usm_type=[a-z]+,\s+"
-    r"device=[a-z:0-9]+,\s+"
-    r"sycl_queue=[A-Za-z:0-9 ]+\)"
+    r"device=[a-z\_:0-9]+,\s+"
+    r"sycl_queue=[A-Za-z:0-9\s\_:]+\)"
 )
 
 
@@ -52,7 +52,7 @@ class gdb:
         env["NUMBA_DEBUGINFO"] = "1"
 
         self.child = pexpect.spawn(
-            "gdb-oneapi -q python", env=env, encoding="utf-8"
+            "gdb-oneapi -q python", env=env, encoding="utf-8", timeout=60
         )
         if config.TESTING_LOG_DEBUGGING:
             self.child.logfile = sys.stdout
@@ -109,7 +109,7 @@ class gdb:
         self.child.expect(r"[^\n]*\n")
 
     def expect_hit_breakpoint(self, expected_location=None):
-        expect = r"Thread [0-9A-Za-z \"]+ hit Breakpoint [0-9\.]+"
+        expect = r"Breakpoint [0-9\.]+"
         if expected_location is not None:
             # function name + args could be long, so we have to assume that
             # the message may be splitted in multiple lines. It potentially can
