@@ -24,9 +24,10 @@ requirements:
         - {{ compiler('cxx') }}
         - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
         - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
-        # specific version of sysroot required by dpcpp, but 2024.0.0 package
-        # does not have it in meta data
-        - sysroot_linux-64 >=2.28  # [linux]
+        # Minimal supported version of sysroot (which is version of glibc) to
+        # have compatibility with wider range of linux distributions.
+        # 2.28 is the minimal supported version by dpcpp
+        - sysroot_linux-64 =2.28  # [linux]
     host:
         - python
         - pip >=24.0
