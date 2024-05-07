@@ -26,7 +26,7 @@ export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 ${PYTHON} -m build -w -n -x
 ${PYTHON} -m wheel tags --remove --build "$GIT_DESCRIBE_NUMBER" \
-    --platform-tag manylinux2014_x86_64 dist/numba_dpex*.whl
+    --platform-tag manylinux_2_28_x86_64 dist/numba_dpex*.whl
 ${PYTHON} -m pip install dist/numba_dpex*.whl \
     --no-build-isolation \
     --no-deps \
