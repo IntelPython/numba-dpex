@@ -9,6 +9,9 @@ echo "--gcc-toolchain=${BUILD_PREFIX} --sysroot=${BUILD_PREFIX}/${HOST}/sysroot 
 ICPXCFG="$(pwd)/icpx_for_conda.cfg"
 ICXCFG="$(pwd)/icpx_for_conda.cfg"
 
+read -r GLIBC_MAJOR GLIBC_MINOR <<<"$(conda list '^sysroot_linux-64$' \
+    | tail -n 1 | awk '{print $2}' | grep -oP '\d+' | head -n 2 | tr '\n' ' ')"
+
 export ICXCFG
 export ICPXCFG
 
@@ -26,7 +29,8 @@ export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 ${PYTHON} -m build -w -n -x
 ${PYTHON} -m wheel tags --remove --build "$GIT_DESCRIBE_NUMBER" \
-    --platform-tag manylinux_2_28_x86_64 dist/numba_dpex*.whl
+    --platform-tag "manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64" \
+    dist/numba_dpex*.whl
 ${PYTHON} -m pip install dist/numba_dpex*.whl \
     --no-build-isolation \
     --no-deps \
