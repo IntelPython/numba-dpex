@@ -744,14 +744,18 @@ static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj)
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-DEBUG: usm array was passed directly\n"));
         arrayobj = obj;
+        Py_INCREF(arrayobj);
     }
     else if (PyObject_HasAttrString(obj, "_array_obj")) {
+        // PyObject_GetAttrString gives reference
         arrayobj = PyObject_GetAttrString(obj, "_array_obj");
 
         if (!arrayobj)
             return NULL;
-        if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType))
+        if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType)) {
+            Py_DECREF(arrayobj);
             return NULL;
+        }
     }
 
     struct PyUSMArrayObject *pyusmarrayobj =
@@ -803,17 +807,13 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     PyGILState_STATE gstate;
     npy_intp itemsize = 0;
 
-    // Increment the ref count on obj to prevent CPython from garbage
-    // collecting the array.
-    // TODO: add extra description why do we need this
-    Py_IncRef(obj);
-
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python at %s, line %d\n",
         __FILE__, __LINE__));
 
     // Check if the PyObject obj has an _array_obj attribute that is of
     // dpctl.tensor.usm_ndarray type.
+    // arrayobj is a new reference, reference of obj is borrowed
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(obj))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed at %s, line %d\n",
@@ -832,6 +832,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     data = (void *)UsmNDArray_GetData(arrayobj);
     nitems = product_of_shape(shape, ndim);
     itemsize = (npy_intp)UsmNDArray_GetElementSize(arrayobj);
+
     if (!(qref = UsmNDArray_GetQueueRef(arrayobj))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: UsmNDArray_GetQueueRef returned NULL at "
@@ -841,7 +842,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
-              obj, data, nitems, itemsize, qref)))
+              arrayobj, data, nitems, itemsize, qref)))
     {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
@@ -854,7 +855,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     arystruct->sycl_queue = qref;
     arystruct->nitems = nitems;
     arystruct->itemsize = itemsize;
-    arystruct->parent = obj;
+    arystruct->parent = arrayobj;
 
     p = arystruct->shape_and_strides;
 
@@ -906,7 +907,7 @@ error:
         __FILE__, __LINE__));
     gstate = PyGILState_Ensure();
     // decref the python object
-    Py_DECREF(obj);
+    Py_XDECREF(arrayobj);
     // release the GIL
     PyGILState_Release(gstate);
 
