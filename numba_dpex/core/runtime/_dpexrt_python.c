@@ -842,7 +842,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
-              (PyObject *)arrayobj, data, nitems, itemsize, qref)))
+              obj, data, nitems, itemsize, qref)))
     {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
@@ -851,11 +851,14 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
         goto error;
     }
 
+    Py_XDECREF(arrayobj);
+    Py_IncRef(obj);
+
     arystruct->data = data;
     arystruct->sycl_queue = qref;
     arystruct->nitems = nitems;
     arystruct->itemsize = itemsize;
-    arystruct->parent = (PyObject *)arrayobj;
+    arystruct->parent = obj;
 
     p = arystruct->shape_and_strides;
 
@@ -939,6 +942,7 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
         drt_debug_print("DPEXRT-DEBUG: In box_from_arystruct_parent.\n"));
 
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(arystruct->parent))) {
+        Py_XDECREF(arrayobj);
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed from "
                             "parent as parent pointer is NULL.\n"));
@@ -946,6 +950,7 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
     }
 
     if ((void *)UsmNDArray_GetData(arrayobj) != arystruct->data) {
+        Py_XDECREF(arrayobj);
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-DEBUG: Arrayobj cannot be boxed "
             "from parent as data pointer in the arystruct is not the same as "
@@ -953,12 +958,15 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
         return NULL;
     }
 
-    if (UsmNDArray_GetNDim(arrayobj) != ndim)
+    if (UsmNDArray_GetNDim(arrayobj) != ndim) {
+        Py_XDECREF(arrayobj);
         return NULL;
+    }
 
     p = arystruct->shape_and_strides;
     shape = UsmNDArray_GetShape(arrayobj);
     strides = UsmNDArray_GetStrides(arrayobj);
+    Py_XDECREF(arrayobj);
 
     // Ensure the shape of the array to be boxed matches the shape of the
     // original parent.
