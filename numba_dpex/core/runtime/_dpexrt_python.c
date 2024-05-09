@@ -842,7 +842,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
-              arrayobj, data, nitems, itemsize, qref)))
+              (PyObject *)arrayobj, data, nitems, itemsize, qref)))
     {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
@@ -855,7 +855,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     arystruct->sycl_queue = qref;
     arystruct->nitems = nitems;
     arystruct->itemsize = itemsize;
-    arystruct->parent = arrayobj;
+    arystruct->parent = (PyObject *)arrayobj;
 
     p = arystruct->shape_and_strides;
 
@@ -907,7 +907,7 @@ error:
         __FILE__, __LINE__));
     gstate = PyGILState_Ensure();
     // decref the python object
-    Py_XDECREF(arrayobj);
+    Py_XDECREF((PyObject *)arrayobj);
     // release the GIL
     PyGILState_Release(gstate);
 
