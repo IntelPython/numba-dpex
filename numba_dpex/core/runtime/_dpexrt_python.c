@@ -45,12 +45,14 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
                                         bool value_is_float,
                                         int64_t value,
                                         const DPCTLSyclQueueRef qref);
-static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
+static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(NRT_api_functions *nrt,
+                                                    PyObject *ndarrobj,
                                                     void *data,
                                                     npy_intp nitems,
                                                     npy_intp itemsize,
                                                     DPCTLSyclQueueRef qref);
-static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
+static NRT_MemInfo *DPEXRT_MemInfo_alloc(NRT_api_functions *nrt,
+                                         npy_intp size,
                                          size_t usm_type,
                                          const DPCTLSyclQueueRef qref);
 static void usmndarray_meminfo_dtor(void *ptr, size_t size, void *info);
@@ -58,7 +60,8 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr);
 
-static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
+static int DPEXRT_sycl_usm_ndarray_from_python(NRT_api_functions *nrt,
+                                               PyObject *obj,
                                                usmarystruct_t *arystruct);
 static PyObject *
 DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
@@ -336,6 +339,11 @@ error:
 static void usmndarray_meminfo_dtor(void *ptr, size_t size, void *info)
 {
     MemInfoDtorInfo *mi_dtor_info = NULL;
+    // Warning: we are destructing sycl memory. MI destructor is called
+    // separately by numba.
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: Call to "
+                                 "usmndarray_meminfo_dtor at %s, line %d\n",
+                                 __FILE__, __LINE__));
 
     // Sanity-check to make sure the mi_dtor_info is an actual pointer.
     if (!(mi_dtor_info = (MemInfoDtorInfo *)info)) {
@@ -416,7 +424,8 @@ static MemInfoDtorInfo *MemInfoDtorInfo_new(NRT_MemInfo *mi, PyObject *owner)
  *                          of the dpnp.ndarray was allocated.
  * @return   {return}       A new NRT_MemInfo object
  */
-static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
+static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(NRT_api_functions *nrt,
+                                                    PyObject *ndarrobj,
                                                     void *data,
                                                     npy_intp nitems,
                                                     npy_intp itemsize,
@@ -427,8 +436,9 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     MemInfoDtorInfo *midtor_info = NULL;
     DPCTLSyclContextRef cref = NULL;
 
-    // Allocate a new NRT_MemInfo object
-    if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
+    // Allocate a new NRT_MemInfo object. By passing 0 we are just allocating
+    // MemInfo and not the `data` that the MemInfo object manages.
+    if (!(mi = (NRT_MemInfo *)nrt->allocate(0))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not allocate a new NRT_MemInfo "
             "object  at %s, line %d\n",
@@ -505,7 +515,8 @@ error:
  * @return   {return}     A new NRT_MemInfo object, NULL if no NRT_MemInfo
  *                        object could be created.
  */
-static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
+static NRT_MemInfo *DPEXRT_MemInfo_alloc(NRT_api_functions *nrt,
+                                         npy_intp size,
                                          size_t usm_type,
                                          const DPCTLSyclQueueRef qref)
 {
@@ -517,7 +528,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
         "DPEXRT-DEBUG: Inside DPEXRT_MemInfo_alloc  %s, line %d\n", __FILE__,
         __LINE__));
     // Allocate a new NRT_MemInfo object
-    if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
+    if (!(mi = (NRT_MemInfo *)nrt->allocate(0))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not allocate a new NRT_MemInfo object.\n"));
         goto error;
@@ -795,7 +806,8 @@ static npy_intp product_of_shape(npy_intp *shape, npy_intp ndim)
  *                          instance of a dpnp.ndarray
  * @return   {return}       Error code representing success (0) or failure (-1).
  */
-static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
+static int DPEXRT_sycl_usm_ndarray_from_python(NRT_api_functions *nrt,
+                                               PyObject *obj,
                                                usmarystruct_t *arystruct)
 {
     struct PyUSMArrayObject *arrayobj = NULL;
@@ -842,7 +854,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
-              obj, data, nitems, itemsize, qref)))
+              nrt, obj, data, nitems, itemsize, qref)))
     {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
