@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>numba_dpex.core - numba-dpex 0.23.0rc2+28.g404adf171 documentation</title>
+        <title>numba_dpex.core - numba-dpex 0.23.0rc2+31.g862195ce0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -190,7 +190,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0rc2+28.g404adf171 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0rc2+31.g862195ce0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -214,7 +214,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc2+28.g404adf171 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc2+31.g862195ce0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -251,8 +251,6 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../kernel_api/index.html">numba_dpex.kernel_api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="decorators/index.html">numba_dpex.core.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../config_options.html">Configuration Options</a></li>
@@ -457,7 +455,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.DpnpNdArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">address_space.GLOBAL.value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.DpnpNdArray" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="types/usm_ndarray_type/index.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.types.usm_ndarray_type.USMNdArray</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.core.types.usm_ndarray_type.USMNdArray</span></code></p>
 <p>The Numba type to represent an dpnp.ndarray. The type has the same
 structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
 </dd></dl>
@@ -519,7 +517,7 @@ If successful, must return a string describing the conversion, e.g.
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRangeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.NdRangeType" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.Type</span></code></p>
 <p>Numba-dpex type corresponding to
-<a class="reference internal" href="../kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.NdRange" title="numba_dpex.kernel_api.ranges.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges.NdRange</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges.NdRange</span></code></p>
 </dd></dl>
 
 <dl class="py class">
@@ -527,7 +525,7 @@ If successful, must return a string describing the conversion, e.g.
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RangeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.RangeType" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">numba.core.types.Type</span></code></p>
 <p>Numba-dpex type corresponding to
-<a class="reference internal" href="../kernel_api/ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges.Range</span></code></p>
 </dd></dl>
 
 <dl class="py class">
@@ -768,7 +766,7 @@ If successful, must return a string describing the conversion, e.g.
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=564c21c7"></script>
+</div><script src="../../../_static/documentation_options.js?v=2af70ef0"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=4e2eecee"></script>
