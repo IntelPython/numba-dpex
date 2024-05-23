@@ -17,7 +17,7 @@ import llvmlite.binding as ll
 from numba import __version__ as numba_version
 
 from .kernel_api_impl.spirv import target as spirv_kernel_target
-from .numba_patches import patch_is_ufunc
+from .numba_patches import patch_ufuncs
 from .register_kernel_api_overloads import init_kernel_api_spirv_overloads
 
 
@@ -70,7 +70,7 @@ numba_sem_version = parse_sem_version(numba_version)
 dpctl_sem_version = parse_sem_version(dpctl.__version__)
 
 # Monkey patches
-patch_is_ufunc.patch()
+patch_ufuncs.patch()
 
 from numba import prange  # noqa E402
 
