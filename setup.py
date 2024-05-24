@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import os
 import re
 
 import versioneer
@@ -49,6 +50,16 @@ def to_cmake_format(version: str):
 
 # Get the project version
 __version__ = versioneer.get_version()
+
+# Keep same style as versioneer in case ve would want to switch back
+with open(os.path.join("numba_dpex", "_version.py"), "w") as fh:
+    print(
+        "# SPDX-FileCopyrightText: 2024 Intel Corporation\n#\n"
+        "# SPDX-License-Identifier: Apache-2.0\n\n\ndef get_versions():\n"
+        '    return {"version": "' + __version__ + '"}',
+        file=fh,
+    )
+
 
 # Main setup
 setup(
