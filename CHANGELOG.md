@@ -4,13 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.23.0] - 2024-04-XX
+## [0.23.0] - 2024-05-28
 
 ### Fixed
 * Array alignment problem for stack arrays allocated for kernel arguments. (#1357)
 * Issue #892, #906 caused by incorrect code generation for indexing (#1377)
-* Fix `KernelHasReturnValueError` inside `KernelDispatcher`. (#1394)
+* Generation of `KernelHasReturnValueError` error inside `KernelDispatcher`. (#1394)
 * Issue #1390: broken support for slicing into `dpctl.tensor.usm_ndarray` in kernels (#1425)
+* Support for Wheels package on Windows (#1430)
+* Incorrect mangled name for kernel function arguments (#1443)
+* Remove artifacts from conda/wheel packages residing in root level (#1450)
+* GDB tests to work properly on Intel Max GPU (#1451)
+* Improper wheels installation on unsupported platforms (#1452)
+* Ref-counting of Python object temporaries in unboxing code (#1454)
+* Segfault caused by using `malloc` to allocate `NRT_MemInfo`. Replaced with Numba's NRT `alloc` (#1458)
+* Incorrect package name in README.md (#1463)
 
 ### Added
 * A new overloaded `dimensions` attribute for all index-space id classes (#1359)
@@ -24,17 +32,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * A `sycl::local_accessor`-like API (`kernel_api.LocalAccessor`) for numba-dpex kernel (#1331)
 * Specialization support for `device_func` decorator (#1398)
 * Support for all `kernel_api` functions inside the `numba_dpex.kernel` decorator. (#1400)
+* Support for dpnp 0.15 (#1434, #1464)
+* Improvements to pyproject.toml configs to build numba-dpex from source. (#1449)
+* Load the `SPV_INTEL_variable_length_array` SPIR-V extension to supporting arrays in private address-space on Intel Max GPU. (#1451)
 
 ### Changed
 * Default inline threshold value set to `2` from `None`. (#1385)
 * Port parfor kernel templates to `kernel_api` (#1416), (#1424)
+* Use `SPIRVKernelDispatcher` for parfor kernel dispatch (#1435, #1448)
+* All examples use the latest dpctl API (#1431)
 * Minimum required dpctl version is now 0.16.1
-* Minimum required numba version is now 0.59.0
+* Minimum required numba version is now 0.59.0 (#1462)
 
 ### Removed
 * OpenCL-like kernel API functions (#1420)
 * `func` decorator (replaced by `device_func`) (#1400)
 * `numba_dpex.experimental.kernel` and `numba_dpex.experimental.device_func` (#1400)
+
 
 ## [0.22.0] - 2024-02-19
 
