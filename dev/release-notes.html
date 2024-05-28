@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="License" href="license.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>Release Notes - numba-dpex 0.23.0rc2+47.g0d1f5d4ce documentation</title>
+        <title>Release Notes - numba-dpex 0.23.0rc2+49.g46e90f690 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -190,7 +190,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">numba-dpex 0.23.0rc2+47.g0d1f5d4ce documentation</div></a>
+      <a href="index.html"><div class="brand">numba-dpex 0.23.0rc2+49.g46e90f690 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -214,7 +214,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0rc2+47.g0d1f5d4ce documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0rc2+49.g46e90f690 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -305,15 +305,23 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<section id="xx">
-<h3>[0.23.0] - 2024-04-XX<a class="headerlink" href="#xx" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h3>[0.23.0] - 2024-05-28<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <section id="fixed">
 <h4>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Array alignment problem for stack arrays allocated for kernel arguments. (#1357)</p></li>
 <li><p>Issue #892, #906 caused by incorrect code generation for indexing (#1377)</p></li>
-<li><p>Fix <code class="docutils literal notranslate"><span class="pre">KernelHasReturnValueError</span></code> inside <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code>. (#1394)</p></li>
+<li><p>Generation of <code class="docutils literal notranslate"><span class="pre">KernelHasReturnValueError</span></code> error inside <code class="docutils literal notranslate"><span class="pre">KernelDispatcher</span></code>. (#1394)</p></li>
 <li><p>Issue #1390: broken support for slicing into <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> in kernels (#1425)</p></li>
+<li><p>Support for Wheels package on Windows (#1430)</p></li>
+<li><p>Incorrect mangled name for kernel function arguments (#1443)</p></li>
+<li><p>Remove artifacts from conda/wheel packages residing in root level (#1450)</p></li>
+<li><p>GDB tests to work properly on Intel Max GPU (#1451)</p></li>
+<li><p>Improper wheels installation on unsupported platforms (#1452)</p></li>
+<li><p>Ref-counting of Python object temporaries in unboxing code (#1454)</p></li>
+<li><p>Segfault caused by using <code class="docutils literal notranslate"><span class="pre">malloc</span></code> to allocate <code class="docutils literal notranslate"><span class="pre">NRT_MemInfo</span></code>. Replaced with Numba’s NRT <code class="docutils literal notranslate"><span class="pre">alloc</span></code> (#1458)</p></li>
+<li><p>Incorrect package name in README.md (#1463)</p></li>
 </ul>
 </section>
 <section id="added">
@@ -330,6 +338,9 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>A <code class="docutils literal notranslate"><span class="pre">sycl::local_accessor</span></code>-like API (<code class="docutils literal notranslate"><span class="pre">kernel_api.LocalAccessor</span></code>) for numba-dpex kernel (#1331)</p></li>
 <li><p>Specialization support for <code class="docutils literal notranslate"><span class="pre">device_func</span></code> decorator (#1398)</p></li>
 <li><p>Support for all <code class="docutils literal notranslate"><span class="pre">kernel_api</span></code> functions inside the <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> decorator. (#1400)</p></li>
+<li><p>Support for dpnp 0.15 (#1434, #1464)</p></li>
+<li><p>Improvements to pyproject.toml configs to build numba-dpex from source. (#1449)</p></li>
+<li><p>Load the <code class="docutils literal notranslate"><span class="pre">SPV_INTEL_variable_length_array</span></code> SPIR-V extension to supporting arrays in private address-space on Intel Max GPU. (#1451)</p></li>
 </ul>
 </section>
 <section id="changed">
@@ -337,8 +348,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <ul class="simple">
 <li><p>Default inline threshold value set to <code class="docutils literal notranslate"><span class="pre">2</span></code> from <code class="docutils literal notranslate"><span class="pre">None</span></code>. (#1385)</p></li>
 <li><p>Port parfor kernel templates to <code class="docutils literal notranslate"><span class="pre">kernel_api</span></code> (#1416), (#1424)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">SPIRVKernelDispatcher</span></code> for parfor kernel dispatch (#1435, #1448)</p></li>
+<li><p>All examples use the latest dpctl API (#1431)</p></li>
 <li><p>Minimum required dpctl version is now 0.16.1</p></li>
-<li><p>Minimum required numba version is now 0.59.0</p></li>
+<li><p>Minimum required numba version is now 0.59.0 (#1462)</p></li>
 </ul>
 </section>
 <section id="removed">
@@ -350,10 +363,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id1">
-<h3>[0.22.0] - 2024-02-19<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <section id="id2">
-<h4>Fixed<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<h3>[0.22.0] - 2024-02-19<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<section id="id3">
+<h4>Fixed<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Bug in boxing a DpnpNdArray from parent (#1155)</p></li>
 <li><p>Strided layouts and F-contiguous layouts supported in experimental kernel (#1178)</p></li>
@@ -362,8 +375,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Overhead on launching numba_dpex.kernel functions (#1236)</p></li>
 </ul>
 </section>
-<section id="id3">
-<h4>Added<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
+<section id="id4">
+<h4>Added<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support for dpctl.SyclEvent data type inside dpjit (#1134)</p></li>
 <li><p>Support for kernel_api.Range and kernel_api.NdRange inside dpjit (#1148)</p></li>
@@ -392,16 +405,16 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>API Documentation for kernel API (#1332)</p></li>
 </ul>
 </section>
-<section id="id4">
-<h4>Changed<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<section id="id5">
+<h4>Changed<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Switch to dpc++ compiler for building numba-dpex (#1210)</p></li>
 <li><p>Versioneer and pytest configs into pyproject.toml (#1212)</p></li>
 <li><p>numba-dpex can be imported even if no SYCL device is detected by dpctl (#1272)</p></li>
 </ul>
 </section>
-<section id="id5">
-<h4>Removed<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<section id="id6">
+<h4>Removed<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Kernel launch params as lists/tuple. Only Range/NdRange supported (#1251)</p></li>
 <li><p>DEFAULT_LOCAL_SIZE global constant (#1291)</p></li>
@@ -417,26 +430,26 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id6">
-<h3>[0.21.4] - 2023-10-12<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <section id="id7">
-<h4>Fixed<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<h3>[0.21.4] - 2023-10-12<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h4>Fixed<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Remove dead code to silence Coverity errors. (#1163)</p></li>
 </ul>
 </section>
 </section>
-<section id="id8">
-<h3>[0.21.3] - 2023-09-28<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
 <section id="id9">
-<h4>Fixed<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h4>
+<h3>[0.21.3] - 2023-09-28<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>Fixed<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Pin CI conda channels (#1133)</p></li>
 <li><p>Mangled kernel name generation (#1112)</p></li>
 </ul>
 </section>
-<section id="id10">
-<h4>Added<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<section id="id11">
+<h4>Added<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support tests on single point precision GPUs (#1143)</p></li>
 <li><p>Initial work on Coverity scan CI (#1128)</p></li>
@@ -445,36 +458,36 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>scikit-build to build native extensions (#1107, #1116, #1127, #1139, #1140)</p></li>
 </ul>
 </section>
-<section id="id11">
-<h4>Changed<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<section id="id12">
+<h4>Changed<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Rename helper function to clearly indicate its usage (#1145)</p></li>
 <li><p>The data model used by the DpnpNdArray type for kernel functions(#1118)</p></li>
 </ul>
 </section>
-<section id="id12">
-<h4>Removed<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<section id="id13">
+<h4>Removed<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support for Python 3.8 (#1113)</p></li>
 </ul>
 </section>
 </section>
-<section id="id13">
-<h3>[0.21.2] - 2023-08-07<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
 <section id="id14">
-<h4>Fixed<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h4>
+<h3>[0.21.2] - 2023-08-07<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<section id="id15">
+<h4>Fixed<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Bugs (#1068, #774) in atomic addition caused due to improper floating point atomic emulation. (#1103)</p></li>
 </ul>
 </section>
-<section id="id15">
-<h4>Changed<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h4>
+<section id="id16">
+<h4>Changed<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Updated documentation and user guides (#1097, #879)</p></li>
 </ul>
 </section>
-<section id="id16">
-<h4>Removed<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h4>
+<section id="id17">
+<h4>Removed<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Dependency on <code class="docutils literal notranslate"><span class="pre">spirv-tools</span></code> (#1103, #1108)</p></li>
 <li><p>floating point atomic add emulation using <code class="docutils literal notranslate"><span class="pre">atomic_ops.cl</span></code> (#1103)</p></li>
@@ -482,17 +495,17 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id17">
-<h3>[0.21.1] - 2023-07-17<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
 <section id="id18">
-<h4>Changed<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h4>
+<h3>[0.21.1] - 2023-07-17<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<section id="id19">
+<h4>Changed<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Improved support for <code class="docutils literal notranslate"><span class="pre">queue</span></code> keyword in dpnp array constructor overloads (#1083)</p></li>
 <li><p>Improved reduction kernel example (#1089)</p></li>
 </ul>
 </section>
-<section id="id19">
-<h4>Fixed<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
+<section id="id20">
+<h4>Fixed<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update Itanium CXX ABI Mangler reference (#1080)</p></li>
 <li><p>Update sourceware references in docstrings (#1081)</p></li>
@@ -500,10 +513,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id20">
-<h3>[0.21.0] - 2023-06-17<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
 <section id="id21">
-<h4>Added<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
+<h3>[0.21.0] - 2023-06-17<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
+<section id="id22">
+<h4>Added<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support addition and multiplication-based prange reduction loops (#999)</p></li>
 <li><p>Proper boxing, unboxing of dpctl.SyclQueue objects inside dpjit decorated functions (#963, #1064)</p></li>
@@ -516,8 +529,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Support for SPIRV 1.4 (#1056, #1060)</p></li>
 </ul>
 </section>
-<section id="id22">
-<h4>Changed<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
+<section id="id23">
+<h4>Changed<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Parfor lowering happens using the kernel pipeline (#996)</p></li>
 <li><p>Minimum required Numba version is now 0.57 (#1030)</p></li>
@@ -525,8 +538,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Redesigned unit test suite (#1018, #1017, #1015, #1036, #1037, #1072)</p></li>
 </ul>
 </section>
-<section id="id23">
-<h4>Fixed<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
+<section id="id24">
+<h4>Fixed<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix stride computation when unboxing a dpnp array (#1023)</p></li>
 <li><p>Using cached queue instead of creating new one on type inference (#946)</p></li>
@@ -534,8 +547,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Offload of parfor nodes to OpenCL UHD GPU devices (#1074)</p></li>
 </ul>
 </section>
-<section id="id24">
-<h4>Removed<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
+<section id="id25">
+<h4>Removed<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support for offloading NumPy-based parfor nodes to SYCL devices (#1041)</p></li>
 <li><p>Removed rename_numpy_functions_pass (#1041)</p></li>
@@ -547,17 +560,17 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id25">
-<h3>[0.20.1] - 2023-04-07<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
 <section id="id26">
-<h4>Added<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
+<h3>[0.20.1] - 2023-04-07<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
+<section id="id27">
+<h4>Added<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Replaced llvm_spirv from oneAPI path by dpcpp-llvm-spirv package.(#979)</p></li>
 <li><p>Added Dockerfile and a manual workflow to publish pre-built packages to the repo.(#973)</p></li>
 </ul>
 </section>
-<section id="id27">
-<h4>Fixed<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
+<section id="id28">
+<h4>Fixed<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fixed default dtype derivation when creating a dpnp.ndarray. (#993)</p></li>
 <li><p>Adjusted test_windows step to work with intel-opencl-rt=2023.1.0. (#990)</p></li>
@@ -566,10 +579,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </section>
 </section>
-<section id="id28">
-<h3>[0.20.0] - 2023-03-06<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
 <section id="id29">
-<h4>Added<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
+<h3>[0.20.0] - 2023-03-06<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h3>
+<section id="id30">
+<h4>Added<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>New dpjit decorator supporting dpnp compilation (#887)</p></li>
 <li><p>Boxing and unboxing functionality for dpnp.ndarray to numba_dpex (#902)</p></li>
@@ -599,8 +612,8 @@ NRT_MemInfo (#902)</p></li>
 model. (#826)</p></li>
 </ul>
 </section>
-<section id="id30">
-<h4>Changed<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
+<section id="id31">
+<h4>Changed<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">CLK_GLOBAL_MEM_FENCE</span></code> and <code class="docutils literal notranslate"><span class="pre">CLK_LOCAL_MEM_FENCE</span></code> flags renamed to
 <code class="docutils literal notranslate"><span class="pre">GLOBAL_MEM_FENCE</span></code> and <code class="docutils literal notranslate"><span class="pre">LOCAL_MEM_FENCE</span></code>. (#844)</p></li>
@@ -623,8 +636,8 @@ ImportError (#925)</p></li>
 <li><p>License in setup.py to match actual project licensing (#904)</p></li>
 </ul>
 </section>
-<section id="id31">
-<h4>Fixed<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h4>
+<section id="id32">
+<h4>Fixed<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Kernel specialization, compute follows data programming model for
 kernels (#804)</p></li>
@@ -632,15 +645,15 @@ kernels (#804)</p></li>
 <li><p>func decorator qualname ambiguation fix (#905)</p></li>
 </ul>
 </section>
-<section id="id32">
-<h4>Removed<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h4>
+<section id="id33">
+<h4>Removed<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Removes the numpy_usm_shared module from numba_dpex. (#841)</p></li>
 <li><p>Removes the usage of llvmlite.llvmpy (#932)</p></li>
 </ul>
 </section>
-<section id="id33">
-<h4>Deprecated<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h4>
+<section id="id34">
+<h4>Deprecated<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Support for NumPy arrays as kernel arguments (#804)</p></li>
 <li><p>Kernel argument access specifiers (#804)</p></li>
@@ -649,43 +662,43 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id34">
-<h3>[0.19.0] - 2022-11-21<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h3>
 <section id="id35">
-<h4>Added<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h4>
+<h3>[0.19.0] - 2022-11-21<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h3>
+<section id="id36">
+<h4>Added<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Supported numba0.56. (#818)</p></li>
 <li><p>Supported dpnp0.11 and dpctl0.14.</p></li>
 <li><p>Added customized exception classes. (#798)</p></li>
 </ul>
 </section>
-<section id="id36">
-<h4>Fixed<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h4>
+<section id="id37">
+<h4>Fixed<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fixed a crash when calling take() for input array with non-integer values. (#771)</p></li>
 <li><p>Fixed pairwise_distance.py to run on machine with no FP64 support in HW.  (#806)</p></li>
 </ul>
 </section>
 </section>
-<section id="id37">
-<h3>[0.18.1] - 2022-08-06<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h3>
 <section id="id38">
-<h4>Added<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h4>
+<h3>[0.18.1] - 2022-08-06<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h3>
+<section id="id39">
+<h4>Added<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Implemented support for <code class="docutils literal notranslate"><span class="pre">dpnp.empty()</span></code> (#728)</p></li>
 </ul>
 </section>
-<section id="id39">
-<h4>Changed<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h4>
+<section id="id40">
+<h4>Changed<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>numba-dppy package is now renamed to numba-dpex.</p></li>
 </ul>
 </section>
 </section>
-<section id="id40">
-<h3>[0.18.0] - 2022-02-22<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h3>
 <section id="id41">
-<h4>Added<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h4>
+<h3>[0.18.0] - 2022-02-22<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h3>
+<section id="id42">
+<h4>Added<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Run coverage in GitHub Actions and upload results to coveralls.io (#621)</p></li>
 <li><p>Change black to only allow 80 char lines. Reformat sources. (#631)</p></li>
@@ -716,14 +729,14 @@ kernels (#804)</p></li>
 <li><p>Update recipe with dpctl and dpnp version for build (#710)</p></li>
 </ul>
 </section>
-<section id="id42">
-<h4>Changed<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h4>
+<section id="id43">
+<h4>Changed<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Move <code class="docutils literal notranslate"><span class="pre">dpcpp/llvm-spirv</span></code> from runtime to testing dependency (#659)</p></li>
 </ul>
 </section>
-<section id="id43">
-<h4>Fixed<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h4>
+<section id="id44">
+<h4>Fixed<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix building with DPNP (#674)</p></li>
 <li><p>Fix public CI: opencl driver, channel priority, dpctl version (#691)</p></li>
@@ -735,25 +748,25 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id44">
-<h3>[0.17.4] - 2021-12-02<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h3>
 <section id="id45">
-<h4>Changed<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h4>
+<h3>[0.17.4] - 2021-12-02<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h3>
+<section id="id46">
+<h4>Changed<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Move <code class="docutils literal notranslate"><span class="pre">dpcpp/llvm-spirv</span></code> from runtime to testing dependency by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659</p></li>
 </ul>
 </section>
 </section>
-<section id="id46">
-<h3>[0.17.3] - 2021-11-30<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h3>
 <section id="id47">
-<h4>Changed<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h4>
+<h3>[0.17.3] - 2021-11-30<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h3>
+<section id="id48">
+<h4>Changed<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> from <code class="docutils literal notranslate"><span class="pre">dpcpp</span></code> compiler package by default [cherry picked from #649] (#651)</p></li>
 </ul>
 </section>
-<section id="id48">
-<h4>Fixed<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h4>
+<section id="id49">
+<h4>Fixed<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Enable offloading for <code class="docutils literal notranslate"><span class="pre">numba.njit</span></code> in <code class="docutils literal notranslate"><span class="pre">dpctl.deveice_context</span></code> (#630)</p></li>
 <li><p>Fix upload conditions for main and release branches (#610)</p></li>
@@ -761,28 +774,28 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id49">
-<h3>[0.17.2] - 2021-11-15<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h3>
 <section id="id50">
-<h4>Changed<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h4>
+<h3>[0.17.2] - 2021-11-15<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h3>
+<section id="id51">
+<h4>Changed<a class="headerlink" href="#id51" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Use llvm-spirv from bin-llvm during build for Linux and Windows (#626, #627)</p></li>
 </ul>
 </section>
 </section>
-<section id="id51">
-<h3>[0.17.1] - 2021-11-10<a class="headerlink" href="#id51" title="Link to this heading">¶</a></h3>
 <section id="id52">
-<h4>Changed<a class="headerlink" href="#id52" title="Link to this heading">¶</a></h4>
+<h3>[0.17.1] - 2021-11-10<a class="headerlink" href="#id52" title="Link to this heading">¶</a></h3>
+<section id="id53">
+<h4>Changed<a class="headerlink" href="#id53" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update clang to icx (#622)</p></li>
 </ul>
 </section>
 </section>
-<section id="id53">
-<h3>[0.17.0] - 2021-11-03<a class="headerlink" href="#id53" title="Link to this heading">¶</a></h3>
 <section id="id54">
-<h4>Added<a class="headerlink" href="#id54" title="Link to this heading">¶</a></h4>
+<h3>[0.17.0] - 2021-11-03<a class="headerlink" href="#id54" title="Link to this heading">¶</a></h3>
+<section id="id55">
+<h4>Added<a class="headerlink" href="#id55" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Use Python 3.9 [public CI] by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUG</span></code> for debugging GDB tests by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578</p></li>
@@ -796,8 +809,8 @@ kernels (#804)</p></li>
 <li><p>Clean up README by &#64;diptorupd in https://github.com/IntelPython/numba-dppy/pull/604</p></li>
 </ul>
 </section>
-<section id="id55">
-<h4>Fixed<a class="headerlink" href="#id55" title="Link to this heading">¶</a></h4>
+<section id="id56">
+<h4>Fixed<a class="headerlink" href="#id56" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Restrict dpctl to 0.10.* for release 0.16 by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/590</p></li>
 <li><p>Fix upload from release branch by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/596</p></li>
@@ -805,20 +818,20 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id56">
-<h3>[0.16.1] - 2021-10-20<a class="headerlink" href="#id56" title="Link to this heading">¶</a></h3>
 <section id="id57">
-<h4>Changed<a class="headerlink" href="#id57" title="Link to this heading">¶</a></h4>
+<h3>[0.16.1] - 2021-10-20<a class="headerlink" href="#id57" title="Link to this heading">¶</a></h3>
+<section id="id58">
+<h4>Changed<a class="headerlink" href="#id58" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix dpctl to 0.10 (#590)</p></li>
 <li><p>Add Public CI trigger for tags (#589)</p></li>
 </ul>
 </section>
 </section>
-<section id="id58">
-<h3>[0.16.0] - 2021-09-28<a class="headerlink" href="#id58" title="Link to this heading">¶</a></h3>
 <section id="id59">
-<h4>Added<a class="headerlink" href="#id59" title="Link to this heading">¶</a></h4>
+<h3>[0.16.0] - 2021-09-28<a class="headerlink" href="#id59" title="Link to this heading">¶</a></h3>
+<section id="id60">
+<h4>Added<a class="headerlink" href="#id60" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Improve build and infra scripts (#544)</p></li>
 <li><p>Add docs about local variables lifetime (#534)</p></li>
@@ -831,8 +844,8 @@ kernels (#804)</p></li>
 <li><p>Transform commands scripts for GDB to tests (#568)</p></li>
 </ul>
 </section>
-<section id="id60">
-<h4>Changed<a class="headerlink" href="#id60" title="Link to this heading">¶</a></h4>
+<section id="id61">
+<h4>Changed<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update dpnp 0.8 (#524)</p></li>
 <li><p>Fix passing strides array to DPNP dot and matmul (#565)</p></li>
@@ -845,8 +858,8 @@ kernels (#804)</p></li>
 <li><p>Use dpctl 0.10* and dpnp 0.8* in development configuration (environment.yml)</p></li>
 </ul>
 </section>
-<section id="id61">
-<h4>Fixed<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h4>
+<section id="id62">
+<h4>Fixed<a class="headerlink" href="#id62" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update test and fix typo for atomics (#550)</p></li>
 <li><p>Delete unused file <code class="docutils literal notranslate"><span class="pre">run_test.sh</span></code></p></li>
@@ -855,10 +868,10 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id62">
-<h3>[0.15.0] - 2021-08-25<a class="headerlink" href="#id62" title="Link to this heading">¶</a></h3>
 <section id="id63">
-<h4>Added<a class="headerlink" href="#id63" title="Link to this heading">¶</a></h4>
+<h3>[0.15.0] - 2021-08-25<a class="headerlink" href="#id63" title="Link to this heading">¶</a></h3>
+<section id="id64">
+<h4>Added<a class="headerlink" href="#id64" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Introduce array ultilites to check, allocate and copy memory using SYCL USM (#489)</p></li>
 <li><p>Add packaging in run dependencies (#505)</p></li>
@@ -869,8 +882,8 @@ kernels (#804)</p></li>
 <li><p>Add integration channels to GitHub Actions and make workflow consistent with dpctl (#510)</p></li>
 </ul>
 </section>
-<section id="id64">
-<h4>Changed<a class="headerlink" href="#id64" title="Link to this heading">¶</a></h4>
+<section id="id65">
+<h4>Changed<a class="headerlink" href="#id65" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update to Numba 0.54.0 (#493)</p></li>
 <li><p>Update to dpctl 0.9 (#514)</p></li>
@@ -879,23 +892,23 @@ kernels (#804)</p></li>
 <li><p>Update go version (#515)</p></li>
 </ul>
 </section>
-<section id="id65">
-<h4>Removed<a class="headerlink" href="#id65" title="Link to this heading">¶</a></h4>
+<section id="id66">
+<h4>Removed<a class="headerlink" href="#id66" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Remove llvmdev from runtime dependecies (#498)</p></li>
 </ul>
 </section>
-<section id="id66">
-<h4>Fixed<a class="headerlink" href="#id66" title="Link to this heading">¶</a></h4>
+<section id="id67">
+<h4>Fixed<a class="headerlink" href="#id67" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix required compiler flags for processing genreated DWARF symbols (#500)</p></li>
 </ul>
 </section>
 </section>
-<section id="id67">
-<h3>[0.14.4] - 2021-07-09<a class="headerlink" href="#id67" title="Link to this heading">¶</a></h3>
 <section id="id68">
-<h4>Fixed<a class="headerlink" href="#id68" title="Link to this heading">¶</a></h4>
+<h3>[0.14.4] - 2021-07-09<a class="headerlink" href="#id68" title="Link to this heading">¶</a></h3>
+<section id="id69">
+<h4>Fixed<a class="headerlink" href="#id69" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix emission of debug information (#424)</p></li>
 <li><p>Fix examples demonstrating GDB usage on a numba_dppy.kernel function. (#455)</p></li>
@@ -905,8 +918,8 @@ kernels (#804)</p></li>
 <li><p>Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)</p></li>
 </ul>
 </section>
-<section id="id69">
-<h4>Added<a class="headerlink" href="#id69" title="Link to this heading">¶</a></h4>
+<section id="id70">
+<h4>Added<a class="headerlink" href="#id70" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Add examples for debugging (#426)</p></li>
 <li><p>Added a new NUMBA_DPPY_DEBUGINFO environment variable to control GDB usage (#460)</p></li>
@@ -923,10 +936,10 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id70">
-<h3>[0.14.3] - 2021-05-27<a class="headerlink" href="#id70" title="Link to this heading">¶</a></h3>
 <section id="id71">
-<h4>Fixed<a class="headerlink" href="#id71" title="Link to this heading">¶</a></h4>
+<h3>[0.14.3] - 2021-05-27<a class="headerlink" href="#id71" title="Link to this heading">¶</a></h3>
+<section id="id72">
+<h4>Fixed<a class="headerlink" href="#id72" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Add check for ONEAPI_ROOT dir (#411)</p></li>
 <li><p>Fix using unquoted environment variable for clang path (#386)</p></li>
@@ -934,10 +947,10 @@ kernels (#804)</p></li>
 </ul>
 </section>
 </section>
-<section id="id72">
-<h3>[0.14.2] - 2021-05-26<a class="headerlink" href="#id72" title="Link to this heading">¶</a></h3>
 <section id="id73">
-<h4>Added<a class="headerlink" href="#id73" title="Link to this heading">¶</a></h4>
+<h3>[0.14.2] - 2021-05-26<a class="headerlink" href="#id73" title="Link to this heading">¶</a></h3>
+<section id="id74">
+<h4>Added<a class="headerlink" href="#id74" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update documentation: version 0.14 (#378), API docs (#388),
 note about Intel Python Numba (#389),</p></li>
@@ -960,8 +973,8 @@ add test matrix (#305)</p></li>
 <li><p>Add Bandit checks (#264)</p></li>
 </ul>
 </section>
-<section id="id74">
-<h4>Changed<a class="headerlink" href="#id74" title="Link to this heading">¶</a></h4>
+<section id="id75">
+<h4>Changed<a class="headerlink" href="#id75" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Update to dpctl 0.8 (#375)</p></li>
 <li><p>Update to Numba 0.53 (#279), inluding
@@ -982,8 +995,8 @@ override get_ufunc_info in DPPYTargetContext (#367)</p></li>
 <li><p>Update blackscholes examples (#377)</p></li>
 </ul>
 </section>
-<section id="id75">
-<h4>Fixed<a class="headerlink" href="#id75" title="Link to this heading">¶</a></h4>
+<section id="id76">
+<h4>Fixed<a class="headerlink" href="#id76" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix dppy_rt extension (#393)</p></li>
 <li><p>Update SYCL Filter String (#390)</p></li>
@@ -998,10 +1011,10 @@ override get_ufunc_info in DPPYTargetContext (#367)</p></li>
 </ul>
 </section>
 </section>
-<section id="id76">
-<h3>[0.13.1] - 2021-03-11<a class="headerlink" href="#id76" title="Link to this heading">¶</a></h3>
 <section id="id77">
-<h4>Fixed<a class="headerlink" href="#id77" title="Link to this heading">¶</a></h4>
+<h3>[0.13.1] - 2021-03-11<a class="headerlink" href="#id77" title="Link to this heading">¶</a></h3>
+<section id="id78">
+<h4>Fixed<a class="headerlink" href="#id78" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Add spir file to package.</p></li>
 <li><p>Do not modify CC env variable during build.</p></li>
@@ -1009,10 +1022,10 @@ override get_ufunc_info in DPPYTargetContext (#367)</p></li>
 </ul>
 </section>
 </section>
-<section id="id78">
-<h3>[0.13.0] - 2021-03-02<a class="headerlink" href="#id78" title="Link to this heading">¶</a></h3>
 <section id="id79">
-<h4>Added<a class="headerlink" href="#id79" title="Link to this heading">¶</a></h4>
+<h3>[0.13.0] - 2021-03-02<a class="headerlink" href="#id79" title="Link to this heading">¶</a></h3>
+<section id="id80">
+<h4>Added<a class="headerlink" href="#id80" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Documentation.</p></li>
 <li><p>Add support for dpctl.dparray.</p></li>
@@ -1021,8 +1034,8 @@ override get_ufunc_info in DPPYTargetContext (#367)</p></li>
 <li><p>Using Bandit for finding common security issues in Python code.</p></li>
 </ul>
 </section>
-<section id="id80">
-<h4>Changed<a class="headerlink" href="#id80" title="Link to this heading">¶</a></h4>
+<section id="id81">
+<h4>Changed<a class="headerlink" href="#id81" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Start using black code style formatter.</p></li>
 <li><p>Build SPIRV code in setup.py.</p></li>
@@ -1034,17 +1047,17 @@ override get_ufunc_info in DPPYTargetContext (#367)</p></li>
 <li><p>Modify test cases and examples to use Level Zero queue.</p></li>
 </ul>
 </section>
-<section id="id81">
-<h4>Fixed<a class="headerlink" href="#id81" title="Link to this heading">¶</a></h4>
+<section id="id82">
+<h4>Fixed<a class="headerlink" href="#id82" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Fix incorrect import in examples.</p></li>
 </ul>
 </section>
 </section>
-<section id="id82">
-<h3>[0.12.0] - 2020-12-17<a class="headerlink" href="#id82" title="Link to this heading">¶</a></h3>
 <section id="id83">
-<h4>Added<a class="headerlink" href="#id83" title="Link to this heading">¶</a></h4>
+<h3>[0.12.0] - 2020-12-17<a class="headerlink" href="#id83" title="Link to this heading">¶</a></h3>
+<section id="id84">
+<h4>Added<a class="headerlink" href="#id84" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>numba-dppy is a standalone package now. Added setup.py and conda recipe.</p></li>
 <li><p>Offload diagnostics.</p></li>
@@ -1056,8 +1069,8 @@ overload of NumPy functions. The rewrite passes is a temporary fix till Numba ga
 <li><p>Updated to dpCtl 0.5.* and dpNP 0.4.*</p></li>
 </ul>
 </section>
-<section id="id84">
-<h4>Changed<a class="headerlink" href="#id84" title="Link to this heading">¶</a></h4>
+<section id="id85">
+<h4>Changed<a class="headerlink" href="#id85" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> interface now uses Numba’s <code class="docutils literal notranslate"><span class="pre">&#64;overload</span></code> functionality as opposed to the previous <code class="docutils literal notranslate"><span class="pre">&#64;lower_builtin</span></code> method.</p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">DPPL</span></code> to <code class="docutils literal notranslate"><span class="pre">DPPY</span></code>.</p></li>
@@ -1070,8 +1083,8 @@ overload of NumPy functions. The rewrite passes is a temporary fix till Numba ga
 <li><p>No dependency on <code class="docutils literal notranslate"><span class="pre">cffi</span></code>.</p></li>
 </ul>
 </section>
-<section id="id85">
-<h4>Removed<a class="headerlink" href="#id85" title="Link to this heading">¶</a></h4>
+<section id="id86">
+<h4>Removed<a class="headerlink" href="#id86" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>The old backup file.</p></li>
 </ul>
@@ -1140,147 +1153,147 @@ overload of NumPy functions. The rewrite passes is a temporary fix till Numba ga
             <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
 <li><a class="reference internal" href="#changelog">Changelog</a><ul>
-<li><a class="reference internal" href="#xx">[0.23.0] - 2024-04-XX</a><ul>
+<li><a class="reference internal" href="#id1">[0.23.0] - 2024-05-28</a><ul>
 <li><a class="reference internal" href="#fixed">Fixed</a></li>
 <li><a class="reference internal" href="#added">Added</a></li>
 <li><a class="reference internal" href="#changed">Changed</a></li>
 <li><a class="reference internal" href="#removed">Removed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">[0.22.0] - 2024-02-19</a><ul>
-<li><a class="reference internal" href="#id2">Fixed</a></li>
-<li><a class="reference internal" href="#id3">Added</a></li>
-<li><a class="reference internal" href="#id4">Changed</a></li>
-<li><a class="reference internal" href="#id5">Removed</a></li>
+<li><a class="reference internal" href="#id2">[0.22.0] - 2024-02-19</a><ul>
+<li><a class="reference internal" href="#id3">Fixed</a></li>
+<li><a class="reference internal" href="#id4">Added</a></li>
+<li><a class="reference internal" href="#id5">Changed</a></li>
+<li><a class="reference internal" href="#id6">Removed</a></li>
 <li><a class="reference internal" href="#deprecated">Deprecated</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">[0.21.4] - 2023-10-12</a><ul>
-<li><a class="reference internal" href="#id7">Fixed</a></li>
+<li><a class="reference internal" href="#id7">[0.21.4] - 2023-10-12</a><ul>
+<li><a class="reference internal" href="#id8">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">[0.21.3] - 2023-09-28</a><ul>
-<li><a class="reference internal" href="#id9">Fixed</a></li>
-<li><a class="reference internal" href="#id10">Added</a></li>
-<li><a class="reference internal" href="#id11">Changed</a></li>
-<li><a class="reference internal" href="#id12">Removed</a></li>
+<li><a class="reference internal" href="#id9">[0.21.3] - 2023-09-28</a><ul>
+<li><a class="reference internal" href="#id10">Fixed</a></li>
+<li><a class="reference internal" href="#id11">Added</a></li>
+<li><a class="reference internal" href="#id12">Changed</a></li>
+<li><a class="reference internal" href="#id13">Removed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">[0.21.2] - 2023-08-07</a><ul>
-<li><a class="reference internal" href="#id14">Fixed</a></li>
-<li><a class="reference internal" href="#id15">Changed</a></li>
-<li><a class="reference internal" href="#id16">Removed</a></li>
+<li><a class="reference internal" href="#id14">[0.21.2] - 2023-08-07</a><ul>
+<li><a class="reference internal" href="#id15">Fixed</a></li>
+<li><a class="reference internal" href="#id16">Changed</a></li>
+<li><a class="reference internal" href="#id17">Removed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">[0.21.1] - 2023-07-17</a><ul>
-<li><a class="reference internal" href="#id18">Changed</a></li>
-<li><a class="reference internal" href="#id19">Fixed</a></li>
+<li><a class="reference internal" href="#id18">[0.21.1] - 2023-07-17</a><ul>
+<li><a class="reference internal" href="#id19">Changed</a></li>
+<li><a class="reference internal" href="#id20">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id20">[0.21.0] - 2023-06-17</a><ul>
-<li><a class="reference internal" href="#id21">Added</a></li>
-<li><a class="reference internal" href="#id22">Changed</a></li>
-<li><a class="reference internal" href="#id23">Fixed</a></li>
-<li><a class="reference internal" href="#id24">Removed</a></li>
+<li><a class="reference internal" href="#id21">[0.21.0] - 2023-06-17</a><ul>
+<li><a class="reference internal" href="#id22">Added</a></li>
+<li><a class="reference internal" href="#id23">Changed</a></li>
+<li><a class="reference internal" href="#id24">Fixed</a></li>
+<li><a class="reference internal" href="#id25">Removed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id25">[0.20.1] - 2023-04-07</a><ul>
-<li><a class="reference internal" href="#id26">Added</a></li>
-<li><a class="reference internal" href="#id27">Fixed</a></li>
+<li><a class="reference internal" href="#id26">[0.20.1] - 2023-04-07</a><ul>
+<li><a class="reference internal" href="#id27">Added</a></li>
+<li><a class="reference internal" href="#id28">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id28">[0.20.0] - 2023-03-06</a><ul>
-<li><a class="reference internal" href="#id29">Added</a></li>
-<li><a class="reference internal" href="#id30">Changed</a></li>
-<li><a class="reference internal" href="#id31">Fixed</a></li>
-<li><a class="reference internal" href="#id32">Removed</a></li>
-<li><a class="reference internal" href="#id33">Deprecated</a></li>
+<li><a class="reference internal" href="#id29">[0.20.0] - 2023-03-06</a><ul>
+<li><a class="reference internal" href="#id30">Added</a></li>
+<li><a class="reference internal" href="#id31">Changed</a></li>
+<li><a class="reference internal" href="#id32">Fixed</a></li>
+<li><a class="reference internal" href="#id33">Removed</a></li>
+<li><a class="reference internal" href="#id34">Deprecated</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id34">[0.19.0] - 2022-11-21</a><ul>
-<li><a class="reference internal" href="#id35">Added</a></li>
-<li><a class="reference internal" href="#id36">Fixed</a></li>
+<li><a class="reference internal" href="#id35">[0.19.0] - 2022-11-21</a><ul>
+<li><a class="reference internal" href="#id36">Added</a></li>
+<li><a class="reference internal" href="#id37">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id37">[0.18.1] - 2022-08-06</a><ul>
-<li><a class="reference internal" href="#id38">Added</a></li>
-<li><a class="reference internal" href="#id39">Changed</a></li>
+<li><a class="reference internal" href="#id38">[0.18.1] - 2022-08-06</a><ul>
+<li><a class="reference internal" href="#id39">Added</a></li>
+<li><a class="reference internal" href="#id40">Changed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id40">[0.18.0] - 2022-02-22</a><ul>
-<li><a class="reference internal" href="#id41">Added</a></li>
-<li><a class="reference internal" href="#id42">Changed</a></li>
-<li><a class="reference internal" href="#id43">Fixed</a></li>
+<li><a class="reference internal" href="#id41">[0.18.0] - 2022-02-22</a><ul>
+<li><a class="reference internal" href="#id42">Added</a></li>
+<li><a class="reference internal" href="#id43">Changed</a></li>
+<li><a class="reference internal" href="#id44">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id44">[0.17.4] - 2021-12-02</a><ul>
-<li><a class="reference internal" href="#id45">Changed</a></li>
+<li><a class="reference internal" href="#id45">[0.17.4] - 2021-12-02</a><ul>
+<li><a class="reference internal" href="#id46">Changed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id46">[0.17.3] - 2021-11-30</a><ul>
-<li><a class="reference internal" href="#id47">Changed</a></li>
-<li><a class="reference internal" href="#id48">Fixed</a></li>
+<li><a class="reference internal" href="#id47">[0.17.3] - 2021-11-30</a><ul>
+<li><a class="reference internal" href="#id48">Changed</a></li>
+<li><a class="reference internal" href="#id49">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id49">[0.17.2] - 2021-11-15</a><ul>
-<li><a class="reference internal" href="#id50">Changed</a></li>
+<li><a class="reference internal" href="#id50">[0.17.2] - 2021-11-15</a><ul>
+<li><a class="reference internal" href="#id51">Changed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id51">[0.17.1] - 2021-11-10</a><ul>
-<li><a class="reference internal" href="#id52">Changed</a></li>
+<li><a class="reference internal" href="#id52">[0.17.1] - 2021-11-10</a><ul>
+<li><a class="reference internal" href="#id53">Changed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id53">[0.17.0] - 2021-11-03</a><ul>
-<li><a class="reference internal" href="#id54">Added</a></li>
-<li><a class="reference internal" href="#id55">Fixed</a></li>
+<li><a class="reference internal" href="#id54">[0.17.0] - 2021-11-03</a><ul>
+<li><a class="reference internal" href="#id55">Added</a></li>
+<li><a class="reference internal" href="#id56">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id56">[0.16.1] - 2021-10-20</a><ul>
-<li><a class="reference internal" href="#id57">Changed</a></li>
+<li><a class="reference internal" href="#id57">[0.16.1] - 2021-10-20</a><ul>
+<li><a class="reference internal" href="#id58">Changed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id58">[0.16.0] - 2021-09-28</a><ul>
-<li><a class="reference internal" href="#id59">Added</a></li>
-<li><a class="reference internal" href="#id60">Changed</a></li>
-<li><a class="reference internal" href="#id61">Fixed</a></li>
+<li><a class="reference internal" href="#id59">[0.16.0] - 2021-09-28</a><ul>
+<li><a class="reference internal" href="#id60">Added</a></li>
+<li><a class="reference internal" href="#id61">Changed</a></li>
+<li><a class="reference internal" href="#id62">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id62">[0.15.0] - 2021-08-25</a><ul>
-<li><a class="reference internal" href="#id63">Added</a></li>
-<li><a class="reference internal" href="#id64">Changed</a></li>
-<li><a class="reference internal" href="#id65">Removed</a></li>
-<li><a class="reference internal" href="#id66">Fixed</a></li>
+<li><a class="reference internal" href="#id63">[0.15.0] - 2021-08-25</a><ul>
+<li><a class="reference internal" href="#id64">Added</a></li>
+<li><a class="reference internal" href="#id65">Changed</a></li>
+<li><a class="reference internal" href="#id66">Removed</a></li>
+<li><a class="reference internal" href="#id67">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id67">[0.14.4] - 2021-07-09</a><ul>
-<li><a class="reference internal" href="#id68">Fixed</a></li>
-<li><a class="reference internal" href="#id69">Added</a></li>
+<li><a class="reference internal" href="#id68">[0.14.4] - 2021-07-09</a><ul>
+<li><a class="reference internal" href="#id69">Fixed</a></li>
+<li><a class="reference internal" href="#id70">Added</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id70">[0.14.3] - 2021-05-27</a><ul>
-<li><a class="reference internal" href="#id71">Fixed</a></li>
+<li><a class="reference internal" href="#id71">[0.14.3] - 2021-05-27</a><ul>
+<li><a class="reference internal" href="#id72">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id72">[0.14.2] - 2021-05-26</a><ul>
-<li><a class="reference internal" href="#id73">Added</a></li>
-<li><a class="reference internal" href="#id74">Changed</a></li>
-<li><a class="reference internal" href="#id75">Fixed</a></li>
+<li><a class="reference internal" href="#id73">[0.14.2] - 2021-05-26</a><ul>
+<li><a class="reference internal" href="#id74">Added</a></li>
+<li><a class="reference internal" href="#id75">Changed</a></li>
+<li><a class="reference internal" href="#id76">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id76">[0.13.1] - 2021-03-11</a><ul>
-<li><a class="reference internal" href="#id77">Fixed</a></li>
+<li><a class="reference internal" href="#id77">[0.13.1] - 2021-03-11</a><ul>
+<li><a class="reference internal" href="#id78">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id78">[0.13.0] - 2021-03-02</a><ul>
-<li><a class="reference internal" href="#id79">Added</a></li>
-<li><a class="reference internal" href="#id80">Changed</a></li>
-<li><a class="reference internal" href="#id81">Fixed</a></li>
+<li><a class="reference internal" href="#id79">[0.13.0] - 2021-03-02</a><ul>
+<li><a class="reference internal" href="#id80">Added</a></li>
+<li><a class="reference internal" href="#id81">Changed</a></li>
+<li><a class="reference internal" href="#id82">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id82">[0.12.0] - 2020-12-17</a><ul>
-<li><a class="reference internal" href="#id83">Added</a></li>
-<li><a class="reference internal" href="#id84">Changed</a></li>
-<li><a class="reference internal" href="#id85">Removed</a></li>
+<li><a class="reference internal" href="#id83">[0.12.0] - 2020-12-17</a><ul>
+<li><a class="reference internal" href="#id84">Added</a></li>
+<li><a class="reference internal" href="#id85">Changed</a></li>
+<li><a class="reference internal" href="#id86">Removed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#numba-version-0-48-0-dppy-version-0-3-0-june-29-2020">NUMBA Version 0.48.0 + DPPY Version 0.3.0 (June 29, 2020)</a></li>
@@ -1297,7 +1310,7 @@ overload of NumPy functions. The rewrite passes is a temporary fix till Numba ga
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=d67f75d1"></script>
+</div><script src="_static/documentation_options.js?v=177df979"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>
