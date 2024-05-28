@@ -1,0 +1,16 @@
+
+numba_dpex.core.parfors
+=======================
+
+.. py:module:: numba_dpex.core.parfors
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   kernel_templates/index.rst
+
+
