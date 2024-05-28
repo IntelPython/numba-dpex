@@ -89,12 +89,14 @@ class DpexRTContext(object):
         mod = builder.module
         u64 = llvmir.IntType(64)
         fnty = llvmir.FunctionType(
-            cgutils.voidptr_t, [cgutils.intp_t, u64, cgutils.voidptr_t]
+            cgutils.voidptr_t,
+            [cgutils.voidptr_t, cgutils.intp_t, u64, cgutils.voidptr_t],
         )
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEXRT_MemInfo_alloc")
         fn.return_value.add_attribute("noalias")
+        nrt_api = self._context.nrt.get_nrt_api(builder)
 
-        ret = builder.call(fn, [size, usm_type, queue_ref])
+        ret = builder.call(fn, [nrt_api, size, usm_type, queue_ref])
 
         return ret
 
@@ -168,13 +170,15 @@ class DpexRTContext(object):
 
         """
         fnty = llvmir.FunctionType(
-            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.pyobj, pyapi.voidptr]
         )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_usm_ndarray_from_python")
         fn.args[0].add_attribute("nocapture")
         fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
 
-        self.error = pyapi.builder.call(fn, (obj, ptr))
+        self.error = pyapi.builder.call(fn, (nrt_api, obj, ptr))
 
         return self.error
 

@@ -12,7 +12,7 @@
 
 
 
-Data-parallel Extension for Numba* (numba-dpex) is an open-source standalone
+Data Parallel Extension for Numba* (numba-dpex) is an open-source standalone
 extension for the [Numba](http://numba.pydata.org) Python JIT compiler.
 Numba-dpex provides a [SYCL*](https://sycl.tech/)-like API for kernel
 programming Python. SYCL* is an open standard developed by the [Unified

@@ -1,15 +1,21 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  # TODO: keep in sync with [project.dependencies] and /conda-recipe/meta.yaml
+  # TODO: keep in sync with [project.dependencies]
+  "wheel>=0.43",
+  "build>=1.1",
   "setuptools>=63.0.0",
   "scikit-build>=0.17.0",
   "ninja>=1.11.1; platform_system!='Windows'",
   "cmake>=3.29.0",
-  "numba>=0.59.0",
+  # We need dpctl for UsmNdArray integration for dpcpp code
   "dpctl>=0.16.1",
-  "numpy>=1.24.0",
-  "wheel",
+  # We need numba for runtime cpp headers
+  "numba>=0.59.0,<0.60.0a0",
+  "llvmlite>=0.42.0",
+  # Do we need dpnp at build time?
+  "dpnp >=0.14",
+  "numpy >=1.24",
   # WARNING: check with doc how to upgrade
   "versioneer[toml]==0.29"
 ]
@@ -32,14 +38,16 @@ classifiers = [
 dependencies = [
   # TODO: keep in sync with [build-system.requires] and /conda-recipe/meta.yaml
   # This restrictions are for dependabot, actual restrictions are set with
-  # conda.
-  # TODO: populate it during build process
+  # conda. TODO: populate it during build process
+  # TODO: do we have to set sycl runtime dependencies here
+  # "dpcpp-cpp-rt>=0.59.0",
+  # "intel-cmplr-lib-rt>=0.59.0"
   "numba>=0.59.0",
   "llvmlite>=0.42.0",
   "dpctl>=0.16.1",
   "dpnp>=0.14.0",
   "numpy>=1.24.0",
-  "dpcpp_llvm_spirv>=2024.0"
+  "dpcpp_llvm_spirv>=2024.1"
 ]
 description = "An extension for Numba to add data-parallel offload capability"
 dynamic = ["version"]

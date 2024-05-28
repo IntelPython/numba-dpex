@@ -3,25 +3,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-import sys
 import warnings
 
-import dpctl
-import dpctl.program as dpctl_prog
 from numba.core import ir, types
 from numba.core.errors import NumbaParallelSafetyWarning
 from numba.core.ir_utils import (
-    add_offset_to_labels,
     get_name_var_table,
     get_unused_var_name,
     legalize_names,
     mk_unique_var,
-    remove_dead,
     remove_dels,
-    rename_labels,
     replace_var_names,
 )
-from numba.core.target_extension import target_override
 from numba.core.typing import signature
 from numba.parfors import parfor
 
@@ -32,15 +25,11 @@ from numba_dpex.core.parfors.parfor_sentinel_replace_pass import (
 )
 from numba_dpex.core.types.kernel_api.index_space_ids import ItemType
 from numba_dpex.core.utils.call_kernel_builder import SPIRVKernelModule
-from numba_dpex.kernel_api_impl.spirv import spirv_generator
 from numba_dpex.kernel_api_impl.spirv.dispatcher import (
     SPIRVKernelDispatcher,
     _SPIRVKernelCompileResult,
 )
 
-from ..descriptor import dpex_kernel_target
-from ..types import DpnpNdArray
-from .compiler import compile_numba_ir_with_dpex
 from .kernel_templates.range_kernel_template import RangeKernelTemplate
 
 

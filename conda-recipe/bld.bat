@@ -35,7 +35,13 @@ for /f %%f in ('dir /b /S .\dist') do (
 
 :: wheel file was renamed
 for /f %%f in ('dir /b /S .\dist') do (
-    %PYTHON% -m pip install %%f
+    %PYTHON% -m pip install %%f ^
+      --no-build-isolation ^
+      --no-deps ^
+      --only-binary :all: ^
+      --no-index ^
+      --prefix %PREFIX% ^
+      -vv
     if %ERRORLEVEL% neq 0 exit 1
 )
 
