@@ -553,27 +553,27 @@ Classes
    .. rubric:: Members
 
    .. py:attribute:: PRIVATE
-      :value: 0
+      :value: '0'
 
       
 
    .. py:attribute:: GLOBAL
-      :value: 1
+      :value: '1'
 
       
 
    .. py:attribute:: CONSTANT
-      :value: 2
+      :value: '2'
 
       
 
    .. py:attribute:: LOCAL
-      :value: 3
+      :value: '3'
 
       
 
    .. py:attribute:: GENERIC
-      :value: 4
+      :value: '4'
 
       
 
@@ -615,32 +615,32 @@ Classes
    .. rubric:: Members
 
    .. py:attribute:: RELAXED
-      :value: 0
+      :value: '0'
 
       
 
    .. py:attribute:: ACQUIRE
-      :value: 1
+      :value: '1'
 
       
 
    .. py:attribute:: CONSUME_UNSUPPORTED
-      :value: 2
+      :value: '2'
 
       
 
    .. py:attribute:: RELEASE
-      :value: 3
+      :value: '3'
 
       
 
    .. py:attribute:: ACQ_REL
-      :value: 4
+      :value: '4'
 
       
 
    .. py:attribute:: SEQ_CST
-      :value: 5
+      :value: '5'
 
       
 
@@ -680,27 +680,27 @@ Classes
    .. rubric:: Members
 
    .. py:attribute:: WORK_ITEM
-      :value: 0
+      :value: '0'
 
       
 
    .. py:attribute:: SUB_GROUP
-      :value: 1
+      :value: '1'
 
       
 
    .. py:attribute:: WORK_GROUP
-      :value: 2
+      :value: '2'
 
       
 
    .. py:attribute:: DEVICE
-      :value: 3
+      :value: '3'
 
       
 
    .. py:attribute:: SYSTEM
-      :value: 4
+      :value: '4'
 
       
 
