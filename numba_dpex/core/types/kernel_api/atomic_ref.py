@@ -80,3 +80,13 @@ class AtomicRefType(Type):
         AtomicRefType throws a NotImplementedError.
         """
         raise NotImplementedError
+
+    @property
+    def mangling_args(self):
+        args = [
+            self.dtype,
+            self.memory_order,
+            self.memory_scope,
+            self.address_space,
+        ]
+        return self.__class__.__name__, args

@@ -28,6 +28,11 @@ class RangeType(types.Type):
     def key(self):
         return self._ndim
 
+    @property
+    def mangling_args(self):
+        args = [self.ndim]
+        return self.__class__.__name__, args
+
 
 class NdRangeType(types.Type):
     """Numba-dpex type corresponding to
@@ -49,3 +54,8 @@ class NdRangeType(types.Type):
     @property
     def key(self):
         return self._ndim
+
+    @property
+    def mangling_args(self):
+        args = [self.ndim]
+        return self.__class__.__name__, args

@@ -26,6 +26,9 @@ _skbuild
 
 docs/source/developer/autogen*
 
+# Ignore versioneer generated files
+numba_dpex/_version.py
+
 # Ignore generated cpp files
 numba_dpex/dpnp_iface/*.cpp
 numba_dpex/dpnp_iface/*.h

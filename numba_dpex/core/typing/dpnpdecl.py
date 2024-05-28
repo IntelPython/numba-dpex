@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
-import numpy as np
 from numba.core import types
 from numba.core.typing.npydecl import (
     Numpy_rules_ufunc,
@@ -23,7 +22,7 @@ def _install_operations(cls: NumpyRulesArrayOperator):
     for op, ufunc_name in cls._op_map.items():
         infer_global(op)(
             type(
-                "NumpyRulesArrayOperator_" + ufunc_name,
+                "DpnpRulesArrayOperator_" + ufunc_name,
                 (cls,),
                 dict(key=op),
             )
@@ -33,17 +32,7 @@ def _install_operations(cls: NumpyRulesArrayOperator):
 class DpnpRulesArrayOperator(NumpyRulesArrayOperator):
     @property
     def ufunc(self):
-        try:
-            op = getattr(dpnp, self._op_map[self.key])
-            npop = getattr(np, self._op_map[self.key])
-            op.nin = npop.nin
-            op.nout = npop.nout
-            op.nargs = npop.nargs
-            op.types = npop.types
-            op.is_dpnp_ufunc = True
-            return op
-        except:
-            pass
+        return getattr(dpnp, self._op_map[self.key])
 
     @classmethod
     def install_operations(cls):

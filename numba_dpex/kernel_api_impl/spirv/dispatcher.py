@@ -26,7 +26,7 @@ from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,

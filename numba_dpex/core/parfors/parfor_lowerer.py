@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from collections import namedtuple
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, ir, types
@@ -30,9 +29,6 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
-
-# A global list of kernels to keep the objects alive indefinitely.
-keep_alive_kernels = []
 
 
 def _getvar(lowerer, x):
@@ -154,19 +150,15 @@ class ParforLowerImpl:
         kernel_fn: ParforKernel,
         global_range,
         local_range,
+        debug=False,
     ):
         """
         Adds a call to submit a kernel function into the function body of the
         current Numba JIT compiled function.
         """
-        # Ensure that the Python arguments are kept alive for the duration of
-        # the kernel execution
-        keep_alive_kernels.append(kernel_fn.kernel)
         kl_builder = KernelLaunchIRBuilder(
             lowerer.context, lowerer.builder, kernel_dmm
         )
-
-        queue_ref = kl_builder.get_queue(exec_queue=kernel_fn.queue)
 
         kernel_args = []
         for i, arg in enumerate(kernel_fn.kernel_args):
@@ -188,24 +180,23 @@ class ParforLowerImpl:
             else:
                 kernel_args.append(_getvar(lowerer, arg))
 
-        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
-        kernel_ref = lowerer.builder.inttoptr(
-            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
-            cgutils.voidptr_t,
-        )
-
-        kl_builder.set_kernel(kernel_ref)
-        kl_builder.set_queue(queue_ref)
         kl_builder.set_range(global_range, local_range)
         kl_builder.set_arguments(
             kernel_fn.kernel_arg_types, kernel_args=kernel_args
         )
+        kl_builder.set_queue_from_arguments()
         kl_builder.set_dependent_events([])
+        kl_builder.set_kernel_from_spirv(
+            kernel_fn.kernel_module,
+            debug=debug,
+        )
+
         event_ref = kl_builder.submit()
 
         sycl.dpctl_event_wait(lowerer.builder, event_ref)
         sycl.dpctl_event_delete(lowerer.builder, event_ref)
-        sycl.dpctl_queue_delete(lowerer.builder, queue_ref)
+
+        return kl_builder.arguments.sycl_queue_ref
 
     def _reduction_codegen(
         self,
@@ -263,8 +254,6 @@ class ParforLowerImpl:
             loop_ranges,
             parfor,
             typemap,
-            flags,
-            bool(alias_map),
             reductionKernelVar,
             parfor_reddict,
         )
@@ -278,13 +267,12 @@ class ParforLowerImpl:
             parfor_kernel,
             global_range,
             local_range,
+            debug=flags.debuginfo,
         )
 
         parfor_kernel = create_reduction_remainder_kernel_for_parfor(
             parfor,
             typemap,
-            flags,
-            bool(alias_map),
             reductionKernelVar,
             parfor_reddict,
             reductionHelperList,
@@ -292,14 +280,16 @@ class ParforLowerImpl:
 
         global_range, local_range = self._remainder_ranges(lowerer)
 
-        self._submit_parfor_kernel(
+        # TODO: find better way to pass queue
+        queue_ref = self._submit_parfor_kernel(
             lowerer,
             parfor_kernel,
             global_range,
             local_range,
+            debug=flags.debuginfo,
         )
 
-        reductionKernelVar.copy_final_sum_to_host(parfor_kernel)
+        reductionKernelVar.copy_final_sum_to_host(queue_ref)
 
     def _lower_parfor_as_kernel(self, lowerer, parfor):
         """Lowers a parfor node created by the dpjit compiler to a
@@ -400,9 +390,7 @@ class ParforLowerImpl:
                     lowerer,
                     parfor,
                     typemap,
-                    flags,
                     loop_ranges,
-                    bool(alias_map),
                     parfor.races,
                     parfor_output_arrays,
                 )
@@ -418,9 +406,8 @@ class ParforLowerImpl:
                 parfor_kernel,
                 global_range,
                 local_range,
+                debug=flags.debuginfo,
             )
-
-        # TODO: free the kernel at this point
 
         # Restore the original typemap of the function that was replaced
         # temporarily at the beginning of this function.

@@ -78,7 +78,7 @@ def test_info_args(
 ):
     app.breakpoint(breakpoint)
     app.run(script)
-    app.expect_hit_breakpoint(breakpoint)
+    app.expect_hit_breakpoint(expected_location=breakpoint)
     app.expect(expected_line, with_eol=True)
 
     if kind == "info":
@@ -99,12 +99,12 @@ def test_info_args(
 def test_info_functions(app):
     app.breakpoint("simple_sum.py:12")
     app.run("simple_sum.py")
-    app.expect_hit_breakpoint("simple_sum.py:12")
+    app.expect_hit_breakpoint(expected_location="simple_sum.py:12")
     app.expect(r"12\s+i = item.get_id\(0\)", with_eol=True)
 
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"11:\s+[a-z 0-9\*]+__main__::data_parallel_sum")
+    app.child.expect(r"11:\s+[a-z 0-9\*]+data_parallel_sum")
 
 
 @pytest.mark.parametrize(
@@ -119,7 +119,7 @@ def test_print_array_element(app, api):
 
     app.breakpoint("side-by-side-2.py:17", condition="param_a == 5")
     app.run(f"side-by-side-2.py --api={api}")
-    app.expect_hit_breakpoint("side-by-side-2.py:17")
+    app.expect_hit_breakpoint(expected_location="side-by-side-2.py:17")
 
     # We can access only c_array, not python style array
     app.print("b.data[5]", 5)
@@ -142,7 +142,7 @@ def test_print_array_element(app, api):
 def test_assignment_to_variable(app, api, assign):
     app.breakpoint("side-by-side-2.py:17", condition="param_a == 5")
     app.run(f"side-by-side-2.py --api={api}")
-    app.expect_hit_breakpoint("side-by-side-2.py:17")
+    app.expect_hit_breakpoint(expected_location="side-by-side-2.py:17")
 
     app.print("param_a", expected=5)
     if assign == "print":

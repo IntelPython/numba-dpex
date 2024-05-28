@@ -35,14 +35,18 @@ for /f %%f in ('dir /b /S .\dist') do (
 
 :: wheel file was renamed
 for /f %%f in ('dir /b /S .\dist') do (
-    %PYTHON% -m pip install %%f
+    %PYTHON% -m pip install %%f ^
+      --no-build-isolation ^
+      --no-deps ^
+      --only-binary :all: ^
+      --no-index ^
+      --prefix %PREFIX% ^
+      -vv
     if %ERRORLEVEL% neq 0 exit 1
 )
 
 :: Copy wheel package
 if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
-    for /f %%f in ('dir /b /S .\dist') do (
-        copy %%f %WHEELS_OUTPUT_FOLDER%
-        if %ERRORLEVEL% neq 0 exit 1
-    )
+    copy dist\numba_dpex*.whl %WHEELS_OUTPUT_FOLDER%
+    if errorlevel 1 exit 1
 )

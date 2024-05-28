@@ -31,6 +31,11 @@ class GroupType(types.Type):
     def cast_python_value(self, args):
         raise NotImplementedError
 
+    @property
+    def mangling_args(self):
+        args = [self.ndim]
+        return self.__class__.__name__, args
+
 
 class ItemType(types.Type):
     """Numba-dpex type corresponding to :class:`numba_dpex.kernel_api.Item`"""
@@ -52,6 +57,11 @@ class ItemType(types.Type):
     def key(self):
         """Numba type specific overload"""
         return self._ndim
+
+    @property
+    def mangling_args(self):
+        args = [self.ndim]
+        return self.__class__.__name__, args
 
     def cast_python_value(self, args):
         raise NotImplementedError
@@ -77,6 +87,11 @@ class NdItemType(types.Type):
     def key(self):
         """Numba type specific overload"""
         return self._ndim
+
+    @property
+    def mangling_args(self):
+        args = [self.ndim]
+        return self.__class__.__name__, args
 
     def cast_python_value(self, args):
         raise NotImplementedError

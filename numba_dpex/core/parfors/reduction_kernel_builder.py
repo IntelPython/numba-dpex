@@ -4,33 +4,29 @@
 
 import warnings
 
-import dpctl
 from numba.core import types
 from numba.core.errors import NumbaParallelSafetyWarning
 from numba.core.ir_utils import (
-    add_offset_to_labels,
     get_name_var_table,
     get_unused_var_name,
     legalize_names,
-    mk_unique_var,
-    remove_dels,
-    rename_labels,
-    replace_var_names,
 )
 from numba.core.typing import signature
 
+from numba_dpex.core.decorators import kernel
+from numba_dpex.core.parfors.parfor_sentinel_replace_pass import (
+    ParforBodyArguments,
+)
 from numba_dpex.core.parfors.reduction_helper import ReductionKernelVariables
-from numba_dpex.core.types import DpctlSyclQueue
 from numba_dpex.core.types.kernel_api.index_space_ids import NdItemType
 from numba_dpex.core.types.kernel_api.local_accessor import LocalAccessorType
-
-from .kernel_builder import _print_body  # saved for debug
-from .kernel_builder import (
-    ParforKernel,
-    _compile_kernel_parfor,
-    _to_scalar_from_0d,
-    update_sentinel,
+from numba_dpex.core.utils.call_kernel_builder import SPIRVKernelModule
+from numba_dpex.kernel_api_impl.spirv.dispatcher import (
+    SPIRVKernelDispatcher,
+    _SPIRVKernelCompileResult,
 )
+
+from .kernel_builder import ParforKernel, _to_scalar_from_0d
 from .kernel_templates.reduction_template import (
     RemainderReduceIntermediateKernelTemplate,
     TreeReduceIntermediateKernelTemplate,
@@ -41,8 +37,6 @@ def create_reduction_main_kernel_for_parfor(
     loop_ranges,
     parfor_node,
     typemap,
-    flags,
-    has_aliases,
     reductionKernelVar: ReductionKernelVariables,
     parfor_reddict=None,
 ):
@@ -111,7 +105,6 @@ def create_reduction_main_kernel_for_parfor(
         local_accessors_dict=local_accessors_dict,
         typemap=typemap,
     )
-    kernel_ir = kernel_template.kernel_ir
 
     for i, name in enumerate(reductionKernelVar.parfor_params):
         try:
@@ -120,40 +113,14 @@ def create_reduction_main_kernel_for_parfor(
         except KeyError:
             pass
 
-    # rename all variables in kernel_ir afresh
-    var_table = get_name_var_table(kernel_ir.blocks)
-    new_var_dict = {}
-    reserved_names = (
-        [sentinel_name]
-        + list(reductionKernelVar.param_dict.values())
-        + reductionKernelVar.legal_loop_indices
+    kernel_dispatcher: SPIRVKernelDispatcher = kernel(
+        kernel_template.py_func,
+        _parfor_body_args=ParforBodyArguments(
+            loop_body=reductionKernelVar.loop_body,
+            param_dict=reductionKernelVar.param_dict,
+            legal_loop_indices=reductionKernelVar.legal_loop_indices,
+        ),
     )
-    for name, _ in var_table.items():
-        if not (name in reserved_names):
-            new_var_dict[name] = mk_unique_var(name)
-
-    replace_var_names(kernel_ir.blocks, new_var_dict)
-    kernel_param_types = parfor_param_types
-    kernel_stub_last_label = max(kernel_ir.blocks.keys()) + 1
-    # Add kernel stub last label to each parfor.loop_body label to prevent
-    # label conflicts.
-    loop_body = add_offset_to_labels(
-        reductionKernelVar.loop_body, kernel_stub_last_label
-    )
-    # new label for splitting sentinel block
-    new_label = max(loop_body.keys()) + 1
-
-    update_sentinel(kernel_ir, sentinel_name, loop_body, new_label)
-
-    # FIXME: Why rename and remove dels causes the partial_sum array update
-    # instructions to be removed.
-    kernel_ir.blocks = rename_labels(kernel_ir.blocks)
-    remove_dels(kernel_ir.blocks)
-
-    old_alias = flags.noalias
-
-    if not has_aliases:
-        flags.noalias = True
 
     # The first argument to a range kernel is a kernel_api.NdItem object. The
     # ``NdItem`` object is used by the kernel_api.spirv backend to generate the
@@ -161,25 +128,13 @@ def create_reduction_main_kernel_for_parfor(
     # available originally in the kernel_param_types, we add it at this point to
     # make sure the kernel signature matches the actual generated code.
     ty_item = NdItemType(parfor_dim)
-    kernel_param_types = (ty_item, *kernel_param_types)
+    kernel_param_types = (ty_item, *parfor_param_types)
     kernel_sig = signature(types.none, *kernel_param_types)
 
-    # FIXME: A better design is required so that we do not have to create a
-    # queue every time.
-    ty_queue: DpctlSyclQueue = typemap[
-        reductionKernelVar.parfor_params[0]
-    ].queue
-    exec_queue = dpctl.get_device_cached_queue(ty_queue.sycl_device)
-
-    sycl_kernel = _compile_kernel_parfor(
-        exec_queue,
-        kernel_name,
-        kernel_ir,
-        kernel_param_types,
-        debug=flags.debuginfo,
+    kcres: _SPIRVKernelCompileResult = kernel_dispatcher.get_compile_result(
+        types.void(*kernel_param_types)  # kernel signature
     )
-
-    flags.noalias = old_alias
+    kernel_module: SPIRVKernelModule = kcres.kernel_device_ir_module
 
     parfor_params = (
         reductionKernelVar.parfor_params.copy()
@@ -187,22 +142,18 @@ def create_reduction_main_kernel_for_parfor(
     )
 
     return ParforKernel(
-        name=kernel_name,
-        kernel=sycl_kernel,
         signature=kernel_sig,
         kernel_args=parfor_params,
         kernel_arg_types=parfor_param_types,
-        queue=exec_queue,
         local_accessors=set(local_accessors_dict.values()),
         work_group_size=reductionKernelVar.work_group_size,
+        kernel_module=kernel_module,
     )
 
 
 def create_reduction_remainder_kernel_for_parfor(
     parfor_node,
     typemap,
-    flags,
-    has_aliases,
     reductionKernelVar,
     parfor_reddict,
     reductionHelperList,
@@ -288,19 +239,6 @@ def create_reduction_remainder_kernel_for_parfor(
         final_sum_var_name=final_sum_var_legal_name,
         reductionKernelVar=reductionKernelVar,
     )
-    kernel_ir = kernel_template.kernel_ir
-
-    var_table = get_name_var_table(kernel_ir.blocks)
-    new_var_dict = {}
-    reserved_names = (
-        [sentinel_name]
-        + list(reductionKernelVar.param_dict.values())
-        + reductionKernelVar.legal_loop_indices
-    )
-    for name, _ in var_table.items():
-        if not (name in reserved_names):
-            new_var_dict[name] = mk_unique_var(name)
-    replace_var_names(kernel_ir.blocks, new_var_dict)
 
     for i, _ in enumerate(reductionKernelVar.parfor_redvars):
         if reductionHelperList[i].global_size_var is not None:
@@ -353,48 +291,27 @@ def create_reduction_remainder_kernel_for_parfor(
                 _to_scalar_from_0d(typemap[final_sum_var_name[i]])
             )
 
-    kernel_param_types = reductionKernelVar.param_types
-
-    kernel_stub_last_label = max(kernel_ir.blocks.keys()) + 1
-
-    # Add kernel stub last label to each parfor.loop_body label to prevent
-    # label conflicts.
-    loop_body = add_offset_to_labels(
-        reductionKernelVar.loop_body, kernel_stub_last_label
+    kernel_dispatcher: SPIRVKernelDispatcher = kernel(
+        kernel_template.py_func,
+        _parfor_body_args=ParforBodyArguments(
+            loop_body=reductionKernelVar.loop_body,
+            param_dict=reductionKernelVar.param_dict,
+            legal_loop_indices=reductionKernelVar.legal_loop_indices,
+        ),
     )
-    # new label for splitting sentinel block
-    new_label = max(loop_body.keys()) + 1
 
-    update_sentinel(kernel_ir, sentinel_name, loop_body, new_label)
-
-    old_alias = flags.noalias
-    if not has_aliases:
-        flags.noalias = True
+    kernel_param_types = reductionKernelVar.param_types
 
     kernel_sig = signature(types.none, *kernel_param_types)
 
-    # FIXME: A better design is required so that we do not have to create a
-    # queue every time.
-    ty_queue: DpctlSyclQueue = typemap[
-        reductionKernelVar.parfor_params[0]
-    ].queue
-    exec_queue = dpctl.get_device_cached_queue(ty_queue.sycl_device)
-
-    sycl_kernel = _compile_kernel_parfor(
-        exec_queue,
-        kernel_name,
-        kernel_ir,
-        kernel_param_types,
-        debug=flags.debuginfo,
+    kcres: _SPIRVKernelCompileResult = kernel_dispatcher.get_compile_result(
+        types.void(*kernel_param_types)  # kernel signature
     )
-
-    flags.noalias = old_alias
+    kernel_module: SPIRVKernelModule = kcres.kernel_device_ir_module
 
     return ParforKernel(
-        name=kernel_name,
-        kernel=sycl_kernel,
         signature=kernel_sig,
         kernel_args=reductionKernelVar.parfor_params,
         kernel_arg_types=reductionKernelVar.func_arg_types,
-        queue=exec_queue,
+        kernel_module=kernel_module,
     )
