@@ -1,0 +1,99 @@
+
+numba_dpex.core.config
+======================
+
+.. py:module:: numba_dpex.core.config
+
+.. autoapi-nested-parse::
+
+   The config options are meant to provide extra information and tweak optimization
+   configurations to help debug code generation issues.
+
+   There are two ways of setting these config options:
+
+   - Config options can be directly set programmatically, *e.g.*,
+
+       .. code-block:: python
+
+           from numba_dpex.core.config import DUMP_KERNEL_LLVM
+
+           DUMP_KERNEL_LLVM = 1
+
+   - The options can also be set globally using environment flags. The name of the
+     environment variable for every config option is annotated next to its
+     definition.
+
+       .. code-block:: bash
+
+           export NUMBA_DPEX_DUMP_KERNEL_LLVM = 1
+
+
+
+
+
+
+
+
+Attributes
+----------
+.. py:data:: SAVE_IR_FILES
+   :type: Annotated[int, Save the IR files (LLVM and SPIRV-V) generated for each kernel to current directory, default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_SAVE_IR_FILES]
+
+   
+
+.. py:data:: OFFLOAD_DIAGNOSTICS
+   :type: Annotated[int, Print diagnostic information for automatic offloading of parfor nodes to kernels, default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_OFFLOAD_DIAGNOSTICS]
+
+   
+
+.. py:data:: DEBUG
+   :type: Annotated[int, Generates extra debug prints when set to a non-zero value, default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_DEBUG]
+
+   
+
+.. py:data:: DEBUGINFO_DEFAULT
+   :type: Annotated[int, Compiles in the debug mode generating debug symbols in the compiler IR. It is a global way of setting the "debug" keyword for all numba_dpex.kernel and numba_dpex.device_func decorators used in a program., default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_DEBUGINFO]
+
+   
+
+.. py:data:: DUMP_KERNEL_LLVM
+   :type: Annotated[int, Writes the optimized LLVM IR generated for a numba_dpex.kernel decorated function to current directory, default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_DUMP_KERNEL_LLVM]
+
+   
+
+.. py:data:: DUMP_KERNEL_LAUNCHER
+   :type: Annotated[int, Writes the optimized LLVM IR generated for every numba_dpex.call_kernel function to current directory, default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_DUMP_KERNEL_LAUNCHER]
+
+   
+
+.. py:data:: DEBUG_KERNEL_LAUNCHER
+   :type: Annotated[int, Enables debug printf messages inside the compiled module generated for a numba_dpex.call_kernel function.default = 0, ENVIRONMENT FLAG: NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER]
+
+   
+
+.. py:data:: BUILD_KERNEL_OPTIONS
+   :type: Annotated[str, Can use used to pass extra flags to the device driver compiler during kernel compilation. For available OpenCL options refer https://intel.github.io/llvm-docs/clang/ClangCommandLineReference.html#opencl-options, default = "", ENVIRONMENT FLAG: NUMBA_DPEX_BUILD_KERNEL_OPTIONS]
+
+   
+
+.. py:data:: TESTING_SKIP_NO_DEBUGGING
+
+   
+
+.. py:data:: TESTING_LOG_DEBUGGING
+   :type: Annotated[int, Generates extra logs when using gdb to debug a kernel, defaults = 0, ENVIRONMENT_FLAG: NUMBA_DPEX_TESTING_LOG_DEBUGGING]
+
+   
+
+.. py:data:: DPEX_OPT
+   :type: Annotated[int, Sets the optimization level globally for every function compiled by numba-dpex, default = 2, ENVIRONMENT_FLAG: NUMBA_DPEX_OPT]
+
+   
+
+.. py:data:: INLINE_THRESHOLD
+   :type: Annotated[int, Sets the inlining-threshold level globally for every function compiled by numba-dpex. A higher value enables more aggressive inlining settings for the compiler. Note: Even if NUMBA_DPEX_INLINE_THRESHOLD is set to 0, many internal functions that are attributed "alwaysinline" will still get inlined., default = 2, ENVIRONMENT_FLAG: NUMBA_DPEX_INLINE_THRESHOLD]
+
+   
+
+
+

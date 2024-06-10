@@ -1,0 +1,184 @@
+
+
+:orphan:
+
+numba_dpex.core.typing.typeof
+=============================
+
+.. py:module:: numba_dpex.core.typing.typeof
+
+
+
+
+Overview
+--------
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`typeof_usm_ndarray <numba_dpex.core.typing.typeof.typeof_usm_ndarray>`\ (val, c)
+     - Registers the type inference implementation function for
+   * - :py:obj:`typeof_dpnp_ndarray <numba_dpex.core.typing.typeof.typeof_dpnp_ndarray>`\ (val, c)
+     - Registers the type inference implementation function for dpnp.ndarray.
+   * - :py:obj:`typeof_dpctl_sycl_queue <numba_dpex.core.typing.typeof.typeof_dpctl_sycl_queue>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_dpctl_sycl_event <numba_dpex.core.typing.typeof.typeof_dpctl_sycl_event>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_range <numba_dpex.core.typing.typeof.typeof_range>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_ndrange <numba_dpex.core.typing.typeof.typeof_ndrange>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_atomic_ref <numba_dpex.core.typing.typeof.typeof_atomic_ref>`\ (val, ctx)
+     - Returns a ``numba_dpex.experimental.dpctpp_types.AtomicRefType``
+   * - :py:obj:`typeof_group <numba_dpex.core.typing.typeof.typeof_group>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_item <numba_dpex.core.typing.typeof.typeof_item>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_nditem <numba_dpex.core.typing.typeof.typeof_nditem>`\ (val, c)
+     - Registers the type inference implementation function for a
+   * - :py:obj:`typeof_local_accessor <numba_dpex.core.typing.typeof.typeof_local_accessor>`\ (val, c)
+     - Returns a ``numba_dpex.experimental.dpctpp_types.LocalAccessorType``
+
+
+
+
+Functions
+---------
+.. py:function:: typeof_usm_ndarray(val, c)
+
+   Registers the type inference implementation function for
+   dpctl.tensor.usm_ndarray
+
+   :param val: A Python object that should be an instance of a
+   :param dpctl.tensor.usm_ndarray:
+   :param c: Unused argument used to be consistent with Numba API.
+
+   :raises ValueError: If an unsupported dtype encountered or val has
+   :raises no ``usm_type`` or sycl_device attribute.:
+
+   Returns: The Numba type corresponding to dpctl.tensor.usm_ndarray
+
+
+.. py:function:: typeof_dpnp_ndarray(val, c)
+
+   Registers the type inference implementation function for dpnp.ndarray.
+
+   :param val: A Python object that should be an instance of a
+   :param dpnp.ndarray:
+   :param c: Unused argument used to be consistent with Numba API.
+
+   :raises ValueError: If an unsupported dtype encountered or val has
+   :raises no ``usm_type`` or sycl_device attribute.:
+
+   Returns: The Numba type corresponding to dpnp.ndarray
+
+
+.. py:function:: typeof_dpctl_sycl_queue(val, c)
+
+   Registers the type inference implementation function for a
+   dpctl.SyclQueue PyObject.
+
+   :param val: An instance of dpctl.SyclQueue.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
+
+
+.. py:function:: typeof_dpctl_sycl_event(val, c)
+
+   Registers the type inference implementation function for a
+   dpctl.SyclEvent PyObject.
+
+   :param val: An instance of dpctl.SyclEvent.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclEvent instance.
+
+
+.. py:function:: typeof_range(val, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.Range PyObject.
+
+   :param val: An instance of numba_dpex.Range.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.range_types.RangeType instance.
+
+
+.. py:function:: typeof_ndrange(val, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.NdRange PyObject.
+
+   :param val: An instance of numba_dpex.Range.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.core.types.range_types.RangeType instance.
+
+
+.. py:function:: typeof_atomic_ref(val: numba_dpex.kernel_api.AtomicRef, ctx) -> numba_dpex.core.types.kernel_api.atomic_ref.AtomicRefType
+
+   Returns a ``numba_dpex.experimental.dpctpp_types.AtomicRefType``
+   instance for a Python AtomicRef object.
+
+   :param val: Instance of the AtomicRef type.
+   :type val: AtomicRef
+   :param ctx: Numba typing context used for type inference.
+
+   Returns: AtomicRefType object corresponding to the AtomicRef object.
+
+
+
+.. py:function:: typeof_group(val: numba_dpex.kernel_api.Group, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.kernel_api.Group PyObject.
+
+   :param val: An instance of numba_dpex.kernel_api.Group.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.experimental.core.types.kernel_api.items.GroupType
+       instance.
+
+
+.. py:function:: typeof_item(val: numba_dpex.kernel_api.Item, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.kernel_api.Item PyObject.
+
+   :param val: An instance of numba_dpex.kernel_api.Item.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.experimental.core.types.kernel_api.items.ItemType
+       instance.
+
+
+.. py:function:: typeof_nditem(val: numba_dpex.kernel_api.NdItem, c)
+
+   Registers the type inference implementation function for a
+   numba_dpex.kernel_api.NdItem PyObject.
+
+   :param val: An instance of numba_dpex.kernel_api.NdItem.
+   :param c: Unused argument used to be consistent with Numba API.
+
+   Returns: A numba_dpex.experimental.core.types.kernel_api.items.NdItemType
+       instance.
+
+
+.. py:function:: typeof_local_accessor(val: numba_dpex.kernel_api.LocalAccessor, c) -> numba_dpex.core.types.kernel_api.local_accessor.LocalAccessorType
+
+   Returns a ``numba_dpex.experimental.dpctpp_types.LocalAccessorType``
+   instance for a Python LocalAccessor object.
+   :param val: Instance of the LocalAccessor type.
+   :type val: LocalAccessor
+   :param c: Numba typing context used for type inference.
+
+   Returns: LocalAccessorType object corresponding to the LocalAccessor object.
+
+
+
+
+
