@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>&lt;no title&gt; - numba-dpex 0.23.0+4.gb65bbc029 documentation</title>
+        <title>&lt;no title&gt; - numba-dpex 0.23.0+6.g92e918cf1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -190,7 +190,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0+4.gb65bbc029 documentation</div></a>
+      <a href="../../index.html"><div class="brand">numba-dpex 0.23.0+6.g92e918cf1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -214,7 +214,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0+4.gb65bbc029 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0+6.g92e918cf1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -251,6 +251,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html">numba_dpex.kernel_api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/decorators/index.html">numba_dpex.core.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html">numba_dpex.core.kernel_launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../config_options.html">Configuration Options</a></li>
@@ -350,12 +352,12 @@ values can be of any Python numeric type. Array arguments are passed by
 reference, <em>i.e.</em>, changes to an array in a kernel are visible outside the
 kernel. Scalar values are always passed by value.</p></li>
 <li><p>At least one argument of a kernel should be an array. The requirement is so
-that the kernel launcher (<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code>)
+that the kernel launcher (<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a>)
 can determine the execution queue on which to launch the kernel. Refer to the
 <a class="reference internal" href="index.html#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details.</p></li>
 </ul>
 <p>A range kernel has to be executed via the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code> function by passing in
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> function by passing in
 an instance of the <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a> class. Refer to the
 <a class="reference internal" href="index.html#launching-a-kernel"><span class="std std-ref">Launching a kernel</span></a> section for more details on how to launch a range
 kernel.</p>
@@ -369,7 +371,7 @@ advanced features, an nd-range kernel should be used.</p>
 <p class="admonition-title">See also</p>
 <p>Refer API documentation for <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Range</span></code></a>,
 <a class="reference internal" href="../../autoapi/numba_dpex/kernel_api/index.html#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.Item</span></code></a>,  and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code> for more details.</p>
+<a class="reference internal" href="../../autoapi/numba_dpex/core/kernel_launcher/index.html#numba_dpex.core.kernel_launcher.call_kernel" title="numba_dpex.core.kernel_launcher.call_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.core.kernel_launcher.call_kernel()</span></code></a> for more details.</p>
 </div>
 
         </article>
@@ -406,7 +408,7 @@ advanced features, an nd-range kernel should be used.</p>
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=8989a7cd"></script>
+</div><script src="../../_static/documentation_options.js?v=ce1c2c01"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>
