@@ -20,7 +20,7 @@ dependencies:
   - pip
   - pip:
     - sphinx
-    - sphinx-autoapi
+    - sphinx-autoapi==3.0.0
     - autodoc # there is no conda package
     - recommonmark
     - sphinx-rtd-theme
