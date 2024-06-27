@@ -1,81 +1,60 @@
-$ NUMBA_OPT=0 gdb-oneapi -q python
+$ NUMBA_OPT=0 NUMBA_DPEX_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
-(gdb) break sum_local_vars.py:22
+(gdb) break sum_local_vars.py:13
 (gdb) run sum_local_vars.py
 ...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
-22          i = dpex.get_global_id(0)
+Thread 11 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](
+    DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...)
+    at sum_local_vars.py:13
+13          i = ndpx.get_global_id(0)
 (gdb) info locals
-a = '\000' <repeats 55 times>
-b = '\000' <repeats 55 times>
-c = '\000' <repeats 55 times>
+__ocl_dbg_gid0 = 2
+__ocl_dbg_gid1 = 0
+__ocl_dbg_gid2 = 0
 i = 0
 l1 = 0
 l2 = 0
-__ocl_dbg_gid0 = 0
-__ocl_dbg_gid1 = 0
-__ocl_dbg_gid2 = 0
-__ocl_dbg_lid0 = 0
-__ocl_dbg_lid1 = 0
-__ocl_dbg_lid2 = 0
-__ocl_dbg_grid0 = 0
-__ocl_dbg_grid1 = 0
-__ocl_dbg_grid2 = 0
 (gdb) next
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:22
-22          i = dpex.get_global_id(0)
+[Switching to thread 1 (Thread 0x7ffff7c71740 (LWP 45181))]
+
+Thread 1 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](
+    DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...)
+    at sum_local_vars.py:13
+13          i = ndpx.get_global_id(0)
 (gdb) next
 23          l1 = a[i] + 2.5
 (gdb) next
 24          l2 = b[i] * 0.3
 (gdb) info locals
-a = '\000' <repeats 55 times>
-b = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
-c = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
-i = 8
-l1 = 2.5931931659579277
-l2 = 0
-__ocl_dbg_gid0 = 0
+__ocl_dbg_gid0 = 3
 __ocl_dbg_gid1 = 0
 __ocl_dbg_gid2 = 0
-__ocl_dbg_lid0 = 42949672970
-__ocl_dbg_lid1 = 0
-__ocl_dbg_lid2 = 93825037590528
-__ocl_dbg_grid0 = 4612811918334230528
-__ocl_dbg_grid1 = 0
-__ocl_dbg_grid2 = 0
-(gdb) next
-25          c[i] = l1 + l2
-(gdb) info locals
-a = '\000' <repeats 55 times>
-b = '\000' <repeats 55 times>
-c = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
-i = 8
-l1 = 2.5931931659579277
-l2 = 0.22954882979393004
-__ocl_dbg_gid0 = 0
-__ocl_dbg_gid1 = 8
-__ocl_dbg_gid2 = 8
-__ocl_dbg_lid0 = 93825034429928
-__ocl_dbg_lid1 = 0
-__ocl_dbg_lid2 = 93825034429936
-__ocl_dbg_grid0 = 4599075939470750515
-__ocl_dbg_grid1 = 0
-__ocl_dbg_grid2 = 0
+i = 3
+l1 = 3.4331700205802917
+l2 = 0
 (gdb) print a
-$1 = '\000' <repeats 55 times>
+$1 = {meminfo = 0x0, parent = 0x0, nitems = 0, itemsize = 0, data = 0x0, sycl_queue = 0x0, shape = {0}, strides = {0}}
 (gdb) print l1
-$3 = 2.5931931659579277
+$2 = 2.5931931659579277
 (gdb) print l2
-$4 = 0.22954882979393004
+$4 = 0
 (gdb) ptype a
-type = byte [56]
+type = struct DpnpNdArray(dtype=float32, ndim=1, layout=C, address_space=1, usm_type=device, device=opencl:cpu:0, sycl_queue=DpctlSyclQueue on opencl:cpu:0)
+({float addrspace(1)*, i8* addrspace(1)*, i64, i64, float addrspace(1)*, i8* addrspace(1)*, [1 x i64], [1 x i64]}) {
+    float *meminfo;
+    i8 **parent;
+    int64 nitems;
+    int64 itemsize;
+    float *data;
+    i8 **sycl_queue;
+    i64 shape[1];
+    i64 strides[1];
+}
 (gdb) whatis a
-type = byte [56]
+type = DpnpNdArray(dtype=float32, ndim=1, layout=C, address_space=1, usm_type=device, device=opencl:cpu:0, sycl_queue=DpctlSyclQueue on opencl:cpu:0)
+({float addrspace(1)*, i8* addrspace(1)*, i64, i64, float addrspace(1)*, i8* addrspace(1)*, [1 x i64], [1 x i64]})
 (gdb) ptype l1
-type = double
+type = float64
 (gdb) whatis l1
-type = double
-(gdb) continue
+type = float64
 ...
-Done...

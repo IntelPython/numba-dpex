@@ -9,7 +9,6 @@ Configure debugging environment
 
         export ONEAPI_ROOT=/path/to/oneapi
         source $ONEAPI_ROOT/debugger/latest/env/vars.sh
-        source $ONEAPI_ROOT/compiler/latest/env/vars.sh
 
 2) Create and activate conda environment with the installed numba-dpex:
 
