@@ -1,4 +1,4 @@
-$ NUMBA_OPT=0 gdb-oneapi -q python
+$ NUMBA_OPT=0 NUMBA_DPEX_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
 (gdb) break simple_dpex_func.py:func_sum
 (gdb) run simple_dpex_func.py
@@ -8,6 +8,5 @@ Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at sim
 (gdb) continue
 Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::func_sum () at simple_dpex_func.py:22
 22          result = a_in_func + b_in_func
-(gdb) continue
+
 ...
-Done...

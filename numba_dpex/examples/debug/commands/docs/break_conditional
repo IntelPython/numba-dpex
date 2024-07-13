@@ -1,12 +1,11 @@
-$ NUMBA_OPT=0 gdb-oneapi -q python
+$ NUMBA_OPT=0 NUMBA_DPEX_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
-(gdb) break simple_sum.py:23 if i == 1
+(gdb) break simple_sum.py:14 if i == 1
 (gdb) run simple_sum.py
 ...
-Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23
-23          c[i] = a[i] + b[i]
+Thread 11 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray<
+float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...) at simple_sum.py:14
+14          c[i] = a[i] + b[i]  # Condition breakpoint location
 (gdb) print i
 $1 = 1
-(gdb) continue
 ...
-Done...

@@ -1,13 +1,15 @@
-$ NUMBA_OPT=0 gdb-oneapi -q python
+$ NUMBA_OPT=0 NUMBA_DPEX_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
-(gdb) break simple_sum.py:20
+(gdb) break simple_sum.py:11
 (gdb) run simple_sum.py
 ...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-20          @dpex.kernel(debug=True)
+Thread 12 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray<
+float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...) at simple_sum.py:13
+13          i = ndpx.get_global_id(0)
 (gdb) continue
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20
-20          @dpex.kernel(debug=True)
-(gdb) continue
+[Switching to thread 15 (Thread 0x7fff55cc0640 (LWP 44013))]
+
+Thread 15 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray<
+float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...) at simple_sum.py:13
+13          i = ndpx.get_global_id(0)
 ...
-Done...
