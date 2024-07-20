@@ -2,20 +2,21 @@ name: dpex-docs-dev
 channels:
   - dppy/label/dev
   - numba
-  - intel
   - conda-forge
   - nodefaults
 dependencies:
   - libffi
-  - gxx_linux-64
-  - dpcpp_linux-64>=2024.0,!=2024.0.1,!=2024.0.2
+  - gcc_linux-64
+  - dpcpp_linux-64>=2024.2
+  - sysroot_linux-64=2.28
   - numba==0.59*
   - scikit-build>=0.15*
   - cmake>=3.26*
+  - ninja
   - dpctl>=0.16*
   - dpnp>=0.14*
   - dpcpp-llvm-spirv
-  - opencl_rt
+  - intel-opencl-rt
   - versioneer
   - pip
   - pip:

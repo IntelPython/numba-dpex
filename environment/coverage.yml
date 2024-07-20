@@ -2,18 +2,18 @@ name: dev
 channels:
   - dppy/label/dev
   - numba
-  - intel
   - conda-forge
   - nodefaults
 dependencies:
   - libffi
-  - gxx_linux-64
-  - dpcpp_linux-64>=2024.0,!=2024.0.1,!=2024.0.2
-  - numba==0.58*
+  - gcc_linux-64
+  - dpcpp_linux-64>=2024.2
+  - sysroot_linux-64=2.28
+  - numba==0.59*
   - dpctl
   - dpnp
   - dpcpp-llvm-spirv
-  - opencl_rt
+  - intel-opencl-rt
   - coverage
   - pytest
   - pytest-cov
@@ -21,4 +21,5 @@ dependencies:
   - pexpect
   - scikit-build>=0.15*
   - cmake>=3.26*
+  - ninja
   - versioneer
