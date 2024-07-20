@@ -293,7 +293,23 @@ class SPIRVTargetContext(BaseContext):
         target context.
 
         """
-        # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel, unused-import, too-many-locals
+        from numba.cpython import (
+            builtins,
+            charseq,
+            enumimpl,
+            hashing,
+            heapq,
+            iterators,
+            listobj,
+            numbers,
+            rangeobj,
+            setobj,
+            slicing,
+            tupleobj,
+            unicode,
+        )
+
         from numba_dpex.dpctl_iface import dpctlimpl
         from numba_dpex.dpnp_iface import dpnpimpl
 

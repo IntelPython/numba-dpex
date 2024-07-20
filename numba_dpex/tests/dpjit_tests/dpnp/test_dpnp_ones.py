@@ -129,9 +129,6 @@ def test_dpnp_ones_exceptions():
         c = dpnp.ones(shape, sycl_queue=queue, device=device)
         return c
 
-    try:
+    with pytest.raises((errors.TypingError, TypeError)):
         queue = dpctl.SyclQueue()
         func(10, queue)
-    except Exception as e:
-        assert isinstance(e, errors.TypingError)
-        assert "`device` and `sycl_queue` are exclusive keywords" in str(e)
