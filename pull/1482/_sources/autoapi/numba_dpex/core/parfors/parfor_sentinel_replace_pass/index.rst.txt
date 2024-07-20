@@ -1,0 +1,105 @@
+
+
+:orphan:
+
+numba_dpex.core.parfors.parfor_sentinel_replace_pass
+====================================================
+
+.. py:module:: numba_dpex.core.parfors.parfor_sentinel_replace_pass
+
+
+
+
+Overview
+--------
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`ParforBodyArguments <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments>`
+     - Arguments containing information to inject parfor code inside kernel.
+   * - :py:obj:`ParforSentinelReplacePass <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass>`
+     - Base class for function passes
+
+
+
+
+Classes
+-------
+
+.. py:class:: ParforBodyArguments
+
+   Bases: :py:obj:`NamedTuple`
+
+   Arguments containing information to inject parfor code inside kernel.
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`loop_body <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.loop_body>`
+        - \-
+      * - :py:obj:`param_dict <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.param_dict>`
+        - \-
+      * - :py:obj:`legal_loop_indices <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforBodyArguments.legal_loop_indices>`
+        - \-
+
+
+
+   .. rubric:: Members
+
+   .. py:attribute:: loop_body
+      :type: any
+
+      
+
+   .. py:attribute:: param_dict
+      :type: any
+
+      
+
+   .. py:attribute:: legal_loop_indices
+      :type: any
+
+      
+
+
+
+.. py:class:: ParforSentinelReplacePass
+
+   Bases: :py:obj:`numba.core.compiler_machinery.FunctionPass`
+
+   Base class for function passes
+
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`run_pass <numba_dpex.core.parfors.parfor_sentinel_replace_pass.ParforSentinelReplacePass.run_pass>`\ (state)
+        - Runs the pass itself. Must return True/False depending on whether
+
+
+   .. rubric:: Members
+
+   .. py:method:: run_pass(state)
+
+      Runs the pass itself. Must return True/False depending on whether
+      statement level modification took place.
+
+
+
+
+
+
+
