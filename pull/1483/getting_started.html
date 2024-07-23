@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Programming Model" href="programming_model.html" /><link rel="prev" title="Overview" href="overview.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
-        <title>Getting Started - numba-dpex 0.23.0+18.g2d464df5f documentation</title>
+        <title>Getting Started - numba-dpex 0.23.0+24.g290b11562 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -177,7 +177,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">numba-dpex 0.23.0+18.g2d464df5f documentation</div></a>
+      <a href="index.html"><div class="brand">numba-dpex 0.23.0+24.g290b11562 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,7 +201,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0+18.g2d464df5f documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0+24.g290b11562 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -296,14 +296,14 @@ It is recommended to use conda packages from the <code class="docutils literal n
 to get the latest production releases.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
 <span class="w">    </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w">                                 </span><span class="se">\</span>
-<span class="w">    </span>-c<span class="w"> </span>https://software.repos.intel.com/python/conda<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="w">    </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 <p>To try out the bleeding edge, the latest packages built from tip of the main
 source trunk can be installed from the <code class="docutils literal notranslate"><span class="pre">dppy/label/dev</span></code> conda channel.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
 <span class="w">    </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w">                                 </span><span class="se">\</span>
-<span class="w">    </span>-c<span class="w"> </span>dppy/label/dev<span class="w"> </span>-c<span class="w"> </span>https://software.repos.intel.com/python/conda<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="w">    </span>-c<span class="w"> </span>dppy/label/dev<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 </section>
@@ -323,7 +323,7 @@ conda<span class="w"> </span>activate<span class="w"> </span>build-env
 <ol class="arabic simple" start="2">
 <li><p>Build using the vendored conda recipe</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span class="w"> </span>-c<span class="w"> </span>https://software.repos.intel.com/python/conda<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -338,7 +338,7 @@ first step.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a conda environment that hass needed dependencies installed</span>
 conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
 <span class="w">    </span>scikit-build<span class="w"> </span>cmake<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">    </span><span class="se">\</span>
-<span class="w">    </span>-c<span class="w"> </span>https://software.repos.intel.com/python/conda<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="w">    </span>-c<span class="w"> </span>conda-forge
 <span class="c1"># Activate the environment</span>
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 <span class="c1"># Clone the numba-dpex repository</span>
@@ -582,7 +582,7 @@ shows a way to run the unit tests.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=18a7f382"></script>
+</div><script src="_static/documentation_options.js?v=e8eb6006"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
