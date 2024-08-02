@@ -20,7 +20,7 @@ to get the latest production releases.
 
     conda create -n numba-dpex-env                                             \
         numba-dpex dpnp dpctl dpcpp-llvm-spirv                                 \
-        -c intel -c conda-forge
+        -c conda-forge
 
 To try out the bleeding edge, the latest packages built from tip of the main
 source trunk can be installed from the ``dppy/label/dev`` conda channel.
@@ -29,7 +29,7 @@ source trunk can be installed from the ``dppy/label/dev`` conda channel.
 
     conda create -n numba-dpex-env                                             \
         numba-dpex dpnp dpctl dpcpp-llvm-spirv                                 \
-        -c dppy/label/dev -c intel -c conda-forge
+        -c dppy/label/dev -c conda-forge
 
 
 
@@ -53,7 +53,7 @@ Steps to build using ``conda-build``:
 
 .. code-block:: bash
 
-    conda build conda-recipe -c intel -c conda-forge
+    conda build conda-recipe -c conda-forge
 
 3. Install the conda package
 
@@ -71,7 +71,7 @@ first step.
     # Create a conda environment that hass needed dependencies installed
     conda create -n numba-dpex-env                                             \
         scikit-build cmake dpctl dpnp numba dpcpp-llvm-spirv llvmdev pytest    \
-        -c intel -c conda-forge
+        -c conda-forge
     # Activate the environment
     conda activate numba-dpex-env
     # Clone the numba-dpex repository

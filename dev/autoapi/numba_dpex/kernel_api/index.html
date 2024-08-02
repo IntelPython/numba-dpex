@@ -14,12 +14,12 @@
     </script>
     <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="numba_dpex.core.decorators" href="../core/decorators/index.html" /><link rel="prev" title="API Reference" href="../../index.html" />
 
-    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>numba_dpex.kernel_api - numba-dpex 0.23.0+14.ge80fdd070 documentation</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
+        <title>numba_dpex.kernel_api - numba-dpex 0.23.0+16.gdc94b7e10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
     
@@ -99,19 +99,6 @@
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
-    </svg>
-  </symbol>
   <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
     <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -152,7 +139,7 @@
       <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
       <path d="M13.5 6.5l4 4" />
       <path d="M20 21l2 -2l-2 -2" />
-      <path d="M17 17l-2 2l2 2" /
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
   <symbol id="svg-eye" viewBox="0 0 24 24">
@@ -190,7 +177,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0+14.ge80fdd070 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">numba-dpex 0.23.0+16.gdc94b7e10 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -214,7 +201,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">numba-dpex 0.23.0+14.ge80fdd070 documentation</span>
+  <span class="sidebar-brand-text">numba-dpex 0.23.0+16.gdc94b7e10 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -313,37 +300,37 @@ numba_dpex.</p>
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AtomicRef" title="numba_dpex.kernel_api.AtomicRef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicRef</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_atomic_ref reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Group</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_group reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Item</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_item reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdItem" title="numba_dpex.kernel_api.NdItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdItem</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_nditem reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.LocalAccessor" title="numba_dpex.kernel_api.LocalAccessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalAccessor</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_local_accessor reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.AddressSpace" title="numba_dpex.kernel_api.AddressSpace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddressSpace</span></code></a></p></td>
-<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p></td>
+<td><p>Analogue of <a class="extlink-sycl_addr_space reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryOrder" title="numba_dpex.kernel_api.MemoryOrder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryOrder</span></code></a></p></td>
-<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p></td>
+<td><p>Analogue of <a class="extlink-sycl_memory_order reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.MemoryScope" title="numba_dpex.kernel_api.MemoryScope"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MemoryScope</span></code></a></p></td>
-<td><p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p></td>
+<td><p>Analogue of <a class="extlink-sycl_memory_scope reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.PrivateArray" title="numba_dpex.kernel_api.PrivateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrivateArray</span></code></a></p></td>
 <td><p>An array that gets allocated on the private memory of a work-item.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NdRange</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_ndrange reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p></td>
-<td><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p></td>
+<td><p>Analogue to the <a class="extlink-sycl_range reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p></td>
 </tr>
 </tbody>
 </table>
@@ -370,7 +357,7 @@ numba_dpex.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AtomicRef">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomicRef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryOrder.RELAXED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.DEVICE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.AtomicRef" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_atomic_ref reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references">sycl::atomic_ref</a> class.</p>
 <p>An atomic reference is a view into a data container that can be then updated
 atomically using any of the <code class="docutils literal notranslate"><span class="pre">fetch_*</span></code> member functions of the class.</p>
 <p class="rubric">Overview</p>
@@ -583,7 +570,7 @@ the AtomicRef.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Group">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Group" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_group reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#group-class">sycl::group</a> class.</p>
 <p>Represents a particular work-group within a parallel execution and
 provides API to extract various properties of the work-group. An instance
 of the class is not user-constructible. Users should use
@@ -728,7 +715,7 @@ nd-range.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Item">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ranges/index.html#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range"><span class="pre">Range</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.Item" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_item reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:item.class">sycl::item</a> class.</p>
 <p>Identifies the work-item in a parallel execution of a kernel launched with
 the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="numba_dpex.kernel_api.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> index-space class.</p>
 <p class="rubric">Overview</p>
@@ -805,7 +792,7 @@ the <a class="reference internal" href="#numba_dpex.kernel_api.Range" title="num
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdItem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Item" title="numba_dpex.kernel_api.Item"><span class="pre">Item</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#numba_dpex.kernel_api.Group" title="numba_dpex.kernel_api.Group"><span class="pre">Group</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdItem" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_nditem reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsec:nditem.class">sycl::nd_item</a> class.</p>
 <p>Identifies an instance of the function object executing at each point in an
 <a class="reference internal" href="#numba_dpex.kernel_api.NdRange" title="numba_dpex.kernel_api.NdRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdRange</span></code></a>.</p>
 <p class="rubric">Overview</p>
@@ -957,7 +944,7 @@ dimensions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.LocalAccessor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocalAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.LocalAccessor" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_local_accessor reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:accessor.local">sycl::local_accessor</a> class.</p>
 <p>The class acts as a proxy to allocating device local memory and
 accessing that memory from within a <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.kernel()</span></code> decorated
 function.</p>
@@ -967,7 +954,7 @@ function.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.AddressSpace">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressSpace</span></span><a class="headerlink" href="#numba_dpex.kernel_api.AddressSpace" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p>
+<p>Analogue of <a class="extlink-sycl_addr_space reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_address_space_classes">SYCL address space classes</a>.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
@@ -1025,7 +1012,7 @@ implementation in dpcpp.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryOrder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryOrder</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryOrder" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p>
+<p>Analogue of <a class="extlink-sycl_memory_order reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-ordering">sycl::memory_order</a> enumeration.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
@@ -1091,7 +1078,7 @@ implementation in dpcpp.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.MemoryScope">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MemoryScope</span></span><a class="headerlink" href="#numba_dpex.kernel_api.MemoryScope" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="flag_enum/index.html#numba_dpex.kernel_api.flag_enum.FlagEnum" title="numba_dpex.kernel_api.flag_enum.FlagEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum.FlagEnum</span></code></a></p>
-<p>Analogue of <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p>
+<p>Analogue of <a class="extlink-sycl_memory_scope reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:memory-scope">sycl::memory_scope</a> enumeration.</p>
 <p>The integer values of the enums is kept consistent with the corresponding
 implementation in dpcpp.</p>
 <p class="rubric">Overview</p>
@@ -1151,14 +1138,14 @@ implementation in dpcpp.</p>
 <dd><p>An array that gets allocated on the private memory of a work-item.</p>
 <p>The class should be used to allocate small arrays on the private
 per-work-item memory for fast accesses inside a kernel. It is similar in
-intent to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_parallel_for_hierarchical_invoke">sycl::private_memory</a> class but is
+intent to the <a class="extlink-sycl_private_memory reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#_parallel_for_hierarchical_invoke">sycl::private_memory</a> class but is
 not a direct analogue.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.NdRange">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.NdRange" title="Link to this definition">¶</a></dt>
-<dd><p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p>
+<dd><p>Analogue to the <a class="extlink-sycl_ndrange reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#subsubsec:nd-range-class">sycl::nd_range</a> class.</p>
 <p>The NdRange defines the index space for a work group as well as
 the global index space. It is passed to parallel_for to execute
 a kernel on a set of work items.</p>
@@ -1216,7 +1203,7 @@ class.</p>
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.Range">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.Range" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>Analogue to the <a class="reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p>
+<p>Analogue to the <a class="extlink-sycl_range reference external" href="https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#range-class">sycl::range</a> class.</p>
 <p>The range is an abstraction that describes the number of elements
 in each dimension of buffers and index spaces. It can contain
 1, 2, or 3 numbers, depending on the dimensionality of the
@@ -1527,9 +1514,9 @@ Ndrange object</p></li>
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d313d38c"></script>
+</div><script src="../../../_static/documentation_options.js?v=2796012f"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../_static/scripts/furo.js?v=4e2eecee"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
     </body>
 </html>
