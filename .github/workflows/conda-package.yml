@@ -16,7 +16,7 @@ env:
   PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
   # There is a separate action that removes defaults.
-  CHANNELS: 'dppy/label/dev,conda-forge,intel,numba,nodefaults'
+  CHANNELS: 'dppy/label/dev,conda-forge,numba,nodefaults'
   VER_JSON_NAME: 'version.json'
   VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
   VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
@@ -161,6 +161,10 @@ jobs:
           conda search ${{ env.PACKAGE_NAME }} -c ${{ env.CHANNEL_PATH }} --override-channels --info --json > ${{ env.VER_JSON_PATH }}
           cat ${{ env.VER_JSON_PATH }}
 
+      - name: Print dependencies
+        run: |
+          conda search ${{ env.PACKAGE_NAME }} -c ${{ env.CHANNEL_PATH }} --override-channels --info
+
       - name: Collect dependencies
         shell: bash -l {0}
         run: |
@@ -168,16 +172,9 @@ jobs:
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
 
       # We want to make sure that all dependecies install automatically.
-      # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
+      # intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
       - name: Install built package
-        run: conda install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt -c ${{ env.CHANNEL_PATH }}
-
-      - name: Setup OpenCL CPU device
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
-          &$script_path
+        run: conda install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel-opencl-rt -c ${{ env.CHANNEL_PATH }}
 
       - name: List installed packages
         run: conda list

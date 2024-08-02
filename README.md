@@ -68,16 +68,15 @@ To install `numba_dpex` from the Intel(R) channel on Anaconda
 cloud, use the following command:
 
 ```bash
-conda install numba-dpex -c intel -c conda-forge
+conda install numba-dpex -c conda-forge
 ```
 
 ## Pip
 
-The `numba_dpex` can be installed using `pip` obtaining wheel packages either from PyPi or from Intel(R) channel on Anaconda.
-To install `numba_dpex` wheel package from Intel(R) channel on Anaconda, run the following command:
+The `numba_dpex` can be installed using `pip` obtaining wheel packages either from PyPi.
 
 ```bash
-python -m pip install --index-url https://pypi.anaconda.org/intel/simple numba-dpex
+python -m pip install numba-dpex
 ```
 
 # Contributing

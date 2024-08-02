@@ -1,7 +1,4 @@
-{% set required_compiler_version = "2024.0" %}
-{% set excluded_compiler_version1 = "2024.0.1" %}
-{% set excluded_compiler_version2 = "2024.0.2" %}
-{% set excluded_compiler_version3 = "2024.0.3" %}
+{% set required_compiler_version = "2024.2.0" %}
 
 {% set pyproject = load_file_data('pyproject.toml') %}
 {% set py_build_deps = pyproject.get('build-system', {}).get('requires', []) %}
@@ -21,9 +18,8 @@ build:
 requirements:
     # TODO: keep in sync with /pyproject.toml
     build:
-        - {{ compiler('cxx') }}
-        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
-        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
+        - {{ compiler('c') }}
+        - {{ compiler('dpcpp') }} >={{ required_compiler_version }}
         # Minimal supported version of sysroot (which is version of glibc) to
         # have compatibility with wider range of linux distributions.
         # 2.28 is the minimal supported version by dpcpp
@@ -31,8 +27,8 @@ requirements:
     host:
         - python
         - pip >=24.0
-        - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }},!={{ excluded_compiler_version3 }}  # [win]
-        - dpcpp-cpp-rt >={{ required_compiler_version }},!={{ excluded_compiler_version1 }},!={{ excluded_compiler_version2 }}  # [linux]
+        - dpcpp-cpp-rt
+        - intel-cmplr-lib-rt
         # ensure we are using latest version of setuptools, since we don't need
         # editable environments for release.
         - setuptools >=69
@@ -53,17 +49,12 @@ requirements:
         # pin_compatible at run section.
         - dpcpp-llvm-spirv >={{ required_compiler_version }}
     run:
-        - {{ pin_compatible('dpcpp-cpp-rt', min_pin='x.x', max_pin='x') }}
-        - {{ pin_compatible('intel-cmplr-lib-rt', min_pin='x.x', max_pin='x') }}
         # TODO: pick up min version from dep
         - {{ pin_compatible('dpcpp-llvm-spirv', min_pin='x.x', max_pin='x') }}
         - {{ pin_compatible('dpnp', min_pin='x.x.x', max_pin='x.x') }}
         - {{ pin_compatible('dpctl', min_pin='x.x.x', max_pin='x.x') }}
         - {{ pin_compatible('numba', min_pin='x.x.x', max_pin='x.x') }}
         - {{ pin_compatible('llvmlite', min_pin='x.x.x', max_pin='x.x') }}
-        # TODO: set max pin +2 from minor version
-        # https://numpy.org/neps/nep-0023-backwards-compatibility.html#nep23
-        - {{ pin_compatible('numpy', min_pin='x.x.x', max_pin='x') }}
         - python
 
 test:

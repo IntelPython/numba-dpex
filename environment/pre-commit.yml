@@ -2,7 +2,6 @@ name: dev
 channels:
   - dppy/label/dev
   - numba
-  - intel
   - conda-forge
   - nodefaults
 dependencies:
@@ -11,7 +10,7 @@ dependencies:
   - dpctl>=0.16*
   - dpnp>=0.14*
   - dpcpp-llvm-spirv
-  - opencl_rt
+  - intel-opencl-rt
   - coverage
   - pytest
   - pytest-cov
