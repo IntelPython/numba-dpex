@@ -136,7 +136,7 @@ def test_dpnp_empty_exceptions():
         )
         return c
 
-    with pytest.raises(errors.TypingError):
+    with pytest.raises((errors.TypingError, TypeError)):
         queue = dpctl.SyclQueue()
         func(10, queue)
 

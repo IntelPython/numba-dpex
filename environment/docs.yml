@@ -9,7 +9,7 @@ dependencies:
   - gcc_linux-64
   - dpcpp_linux-64>=2024.2
   - sysroot_linux-64=2.28
-  - numba==0.59*
+  - numba==0.60*
   - scikit-build>=0.15*
   - cmake>=3.26*
   - ninja

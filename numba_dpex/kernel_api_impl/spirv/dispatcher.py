@@ -363,9 +363,6 @@ class SPIRVKernelDispatcher(Dispatcher):
         self.overloads[args] = cres
 
     def compile(self, sig) -> any:
-        disp = self._get_dispatcher_for_current_target()
-        if disp is not self:
-            return disp.compile(sig)
 
         with ExitStack() as scope:
             cres = None

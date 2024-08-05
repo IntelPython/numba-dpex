@@ -60,7 +60,7 @@ def intrinsic_bar():
 def test_dpex_overload_from_njit():
     bar_njit = njit(bar)
 
-    with pytest.raises(errors.TypingError):
+    with pytest.raises((errors.TypingError, errors.UnsupportedError)):
         bar_njit()
 
 
@@ -72,7 +72,7 @@ def test_dpex_overload_from_dpjit():
 def test_dpex_intrinsic_from_njit():
     bar_njit = njit(intrinsic_bar)
 
-    with pytest.raises(errors.TypingError):
+    with pytest.raises((errors.TypingError, errors.UnsupportedError)):
         bar_njit()
 
 

@@ -11,7 +11,7 @@ requires = [
   # We need dpctl for UsmNdArray integration for dpcpp code
   "dpctl>=0.16.1",
   # We need numba for runtime cpp headers
-  "numba>=0.59.0,<0.60.0a0",
+  "numba>=0.60.0,<0.61.0a0",
   "llvmlite>=0.42.0",
   # Do we need dpnp at build time?
   "dpnp >=0.14",
@@ -40,9 +40,9 @@ dependencies = [
   # This restrictions are for dependabot, actual restrictions are set with
   # conda. TODO: populate it during build process
   # TODO: do we have to set sycl runtime dependencies here
-  # "dpcpp-cpp-rt>=0.59.0",
-  # "intel-cmplr-lib-rt>=0.59.0"
-  "numba>=0.59.0",
+  # "dpcpp-cpp-rt>=xxxx",
+  # "intel-cmplr-lib-rt>=xxxx"
+  "numba>=0.60.0,<0.61.0a0",
   "llvmlite>=0.42.0",
   "dpctl>=0.16.1",
   "dpnp>=0.14.0",

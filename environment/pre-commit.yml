@@ -6,7 +6,7 @@ channels:
   - nodefaults
 dependencies:
   - libffi
-  - numba==0.59*
+  - numba==0.60*
   - dpctl>=0.16*
   - dpnp>=0.14*
   - dpcpp-llvm-spirv
