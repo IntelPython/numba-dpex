@@ -88,3 +88,29 @@ def test_kernel_breakpoint(app: gdb, condition, exp_var, exp_val):
     app.expect_hit_breakpoint("simple_sum.py:13")
     if exp_var is not None:
         app.print(exp_var, expected=exp_val)
+
+
+def test_all_kernel_breakpoints_hit(app: gdb):
+    """Test that every thread was hit"""
+
+    app.breakpoint("simple_sum.py:13")
+    app.run("simple_sum.py")
+
+    indexes = []
+
+    for _ in range(10):
+        app.expect_hit_breakpoint("simple_sum.py:13")
+
+        # Recover the index of the thread
+        app._command("print i")
+        app.child.expect(r"\$[0-9]+ = ")
+        index = app.child.read(1)
+        app.expect_eol()
+
+        indexes.append(int(index))
+
+        app.continue_()
+
+    indexes.sort()
+
+    assert indexes == list(range(10))

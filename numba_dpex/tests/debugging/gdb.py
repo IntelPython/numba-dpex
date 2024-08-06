@@ -139,6 +139,9 @@ class gdb:
     def info_locals(self):
         self._command("info locals")
 
+    def continue_(self):
+        self._command("continue")
+
     def next(self):
         self._command("next")
 
