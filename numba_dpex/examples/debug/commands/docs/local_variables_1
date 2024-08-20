@@ -1,23 +1,19 @@
 $ NUMBA_OPT=1 gdb-oneapi -q python
 (gdb) set breakpoint pending on
-(gdb) break sum_local_vars.py:22
+(gdb) break sum_local_vars.py:13
 (gdb) run sum_local_vars.py
 ...
-Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
-22           i = dpex.get_global_id(0)
+[Switching to thread 11 (Thread 0x7fff568c3640 (LWP 7679))]
+
+Thread 11 "python" hit Breakpoint 1, __main__::data_parallel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray<
+float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a=..., b=..., c=...)
+    at sum_local_vars.py:13
+13          i = ndpx.get_global_id(0)
 (gdb) info locals
-__ocl_dbg_gid0 = 8
+__ocl_dbg_gid0 = 3
 __ocl_dbg_gid1 = 0
 __ocl_dbg_gid2 = 0
-__ocl_dbg_lid0 = 8
-__ocl_dbg_lid1 = 0
-__ocl_dbg_lid2 = 0
-__ocl_dbg_grid0 = 0
-__ocl_dbg_grid1 = 0
-__ocl_dbg_grid2 = 0
 i = 0
 l1 = 0
 l2 = 0
-(gdb) continue
 ...
-Done...

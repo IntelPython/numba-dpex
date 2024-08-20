@@ -1,14 +1,20 @@
-$ NUMBA_OPT=0 gdb-oneapi -q python
+$ NUMBA_OPT=0 NUMBA_DPEX_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
-(gdb) break simple_dpex_func.py:29
+(gdb) break simple_dpex_func.py:19
 (gdb) run simple_dpex_func.py
 ...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dpex_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+[Switching to thread 11 (Thread 0x7fff56cc4640 (LWP 8028))]
+
+Thread 11 "python" hit Breakpoint 1, __main__::kernel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray
+<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a_in_kernel=..., b_in_kernel=...,
+    c_in_kernel=...) at simple_dpex_func.py:19
+19          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 (gdb) next
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dpex_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) next
+[Switching to thread 13 (Thread 0x7fff564c2640 (LWP 8030))]
+
+Thread 13 "python" hit Breakpoint 1, __main__::kernel_sum_241dpex_fn[abi:v1][abi:c8tJTC_2fWgMemLSg1AEMDLWKQhCFpAEkANV7BEpoA](DpnpNdArray
+<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>, DpnpNdArray<float, 1, C, opencl_cpu>) (a_in_kernel=..., b_in_kernel=...,
+    c_in_kernel=...) at simple_dpex_func.py:19
+19          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+
 ...
-Done...
