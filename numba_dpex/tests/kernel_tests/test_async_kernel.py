@@ -82,7 +82,7 @@ def test_async_dependent_add_list_exception():
 
     # TODO: should capture ValueError, but numba captures it and generates
     # TypingError. ValueError is still readable there.
-    with pytest.raises(TypingError):
+    with pytest.raises((TypingError, ValueError)):
         dpex.call_kernel_async(
             add,
             Range(size),

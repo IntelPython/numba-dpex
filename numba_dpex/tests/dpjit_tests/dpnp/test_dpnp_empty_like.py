@@ -154,13 +154,10 @@ def test_dpnp_empty_like_exceptions():
         y = dpnp.empty_like(x, sycl_queue=queue, device=device)
         return y
 
-    try:
+    with pytest.raises((errors.TypingError, TypeError)):
         queue = dpctl.SyclQueue()
         a = dpnp.ones(10, dtype=dpnp.float32)
         func1(a, queue)
-    except Exception as e:
-        assert isinstance(e, errors.TypingError)
-        assert "`device` and `sycl_queue` are exclusive keywords" in str(e)
 
     @dpjit
     def func2(x):

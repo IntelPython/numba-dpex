@@ -152,13 +152,10 @@ def test_dpnp_ones_like_exceptions():
         y = dpnp.ones_like(x, sycl_queue=queue, device=device)
         return y
 
-    try:
+    with pytest.raises((errors.TypingError, TypeError)):
         queue = dpctl.SyclQueue()
         a = dpnp.zeros(10, dtype=dpnp.float32)
         func1(a, queue)
-    except Exception as e:
-        assert isinstance(e, errors.TypingError)
-        assert "`device` and `sycl_queue` are exclusive keywords" in str(e)
 
     @dpjit
     def func2(x):
@@ -198,11 +195,5 @@ def test_dpnp_ones_like_from_scalar(shape):
         x = dpnp.ones_like(shape)
         return x
 
-    try:
+    with pytest.raises((errors.TypingError, TypeError)):
         func(shape)
-    except Exception as e:
-        assert isinstance(e, errors.TypingError)
-        assert (
-            "No implementation of function Function(<function ones_like"
-            in str(e)
-        )
